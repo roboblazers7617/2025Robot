@@ -1,0 +1,39 @@
+name: Add to project
+
+on:
+  issues:
+    types:
+      - opened
+  pull_request:
+    types:
+      - opened
+
+jobs:
+  add-to-project:
+    name: Add issue to project
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate an authentication token
+        uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ vars.BLAZER_BOT_APP_ID }}
+          private-key: ${{ secrets.BLAZER_BOT_PRIVATE_KEY }}
+      - name: Add item to project
+        uses: actions/add-to-project@v1.0.2
+        with:
+          project-url: ${{ vars.PROJECT_URL }}
+          github-token: ${{ steps.app-token.outputs.token }}
+      - name: Set item subteam
+        uses: EndBug/project-fields@a843f1eac1a2772a9d475cfd4bb32d68225c558c
+        with:
+          # The type of field operation. Valid options are "get", "set", "clear"
+          operation: set
+          # A comma-separated list of fields to get or update
+          fields: Subteam
+          # The GitHub token to use for authentication
+          github_token: ${{ steps.app-token.outputs.token }}
+          # The URL of the project
+          project_url: ${{ vars.PROJECT_URL }}
+          # A comma-separated list of values to update the fields with
+          values: Programming
