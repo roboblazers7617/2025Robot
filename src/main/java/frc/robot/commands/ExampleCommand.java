@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class ExampleCommand extends Command {
 	@SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
 	private final ExampleSubsystem m_subsystem;
-	
+	this is an error
 	/**
 	 * Creates a new ExampleCommand.
 	 *
