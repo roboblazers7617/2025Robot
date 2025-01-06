@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
+import edu.wpi.first.math.util.Units;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -13,6 +14,26 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+	/**
+	 * Constants that contain physical information about the robot.
+	 */
+	public static class PhysicalConstants {
+		/**
+		 * Mass of the robot.
+		 */
+		public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
+	}
+
+	/**
+	 * Constants used by the {@link Drivetrain}.
+	 */
+	public static class DrivetrainConstants {
+		/**
+		 * Maximum speed of the robot in meters per second.
+		 */
+		public static final double MAX_SPEED = Units.feetToMeters(14.5);
+	}
+
 	public static class OperatorConstants {
 		public static final int kDriverControllerPort = 0;
 	}
