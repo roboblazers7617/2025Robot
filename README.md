@@ -5,7 +5,7 @@ All robot code for the 2025 season.
 Javadoc is auto-generated from the main branch and is available [here](https://roboblazers7617.github.io/2025Robot/index.html).
 
 ## Code Standards
-Code Standards are specified by [this repository](https://github.com/roboblazers7617/code-standards) and our avalaible [here](https://roboblazers7617.github.io/code-standards/).
+Code Standards are avalaible [here](https://roboblazers7617.github.io/code-standards/).
 
 Contributions are specified in the code standards [here](https://roboblazers7617.github.io/code-standards/docs/git-workflow.html).
 
