@@ -4,10 +4,16 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+@Logged
 public class ExampleSubsystem extends SubsystemBase {
+	@SuppressWarnings("unused")
+	/** number used to test logging */
+	private int number = 5;
+	
 	/** Creates a new ExampleSubsystem. */
 	public ExampleSubsystem() {}
 	
@@ -37,6 +43,7 @@ public class ExampleSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 		// This method will be called once per scheduler run
+		number++;
 	}
 	
 	@Override
