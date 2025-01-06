@@ -25,7 +25,7 @@ public final class Constants {
 	}
 
 	/**
-	 * Constants used by the {@link Drivetrain}.
+	 * Constants used by the {@link frc.robot.subsystems.Drivetrain}.
 	 */
 	public static class DrivetrainConstants {
 		/**
