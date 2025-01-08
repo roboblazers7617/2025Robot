@@ -4,15 +4,21 @@
 
 package frc.robot;
 
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.logging.FileBackend;
+import edu.wpi.first.epilogue.Epilogue;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.LoggingConstants;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
  * the TimedRobot documentation. If you change the name of this class or the package after creating
  * this project, you must also update the Main.java file in the project.
  */
+@Logged
 public class Robot extends TimedRobot {
 	private Command m_autonomousCommand;
 	
@@ -23,6 +29,17 @@ public class Robot extends TimedRobot {
 	 * initialization code.
 	 */
 	public Robot() {
+		DataLogManager.start();
+		Epilogue.configure(config -> {
+			// if not in debug mode write data to a file
+			if (!LoggingConstants.DEBUG_MODE) {
+				config.backend = new FileBackend(DataLogManager.getLog());
+			}
+			
+			config.root = "Telemetry";
+			config.minimumImportance = LoggingConstants.DEBUG_LEVEL;
+		});
+		Epilogue.bind(this);
 		// Instantiate our RobotContainer. This will perform all our button bindings, and put our
 		// autonomous chooser on the dashboard.
 		m_robotContainer = new RobotContainer();
