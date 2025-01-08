@@ -25,14 +25,7 @@ public final class Constants {
 		 */
 		public static final boolean DEBUG_MODE = true;
 		/**
-		 * only
-		 * data
-		 * above
-		 * this
-		 * level
-		 * will
-		 * be
-		 * logged
+		 * Log all data above specified level.
 		 */
 		public static final Logged.Importance DEBUG_LEVEL = Logged.Importance.DEBUG;
 	}
