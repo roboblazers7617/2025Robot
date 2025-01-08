@@ -20,9 +20,24 @@ public final class Constants {
 	}
 	
 	public static class LoggingConstants {
-		/** logging data will be sent to network tables, used for debugging but worse for performance. Disable during matches, will put data in a file instead */
+		/**
+		 * send
+		 * logging
+		 * data
+		 * to
+		 * networktables
+		 */
 		public static final boolean DEBUG_MODE = true;
-		/** only data above this level will be logged */
+		/**
+		 * only
+		 * data
+		 * above
+		 * this
+		 * level
+		 * will
+		 * be
+		 * logged
+		 */
 		public static final Logged.Importance DEBUG_LEVEL = Logged.Importance.DEBUG;
 	}
 }
