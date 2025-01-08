@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.epilogue.Logged;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -15,5 +17,12 @@ package frc.robot;
 public final class Constants {
 	public static class OperatorConstants {
 		public static final int kDriverControllerPort = 0;
+	}
+	
+	public static class LoggingConstants {
+		/** logging data will be sent to network tables, used for debugging but worse for performance. Disable during matches, will put data in a file instead */
+		public static final boolean DEBUG_MODE = true;
+		/** only data above this level will be logged */
+		public static final Logged.Importance DEBUG_LEVEL = Logged.Importance.DEBUG;
 	}
 }

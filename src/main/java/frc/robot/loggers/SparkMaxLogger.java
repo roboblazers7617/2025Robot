@@ -16,8 +16,7 @@ public class SparkMaxLogger extends ClassSpecificLogger<SparkMax> {
 	
 	@Override
 	protected void update(EpilogueBackend backend, SparkMax motor) {
-		// TODO Auto-generated method stub
-		if (Epilogue.shouldLog(Logged.Importance.INFO)) {
+		if (Epilogue.shouldLog(Logged.Importance.DEBUG)) {
 			backend.log("Voltage", motor.getBusVoltage());
 			backend.log("Percentage", motor.get());
 			try {
@@ -30,6 +29,10 @@ public class SparkMaxLogger extends ClassSpecificLogger<SparkMax> {
 				backend.log("Absolute encoder position", motor.getAbsoluteEncoder().getPosition());
 				backend.log("Absolute encoder velocity", motor.getAbsoluteEncoder().getVelocity());
 			} catch (Exception e) {}
+		}
+		if (Epilogue.shouldLog(Logged.Importance.INFO)) {
+			backend.log("Has fault", motor.hasActiveFault());
+			backend.log("Has warning", motor.hasActiveWarning());
 		}
 	}
 }

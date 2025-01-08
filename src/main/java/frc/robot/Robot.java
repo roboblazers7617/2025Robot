@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.LoggingConstants;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -30,9 +31,13 @@ public class Robot extends TimedRobot {
 	public Robot() {
 		DataLogManager.start();
 		Epilogue.configure(config -> {
-			config.backend = new FileBackend(DataLogManager.getLog());
+			// if not in debug mode write data to a file
+			if (!LoggingConstants.DEBUG_MODE) {
+				config.backend = new FileBackend(DataLogManager.getLog());
+			}
 			
 			config.root = "Telemetry";
+			config.minimumImportance = LoggingConstants.DEBUG_LEVEL;
 		});
 		Epilogue.bind(this);
 		// Instantiate our RobotContainer. This will perform all our button bindings, and put our
