@@ -21,11 +21,7 @@ public final class Constants {
 	
 	public static class LoggingConstants {
 		/**
-		 * send
-		 * logging
-		 * data
-		 * to
-		 * networktables
+		 * Send logging data to NetworkTables. Data is written to storage when set to false.
 		 */
 		public static final boolean DEBUG_MODE = true;
 		/**
