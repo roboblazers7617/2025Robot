@@ -3,6 +3,9 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
+
+import java.io.File;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -23,7 +26,7 @@ public final class Constants {
 		 */
 		public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
 	}
-
+	
 	/**
 	 * Constants used by the {@link frc.robot.subsystems.Drivetrain}.
 	 */
@@ -32,8 +35,9 @@ public final class Constants {
 		 * Maximum speed of the robot in meters per second.
 		 */
 		public static final double MAX_SPEED = Units.feetToMeters(14.5);
+		public static final File CONFIG_DIR = new File(Filesystem.getDeployDirectory(), "swerve");
 	}
-
+	
 	public static class OperatorConstants {
 		public static final int kDriverControllerPort = 0;
 	}
