@@ -26,7 +26,7 @@ public final class Constants {
 		 */
 		public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
 	}
-	
+
 	/**
 	 * Constants used by the {@link frc.robot.subsystems.Drivetrain}.
 	 */
@@ -40,8 +40,12 @@ public final class Constants {
 		 */
 		public static final File CONFIG_DIR = new File(Filesystem.getDeployDirectory(), "swerve");
 	}
-	
+
 	public static class OperatorConstants {
 		public static final int kDriverControllerPort = 0;
+		/**
+		 * Joystick deadband.
+		 */
+		public static final double DEADBAND = 0.1;
 	}
 }
