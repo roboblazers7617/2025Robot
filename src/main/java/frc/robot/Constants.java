@@ -18,7 +18,7 @@ public final class Constants {
 	public static class OperatorConstants {
 		public static final int kDriverControllerPort = 0;
 	}
-	
+
 	public static class LoggingConstants {
 		/**
 		 * Send logging data to NetworkTables. Data is written to storage when set to false.
