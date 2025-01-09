@@ -55,6 +55,9 @@ import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
+/**
+ * Subsystem that controls the drivetrain.
+ */
 public class Drivetrain extends SubsystemBase {
 	/**
 	 * Swerve drive object.
