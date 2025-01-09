@@ -42,7 +42,10 @@ public final class Constants {
 	}
 
 	public static class OperatorConstants {
-		public static final int kDriverControllerPort = 0;
+		/**
+		 * Controller port index where the driver controller is connected.
+		 */
+		public static final int DRIVER_CONTROLLER_PORT = 0;
 		/**
 		 * Joystick deadband.
 		 */

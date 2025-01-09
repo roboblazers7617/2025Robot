@@ -28,7 +28,7 @@ public class RobotContainer {
 	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
 
 	// Replace with CommandPS4Controller or CommandJoystick if needed
-	private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
+	private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
 
 	private final Command driveFieldOrientedDirectAngle = drivetrain.driveFieldOriented(DrivetrainUtil.driveDirectAngle(drivetrain, driverController));
 	private final Command driveFieldOrientedDirectAngleSim = drivetrain.driveFieldOriented(DrivetrainUtil.driveDirectAngleSim(drivetrain, driverController));
