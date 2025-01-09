@@ -41,7 +41,7 @@ public final class DrivetrainUtil {
 	}
 
 	/**
-	 * A copy of {@link driveDirectAngle} for use in simulation.
+	 * A copy of {@link driveDirectAngle} that pulls rotation from controller axis 2 for use in simulation.
 	 *
 	 * @param drivetrain
 	 *            the drivetrain to control
