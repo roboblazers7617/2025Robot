@@ -21,7 +21,6 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -29,7 +28,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -178,46 +176,6 @@ public class Drivetrain extends SubsystemBase {
 		// Preload PathPlanner Path finding
 		// IF USING CUSTOM PATHFINDER ADD BEFORE THIS LINE
 		PathfindingCommand.warmupCommand().schedule();
-	}
-
-	/**
-	 * Get the distance to the speaker.
-	 *
-	 * @return Distance to speaker in meters.
-	 */
-	public double getDistanceToSpeaker() {
-		int allianceAprilTag = DriverStation.getAlliance().get() == Alliance.Blue ? 7 : 4;
-		// Taken from PhotonUtils.getDistanceToPose
-		Pose3d speakerAprilTagPose = aprilTagFieldLayout.getTagPose(allianceAprilTag).get();
-		return getPose().getTranslation().getDistance(speakerAprilTagPose.toPose2d().getTranslation());
-	}
-
-	/**
-	 * Get the yaw to aim at the speaker.
-	 *
-	 * @return {@link Rotation2d} of which you need to achieve.
-	 */
-	public Rotation2d getSpeakerYaw() {
-		int allianceAprilTag = DriverStation.getAlliance().get() == Alliance.Blue ? 7 : 4;
-		// Taken from PhotonUtils.getYawToPose()
-		Pose3d speakerAprilTagPose = aprilTagFieldLayout.getTagPose(allianceAprilTag).get();
-		Translation2d relativeTrl = speakerAprilTagPose.toPose2d().relativeTo(getPose()).getTranslation();
-		return new Rotation2d(relativeTrl.getX(), relativeTrl.getY()).plus(swerveDrive.getOdometryHeading());
-	}
-
-	/**
-	 * Aim the robot at the speaker.
-	 *
-	 * @param tolerance
-	 *            Tolerance in degrees.
-	 * @return Command to turn the robot to the speaker.
-	 */
-	public Command aimAtSpeaker(double tolerance) {
-		SwerveController controller = swerveDrive.getSwerveController();
-		return run(() -> {
-			ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, controller.headingCalculate(getHeading().getRadians(), getSpeakerYaw().getRadians()), getHeading());
-			drive(speeds);
-		}).until(() -> Math.abs(getSpeakerYaw().minus(getHeading()).getDegrees()) < tolerance);
 	}
 
 	/**
