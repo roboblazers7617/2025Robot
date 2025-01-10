@@ -4,7 +4,10 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Meters;
+
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.units.measure.Distance;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -28,5 +31,23 @@ public final class Constants {
 		 * Log all data above specified level.
 		 */
 		public static final Logged.Importance DEBUG_LEVEL = Logged.Importance.DEBUG;
+	}
+
+	/**
+	 * Constants used to configure the LEDs.
+	 */
+	public static class LEDConstants {
+		/**
+		 * PWM port which the LEDs are connected to. Must be a PWM header, not MXP or DIO.
+		 */
+		public static final int LED_PORT = 9;
+		/**
+		 * Number of LEDs.
+		 */
+		public static final int LED_COUNT = 60;
+		/**
+		 * Density of the LED strip. Used for animation.
+		 */
+		public static final Distance LED_SPACING = Meters.of(1 / 120.0);
 	}
 }
