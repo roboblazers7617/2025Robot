@@ -7,6 +7,7 @@ package frc.robot;
 import java.io.File;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.epilogue.Logged;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -50,5 +51,16 @@ public final class Constants {
 		 * Joystick deadband.
 		 */
 		public static final double DEADBAND = 0.1;
+	}
+
+	public static class LoggingConstants {
+		/**
+		 * Send logging data to NetworkTables. Data is written to storage when set to false.
+		 */
+		public static final boolean DEBUG_MODE = true;
+		/**
+		 * Log all data above specified level.
+		 */
+		public static final Logged.Importance DEBUG_LEVEL = Logged.Importance.DEBUG;
 	}
 }
