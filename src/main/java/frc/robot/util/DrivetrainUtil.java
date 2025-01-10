@@ -5,6 +5,9 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.Drivetrain;
 import swervelib.SwerveInputStream;
 
+/**
+ * Class that contains utility functions for controlling the {@link frc.robot.subsystems.Drivetrain}.
+ */
 public final class DrivetrainUtil {
 	/**
 	 * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
@@ -23,7 +26,7 @@ public final class DrivetrainUtil {
 				.scaleTranslation(0.8)
 				.allianceRelativeControl(true);
 	}
-
+	
 	/**
 	 * Clones the angular velocity input stream and converts it to a fieldRelative input stream.
 	 *
@@ -39,7 +42,7 @@ public final class DrivetrainUtil {
 				.withControllerHeadingAxis(controller::getRightX, controller::getRightY)
 				.headingWhile(true);
 	}
-
+	
 	/**
 	 * A copy of {@link driveDirectAngle} that pulls rotation from controller axis 2 for use in simulation.
 	 *

@@ -27,7 +27,7 @@ public final class Constants {
 		 */
 		public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
 	}
-
+	
 	/**
 	 * Constants used by the {@link frc.robot.subsystems.Drivetrain}.
 	 */
@@ -41,7 +41,10 @@ public final class Constants {
 		 */
 		public static final File CONFIG_DIR = new File(Filesystem.getDeployDirectory(), "swerve");
 	}
-
+	
+	/**
+	 * Constants used to configure the operator controllers.
+	 */
 	public static class OperatorConstants {
 		/**
 		 * Controller port index where the driver controller is connected.
