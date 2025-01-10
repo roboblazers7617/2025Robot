@@ -36,6 +36,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.VisionConstants;
+import frc.robot.subsystems.vision.Vision;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -65,10 +67,6 @@ public class Drivetrain extends SubsystemBase {
 	 * AprilTag field layout.
 	 */
 	private final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
-	/**
-	 * Enable vision odometry updates while driving.
-	 */
-	private final boolean visionDriveTest = false;
 
 	/**
 	 * Initialize {@link SwerveDrive} with the directory provided.
@@ -105,8 +103,7 @@ public class Drivetrain extends SubsystemBase {
 		swerveDrive.setAngularVelocityCompensation(true, true, 0.1); // Correct for skew that gets worse as angular velocity increases. Start with a coefficient of 0.1.
 		swerveDrive.setModuleEncoderAutoSynchronize(false, 1); // Enable if you want to resynchronize your absolute encoders and motor encoders periodically when they are not moving.
 		swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder and push the offsets onto it. Throws warning if not possible
-		if (visionDriveTest) {
-			// TODO: Setup vision here
+		if (VisionConstants.ENABLE_VISION) {
 			// Stop the odometry thread if we are using vision that way we can synchronize updates better.
 			swerveDrive.stopOdometryThread();
 		}
@@ -128,9 +125,9 @@ public class Drivetrain extends SubsystemBase {
 	@Override
 	public void periodic() {
 		// When vision is enabled we must manually update odometry in SwerveDrive
-		if (visionDriveTest) {
+		if (VisionConstants.ENABLE_VISION) {
 			swerveDrive.updateOdometry();
-			// TODO: Update vision here
+			Vision.updatePoseEstimation(swerveDrive);
 		}
 	}
 

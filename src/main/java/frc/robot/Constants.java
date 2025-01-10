@@ -27,7 +27,7 @@ public final class Constants {
 		 */
 		public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
 	}
-	
+
 	/**
 	 * Constants used by the {@link frc.robot.subsystems.Drivetrain}.
 	 */
@@ -41,7 +41,7 @@ public final class Constants {
 		 */
 		public static final File CONFIG_DIR = new File(Filesystem.getDeployDirectory(), "swerve");
 	}
-	
+
 	/**
 	 * Constants used to configure the operator controllers.
 	 */
@@ -65,5 +65,19 @@ public final class Constants {
 		 * Log all data above specified level.
 		 */
 		public static final Logged.Importance DEBUG_LEVEL = Logged.Importance.DEBUG;
+	}
+
+	/**
+	 * Constants used to configure vision.
+	 */
+	public static class VisionConstants {
+		/**
+		 * The name of the limelight.
+		 */
+		public static final String LIMELIGHT_NAME = "limelight";
+		/**
+		 * Enable vision odometry updates.
+		 */
+		public static final boolean ENABLE_VISION = true;
 	}
 }
