@@ -55,11 +55,11 @@ public class RobotContainer {
 		new Trigger(m_exampleSubsystem::exampleCondition)
 				.onTrue(new ExampleCommand(m_exampleSubsystem));
 
+		drivetrain.setDefaultCommand(!RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
+
 		// Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
 		// cancelling on release.
 		driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-
-		drivetrain.setDefaultCommand(!RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
 	}
 
 	/**
