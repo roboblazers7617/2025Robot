@@ -13,7 +13,7 @@ public class SparkMaxLogger extends ClassSpecificLogger<SparkMax> {
 	public SparkMaxLogger() {
 		super(SparkMax.class);
 	}
-	
+
 	@Override
 	protected void update(EpilogueBackend backend, SparkMax motor) {
 		if (Epilogue.shouldLog(Logged.Importance.DEBUG)) {
