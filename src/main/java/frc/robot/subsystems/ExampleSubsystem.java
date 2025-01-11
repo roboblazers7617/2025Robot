@@ -17,6 +17,7 @@ public class ExampleSubsystem extends SubsystemBase {
 	/** number used to test logging */
 	private int number = 5;
 	private SparkMax testMotor = new SparkMax(-1, MotorType.kBrushless);
+	private String commandName = "";
 
 	/** Creates a new ExampleSubsystem. */
 	public ExampleSubsystem() {}
@@ -49,6 +50,9 @@ public class ExampleSubsystem extends SubsystemBase {
 		// This method will be called once per scheduler run
 		number++;
 		testMotor.set(number);
+		if (getCurrentCommand() != null) {
+			commandName = getCurrentCommand().getName();
+		}
 	}
 
 	@Override

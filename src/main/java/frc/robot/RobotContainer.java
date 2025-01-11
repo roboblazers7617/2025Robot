@@ -31,6 +31,8 @@ public class RobotContainer {
 	public RobotContainer() {
 		// Configure the trigger bindings
 		configureBindings();
+
+		m_exampleSubsystem.setDefaultCommand(m_exampleSubsystem.exampleMethodCommand());
 	}
 
 	/**
