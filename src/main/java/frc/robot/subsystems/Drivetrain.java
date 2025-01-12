@@ -372,8 +372,9 @@ public class Drivetrain extends SubsystemBase {
 	 *         {@link ChassisSpeeds} which can be sent to the Swerve Drive.
 	 */
 	public ChassisSpeeds getTargetSpeedsFromController(double xInput, double yInput, double headingX, double headingY) {
-		Translation2d scaledInputs = SwerveMath.cubeTranslation(new Translation2d(xInput, yInput));
-		return swerveDrive.swerveController.getTargetSpeeds(scaledInputs.getX(), scaledInputs.getY(), headingX, headingY, getHeading().getRadians(), DrivetrainConstants.MAX_SPEED);
+		Translation2d curvedInputs = SwerveMath.cubeTranslation(new Translation2d(xInput, yInput));
+
+		return swerveDrive.swerveController.getTargetSpeeds(curvedInputs.getX(), curvedInputs.getY(), headingX, headingY, getHeading().getRadians(), DrivetrainConstants.MAX_SPEED);
 	}
 
 	/**
@@ -390,9 +391,9 @@ public class Drivetrain extends SubsystemBase {
 	 *         {@link ChassisSpeeds} which can be sent to the Swerve Drive.
 	 */
 	public ChassisSpeeds getTargetSpeedsFromController(double xInput, double yInput, Rotation2d angle) {
-		Translation2d scaledInputs = SwerveMath.cubeTranslation(new Translation2d(xInput, yInput));
+		Translation2d curvedInputs = SwerveMath.cubeTranslation(new Translation2d(xInput, yInput));
 
-		return swerveDrive.swerveController.getTargetSpeeds(scaledInputs.getX(), scaledInputs.getY(), angle.getRadians(), getHeading().getRadians(), DrivetrainConstants.MAX_SPEED);
+		return swerveDrive.swerveController.getTargetSpeeds(curvedInputs.getX(), curvedInputs.getY(), angle.getRadians(), getHeading().getRadians(), DrivetrainConstants.MAX_SPEED);
 	}
 
 	/**
