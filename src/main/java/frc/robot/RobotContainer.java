@@ -14,6 +14,7 @@ import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -26,7 +27,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 @Logged
 public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
-	private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
 
 	// Replace with CommandPS4Controller or CommandJoystick if needed
@@ -51,15 +51,8 @@ public class RobotContainer {
 	 * joysticks}.
 	 */
 	private void configureBindings() {
-		// Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-		new Trigger(m_exampleSubsystem::exampleCondition)
-				.onTrue(new ExampleCommand(m_exampleSubsystem));
-
+    // Set the default drivetrain command (used for the driver controller)
 		drivetrain.setDefaultCommand(!RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
-
-		// Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-		// cancelling on release.
-		driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 	}
 
 	/**
@@ -68,7 +61,6 @@ public class RobotContainer {
 	 * @return the command to run in autonomous
 	 */
 	public Command getAutonomousCommand() {
-		// An example command will be run in autonomous
-		return Autos.exampleAuto(m_exampleSubsystem);
+		return Commands.none();
 	}
 }
