@@ -114,9 +114,9 @@ public final class Constants {
 		}
 
 		/**
-		 * Constants used to configure pathfinding to poses.
+		 * Configure pathfinding to poses.
 		 */
-		public static final class PathfindingConstants {
+		public static final class Pathfinding {
 			/**
 			 * Maximium linear acceleration.
 			 */

@@ -190,7 +190,7 @@ public class Drivetrain extends SubsystemBase {
 	 */
 	public Command driveToPose(Pose2d pose) {
 		// Create the constraints to use while pathfinding
-		PathConstraints constraints = new PathConstraints(MetersPerSecond.of(swerveDrive.getMaximumChassisVelocity()), DrivetrainConstants.PathfindingConstants.MAX_LINEAR_ACCELERATION, RadiansPerSecond.of(swerveDrive.getMaximumChassisAngularVelocity()), DrivetrainConstants.PathfindingConstants.MAX_ANGULAR_ACCELERATION);
+		PathConstraints constraints = new PathConstraints(MetersPerSecond.of(swerveDrive.getMaximumChassisVelocity()), DrivetrainConstants.Pathfinding.MAX_LINEAR_ACCELERATION, RadiansPerSecond.of(swerveDrive.getMaximumChassisAngularVelocity()), DrivetrainConstants.Pathfinding.MAX_ANGULAR_ACCELERATION);
 
 		// Since AutoBuilder is configured, we can use it to build pathfinding commands
 		return AutoBuilder.pathfindToPose(pose, constraints, MetersPerSecond.of(0) // Goal end velocity in meters/sec
