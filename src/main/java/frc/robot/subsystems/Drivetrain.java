@@ -49,7 +49,6 @@ import swervelib.parser.SwerveControllerConfiguration;
 import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
-import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 /**
  * Subsystem that controls the drivetrain.
@@ -76,7 +75,7 @@ public class Drivetrain extends SubsystemBase {
 	 */
 	public Drivetrain(File directory) {
 		// Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
-		SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+		SwerveDriveTelemetry.verbosity = DrivetrainConstants.TELEMETRY_VERBOSITY;
 		try {
 			swerveDrive = new SwerveParser(directory).createSwerveDrive(DrivetrainConstants.MAX_SPEED, new Pose2d(new Translation2d(Meter.of(1), Meter.of(4)), Rotation2d.fromDegrees(0)));
 			// Alternative method if you don't want to supply the conversion factor via JSON files.
@@ -339,7 +338,7 @@ public class Drivetrain extends SubsystemBase {
 	public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX, DoubleSupplier headingY) {
 		// swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
 		return run(() -> {
-			Translation2d scaledInputs = SwerveMath.scaleTranslation(new Translation2d(translationX.getAsDouble(), translationY.getAsDouble()), 0.8);
+			Translation2d scaledInputs = SwerveMath.scaleTranslation(new Translation2d(translationX.getAsDouble(), translationY.getAsDouble()), DrivetrainConstants.TRANSLATION_SCALE);
 
 			// Make the robot move
 			driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(scaledInputs.getX(), scaledInputs.getY(), headingX.getAsDouble(), headingY.getAsDouble(), swerveDrive.getOdometryHeading().getRadians(), swerveDrive.getMaximumChassisVelocity()));

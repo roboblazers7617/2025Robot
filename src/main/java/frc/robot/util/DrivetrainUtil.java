@@ -1,6 +1,7 @@
 package frc.robot.util;
 
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.Drivetrain;
 import swervelib.SwerveInputStream;
@@ -23,10 +24,10 @@ public final class DrivetrainUtil {
 		return SwerveInputStream.of(drivetrain.getSwerveDrive(), () -> controller.getLeftY() * -1, () -> controller.getLeftX() * -1)
 				.withControllerRotationAxis(controller::getRightX)
 				.deadband(OperatorConstants.DEADBAND)
-				.scaleTranslation(0.8)
+				.scaleTranslation(DrivetrainConstants.TRANSLATION_SCALE)
 				.allianceRelativeControl(true);
 	}
-	
+
 	/**
 	 * Clones the angular velocity input stream and converts it to a fieldRelative input stream.
 	 *
@@ -42,7 +43,7 @@ public final class DrivetrainUtil {
 				.withControllerHeadingAxis(controller::getRightX, controller::getRightY)
 				.headingWhile(true);
 	}
-	
+
 	/**
 	 * A copy of {@link driveDirectAngle} that pulls rotation from controller axis 2 for use in simulation.
 	 *

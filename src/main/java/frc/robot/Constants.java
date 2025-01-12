@@ -6,6 +6,7 @@ package frc.robot;
 
 import java.io.File;
 import edu.wpi.first.wpilibj.Filesystem;
+import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.epilogue.Logged;
 
@@ -23,11 +24,11 @@ public final class Constants {
 	 */
 	public static class PhysicalConstants {
 		/**
-		 * Mass of the robot.
+		 * Mass of the robot in kilograms.
 		 */
 		public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
 	}
-	
+
 	/**
 	 * Constants used by the {@link frc.robot.subsystems.Drivetrain}.
 	 */
@@ -40,8 +41,16 @@ public final class Constants {
 		 * Directory that contains the YAGSL configuration.
 		 */
 		public static final File CONFIG_DIR = new File(Filesystem.getDeployDirectory(), "swerve");
+		/**
+		 * YAGSL telemetry verbosity.
+		 */
+		public static final TelemetryVerbosity TELEMETRY_VERBOSITY = TelemetryVerbosity.HIGH;
+		/**
+		 * Translation axis scaling. Changes the overall maximum speed of the drivetrain.
+		 */
+		public static final double TRANSLATION_SCALE = 0.8;
 	}
-	
+
 	/**
 	 * Constants used to configure the operator controllers.
 	 */
