@@ -4,10 +4,12 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.DegreesPerSecondPerSecond;
 import static edu.wpi.first.units.Units.FeetPerSecond;
 import static edu.wpi.first.units.Units.Kilograms;
 import static edu.wpi.first.units.Units.Meter;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Pounds;
 
 import java.io.File;
@@ -20,6 +22,8 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.units.measure.AngularAcceleration;
+import edu.wpi.first.units.measure.LinearAcceleration;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -107,6 +111,20 @@ public final class Constants {
 			 * Deadband in degrees.
 			 */
 			public static final double DEADBAND = 1;
+		}
+
+		/**
+		 * Constants used to configure pathfinding to poses.
+		 */
+		public static final class PathfindingConstants {
+			/**
+			 * Maximium linear acceleration.
+			 */
+			public static final LinearAcceleration MAX_LINEAR_ACCELERATION = MetersPerSecondPerSecond.of(4.0);
+			/**
+			 * Maximum angular acceleration.
+			 */
+			public static final AngularAcceleration MAX_ANGULAR_ACCELERATION = DegreesPerSecondPerSecond.of(720);
 		}
 	}
 

@@ -20,7 +20,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,6 +28,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DrivetrainConstants;
+
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -187,10 +190,10 @@ public class Drivetrain extends SubsystemBase {
 	 */
 	public Command driveToPose(Pose2d pose) {
 		// Create the constraints to use while pathfinding
-		PathConstraints constraints = new PathConstraints(swerveDrive.getMaximumChassisVelocity(), 4.0, swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720));
+		PathConstraints constraints = new PathConstraints(MetersPerSecond.of(swerveDrive.getMaximumChassisVelocity()), DrivetrainConstants.PathfindingConstants.MAX_LINEAR_ACCELERATION, RadiansPerSecond.of(swerveDrive.getMaximumChassisAngularVelocity()), DrivetrainConstants.PathfindingConstants.MAX_ANGULAR_ACCELERATION);
 
 		// Since AutoBuilder is configured, we can use it to build pathfinding commands
-		return AutoBuilder.pathfindToPose(pose, constraints, edu.wpi.first.units.Units.MetersPerSecond.of(0) // Goal end velocity in meters/sec
+		return AutoBuilder.pathfindToPose(pose, constraints, MetersPerSecond.of(0) // Goal end velocity in meters/sec
 		);
 	}
 
