@@ -126,6 +126,28 @@ public final class Constants {
 			 */
 			public static final AngularAcceleration MAX_ANGULAR_ACCELERATION = DegreesPerSecondPerSecond.of(720);
 		}
+
+		/**
+		 * SysId configuration.
+		 */
+		public static final class SysId {
+			/**
+			 * The maximum voltage to apply to the drive motors.
+			 */
+			public static final double MAX_VOLTS = 12.0;
+			/**
+			 * Delay in seconds between each section. This time allows for things to settle (allow motors to spin down, etc.).
+			 */
+			public static final double DELAY = 3.0;
+			/**
+			 * Time in seconds to run Quasistatic routines. This prevents the robot from going too far.
+			 */
+			public static final double QUASI_TIMEOUT = 5.0;
+			/**
+			 * Time in seconds to run Dynamic routines.
+			 */
+			public static final double DYNAMIC_TIMEOUT = 3.0;
+		}
 	}
 
 	/**
