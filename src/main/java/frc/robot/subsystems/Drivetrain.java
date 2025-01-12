@@ -14,7 +14,6 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -278,20 +277,6 @@ public class Drivetrain extends SubsystemBase {
 	public Command driveToDistanceCommand(double distanceInMeters, double speedInMetersPerSecond) {
 		return run(() -> drive(new ChassisSpeeds(speedInMetersPerSecond, 0, 0)))
 				.until(() -> swerveDrive.getPose().getTranslation().getDistance(Translation2d.kZero) > distanceInMeters);
-	}
-
-	/**
-	 * Replaces the swerve module feedforward with a new SimpleMotorFeedforward object.
-	 *
-	 * @param kS
-	 *            the static gain of the feedforward
-	 * @param kV
-	 *            the velocity gain of the feedforward
-	 * @param kA
-	 *            the acceleration gain of the feedforward
-	 */
-	public void replaceSwerveModuleFeedforward(double kS, double kV, double kA) {
-		swerveDrive.replaceSwerveModuleFeedforward(new SimpleMotorFeedforward(kS, kV, kA));
 	}
 
 	/**
