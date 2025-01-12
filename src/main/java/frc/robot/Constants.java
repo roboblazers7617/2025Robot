@@ -4,10 +4,14 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.FeetPerSecond;
+import static edu.wpi.first.units.Units.Kilograms;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Pounds;
+
 import java.io.File;
 import edu.wpi.first.wpilibj.Filesystem;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.epilogue.Logged;
 
 /**
@@ -26,7 +30,7 @@ public final class Constants {
 		/**
 		 * Mass of the robot in kilograms.
 		 */
-		public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
+		public static final double ROBOT_MASS = Pounds.of(100).in(Kilograms);
 	}
 
 	/**
@@ -36,7 +40,7 @@ public final class Constants {
 		/**
 		 * Maximum speed of the robot in meters per second.
 		 */
-		public static final double MAX_SPEED = Units.feetToMeters(14.5);
+		public static final double MAX_SPEED = FeetPerSecond.of(14.5).in(MetersPerSecond);
 		/**
 		 * Directory that contains the YAGSL configuration.
 		 */
