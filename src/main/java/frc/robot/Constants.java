@@ -6,6 +6,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.FeetPerSecond;
 import static edu.wpi.first.units.Units.Kilograms;
+import static edu.wpi.first.units.Units.Meter;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Pounds;
 
@@ -13,6 +14,9 @@ import java.io.File;
 import edu.wpi.first.wpilibj.Filesystem;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -53,6 +57,10 @@ public final class Constants {
 		 * Translation axis scaling. Changes the overall maximum speed of the drivetrain.
 		 */
 		public static final double TRANSLATION_SCALE = 0.8;
+		/**
+		 * Starting pose.
+		 */
+		public static final Pose2d STARTING_POSITION = new Pose2d(new Translation2d(Meter.of(1), Meter.of(4)), Rotation2d.fromDegrees(0));
 		/**
 		 * Enables {@link swervelib.SwerveDrive#headingCorrection heading correction}. Should only be used while controlling the robot via angle.
 		 */

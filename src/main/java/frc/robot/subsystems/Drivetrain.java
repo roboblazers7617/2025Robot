@@ -71,7 +71,7 @@ public class Drivetrain extends SubsystemBase {
 		// Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
 		SwerveDriveTelemetry.verbosity = DrivetrainConstants.TELEMETRY_VERBOSITY;
 		try {
-			swerveDrive = new SwerveParser(directory).createSwerveDrive(DrivetrainConstants.MAX_SPEED, new Pose2d(new Translation2d(Meter.of(1), Meter.of(4)), Rotation2d.fromDegrees(0)));
+			swerveDrive = new SwerveParser(directory).createSwerveDrive(DrivetrainConstants.MAX_SPEED, DrivetrainConstants.STARTING_POSITION);
 			// Alternative method if you don't want to supply the conversion factor via JSON files.
 			// swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
 		} catch (Exception e) {
@@ -99,7 +99,7 @@ public class Drivetrain extends SubsystemBase {
 	 *            Swerve Controller.
 	 */
 	public Drivetrain(SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg) {
-		swerveDrive = new SwerveDrive(driveCfg, controllerCfg, DrivetrainConstants.MAX_SPEED, new Pose2d(new Translation2d(Meter.of(2), Meter.of(0)), Rotation2d.fromDegrees(0)));
+		swerveDrive = new SwerveDrive(driveCfg, controllerCfg, DrivetrainConstants.MAX_SPEED, DrivetrainConstants.STARTING_POSITION);
 	}
 
 	@Override
