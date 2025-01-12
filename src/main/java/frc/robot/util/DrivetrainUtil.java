@@ -21,7 +21,7 @@ public final class DrivetrainUtil {
 	 *         SwerveInputStream with data from the controller
 	 */
 	public static SwerveInputStream driveAngularVelocity(Drivetrain drivetrain, CommandXboxController controller) {
-		return SwerveInputStream.of(drivetrain.getSwerveDrive(), () -> controller.getLeftY() * -1, () -> controller.getLeftX() * -1)
+		return SwerveInputStream.of(drivetrain.getSwerveDrive(), () -> (-1 * controller.getLeftY()), () -> (-1 * controller.getLeftX()))
 				.withControllerRotationAxis(controller::getRightX)
 				.deadband(OperatorConstants.DEADBAND)
 				.scaleTranslation(DrivetrainConstants.TRANSLATION_SCALE)
