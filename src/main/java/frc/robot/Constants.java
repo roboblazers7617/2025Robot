@@ -11,6 +11,9 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Pounds;
 
 import java.io.File;
+
+import com.pathplanner.lib.config.PIDConstants;
+
 import edu.wpi.first.wpilibj.Filesystem;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import edu.wpi.first.epilogue.Logged;
@@ -119,6 +122,20 @@ public final class Constants {
 		 * Joystick deadband.
 		 */
 		public static final double DEADBAND = 0.1;
+	}
+
+	/**
+	 * Constants used to configure the autonomous program.
+	 */
+	public static class AutoConstants {
+		/**
+		 * PID constants used for translation.
+		 */
+		public static final PIDConstants TRANSLATION_PID_CONSTANTS = new PIDConstants(5.0, 0.0, 0.0);
+		/**
+		 * PID constants used for rotation.
+		 */
+		public static final PIDConstants ROTATION_PID_CONSTANTS = new PIDConstants(5.0, 0.0, 0.0);
 	}
 
 	public static class LoggingConstants {

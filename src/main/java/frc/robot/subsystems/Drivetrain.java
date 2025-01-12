@@ -4,12 +4,9 @@
 
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Meter;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindingCommand;
-import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
@@ -31,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import java.io.File;
 import java.io.IOException;
@@ -142,10 +140,8 @@ public class Drivetrain extends SubsystemBase {
 					// Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
 					new PPHolonomicDriveController(
 							// PPHolonomicController is the built in path following controller for holonomic drive trains
-							new PIDConstants(5.0, 0.0, 0.0),
-							// Translation PID constants
-							new PIDConstants(5.0, 0.0, 0.0)
-					// Rotation PID constants
+							AutoConstants.TRANSLATION_PID_CONSTANTS, // Translation PID constants
+							AutoConstants.ROTATION_PID_CONSTANTS // Rotation PID constants
 					), config,
 					// The robot configuration
 					() -> {
