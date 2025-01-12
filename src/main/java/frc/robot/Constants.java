@@ -53,6 +53,50 @@ public final class Constants {
 		 * Translation axis scaling. Changes the overall maximum speed of the drivetrain.
 		 */
 		public static final double TRANSLATION_SCALE = 0.8;
+		/**
+		 * Enables {@link swervelib.SwerveDrive#headingCorrection heading correction}. Should only be used while controlling the robot via angle.
+		 */
+		public static final boolean ENABLE_HEADING_CORRECTION = false;
+		/**
+		 * Enables {@link swervelib.parser.SwerveModuleConfiguration#useCosineCompensator cosine compensation}.
+		 */
+		public static final boolean ENABLE_COSINE_COMPENSATION = false;
+
+		/**
+		 * Angular velocity skew correction configuration.
+		 *
+		 * @see swervelib.SwerveDrive#setAngularVelocityCompensation
+		 */
+		public static final class AngularVelocityCompensation {
+			/**
+			 * Enables angular velocity correction in teleop.
+			 */
+			public static final boolean USE_IN_TELEOP = true;
+			/**
+			 * Enables angular velocity correction in autonomous.
+			 */
+			public static final boolean USE_IN_AUTO = true;
+			/**
+			 * The angular velocity coefficient.
+			 */
+			public static final double ANGULAR_VELOCITY_COEFFICIENT = 0.1;
+		}
+
+		/**
+		 * Configure auto synchronization for encoders during a match.
+		 *
+		 * @see swervelib.SwerveDrive#setModuleEncoderAutoSynchronize
+		 */
+		public static final class EncoderAutoSynchronization {
+			/**
+			 * Enable auto synchronization.
+			 */
+			public static final boolean ENABLED = false;
+			/**
+			 * Deadband in degrees.
+			 */
+			public static final double DEADBAND = 1;
+		}
 	}
 
 	/**
