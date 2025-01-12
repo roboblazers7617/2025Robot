@@ -277,7 +277,7 @@ public class Drivetrain extends SubsystemBase {
 	 */
 	public Command driveToDistanceCommand(double distanceInMeters, double speedInMetersPerSecond) {
 		return run(() -> drive(new ChassisSpeeds(speedInMetersPerSecond, 0, 0)))
-				.until(() -> swerveDrive.getPose().getTranslation().getDistance(new Translation2d(0, 0)) > distanceInMeters);
+				.until(() -> swerveDrive.getPose().getTranslation().getDistance(Translation2d.kZero) > distanceInMeters);
 	}
 
 	/**
