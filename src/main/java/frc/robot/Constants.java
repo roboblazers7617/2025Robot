@@ -29,4 +29,29 @@ public final class Constants {
 		 */
 		public static final Logged.Importance DEBUG_LEVEL = Logged.Importance.DEBUG;
 	}
+
+	public static class ArmConstants {
+		public static final int LEFT_MOTOR_ID = -1;
+		public static final int RIGHT_MOTOR_ID = -1;
+
+		public static final double KP = 0.1;
+		public static final double KI = 0.0;
+		public static final double KD = 0.0;
+		public static final double KMIN_OUTPUT = -1.0;
+		public static final double KMAX_OUTPUT = 1.0;
+
+		public static final double MAX_VELOCITY = 1;
+		public static final double MAX_ACCELERATION = 1;
+	}
+
+	public static class ElevatorConstants {
+		public static final int RIGHT_MOTOR_ID = -1;
+		public static final int LEFT_MOTOR_ID = -1;
+
+		public static final double KP = 0.1;
+		public static final double KI = 0.0;
+		public static final double KD = 0.0;
+		public static final double KMIN_OUTPUT = -1.0;
+		public static final double KMAX_OUTPUT = 1.0;
+	}
 }
