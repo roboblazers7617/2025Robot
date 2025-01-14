@@ -185,3 +185,6 @@ compile_commands.json
 
 # Eclipse generated file for annotation processors
 .factorypath
+
+# Version metadata file
+src/main/java/frc/robot/VersionConstants.java
