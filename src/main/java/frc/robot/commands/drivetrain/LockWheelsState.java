@@ -2,31 +2,31 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.drivetrain;
 
-import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Drivetrain;
 
-/** An example command that uses an example subsystem. */
-public class ExampleCommand extends Command {
-	@SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
-	private final ExampleSubsystem m_subsystem;
-
+/**
+ * A state that locks the wheels of the swerve drive to force it to remain stationary
+ */
+public class LockWheelsState extends Command {
 	/**
-	 * Creates a new ExampleCommand.
-	 *
-	 * @param subsystem
-	 *            The subsystem used by this command.
+	 * Creates a new LockWheelsState.
 	 */
-	public ExampleCommand(ExampleSubsystem subsystem) {
-		m_subsystem = subsystem;
+	private final Drivetrain swerveDrive;
+
+	public LockWheelsState(Drivetrain swerveDrive) {
 		// Use addRequirements() here to declare subsystem dependencies.
-		addRequirements(subsystem);
+		addRequirements(swerveDrive);
+		this.swerveDrive = swerveDrive;
 	}
 
 	// Called when the command is initially scheduled.
 	@Override
-	public void initialize() {}
+	public void initialize() {
+		swerveDrive.lock();
+	}
 
 	// Called every time the scheduler runs while the command is scheduled.
 	@Override
