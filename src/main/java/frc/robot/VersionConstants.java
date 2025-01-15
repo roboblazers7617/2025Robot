@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.StringPublisher;
 import frc.robot.generated.VersionConstantsGenerated;
 
 /**
@@ -55,4 +57,49 @@ public class VersionConstants {
 	 * Are there uncommited changes?
 	 */
 	public static final int DIRTY = VersionConstantsGenerated.DIRTY;
+
+	/**
+	 * Publish version metadata to a NetworkTable.
+	 *
+	 * @param table
+	 *            NetworkTable to publish metadata to.
+	 */
+	@SuppressWarnings("all")
+	public static void publishNetworkTables(NetworkTable table) {
+		StringPublisher mavenGroupPublisher = table.getStringTopic("/MavenGroup")
+				.publish();
+		mavenGroupPublisher.set(MAVEN_GROUP);
+
+		StringPublisher mavenNamePublisher = table.getStringTopic("/MavenName")
+				.publish();
+		mavenNamePublisher.set(MAVEN_NAME);
+
+		StringPublisher versionPublisher = table.getStringTopic("/Version")
+				.publish();
+		versionPublisher.set(VERSION);
+
+		StringPublisher gitRevisionPublisher = table.getStringTopic("/GitRevision")
+				.publish();
+		gitRevisionPublisher.set(String.valueOf(GIT_REVISION));
+
+		StringPublisher gitShaPublisher = table.getStringTopic("/GitSHA")
+				.publish();
+		gitShaPublisher.set(GIT_SHA);
+
+		StringPublisher gitDatePublisher = table.getStringTopic("/GitDate")
+				.publish();
+		gitDatePublisher.set(GIT_DATE);
+
+		StringPublisher gitBranchPublisher = table.getStringTopic("/GitBranch")
+				.publish();
+		gitBranchPublisher.set(GIT_BRANCH);
+
+		StringPublisher buildDatePublisher = table.getStringTopic("/BuildDate")
+				.publish();
+		buildDatePublisher.set(BUILD_DATE);
+
+		StringPublisher dirtyPublisher = table.getStringTopic("/Dirty")
+				.publish();
+		dirtyPublisher.set((DIRTY != 0) ? "Uncommited changes" : "All changes commited");
+	}
 }
