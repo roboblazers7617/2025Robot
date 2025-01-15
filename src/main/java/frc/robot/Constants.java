@@ -219,5 +219,7 @@ public final class Constants {
 		public static final double KD = 0.0;
 		public static final double KMIN_OUTPUT = -1.0;
 		public static final double KMAX_OUTPUT = 1.0;
+		public static final double MAX_VELOCITY = 1;
+		public static final double MAX_ACCELERATION = 1;
 	}
 }
