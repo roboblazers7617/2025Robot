@@ -108,8 +108,8 @@ tasks.withType(JavaCompile) {
 project.compileJava.dependsOn(createVersionFile)
 gversion {
 	srcDir       = "src/main/java/"
-	classPackage = "frc.robot"
-	className    = "VersionConstants"
+	classPackage = "frc.robot.generated"
+	className    = "VersionConstantsGenerated"
 	dateFormat   = "yyyy-MM-dd HH:mm:ss z"
 	timeZone     = "America/Indiana/Indianapolis" // Use preferred time zone
 	indent       = "	"
