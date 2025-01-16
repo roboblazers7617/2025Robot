@@ -208,6 +208,17 @@ public final class Constants {
 
 		public static final double MAX_VELOCITY = 1;
 		public static final double MAX_ACCELERATION = 1;
+
+		/** max heigt in degrees */
+		public static final double MAX_HEIGHT = 90;
+		/** min height in degrees */
+		public static final double MIN_HEIGHT = -45;
+		/** change from rotation to degrees by scaling by 360 */
+		public static final double POSITION_CONVERSION_FACTOR = 360;
+		/** change from velocity to degrees by scaling by 360 */
+		public static final double VELOCITY_CONVERSION_FACTOR = 360;
+		/** zero offset, MUST BE [0,1) */
+		public static final double ZERO_OFFSET = 0;
 	}
 
 	public static class ElevatorConstants {
@@ -221,5 +232,16 @@ public final class Constants {
 		public static final double KMAX_OUTPUT = 1.0;
 		public static final double MAX_VELOCITY = 1;
 		public static final double MAX_ACCELERATION = 1;
+
+		/** max position in meters */
+		public static final double MAX_POSITION = 1;
+		/** min position in meters */
+		public static final double MIN_POSITION = 0;
+		/** change from rotation to meters */
+		public static final double POSITION_CONVERSION_FACTOR = 1;
+		/** change from rotation to meters */
+		public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR;
+		/** zero offset, MUST BE [0,1) */
+		public static final double ZERO_OFFSET = 0;
 	}
 }

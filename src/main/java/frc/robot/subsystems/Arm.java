@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 
+import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
@@ -23,7 +24,7 @@ public class Arm extends SubsystemBase {
 	private final SparkMax leaderArmMotor = new SparkMax(ArmConstants.LEFT_MOTOR_ID, MotorType.kBrushless);
 	private final SparkMax followerArmMotor = new SparkMax(ArmConstants.RIGHT_MOTOR_ID, MotorType.kBrushless);
 
-	// private final SparkAbsoluteEncoder armAbsoluteEncoder = leaderArmMotor.getAbsoluteEncoder();
+	private final SparkAbsoluteEncoder armAbsoluteEncoder = leaderArmMotor.getAbsoluteEncoder();
 	// private final SparkClosedLoopController armPIDController = leaderArmMotor.getClosedLoopController();
 
 	/** The right motor */
@@ -34,6 +35,10 @@ public class Arm extends SubsystemBase {
 	/** Creates a new Arm. */
 	public Arm() {
 		SparkMaxConfig baseArmConfig = new SparkMaxConfig();
+		baseArmConfig.absoluteEncoder
+				.positionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR)
+				.velocityConversionFactor(ArmConstants.VELOCITY_CONVERSION_FACTOR)
+				.zeroOffset(ArmConstants.ZERO_OFFSET);
 
 		baseArmConfig.closedLoop
 				.p(ArmConstants.KP)
@@ -53,6 +58,11 @@ public class Arm extends SubsystemBase {
 		followerArmMotor.configure(followerArmMotorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
 		SparkMaxConfig baseElevatorConfig = new SparkMaxConfig();
+
+		baseElevatorConfig.absoluteEncoder
+				.positionConversionFactor(ElevatorConstants.POSITION_CONVERSION_FACTOR)
+				.velocityConversionFactor(ElevatorConstants.VELOCITY_CONVERSION_FACTOR)
+				.zeroOffset(ElevatorConstants.ZERO_OFFSET);
 
 		baseElevatorConfig.closedLoop
 				.p(ElevatorConstants.KP)
