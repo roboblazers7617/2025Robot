@@ -6,12 +6,21 @@ package frc.robot;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.logging.FileBackend;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeAlgaeOnField;
+import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeCoral;
+
 import frc.robot.Constants.LoggingConstants;
 
 /**
@@ -24,6 +33,19 @@ public class Robot extends TimedRobot {
 	private Command m_autonomousCommand;
 
 	private final RobotContainer m_robotContainer;
+
+	/**
+	 * Used to publish Algae poses from MapleSim.
+	 */
+	private final StructArrayPublisher<Pose3d> algaePoses = NetworkTableInstance.getDefault()
+			.getStructArrayTopic("FieldSimulation/Algae", Pose3d.struct)
+			.publish();
+	/**
+	 * Used to publish Coral poses from MapleSim.
+	 */
+	private final StructArrayPublisher<Pose3d> coralPoses = NetworkTableInstance.getDefault()
+			.getStructArrayTopic("FieldSimulation/Coral", Pose3d.struct)
+			.publish();
 
 	/**
 	 * This function is run when the robot is first started up and should be used for any
@@ -111,11 +133,24 @@ public class Robot extends TimedRobot {
 
 	/** This function is called once when the robot is first started up. */
 	@Override
-	public void simulationInit() {}
+	public void simulationInit() {
+		// Add game pieces to MapleSim
+		SimulatedArena.getInstance().addGamePiece(new ReefscapeCoral(
+				// We must specify a heading since the coral is a tube
+				new Pose2d(2, 2, Rotation2d.fromDegrees(90))));
+
+		SimulatedArena.getInstance().addGamePiece(new ReefscapeAlgaeOnField(new Translation2d(2, 2)));
+	}
 
 	/** This function is called periodically whilst in simulation. */
 	@Override
 	public void simulationPeriodic() {
 		SimulatedArena.getInstance().simulationPeriodic();
+
+		// Send game piece locations from MapleSim
+		algaePoses.accept(SimulatedArena.getInstance()
+				.getGamePiecesArrayByType("Algae"));
+		coralPoses.accept(SimulatedArena.getInstance()
+				.getGamePiecesArrayByType("Coral"));
 	}
 }
