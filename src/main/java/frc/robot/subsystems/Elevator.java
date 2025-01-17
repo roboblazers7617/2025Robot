@@ -20,43 +20,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
 
-public class Arm extends SubsystemBase {
-	private final SparkMax leaderArmMotor = new SparkMax(ArmConstants.LEFT_MOTOR_ID, MotorType.kBrushless);
-	private final SparkMax followerArmMotor = new SparkMax(ArmConstants.RIGHT_MOTOR_ID, MotorType.kBrushless);
-
-	private final SparkAbsoluteEncoder armAbsoluteEncoder = leaderArmMotor.getAbsoluteEncoder();
-	// private final SparkClosedLoopController armPIDController = leaderArmMotor.getClosedLoopController();
-
+public class Elevator extends SubsystemBase {
 	/** The right motor */
 	private final SparkMax leaderElevatorMotor = new SparkMax(ElevatorConstants.RIGHT_MOTOR_ID, MotorType.kBrushless);
 	/** The left motor */
 	private final SparkMax followerElevatorMotor = new SparkMax(ElevatorConstants.LEFT_MOTOR_ID, MotorType.kBrushless);
 
-	/** Creates a new Arm. */
-	public Arm() {
-		SparkMaxConfig baseArmConfig = new SparkMaxConfig();
-		baseArmConfig.absoluteEncoder
-				.positionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR)
-				.velocityConversionFactor(ArmConstants.VELOCITY_CONVERSION_FACTOR)
-				.zeroOffset(ArmConstants.ZERO_OFFSET);
-
-		baseArmConfig.closedLoop
-				.p(ArmConstants.KP)
-				.i(ArmConstants.KI)
-				.d(ArmConstants.KD)
-				.outputRange(ArmConstants.KMIN_OUTPUT, ArmConstants.KMAX_OUTPUT)
-				.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
-
-		baseArmConfig.closedLoop.maxMotion
-				.maxVelocity(ArmConstants.MAX_VELOCITY)
-				.maxAcceleration(ArmConstants.MAX_ACCELERATION);
-
-		SparkBaseConfig leaderArmMotorConfig = new SparkMaxConfig().apply(baseArmConfig);
-		leaderArmMotor.configure(leaderArmMotorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
-
-		SparkBaseConfig followerArmMotorConfig = new SparkMaxConfig().apply(baseArmConfig).follow(leaderArmMotor);
-		followerArmMotor.configure(followerArmMotorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
-
+	public Elevator() {
 		SparkMaxConfig baseElevatorConfig = new SparkMaxConfig();
 
 		baseElevatorConfig.absoluteEncoder
@@ -85,19 +55,6 @@ public class Arm extends SubsystemBase {
 	@Override
 	public void periodic() {
 		// This method will be called once per scheduler run
-	}
-
-	/**
-	 * Set the arm motor to a given speed command.
-	 */
-	public Command setArmSpeedCommand(DoubleSupplier speed) {
-		return this.runOnce(() -> {
-			leaderArmMotor.getClosedLoopController().setReference(speed.getAsDouble(), ControlType.kVelocity);
-		});
-	}
-
-	private void setArmPosition(double position) {
-		leaderArmMotor.getClosedLoopController().setReference(position, ControlType.kPosition);
 	}
 
 	public Command setElevatorSpeedCommand(DoubleSupplier speed) {
