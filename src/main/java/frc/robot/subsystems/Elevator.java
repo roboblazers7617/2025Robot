@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 
-import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
@@ -17,8 +16,8 @@ import com.revrobotics.spark.SparkBase.ControlType;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.Reef;
 
 public class Elevator extends SubsystemBase {
 	/** The right motor */
@@ -57,6 +56,12 @@ public class Elevator extends SubsystemBase {
 		// This method will be called once per scheduler run
 	}
 
+	/**
+	 * a command set the elvator speed in m/s
+	 * 
+	 * @param speed
+	 * @return the command
+	 */
 	public Command setElevatorSpeedCommand(DoubleSupplier speed) {
 		return this.runOnce(() -> {
 			leaderElevatorMotor.getClosedLoopController().setReference(speed.getAsDouble(), ControlType.kVelocity);
@@ -65,5 +70,14 @@ public class Elevator extends SubsystemBase {
 
 	private void setElevatorPosition(double position) {
 		leaderElevatorMotor.getClosedLoopController().setReference(position, ControlType.kPosition);
+	}
+
+	/**
+	 * a command to move the elevator to l1
+	 */
+	public Command setElevator(Reef reef) {
+		return this.runOnce(() -> {
+			setElevatorPosition(reef.getHeight());
+		});
 	}
 }

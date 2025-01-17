@@ -238,10 +238,24 @@ public final class Constants {
 		/** min position in meters */
 		public static final double MIN_POSITION = 0;
 		/** change from rotation to meters */
-		public static final double POSITION_CONVERSION_FACTOR = 1;
+		public static final double POSITION_CONVERSION_FACTOR = 1; // TODO
 		/** change from rotation to meters */
 		public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR;
 		/** zero offset, MUST BE [0,1) */
 		public static final double ZERO_OFFSET = 0;
+	}
+
+	public enum Reef {
+		L1(0.5), L2(1), L3(2), L4(3);
+
+		private double height;
+
+		private Reef(double height) {
+			this.height = height;
+		}
+
+		public double getHeight() {
+			return height;
+		}
 	}
 }
