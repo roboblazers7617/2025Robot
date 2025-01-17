@@ -196,31 +196,6 @@ public final class Constants {
 		public static final Logged.Importance DEBUG_LEVEL = Logged.Importance.DEBUG;
 	}
 
-	public static class ArmConstants {
-		public static final int LEFT_MOTOR_ID = -1;
-		public static final int RIGHT_MOTOR_ID = -1;
-
-		public static final double KP = 0.1;
-		public static final double KI = 0.0;
-		public static final double KD = 0.0;
-		public static final double KMIN_OUTPUT = -1.0;
-		public static final double KMAX_OUTPUT = 1.0;
-
-		public static final double MAX_VELOCITY = 1;
-		public static final double MAX_ACCELERATION = 1;
-
-		/** max heigt in degrees */
-		public static final double MAX_HEIGHT = 90;
-		/** min height in degrees */
-		public static final double MIN_HEIGHT = -45;
-		/** change from rotation to degrees by scaling by 360 */
-		public static final double POSITION_CONVERSION_FACTOR = 360;
-		/** change from velocity to degrees by scaling by 360 */
-		public static final double VELOCITY_CONVERSION_FACTOR = 360;
-		/** zero offset, MUST BE [0,1) */
-		public static final double ZERO_OFFSET = 0;
-	}
-
 	public static class ElevatorConstants {
 		public static final int RIGHT_MOTOR_ID = -1;
 		public static final int LEFT_MOTOR_ID = -1;
@@ -245,6 +220,10 @@ public final class Constants {
 		public static final double ZERO_OFFSET = 0;
 	}
 
+	/**
+	 * All reef levels and their heights for the elevator in meters
+	 * Reef
+	 */
 	public enum Reef {
 		L1(0.5), L2(1), L3(2), L4(3);
 
