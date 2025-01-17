@@ -11,6 +11,7 @@ import frc.robot.util.DrivetrainUtil;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -35,6 +36,9 @@ public class RobotContainer {
 
 	/** The container for the robot. Contains subsystems, OI devices, and commands. */
 	public RobotContainer() {
+		// Publish version metadata
+		VersionConstants.publishNetworkTables(NetworkTableInstance.getDefault().getTable("/Metadata"));
+
 		// Configure the trigger bindings
 		configureBindings();
 	}

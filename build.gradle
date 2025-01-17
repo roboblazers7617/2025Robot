@@ -1,6 +1,7 @@
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2025.2.1"
+	id "com.peterabeles.gversion" version "1.10"
 }
 
 java {
@@ -33,8 +34,7 @@ deploy {
                 frcStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')) {
                     files = project.fileTree('src/main/deploy')
                     directory = '/home/lvuser/deploy'
-                    deleteOldFiles = false // Change to true to delete files on roboRIO that no
-                                           // longer exist in deploy directory of this project
+                    deleteOldFiles = true // Change to true to delete files on roboRIO that no longer exist in deploy directory of this project
                 }
             }
         }
@@ -103,8 +103,20 @@ tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
 }
 
+// Include Git metadata in deploy
+project.compileJava.dependsOn(createVersionFile)
+gversion {
+	srcDir       = "src/main/java/"
+	classPackage = "frc.robot.generated"
+	className    = "VersionConstantsGenerated"
+	dateFormat   = "yyyy-MM-dd HH:mm:ss z"
+	timeZone     = "America/Indiana/Indianapolis" // Use preferred time zone
+	indent       = "	"
+}
+
 // Build javadoc
 tasks.withType(Javadoc) {
+	exclude('**/generated/**')
 	options.tags('apiNote:a:API Note:')
 	options.tags('implSpec:a:Implementation Requirements:')
 	options.tags('implNote:a:Implementation Note:')
