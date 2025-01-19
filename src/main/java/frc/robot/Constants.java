@@ -219,4 +219,46 @@ public final class Constants {
 		 */
 		public static final int RAMP_PIVOT_PORT = 2;
 	}
+
+	public static class ElevatorConstants {
+		public static final int RIGHT_MOTOR_ID = -1;
+		public static final int LEFT_MOTOR_ID = -1;
+
+		public static final double KP = 0.1;
+		public static final double KI = 0.0;
+		public static final double KD = 0.0;
+		public static final double KMIN_OUTPUT = -1.0;
+		public static final double KMAX_OUTPUT = 1.0;
+		public static final double MAX_VELOCITY = 1;
+		public static final double MAX_ACCELERATION = 1;
+
+		/** max position in meters */
+		public static final double MAX_POSITION = 1;
+		/** min position in meters */
+		public static final double MIN_POSITION = 0;
+		/** change from rotation to meters */
+		public static final double POSITION_CONVERSION_FACTOR = 1; // TODO
+		/** change from rotation to meters */
+		public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR;
+		/** zero offset, MUST BE [0,1) */
+		public static final double ZERO_OFFSET = 0;
+	}
+
+	/**
+	 * All reef levels and their heights for the elevator in meters
+	 * Reef
+	 */
+	public enum Reef {
+		L1(0.5), L2(1), L3(2), L4(3);
+
+		private double height;
+
+		private Reef(double height) {
+			this.height = height;
+		}
+
+		public double getHeight() {
+			return height;
+		}
+	}
 }
