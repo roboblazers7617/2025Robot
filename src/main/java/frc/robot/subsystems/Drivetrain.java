@@ -28,6 +28,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.VisionConstants;
+import frc.robot.subsystems.vision.Vision;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -56,10 +58,6 @@ public class Drivetrain extends SubsystemBase {
 	 * Swerve drive object.
 	 */
 	private final SwerveDrive swerveDrive;
-	/**
-	 * Enable vision odometry updates while driving.
-	 */
-	private final boolean visionDriveTest = false;
 
 	/**
 	 * Initialize {@link SwerveDrive} with the directory provided.
@@ -82,8 +80,7 @@ public class Drivetrain extends SubsystemBase {
 		swerveDrive.setAngularVelocityCompensation(DrivetrainConstants.AngularVelocityCompensation.USE_IN_TELEOP, DrivetrainConstants.AngularVelocityCompensation.USE_IN_AUTO, DrivetrainConstants.AngularVelocityCompensation.ANGULAR_VELOCITY_COEFFICIENT); // Correct for skew that gets worse as angular velocity increases. Start with a coefficient of 0.1.
 		swerveDrive.setModuleEncoderAutoSynchronize(DrivetrainConstants.EncoderAutoSynchronization.ENABLED, DrivetrainConstants.EncoderAutoSynchronization.DEADBAND); // Enable if you want to resynchronize your absolute encoders and motor encoders periodically when they are not moving.
 		swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder and push the offsets onto it. Throws warning if not possible
-		if (visionDriveTest) {
-			// TODO: Setup vision here
+		if (VisionConstants.ENABLE_VISION) {
 			// Stop the odometry thread if we are using vision that way we can synchronize updates better.
 			swerveDrive.stopOdometryThread();
 		}
@@ -105,9 +102,9 @@ public class Drivetrain extends SubsystemBase {
 	@Override
 	public void periodic() {
 		// When vision is enabled we must manually update odometry in SwerveDrive
-		if (visionDriveTest) {
+		if (VisionConstants.ENABLE_VISION) {
 			swerveDrive.updateOdometry();
-			// TODO: Update vision here
+			Vision.updatePoseEstimation(swerveDrive);
 		}
 	}
 

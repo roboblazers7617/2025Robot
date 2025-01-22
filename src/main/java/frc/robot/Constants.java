@@ -201,6 +201,20 @@ public final class Constants {
 	}
 
 	/**
+	 * Constants used to configure vision.
+	 */
+	public static class VisionConstants {
+		/**
+		 * The name of the limelight.
+		 */
+		public static final String LIMELIGHT_NAME = "limelight";
+		/**
+		 * Enable vision odometry updates.
+		 */
+		public static final boolean ENABLE_VISION = true;
+	}
+
+	/**
 	 * Constants used to configure the autonomous program.
 	 */
 	public static class ClimberConstants {
