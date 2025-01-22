@@ -11,6 +11,7 @@ import frc.robot.util.DrivetrainUtil;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -29,6 +30,7 @@ public class RobotContainer {
 	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
 
 	// Replace with CommandPS4Controller or CommandJoystick if needed
+	@NotLogged
 	private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
 
 	private final Command driveFieldOrientedDirectAngle = drivetrain.driveFieldOrientedCommand(DrivetrainUtil.driveDirectAngle(drivetrain, driverController));
@@ -55,6 +57,8 @@ public class RobotContainer {
 	private void configureBindings() {
 		// Set the default drivetrain command (used for the driver controller)
 		drivetrain.setDefaultCommand(!RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
+		driverController.a().onTrue(drivetrain.sysIdDriveMotorCommand());
+		driverController.b().onTrue(drivetrain.sysIdAngleMotorCommand());
 	}
 
 	/**
