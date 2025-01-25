@@ -57,6 +57,8 @@ public class RobotContainer {
 	private void configureBindings() {
 		// Set the default drivetrain command (used for the driver controller)
 		drivetrain.setDefaultCommand(!RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
+		// TODO: transfer to dashboard
+		driverController.start().onTrue(Commands.run(() -> drivetrain.zeroGyro(), drivetrain));
 	}
 
 	/**
