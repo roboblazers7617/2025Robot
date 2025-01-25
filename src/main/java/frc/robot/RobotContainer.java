@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.commands.Autos;
 import frc.robot.util.DrivetrainUtil;
 import frc.robot.subsystems.Drivetrain;
@@ -55,6 +56,7 @@ public class RobotContainer {
 	private void configureBindings() {
 		// Set the default drivetrain command (used for the driver controller)
 		drivetrain.setDefaultCommand(!RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
+		driverController.x().onTrue(drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.SCORING_POSES));
 	}
 
 	/**
