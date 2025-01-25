@@ -154,6 +154,10 @@ public final class Constants {
 			 * Time in seconds to run Dynamic routines.
 			 */
 			public static final double DYNAMIC_TIMEOUT = 3.0;
+			/**
+			 * Spin in place instead of driving forward.
+			 */
+			public static final boolean TEST_WITH_SPINNING = false;
 		}
 	}
 
