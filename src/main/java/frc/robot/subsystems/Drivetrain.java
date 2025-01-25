@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.AutoConstants;
@@ -35,6 +36,9 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -475,13 +479,25 @@ public class Drivetrain extends SubsystemBase {
 	 * @see
 	 *      AutoBuilder#pathfindToPose(Pose2d, PathConstraints, edu.wpi.first.units.measure.LinearVelocity)
 	 */
-	public Command driveToPoseCommand(Pose2d pose) {
+	public Command driveToPoseCommand(Supplier<Pose2d> pose) {
 		// Create the constraints to use while pathfinding
 		PathConstraints constraints = new PathConstraints(MetersPerSecond.of(swerveDrive.getMaximumChassisVelocity()), DrivetrainConstants.Pathfinding.MAX_LINEAR_ACCELERATION, RadiansPerSecond.of(swerveDrive.getMaximumChassisAngularVelocity()), DrivetrainConstants.Pathfinding.MAX_ANGULAR_ACCELERATION);
 
 		// Since AutoBuilder is configured, we can use it to build pathfinding commands
-		return AutoBuilder.pathfindToPose(pose, constraints, MetersPerSecond.of(0) // Goal end velocity in meters/sec
-		);
+		return Commands.defer(() -> AutoBuilder.pathfindToPose(pose.get(), constraints, MetersPerSecond.of(0) // Goal end velocity in meters/sec
+		), new HashSet<Subsystem>(Set.of(this)));
+	}
+
+	/**
+	 * Drives to the nearest pose out of a list.
+	 *
+	 * @param poseList
+	 *            List of poses to choose from.
+	 * @return
+	 *         {@link Command} to run.
+	 */
+	public Command driveToNearestPoseCommand(List<Pose2d> poseList) {
+		return driveToPoseCommand(() -> getPose().nearest(poseList));
 	}
 
 	/**
