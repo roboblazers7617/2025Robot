@@ -57,8 +57,6 @@ public class RobotContainer {
 	private void configureBindings() {
 		// Set the default drivetrain command (used for the driver controller)
 		drivetrain.setDefaultCommand(!RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
-		driverController.a().onTrue(drivetrain.sysIdDriveMotorCommand());
-		driverController.b().onTrue(drivetrain.sysIdAngleMotorCommand());
 	}
 
 	/**
