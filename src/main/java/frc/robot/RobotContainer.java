@@ -62,8 +62,7 @@ public class RobotContainer {
 		driverController.leftBumper().whileTrue(driveFieldOrientedAnglularVelocity.finallyDo(drivetrain::resetLastAngleScalar));
 		// TODO: transfer to dashboard
 		driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
-
-		driverController.y().whileTrue(drivetrain.driveHeadingCommand(() -> 0, () -> 0, () -> 1, () -> 0));
+		driverController.back().onTrue(drivetrain.centerModulesCommand());
 	}
 
 	/**
@@ -72,6 +71,7 @@ public class RobotContainer {
 	 * @return the command to run in autonomous
 	 */
 	public Command getAutonomousCommand() {
-		return Commands.none();
+		// resetLastAngleScalar stops the robot from trying to turn back to its original angle after the auto ends
+		return drivetrain.getAutonomousCommand("Example Auto").andThen(Commands.runOnce(() -> drivetrain.resetLastAngleScalar()));
 	}
 }
