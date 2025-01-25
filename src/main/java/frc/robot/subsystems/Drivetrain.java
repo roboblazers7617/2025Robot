@@ -466,6 +466,13 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	/**
+	 * The method to reset what the heading control will turn to if no angle is inputed. Used to prevent angle snapback.
+	 */
+	public void resetLastAngleScalar() {
+		swerveDrive.swerveController.lastAngleScalar = getHeading().getRadians();
+	}
+
+	/**
 	 * Use PathPlanner Path finding to go to a point on the field.
 	 *
 	 * @param pose
