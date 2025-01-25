@@ -41,7 +41,7 @@ public final class DrivetrainUtil {
 	public static SwerveInputStream driveDirectAngle(Drivetrain drivetrain, CommandXboxController controller) {
 		return driveAngularVelocity(drivetrain, controller)
 				.withControllerHeadingAxis(() -> (-1 * controller.getRightX()), () -> (-1 * controller.getRightY()))
-				.headingWhile(() -> controller.leftBumper().negate().getAsBoolean());
+				.headingWhile(true);
 	}
 
 	/**
