@@ -9,7 +9,9 @@ import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.commands.Autos;
 import frc.robot.util.DrivetrainUtil;
 import frc.robot.subsystems.Drivetrain;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -47,6 +49,19 @@ public class RobotContainer {
 	}
 
 	/**
+	 * This method is run at the start of Teleop.
+	 */
+	public void teleopInit() {
+		// Reset the last angle so the robot doesn't try to spin.
+		var alliance = DriverStation.getAlliance();
+		if (alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false) {
+			drivetrain.resetLastAngleScalarInverted();
+		} else {
+			drivetrain.resetLastAngleScalar();
+		}
+	}
+
+	/**
 	 * Use this method to define your trigger->command mappings. Triggers can be created via the
 	 * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
 	 * predicate, or via the named factories in {@link
@@ -57,7 +72,7 @@ public class RobotContainer {
 	 */
 	private void configureBindings() {
 		// Set the default drivetrain command (used for the driver controller)
-		drivetrain.setDefaultCommand(!RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
+		drivetrain.setDefaultCommand(RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
 
 		driverController.leftBumper().whileTrue(driveFieldOrientedAnglularVelocity.finallyDo(drivetrain::resetLastAngleScalar));
 		// TODO: transfer to dashboard
@@ -72,6 +87,6 @@ public class RobotContainer {
 	 */
 	public Command getAutonomousCommand() {
 		// resetLastAngleScalar stops the robot from trying to turn back to its original angle after the auto ends
-		return drivetrain.getAutonomousCommand("Example Auto").andThen(Commands.runOnce(() -> drivetrain.resetLastAngleScalar()));
+		return drivetrain.getAutonomousCommand("Example Auto");
 	}
 }
