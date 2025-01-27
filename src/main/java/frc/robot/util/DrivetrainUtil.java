@@ -1,6 +1,7 @@
 package frc.robot.util;
 
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.ButtonBox;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.Drivetrain;
@@ -58,6 +59,25 @@ public final class DrivetrainUtil {
 		return driveAngularVelocity(drivetrain, controller)
 				.withControllerRotationAxis(() -> controller.getRawAxis(2))
 				.withControllerHeadingAxis(() -> Math.sin(controller.getRawAxis(2) * Math.PI) * (Math.PI * 2), () -> Math.cos(controller.getRawAxis(2) * Math.PI) * (Math.PI * 2))
+				.headingWhile(true);
+	}
+
+	/**
+	 * Converts ButtonBox input into a field-relative ChassisSpeeds that is controlled by a knob.
+	 *
+	 * @param drivetrain
+	 *            the drivetrain to control
+	 * @param buttonBox
+	 *            the ButtonBox to read from
+	 * @return
+	 *         SwerveInputStream with data from the ButtonBox
+	 */
+	public static SwerveInputStream driveButtonBox(Drivetrain drivetrain, ButtonBox buttonBox) {
+		return SwerveInputStream.of(drivetrain.getSwerveDrive(), () -> (buttonBox.getDriverJoystick().getY() * 2 - 1), () -> (buttonBox.getDriverJoystick().getX() * 2 - 1))
+				.withControllerHeadingAxis(() -> Math.sin(buttonBox.getDriverSteeringKnob().getPosition() * Math.PI) * (Math.PI * 2), () -> Math.cos(buttonBox.getDriverSteeringKnob().getPosition() * Math.PI) * (Math.PI * 2))
+				.deadband(OperatorConstants.DEADBAND)
+				.scaleTranslation(DrivetrainConstants.TRANSLATION_SCALE)
+				.allianceRelativeControl(true)
 				.headingWhile(true);
 	}
 }

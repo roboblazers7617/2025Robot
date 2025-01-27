@@ -32,10 +32,12 @@ public class RobotContainer {
 	// Replace with CommandPS4Controller or CommandJoystick if needed
 	@NotLogged
 	private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
+	private final ButtonBox buttonBox = new ButtonBox();
 
 	private final Command driveFieldOrientedDirectAngle = drivetrain.driveFieldOrientedCommand(DrivetrainUtil.driveDirectAngle(drivetrain, driverController));
 	private final Command driveFieldOrientedAnglularVelocity = drivetrain.driveFieldOrientedCommand(DrivetrainUtil.driveAngularVelocity(drivetrain, driverController));
 	private final Command driveFieldOrientedDirectAngleSim = drivetrain.driveFieldOrientedCommand(DrivetrainUtil.driveDirectAngleSim(drivetrain, driverController));
+	private final Command driveFieldOrientedButtonBox = drivetrain.driveFieldOrientedCommand(DrivetrainUtil.driveButtonBox(drivetrain, buttonBox));
 
 	/** The container for the robot. Contains subsystems, OI devices, and commands. */
 	public RobotContainer() {
@@ -57,9 +59,10 @@ public class RobotContainer {
 	 */
 	private void configureBindings() {
 		// Set the default drivetrain command (used for the driver controller)
-		drivetrain.setDefaultCommand(!RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
+		// drivetrain.setDefaultCommand(!RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
+		// driverController.leftBumper().whileTrue(driveFieldOrientedAnglularVelocity.finallyDo(drivetrain::resetLastAngleScalar));
+		drivetrain.setDefaultCommand(driveFieldOrientedButtonBox);
 
-		driverController.leftBumper().whileTrue(driveFieldOrientedAnglularVelocity.finallyDo(drivetrain::resetLastAngleScalar));
 		// TODO: transfer to dashboard
 		driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
 		driverController.back().onTrue(drivetrain.centerModulesCommand());

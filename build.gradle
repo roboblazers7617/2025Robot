@@ -4,6 +4,12 @@ plugins {
 	id "com.peterabeles.gversion" version "1.10"
 }
 
+repositories {
+	flatDir {
+		dirs './libs'
+	}
+}
+
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
@@ -72,6 +78,8 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	implementation name: 'buttonbox-lib'
 }
 
 test {
