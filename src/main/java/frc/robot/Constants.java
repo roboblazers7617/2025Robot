@@ -21,6 +21,7 @@ import java.util.Optional;
 import com.pathplanner.lib.config.PIDConstants;
 
 import edu.wpi.first.wpilibj.Filesystem;
+import frc.robot.util.PoseUtil;
 import swervelib.math.Matter;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -255,7 +256,11 @@ public final class Constants {
 			/**
 			 * Poses from which the robot can score on the blue alliance.
 			 */
-			public static final List<Pose2d> SCORING_POSES = new ArrayList<Pose2d>();
+			public static final List<Pose2d> SCORING_POSES_BLUE = new ArrayList<Pose2d>();
+			/**
+			 * Poses from which the robot can score on the red alliance.
+			 */
+			public static final List<Pose2d> SCORING_POSES_RED = new ArrayList<Pose2d>();
 
 			static {
 				// Generate a list of tag poses.
@@ -272,9 +277,14 @@ public final class Constants {
 					Pose2d pose2d = pose.toPose2d();
 
 					// Regular side
-					SCORING_POSES.add(pose2d.transformBy(SCORING_OFFSET));
+					SCORING_POSES_BLUE.add(pose2d.transformBy(SCORING_OFFSET));
 					// Flipped side
-					SCORING_POSES.add(pose2d.transformBy(new Transform2d(SCORING_OFFSET.getMeasureX().times(-1), SCORING_OFFSET.getMeasureY(), SCORING_OFFSET.getRotation())));
+					SCORING_POSES_BLUE.add(pose2d.transformBy(new Transform2d(SCORING_OFFSET.getMeasureX(), SCORING_OFFSET.getMeasureY().times(-1), SCORING_OFFSET.getRotation())));
+				});
+
+				// Generate a list of scoring poses for the other alliance.
+				SCORING_POSES_BLUE.forEach((pose) -> {
+					SCORING_POSES_RED.add(PoseUtil.flipPose(pose));
 				});
 			}
 		}
