@@ -77,6 +77,7 @@ public class Drivetrain extends SubsystemBase {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+		swerveDrive.setAutoCenteringModules(false);
 		swerveDrive.setHeadingCorrection(DrivetrainConstants.ENABLE_HEADING_CORRECTION);
 		swerveDrive.setCosineCompensator(DrivetrainConstants.ENABLE_COSINE_COMPENSATION);// !SwerveDriveTelemetry.isSimulation); // Disables cosine compensation for simulations since it causes discrepancies not seen in real life.
 		swerveDrive.setAngularVelocityCompensation(DrivetrainConstants.AngularVelocityCompensation.USE_IN_TELEOP, DrivetrainConstants.AngularVelocityCompensation.USE_IN_AUTO, DrivetrainConstants.AngularVelocityCompensation.ANGULAR_VELOCITY_COEFFICIENT); // Correct for skew that gets worse as angular velocity increases. Start with a coefficient of 0.1.
@@ -124,7 +125,7 @@ public class Drivetrain extends SubsystemBase {
 		try {
 			config = RobotConfig.fromGUISettings();
 
-			final boolean enableFeedforward = true;
+			final boolean enableFeedforward = false;
 			// Configure AutoBuilder last
 			AutoBuilder.configure(this::getPose,
 					// Robot pose supplier
@@ -261,7 +262,7 @@ public class Drivetrain extends SubsystemBase {
 	 *         SysId Drive Command
 	 */
 	public Command sysIdDriveMotorCommand() {
-		return SwerveDriveTest.generateSysIdCommand(SwerveDriveTest.setDriveSysIdRoutine(new Config(), this, swerveDrive, DrivetrainConstants.SysId.MAX_VOLTS), DrivetrainConstants.SysId.DELAY, DrivetrainConstants.SysId.QUASI_TIMEOUT, DrivetrainConstants.SysId.DYNAMIC_TIMEOUT);
+		return SwerveDriveTest.generateSysIdCommand(SwerveDriveTest.setDriveSysIdRoutine(new Config(), this, swerveDrive, DrivetrainConstants.SysId.MAX_VOLTS, DrivetrainConstants.SysId.TEST_WITH_SPINNING), DrivetrainConstants.SysId.DELAY, DrivetrainConstants.SysId.QUASI_TIMEOUT, DrivetrainConstants.SysId.DYNAMIC_TIMEOUT);
 	}
 
 	/**
@@ -281,8 +282,8 @@ public class Drivetrain extends SubsystemBase {
 	 *         Command to run
 	 */
 	public Command centerModulesCommand() {
-		return run(() -> Arrays.asList(swerveDrive.getModules())
-				.forEach(it -> it.setAngle(0.0)));
+		return Commands.deadline(Commands.waitUntil(() -> (Arrays.asList(swerveDrive.getModules()).stream().allMatch((module) -> (Math.abs(module.getAbsolutePosition()) > 2)))), Commands.run(() -> Arrays.asList(swerveDrive.getModules())
+				.forEach(it -> it.setAngle(0.0))));
 	}
 
 	/**
@@ -463,6 +464,13 @@ public class Drivetrain extends SubsystemBase {
 	 */
 	public void drive(Translation2d translation, double rotation, boolean fieldRelative) {
 		swerveDrive.drive(translation, rotation, fieldRelative, false); // Open loop is disabled since it shouldn't be used most of the time.
+	}
+
+	/**
+	 * The method to reset what the heading control will turn to if no angle is inputed. Used to prevent angle snapback.
+	 */
+	public void resetLastAngleScalar() {
+		swerveDrive.swerveController.lastAngleScalar = getHeading().getRadians();
 	}
 
 	/**
