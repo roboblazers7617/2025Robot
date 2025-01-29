@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.util.Util;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -155,12 +156,7 @@ public class Drivetrain extends SubsystemBase {
 						// Boolean supplier that controls when the path will be mirrored for the red alliance
 						// This will flip the path being followed to the red side of the field.
 						// THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-						var alliance = DriverStation.getAlliance();
-						if (alliance.isPresent()) {
-							return alliance.get() == DriverStation.Alliance.Red;
-						}
-						return false;
+						return Util.isRedAlliance();
 					}, this
 			// Reference to this subsystem to set requirements
 			);
@@ -303,17 +299,6 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	/**
-	 * Checks if the alliance is red, defaults to false if alliance isn't available.
-	 *
-	 * @return
-	 *         true if the red alliance, false if blue. Defaults to false if none is available.
-	 */
-	private boolean isRedAlliance() {
-		var alliance = DriverStation.getAlliance();
-		return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
-	}
-
-	/**
 	 * Resets the gyro angle to zero and resets odometry to the same position, but facing toward 0.
 	 *
 	 * @see
@@ -329,7 +314,7 @@ public class Drivetrain extends SubsystemBase {
 	 * If red alliance rotate the robot 180 after the drviebase zero command
 	 */
 	public void zeroGyroWithAlliance() {
-		if (isRedAlliance()) {
+		if (Util.isRedAlliance()) {
 			zeroGyro();
 			// Set the pose 180 degrees
 			resetOdometry(new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(180)));
