@@ -88,7 +88,7 @@ public class Drivetrain extends SubsystemBase {
 			// Stop the odometry thread if we are using vision that way we can synchronize updates better.
 			swerveDrive.stopOdometryThread();
 		}
-		setupPathPlanner();
+		// setupPathPlanner(DriverStation.Alliance.Blue);
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class Drivetrain extends SubsystemBase {
 	/**
 	 * Setup AutoBuilder for PathPlanner.
 	 */
-	public void setupPathPlanner() {
+	public void setupPathPlanner(DriverStation.Alliance alliance) {
 		// Load the RobotConfig from the GUI settings. You should probably
 		// store this in your Constants file
 		RobotConfig config;
@@ -152,11 +152,8 @@ public class Drivetrain extends SubsystemBase {
 						// This will flip the path being followed to the red side of the field.
 						// THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-						var alliance = DriverStation.getAlliance();
-						if (alliance.isPresent()) {
-							return alliance.get() == DriverStation.Alliance.Red;
-						}
-						return false;
+						return alliance == DriverStation.Alliance.Red;
+						// return true;
 					}, this
 			// Reference to this subsystem to set requirements
 			);

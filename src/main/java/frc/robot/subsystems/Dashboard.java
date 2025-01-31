@@ -4,41 +4,64 @@
 
 package frc.robot.subsystems;
 
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.RunOnceDeferred;
+import frc.robot.commands.drivetrain.LockWheelsState;
 
 public class Dashboard extends SubsystemBase {
 	Drivetrain drivetrain;
+	// RobotContainer robotContainer;
 	SendableChooser<DriverStation.Alliance> alliancePicker;
 	SendableChooser<Pose2d> pose;
 	SendableChooser<Command> auto;
 
 	/** Creates a new Dashboard. */
-	public Dashboard(Drivetrain drivetrain) {
+	public Dashboard(Drivetrain drivetrain/* , RobotContainer robotContainer */) {
 		this.drivetrain = drivetrain;
+		// this.robotContainer = robotContainer;
 
 		alliancePicker = new SendableChooser<DriverStation.Alliance>();
-		alliancePicker.setDefaultOption("Red", DriverStation.Alliance.Red);
+		alliancePicker.setDefaultOption("None", null);
 		alliancePicker.addOption("Blue", DriverStation.Alliance.Blue);
+		alliancePicker.addOption("Red", DriverStation.Alliance.Red);
+
+		alliancePicker.onChange((alliance) -> {
+			new RunOnceDeferred(() -> {
+				configureAutoBuilder(alliance);
+			}).ignoringDisable(true).schedule();
+		});
 
 		pose = new SendableChooser<Pose2d>();
 		pose.setDefaultOption("position 1", new Pose2d(0, 0, new Rotation2d(0)));
 		pose.addOption("position 2", new Pose2d(0, 0, new Rotation2d(0)));
 
-		auto = new SendableChooser<Command>();
-		auto.setDefaultOption("Do Nothing", new InstantCommand());
-		auto.addOption("Drive Forward", new InstantCommand());
-
 		SmartDashboard.putData("Alliance", alliancePicker);
 		SmartDashboard.putData("Pose", pose);
-		// SmartDashboard.putData("Set Pose", setPose());
-		SmartDashboard.putData("Auto", auto);
-		// SmartDashboard.putData("Set Auto", setAuto());
+	}
+
+	public void configureAutoBuilder(DriverStation.Alliance alliance) {
+		// drivetrain.setAlliance(alliancePicker.getSelected());
+		if (alliance == null) {
+			System.out.println("BAD! Allicance builder run without selected alliance");
+			return;
+		}
+		drivetrain.setupPathPlanner(alliance);
+		System.out.println("Configured path planner");
+
+		NamedCommands.registerCommand("LockWheelsState", new LockWheelsState(drivetrain));
+	}
+
+	@Override
+	public void periodic() {
+		// This method will be called once per scheduler run
+		// System.out.println(alliancePicker.getSelected());
 	}
 }
