@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -13,20 +14,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.commands.RunOnceDeferred;
 import frc.robot.commands.drivetrain.LockWheelsState;
 
 public class Dashboard extends SubsystemBase {
-	Drivetrain drivetrain;
-	// RobotContainer robotContainer;
-	SendableChooser<DriverStation.Alliance> alliancePicker;
-	SendableChooser<Pose2d> pose;
+	final Drivetrain drivetrain;
+	final RobotContainer robotContainer;
+	final SendableChooser<DriverStation.Alliance> alliancePicker;
+	final SendableChooser<Pose2d> pose;
 	SendableChooser<Command> auto;
 
 	/** Creates a new Dashboard. */
-	public Dashboard(Drivetrain drivetrain/* , RobotContainer robotContainer */) {
+	public Dashboard(Drivetrain drivetrain, RobotContainer robotContainer) {
 		this.drivetrain = drivetrain;
-		// this.robotContainer = robotContainer;
+		this.robotContainer = robotContainer;
 
 		alliancePicker = new SendableChooser<DriverStation.Alliance>();
 		alliancePicker.setDefaultOption("None", null);
@@ -43,6 +45,15 @@ public class Dashboard extends SubsystemBase {
 		pose.setDefaultOption("position 1", new Pose2d(0, 0, new Rotation2d(0)));
 		pose.addOption("position 2", new Pose2d(0, 0, new Rotation2d(0)));
 
+		// pose.onChange((pose) -> {
+		// new RunOnceDeferred(() -> {
+		// drivetrain.resetOdometry(pose);
+		// }).ignoringDisable(true).schedule();
+		// });
+		pose.onChange((pose) -> {
+			drivetrain.resetOdometry(pose);
+		});
+
 		SmartDashboard.putData("Alliance", alliancePicker);
 		SmartDashboard.putData("Pose", pose);
 	}
@@ -57,6 +68,9 @@ public class Dashboard extends SubsystemBase {
 		System.out.println("Configured path planner");
 
 		NamedCommands.registerCommand("LockWheelsState", new LockWheelsState(drivetrain));
+		auto = AutoBuilder.buildAutoChooser();
+		SmartDashboard.putData("Auto", auto);
+		robotContainer.setAutoChooser(auto);
 	}
 
 	@Override
