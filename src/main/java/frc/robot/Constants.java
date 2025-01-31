@@ -205,16 +205,6 @@ public final class Constants {
 	 */
 	public static class ClimberConstants {
 		/**
-		 * Port for the right climber motor.
-		 */
-		// TODO: make sure these get set
-		public static final int RIGHT_CLIMBER_PORT = 0;
-		/**
-		 * Port for the left climber motor.
-		 */
-		public static final int LEFT_CLIMBER_PORT = 1;
-
-		/**
 		 * Port for the ramp pivot motor.
 		 */
 		public static final int RAMP_PIVOT_PORT = 2;
