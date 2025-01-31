@@ -14,6 +14,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -22,6 +23,8 @@ import frc.robot.Constants;
 public class Climber extends SubsystemBase {
 	private final SparkMax rampPivot = new SparkMax(Constants.ClimberConstants.RAMP_PIVOT_PORT, MotorType.kBrushless);
 	private final RelativeEncoder rampPivotEncoder;
+
+	private final Servo climbRachet = new Servo(Constants.ClimberConstants.CLIMB_RACHET_PORT);
 
 	/** Creates a new Climber. */
 	public Climber() {
@@ -53,12 +56,32 @@ public class Climber extends SubsystemBase {
 	}
 
 	/**
+	 * Set the position of the servo.
+	 * 
+	 * @param position
+	 *            Servo values range from 0.0 to 1.0 corresponding to the range of full left to full right.
+	 */
+	public void setServoPosition(double position) {
+		climbRachet.set(position);
+	}
+
+	/**
 	 * Get the position of the ramp pivot motor.
 	 * 
 	 * @return Number the position of the motor
 	 */
 	public double getPositionRampPivot() {
 		return rampPivotEncoder.getPosition();
+	}
+
+	/**
+	 * Get the position of the servo.
+	 * 
+	 * @return Servo values range from 0.0 to 1.0 corresponding to the range of full left to full right.
+	 */
+
+	public double getServoPosition() {
+		return climbRachet.get();
 	}
 
 	@Override
