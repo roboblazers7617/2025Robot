@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.LoggingConstants;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -69,7 +70,12 @@ public class Drivetrain extends SubsystemBase {
 	 */
 	public Drivetrain(File directory) {
 		// Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
-		SwerveDriveTelemetry.verbosity = DrivetrainConstants.TELEMETRY_VERBOSITY;
+		if (LoggingConstants.DEBUG_MODE) {
+			SwerveDriveTelemetry.verbosity = DrivetrainConstants.TELEMETRY_VERBOSITY_DEBUG;
+		} else {
+			SwerveDriveTelemetry.verbosity = DrivetrainConstants.TELEMETRY_VERBOSITY_NORMAL;
+		}
+
 		try {
 			swerveDrive = new SwerveParser(directory).createSwerveDrive(DrivetrainConstants.MAX_SPEED, DrivetrainConstants.STARTING_POSITION);
 			// Alternative method if you don't want to supply the conversion factor via JSON files.
