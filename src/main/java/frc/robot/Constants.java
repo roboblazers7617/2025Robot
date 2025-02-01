@@ -249,7 +249,7 @@ public final class Constants {
 		/**
 		 * DIO pin for the beam break.
 		 */
-		public static final int BEAM_BREAK_DIO = 0;
+		public static final int BEAM_BREAK_DIO = 1;
 		/**
 		 * Intake motor speed for coral. (to be changed and edited later)
 		 */

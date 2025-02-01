@@ -48,10 +48,12 @@ public class EndEffector extends SubsystemBase {
 	}
 
 	private void stopMotor() {
-		endEffectorMotor.stopMotor();
+		endEffectorMotor.set(0);
 	}
 
-	private void startMotor(Double speed) {}
+	private void startMotor(Double speed) {
+		endEffectorMotor.set(speed);
+	}
 
 	/**
 	 * Should be able to use multiple speeds for the motors bassed on the buttons?
@@ -81,7 +83,7 @@ public class EndEffector extends SubsystemBase {
 	}
 
 	public Command CoralIntake() {
-		return StartMotor(() -> EndEffectorConstants.CORAL_INTAKE_SPEED).andThen(new WaitUntilInterrupt(coralBeamBreak, (rising, falling) -> {
+		return StartMotor(() -> EndEffectorConstants.CORAL_INTAKE_SPEED),(new WaitUntilInterrupt(coralBeamBreak, (rising, falling) -> {
 			stopMotor();
 		}, false, true));
 	}

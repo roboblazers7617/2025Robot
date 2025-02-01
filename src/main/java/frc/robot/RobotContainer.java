@@ -28,15 +28,15 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 @Logged
 public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
-	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
+	// private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
 
 	// Replace with CommandPS4Controller or CommandJoystick if needed
 	@NotLogged
 	private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
 
-	private final Command driveFieldOrientedDirectAngle = drivetrain.driveFieldOrientedCommand(DrivetrainUtil.driveDirectAngle(drivetrain, driverController));
-	private final Command driveFieldOrientedAnglularVelocity = drivetrain.driveFieldOrientedCommand(DrivetrainUtil.driveAngularVelocity(drivetrain, driverController));
-	private final Command driveFieldOrientedDirectAngleSim = drivetrain.driveFieldOrientedCommand(DrivetrainUtil.driveDirectAngleSim(drivetrain, driverController));
+	// private final Command driveFieldOrientedDirectAngle = drivetrain.driveFieldOrientedCommand(DrivetrainUtil.driveDirectAngle(drivetrain, driverController));
+	// private final Command driveFieldOrientedAnglularVelocity = drivetrain.driveFieldOrientedCommand(DrivetrainUtil.driveAngularVelocity(drivetrain, driverController));
+	// private final Command driveFieldOrientedDirectAngleSim = drivetrain.driveFieldOrientedCommand(DrivetrainUtil.driveDirectAngleSim(drivetrain, driverController));
 	private final EndEffector endEffector = new EndEffector();
 
 	/** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -46,8 +46,8 @@ public class RobotContainer {
 
 		// Configure the trigger bindings
 		configureBindings();
-		driverController.a().onTrue(endEffector.CoralIntake());
-		driverController.b().onTrue(endEffector.CoralOuttake());
+		driverController.a().whileTrue(endEffector.CoralIntake());
+		driverController.b().whileTrue(endEffector.CoralOuttake());
 	}
 
 	/**
@@ -61,12 +61,12 @@ public class RobotContainer {
 	 */
 	private void configureBindings() {
 		// Set the default drivetrain command (used for the driver controller)
-		drivetrain.setDefaultCommand(!RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
+		// drivetrain.setDefaultCommand(!RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
 
-		driverController.leftBumper().whileTrue(driveFieldOrientedAnglularVelocity.finallyDo(drivetrain::resetLastAngleScalar));
-		// TODO: transfer to dashboard
-		driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
-		driverController.back().onTrue(drivetrain.centerModulesCommand());
+		// driverController.leftBumper().whileTrue(driveFieldOrientedAnglularVelocity.finallyDo(drivetrain::resetLastAngleScalar));
+		// // TODO: transfer to dashboard
+		// driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
+		// driverController.back().onTrue(drivetrain.centerModulesCommand());
 	}
 
 	/**
@@ -76,6 +76,7 @@ public class RobotContainer {
 	 */
 	public Command getAutonomousCommand() {
 		// resetLastAngleScalar stops the robot from trying to turn back to its original angle after the auto ends
-		return drivetrain.getAutonomousCommand("Example Auto").andThen(Commands.runOnce(() -> drivetrain.resetLastAngleScalar()));
+		// return drivetrain.getAutonomousCommand("Example Auto").andThen(Commands.runOnce(() -> drivetrain.resetLastAngleScalar()));
+		return null;
 	}
 }
