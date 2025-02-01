@@ -83,9 +83,13 @@ public class EndEffector extends SubsystemBase {
 	}
 
 	public Command CoralIntake() {
-		return StartMotor(() -> EndEffectorConstants.CORAL_INTAKE_SPEED),(new WaitUntilInterrupt(coralBeamBreak, (rising, falling) -> {
-			stopMotor();
-		}, false, true));
+		return StartMotor(() -> EndEffectorConstants.CORAL_INTAKE_SPEED)
+				.andThen(Commands.runOnce(() -> {
+					System.out.println("Test");
+				}))
+				.andThen(new WaitUntilInterrupt(coralBeamBreak, (rising, falling) -> {
+					stopMotor();
+				}, false, true));
 	}
 
 	public Command CoralOuttake() {
