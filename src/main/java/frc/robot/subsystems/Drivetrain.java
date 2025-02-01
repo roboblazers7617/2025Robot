@@ -29,9 +29,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DrivetrainConstants;<<<<<<<HEAD
-import frc.robot.Constants.VisionConstants;=======
-import frc.robot.Constants.LoggingConstants;>>>>>>>main
+import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.VisionConstants;
+import frc.robot.Constants.LoggingConstants;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -91,8 +91,6 @@ public class Drivetrain extends SubsystemBase {
 		swerveDrive.setMotorIdleMode(true);
 		// Stop the odometry thread if we are using vision that way we can synchronize updates better.
 		swerveDrive.stopOdometryThread();
-	}
-
 	}
 
 	@Override
