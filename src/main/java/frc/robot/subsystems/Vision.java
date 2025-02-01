@@ -14,12 +14,8 @@ import swervelib.SwerveDrive;
  * Class that contains logic related to vision.
  */
 public class Vision {
-	AngularVelocity3d zeroAngularVelocity3d = new AngularVelocity3d(DegreesPerSecond.zero(), DegreesPerSecond.zero(), DegreesPerSecond.zero());
-	Limelight limelight = new Limelight(VisionConstants.LIMELIGHT_NAME);
-
-	public Vision() {
-		limelight.getSettings().withCameraOffset(VisionConstants.CAMERA_POSE).withArilTagIdFilter(VisionConstants.TAGS_TO_TRACK).save();
-	}
+	private static AngularVelocity3d zeroAngularVelocity3d = new AngularVelocity3d(DegreesPerSecond.zero(), DegreesPerSecond.zero(), DegreesPerSecond.zero());
+	private static Limelight limelight = new Limelight(VisionConstants.LIMELIGHT_NAME);
 
 	/**
 	 * Update the pose estimation inside of {@link SwerveDrive} with data from Limelight.
@@ -27,7 +23,7 @@ public class Vision {
 	 * @param swerveDrive
 	 *            {@link SwerveDrive} to write measurements to.
 	 */
-	public void updatePoseEstimation(SwerveDrive swerveDrive) {
+	public static void updatePoseEstimation(SwerveDrive swerveDrive) {
 		// Get robot pose from YAGSL and use it to set the orientation in Limelight
 		// ANGULAR VELOCITY IS NEGLIGABLE SO PASS IN ZEROS
 		limelight.getSettings().withRobotOrientation(new Orientation3d(swerveDrive.getGyroRotation3d(), zeroAngularVelocity3d)).save();
