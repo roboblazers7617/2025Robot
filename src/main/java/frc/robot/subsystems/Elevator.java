@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
 import com.revrobotics.spark.SparkBase;
@@ -27,12 +28,15 @@ public class Elevator extends SubsystemBase {
 	private final SparkMax followerElevatorMotor = new SparkMax(ElevatorConstants.LEFT_MOTOR_ID, MotorType.kBrushless);
 
 	/** the elevator target in meters, this may not be safe */
-	private double elevatorTarget = 0;
+	private Optional<Double> elevatorTarget = Optional.of(0.0);
 
 	/**
 	 * the wrist
 	 */
 	private final SparkMax wristMotor = new SparkMax(WristConstants.MOTOR_ID, MotorType.kBrushless);
+
+	/** the wrist target in degrees, this may not be safe */
+	private Optional<Double> wristTarget = Optional.of(0.0);
 
 	public Elevator() {
 		SparkMaxConfig baseElevatorConfig = new SparkMaxConfig();
@@ -83,6 +87,48 @@ public class Elevator extends SubsystemBase {
 	@Override
 	public void periodic() {
 		// This method will be called once per scheduler run
+
+		// if there is no elevator target, do nothing (this is probably because the elevator is being controlled by a speed)
+		if (elevatorTarget.isPresent()) {
+			// ensure elevator target is within outer most bounds
+			double target = elevatorTarget.get();
+			if (target < ElevatorConstants.MIN_POSITION) {
+				target = ElevatorConstants.MIN_POSITION;
+			} else if (target > ElevatorConstants.MAX_POSITION) {
+				target = ElevatorConstants.MAX_POSITION;
+			}
+
+			// ensure elevator target is not too low if the wrist is low
+			if (wristMotor.getEncoder().getPosition() < WristConstants.SAFE_MIN_POSITION && target < ElevatorConstants.SAFE_MIN_POSITION) {
+				target = ElevatorConstants.SAFE_MIN_POSITION;
+			}
+		}
+
+		// if there is no wrist target, do nothing (this is probably because the wrist is being controlled by a speed)
+		if (wristTarget.isPresent()) {
+			// ensure wrist target is within outer most bounds
+			double target = wristTarget.get();
+			if (target < WristConstants.MIN_POSITION) {
+				target = WristConstants.MIN_POSITION;
+			} else if (target > WristConstants.MAX_POSITION) {
+				target = WristConstants.MAX_POSITION;
+			}
+
+			// ensure wrist target is not too low if the elevator is low
+			if (leaderElevatorMotor.getEncoder().getPosition() < ElevatorConstants.SAFE_MIN_POSITION && target < WristConstants.SAFE_MIN_POSITION) {
+				target = WristConstants.SAFE_MIN_POSITION;
+			}
+		}
+	}
+
+	private void setElevatorPosition(double position) {
+		// leaderElevatorMotor.getClosedLoopController().setReference(position, ControlType.kPosition);
+		elevatorTarget = Optional.of(position);
+	}
+
+	private void setElevatorSpeed(double speed) {
+		leaderElevatorMotor.getClosedLoopController().setReference(speed, ControlType.kVelocity);
+		elevatorTarget = Optional.empty();
 	}
 
 	/**
@@ -93,12 +139,8 @@ public class Elevator extends SubsystemBase {
 	 */
 	public Command setElevatorSpeedCommand(DoubleSupplier speed) {
 		return this.runOnce(() -> {
-			leaderElevatorMotor.getClosedLoopController().setReference(speed.getAsDouble(), ControlType.kVelocity);
+			setElevatorSpeed(speed.getAsDouble());
 		});
-	}
-
-	private void setElevatorPosition(double position) {
-		leaderElevatorMotor.getClosedLoopController().setReference(position, ControlType.kPosition);
 	}
 
 	/**

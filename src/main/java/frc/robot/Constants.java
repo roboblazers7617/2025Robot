@@ -236,6 +236,8 @@ public final class Constants {
 		public static final double MAX_POSITION = 1;
 		/** min position in meters */
 		public static final double MIN_POSITION = 0;
+		/** min position where the wrist cannot hit anything, in */
+		public static final double SAFE_MIN_POSITION = 0.2;
 		/** change from rotation to meters */
 		public static final double POSITION_CONVERSION_FACTOR = 1; // TODO
 		/** change from rotation to meters */
@@ -255,10 +257,12 @@ public final class Constants {
 		public static final double MAX_VELOCITY = 1;
 		public static final double MAX_ACCELERATION = 1;
 
-		/** max position in meters */
-		public static final double MAX_POSITION = 1;
-		/** min position in meters */
+		/** max position in degrees */
+		public static final double MAX_POSITION = 90;
+		/** min position in degrees */
 		public static final double MIN_POSITION = 0;
+		/** min position where the wrist cannot hit anything, in degrees */
+		public static final double SAFE_MIN_POSITION = 10;
 		/** change from rotation to meters */
 		public static final double POSITION_CONVERSION_FACTOR = 1; // TODO
 		/** change from rotation to meters */
