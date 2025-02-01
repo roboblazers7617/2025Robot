@@ -15,7 +15,6 @@ import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 
-import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -26,11 +25,13 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.LoggingConstants;
+import frc.robot.util.Util;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -38,6 +39,9 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -46,7 +50,6 @@ import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
 import swervelib.math.SwerveMath;
-import swervelib.parser.SwerveControllerConfiguration;
 import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
@@ -293,17 +296,6 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	/**
-	 * Checks if the alliance is red, defaults to false if alliance isn't available.
-	 *
-	 * @return
-	 *         true if the red alliance, false if blue. Defaults to false if none is available.
-	 */
-	private boolean isRedAlliance() {
-		var alliance = DriverStation.getAlliance();
-		return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
-	}
-
-	/**
 	 * Resets the gyro angle to zero and resets odometry to the same position, but facing toward 0.
 	 *
 	 * @see
@@ -319,7 +311,7 @@ public class Drivetrain extends SubsystemBase {
 	 * If red alliance rotate the robot 180 after the drviebase zero command
 	 */
 	public void zeroGyroWithAlliance() {
-		if (isRedAlliance()) {
+		if (Util.isRedAlliance()) {
 			zeroGyro();
 			// Set the pose 180 degrees
 			resetOdometry(new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(180)));
@@ -486,13 +478,25 @@ public class Drivetrain extends SubsystemBase {
 	 * @see
 	 *      AutoBuilder#pathfindToPose(Pose2d, PathConstraints, edu.wpi.first.units.measure.LinearVelocity)
 	 */
-	public Command driveToPoseCommand(Pose2d pose) {
+	public Command driveToPoseCommand(Supplier<Pose2d> pose) {
 		// Create the constraints to use while pathfinding
 		PathConstraints constraints = new PathConstraints(MetersPerSecond.of(swerveDrive.getMaximumChassisVelocity()), DrivetrainConstants.Pathfinding.MAX_LINEAR_ACCELERATION, RadiansPerSecond.of(swerveDrive.getMaximumChassisAngularVelocity()), DrivetrainConstants.Pathfinding.MAX_ANGULAR_ACCELERATION);
 
 		// Since AutoBuilder is configured, we can use it to build pathfinding commands
-		return AutoBuilder.pathfindToPose(pose, constraints, MetersPerSecond.of(0) // Goal end velocity in meters/sec
-		);
+		return Commands.defer(() -> AutoBuilder.pathfindToPose(pose.get(), constraints, MetersPerSecond.of(0) // Goal end velocity in meters/sec
+		), new HashSet<Subsystem>(Set.of(this)));
+	}
+
+	/**
+	 * Drives to the nearest pose out of a list.
+	 *
+	 * @param poseList
+	 *            List of poses to choose from.
+	 * @return
+	 *         {@link Command} to run.
+	 */
+	public Command driveToNearestPoseCommand(List<Pose2d> poseList) {
+		return driveToPoseCommand(() -> getPose().nearest(poseList));
 	}
 
 	/**

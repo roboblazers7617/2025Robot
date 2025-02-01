@@ -6,7 +6,8 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.DrivetrainConstants;
-import frc.robot.commands.Autos;
+import frc.robot.Constants.FieldConstants;
+import frc.robot.util.Util;
 import frc.robot.util.DrivetrainUtil;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Drivetrain;
@@ -77,8 +78,8 @@ public class RobotContainer {
 	private void configureBindings() {
 		// Set the default drivetrain command (used for the driver controller)
 		drivetrain.setDefaultCommand(!RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
-
 		driverController.leftBumper().whileTrue(driveFieldOrientedAnglularVelocity.finallyDo(drivetrain::resetLastAngleScalar));
+		driverController.x().onTrue(Commands.either(drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.SCORING_POSES_RED), drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.SCORING_POSES_BLUE), () -> Util.isRedAlliance()));
 		// TODO: transfer to dashboard
 		driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
 		driverController.back().onTrue(drivetrain.centerModulesCommand());

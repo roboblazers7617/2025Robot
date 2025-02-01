@@ -14,15 +14,23 @@ import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Pounds;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import com.pathplanner.lib.config.PIDConstants;
 
 import edu.wpi.first.wpilibj.Filesystem;
+import frc.robot.util.PoseUtil;
 import swervelib.math.Matter;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.measure.AngularAcceleration;
@@ -222,5 +230,67 @@ public final class Constants {
 		 * Port for the ramp pivot motor.
 		 */
 		public static final int RAMP_PIVOT_PORT = 2;
+	}
+
+	/**
+	 * Constants that describe the physical layout of the field.
+	 */
+	public static class FieldConstants {
+		/**
+		 * AprilTag Field Layout for the current game.
+		 */
+		public static final AprilTagFieldLayout FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+
+		/**
+		 * Constants relating to the reef.
+		 */
+		public static class Reef {
+			/**
+			 * AprilTag IDs for the reef on the blue alliance.
+			 */
+			public static final List<Integer> TAG_IDS = new ArrayList<Integer>(List.of(17, 18, 19, 20, 21, 22));
+			/**
+			 * AprilTag poses for the reef on the blue alliance.
+			 */
+			public static final List<Pose3d> TAG_POSES = new ArrayList<Pose3d>();
+			/**
+			 * Offset from the AprilTag from which scoring should happen.
+			 */
+			public static final Transform2d SCORING_OFFSET = new Transform2d(Meters.of(0.33 / 2), Meters.of(0.5), new Rotation2d(0));
+			/**
+			 * Poses from which the robot can score on the blue alliance.
+			 */
+			public static final List<Pose2d> SCORING_POSES_BLUE = new ArrayList<Pose2d>();
+			/**
+			 * Poses from which the robot can score on the red alliance.
+			 */
+			public static final List<Pose2d> SCORING_POSES_RED = new ArrayList<Pose2d>();
+
+			static {
+				// Generate a list of tag poses.
+				TAG_IDS.forEach((id) -> {
+					Optional<Pose3d> tagPose = FIELD_LAYOUT.getTagPose(id);
+
+					if (tagPose.isPresent()) {
+						TAG_POSES.add(tagPose.get());
+					}
+				});
+
+				// Generate a list of scoring poses.
+				TAG_POSES.forEach((pose) -> {
+					Pose2d pose2d = pose.toPose2d();
+
+					// Regular side
+					SCORING_POSES_BLUE.add(pose2d.transformBy(SCORING_OFFSET));
+					// Flipped side
+					SCORING_POSES_BLUE.add(pose2d.transformBy(new Transform2d(SCORING_OFFSET.getMeasureX(), SCORING_OFFSET.getMeasureY().times(-1), SCORING_OFFSET.getRotation())));
+				});
+
+				// Generate a list of scoring poses for the other alliance.
+				SCORING_POSES_BLUE.forEach((pose) -> {
+					SCORING_POSES_RED.add(PoseUtil.flipPose(pose));
+				});
+			}
+		}
 	}
 }
