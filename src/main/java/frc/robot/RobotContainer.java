@@ -9,6 +9,7 @@ import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.commands.Autos;
 import frc.robot.util.DrivetrainUtil;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.EndEffector;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
@@ -36,6 +37,7 @@ public class RobotContainer {
 	private final Command driveFieldOrientedDirectAngle = drivetrain.driveFieldOrientedCommand(DrivetrainUtil.driveDirectAngle(drivetrain, driverController));
 	private final Command driveFieldOrientedAnglularVelocity = drivetrain.driveFieldOrientedCommand(DrivetrainUtil.driveAngularVelocity(drivetrain, driverController));
 	private final Command driveFieldOrientedDirectAngleSim = drivetrain.driveFieldOrientedCommand(DrivetrainUtil.driveDirectAngleSim(drivetrain, driverController));
+	private final EndEffector endEffector = new EndEffector();
 
 	/** The container for the robot. Contains subsystems, OI devices, and commands. */
 	public RobotContainer() {
@@ -44,6 +46,8 @@ public class RobotContainer {
 
 		// Configure the trigger bindings
 		configureBindings();
+		driverController.a().onTrue(endEffector.CoralIntake());
+		driverController.b().onTrue(endEffector.CoralOuttake());
 	}
 
 	/**
