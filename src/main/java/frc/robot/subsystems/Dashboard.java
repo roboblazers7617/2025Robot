@@ -63,7 +63,7 @@ public class Dashboard extends SubsystemBase {
 
 	/**
 	 * Configures the auto builder using the drivetrain subsystem. Also sets up the auto chooser on the dashboard.
-	 * 
+	 *
 	 * @param alliance
 	 *            The alliance to configure the auto builder for.
 	 */
@@ -82,7 +82,10 @@ public class Dashboard extends SubsystemBase {
 	}
 
 	private Command resetPose() {
-		return new InstantCommand(() -> drivetrain.resetOdometry(pose.getSelected())).ignoringDisable(true);
+		return new InstantCommand(() -> {
+			drivetrain.resetOdometry(pose.getSelected());
+			drivetrain.resetLastAngleScalar();
+		}).ignoringDisable(true);
 	}
 
 	@Override
