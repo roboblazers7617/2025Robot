@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.224511282784598,
+        "y": 3.0313140869140627
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.777461343331592,
+        "y": 2.90422020428284
+      },
+      "isLocked": false,
+      "linkedName": "Barge Start Right"
+    },
+    {
+      "anchor": {
+        "x": 5.34772469656808,
+        "y": 2.8797184535435267
+      },
+      "prevControl": {
+        "x": 5.5903229893753,
+        "y": 2.9401011358872435
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Branch F"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 119.99999999999999
+  },
+  "reversed": false,
+  "folder": "From Start ",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

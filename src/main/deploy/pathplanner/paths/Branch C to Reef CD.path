@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.639672415597098,
+        "y": 2.884003121512277
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.8729424739588585,
+        "y": 2.7721343694408205
+      },
+      "isLocked": false,
+      "linkedName": "Branch C"
+    },
+    {
+      "anchor": {
+        "x": 3.8,
+        "y": 2.81
+      },
+      "prevControl": {
+        "x": 3.5431392591796937,
+        "y": 2.9255865686580598
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Reef CD"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 59.99999999999999
+  },
+  "reversed": false,
+  "folder": "To Remove Algae",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 59.99999999999999
+  },
+  "useDefaultConstraints": true
+}

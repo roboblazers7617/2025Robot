@@ -1,0 +1,59 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.34772469656808,
+        "y": 2.8797184535435267
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.021585996057668,
+        "y": 2.664413182854022
+      },
+      "isLocked": false,
+      "linkedName": "Branch F"
+    },
+    {
+      "anchor": {
+        "x": 1.6292449951171875,
+        "y": 0.759368896484375
+      },
+      "prevControl": {
+        "x": 1.8587321474306961,
+        "y": 1.0688345590050654
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Coral Station Right Far"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.31294595665961966,
+      "rotationDegrees": 119.99999999999999
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 54.0
+  },
+  "reversed": false,
+  "folder": "To Coral Station",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 119.99999999999999
+  },
+  "useDefaultConstraints": true
+}
