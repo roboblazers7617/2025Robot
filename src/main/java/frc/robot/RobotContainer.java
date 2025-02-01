@@ -72,7 +72,7 @@ public class RobotContainer {
 	 */
 	private void configureBindings() {
 		// Set the default drivetrain command (used for the driver controller)
-		drivetrain.setDefaultCommand(RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
+		drivetrain.setDefaultCommand(!RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
 
 		driverController.leftBumper().whileTrue(driveFieldOrientedAnglularVelocity.finallyDo(drivetrain::resetLastAngleScalar));
 		// TODO: transfer to dashboard
