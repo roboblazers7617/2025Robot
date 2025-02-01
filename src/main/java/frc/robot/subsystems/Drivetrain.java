@@ -14,6 +14,8 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
+
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -27,8 +29,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DrivetrainConstants;
-import frc.robot.Constants.VisionConstants;
+import frc.robot.Constants.DrivetrainConstants;<<<<<<<HEAD
+import frc.robot.Constants.VisionConstants;=======
+import frc.robot.Constants.LoggingConstants;>>>>>>>main
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -66,7 +69,12 @@ public class Drivetrain extends SubsystemBase {
 	 */
 	public Drivetrain(File directory) {
 		// Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
-		SwerveDriveTelemetry.verbosity = DrivetrainConstants.TELEMETRY_VERBOSITY;
+		if (LoggingConstants.DEBUG_MODE) {
+			SwerveDriveTelemetry.verbosity = DrivetrainConstants.TELEMETRY_VERBOSITY_DEBUG;
+		} else {
+			SwerveDriveTelemetry.verbosity = DrivetrainConstants.TELEMETRY_VERBOSITY_NORMAL;
+		}
+
 		try {
 			swerveDrive = new SwerveParser(directory).createSwerveDrive(DrivetrainConstants.MAX_SPEED, DrivetrainConstants.STARTING_POSITION);
 			// Alternative method if you don't want to supply the conversion factor via JSON files.
@@ -80,23 +88,11 @@ public class Drivetrain extends SubsystemBase {
 		swerveDrive.setAngularVelocityCompensation(DrivetrainConstants.AngularVelocityCompensation.USE_IN_TELEOP, DrivetrainConstants.AngularVelocityCompensation.USE_IN_AUTO, DrivetrainConstants.AngularVelocityCompensation.ANGULAR_VELOCITY_COEFFICIENT); // Correct for skew that gets worse as angular velocity increases. Start with a coefficient of 0.1.
 		swerveDrive.setModuleEncoderAutoSynchronize(DrivetrainConstants.EncoderAutoSynchronization.ENABLED, DrivetrainConstants.EncoderAutoSynchronization.DEADBAND); // Enable if you want to resynchronize your absolute encoders and motor encoders periodically when they are not moving.
 		swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder and push the offsets onto it. Throws warning if not possible
-		if (VisionConstants.ENABLE_VISION) {
-			// Stop the odometry thread if we are using vision that way we can synchronize updates better.
-			swerveDrive.stopOdometryThread();
-		}
-		setupPathPlanner();
+		swerveDrive.setMotorIdleMode(true);
+		// Stop the odometry thread if we are using vision that way we can synchronize updates better.
+		swerveDrive.stopOdometryThread();
 	}
 
-	/**
-	 * Construct the swerve drive.
-	 *
-	 * @param driveCfg
-	 *            SwerveDriveConfiguration for the swerve.
-	 * @param controllerCfg
-	 *            Swerve Controller.
-	 */
-	public Drivetrain(SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg) {
-		swerveDrive = new SwerveDrive(driveCfg, controllerCfg, DrivetrainConstants.MAX_SPEED, DrivetrainConstants.STARTING_POSITION);
 	}
 
 	@Override
@@ -114,7 +110,7 @@ public class Drivetrain extends SubsystemBase {
 	/**
 	 * Setup AutoBuilder for PathPlanner.
 	 */
-	public void setupPathPlanner() {
+	public void setupPathPlanner(DriverStation.Alliance alliance) {
 		// Load the RobotConfig from the GUI settings. You should probably
 		// store this in your Constants file
 		RobotConfig config;
@@ -148,11 +144,8 @@ public class Drivetrain extends SubsystemBase {
 						// This will flip the path being followed to the red side of the field.
 						// THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-						var alliance = DriverStation.getAlliance();
-						if (alliance.isPresent()) {
-							return alliance.get() == DriverStation.Alliance.Red;
-						}
-						return false;
+						return alliance == DriverStation.Alliance.Red;
+						// return true;
 					}, this
 			// Reference to this subsystem to set requirements
 			);
