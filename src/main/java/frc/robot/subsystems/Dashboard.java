@@ -9,10 +9,12 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.commands.RunOnceDeferred;
@@ -48,12 +50,15 @@ public class Dashboard extends SubsystemBase {
 		pose.setDefaultOption("position 1", new Pose2d(5, 0, new Rotation2d(0)));
 		pose.addOption("position 2", new Pose2d(0, 0, new Rotation2d(45)));
 
-		pose.onChange((pose) -> {
-			drivetrain.resetOdometry(pose);
-		});
+		// pose.onChange((pose) -> {
+		// drivetrain.resetOdometry(pose);
+		// });
 
+		NetworkTableInstance.getDefault().getTable("SmartDashboard/Alliance").getEntry("selected").setString("None");
+		NetworkTableInstance.getDefault().getTable("SmartDashboard/Alliance").getEntry("active").setString("None");
 		SmartDashboard.putData("Alliance", alliancePicker);
 		SmartDashboard.putData("Pose", pose);
+		SmartDashboard.putData("Reset pose to selected position", resetPose());
 	}
 
 	/**
@@ -74,6 +79,10 @@ public class Dashboard extends SubsystemBase {
 		auto = AutoBuilder.buildAutoChooser();
 		SmartDashboard.putData("Auto", auto);
 		robotContainer.setAutoChooser(auto);
+	}
+
+	private Command resetPose() {
+		return new InstantCommand(() -> drivetrain.resetOdometry(pose.getSelected())).ignoringDisable(true);
 	}
 
 	@Override
