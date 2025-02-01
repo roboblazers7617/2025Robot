@@ -8,6 +8,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.commands.Autos;
 import frc.robot.util.DrivetrainUtil;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.epilogue.Logged;
@@ -28,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
 	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
+	private final Climber climber = new Climber();
 
 	// Replace with CommandPS4Controller or CommandJoystick if needed
 	@NotLogged
@@ -63,6 +65,18 @@ public class RobotContainer {
 		// TODO: transfer to dashboard
 		driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
 		driverController.back().onTrue(drivetrain.centerModulesCommand());
+
+		driverController.y()
+				.onTrue(Commands.runOnce(() -> climber.setServoSpeed(0.1), climber))
+				.onFalse(Commands.runOnce(() -> climber.setServoSpeed(0.0), climber));
+
+		driverController.povUp()
+				.onTrue(Commands.runOnce(() -> climber.setSpeedRampPivot(0.1), climber))
+				.onFalse(Commands.runOnce(() -> climber.setSpeedRampPivot(0.0), climber));
+
+		driverController.povDown()
+				.onTrue(Commands.runOnce(() -> climber.setSpeedRampPivot(-0.1), climber))
+				.onFalse(Commands.runOnce(() -> climber.setSpeedRampPivot(0.0), climber));
 	}
 
 	/**
