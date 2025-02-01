@@ -14,6 +14,10 @@ import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Pounds;
 
 import java.io.File;
+import java.util.List;
+import java.util.stream.IntStream;
+
+import org.w3c.dom.ranges.Range;
 
 import com.pathplanner.lib.config.PIDConstants;
 
@@ -22,6 +26,7 @@ import swervelib.math.Matter;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -212,6 +217,8 @@ public final class Constants {
 		 * Enable vision odometry updates.
 		 */
 		public static final boolean ENABLE_VISION = true;
+		public static final Pose3d CAMERA_POSE = null;
+		public static final List<Double> TAGS_TO_TRACK = IntStream.range(1, 23).asDoubleStream().boxed().toList();
 	}
 
 	/**
