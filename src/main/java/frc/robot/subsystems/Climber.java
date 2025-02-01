@@ -62,7 +62,17 @@ public class Climber extends SubsystemBase {
 	 *            Servo values range from 0.0 to 1.0 corresponding to the range of full left to full right.
 	 */
 	public void setServoPosition(double position) {
+		// climbRachet.set(position);
 		climbRachet.set(position);
+	}
+
+	/**
+	 * Set the speed of the servo.
+	 * 
+	 * @param speed
+	 */
+	public void setServoSpeed(double speed) {
+		climbRachet.setSpeed(speed);
 	}
 
 	/**
