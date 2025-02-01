@@ -18,12 +18,21 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.Reef;
+import frc.robot.Constants.WristConstants;
 
 public class Elevator extends SubsystemBase {
 	/** The right motor */
 	private final SparkMax leaderElevatorMotor = new SparkMax(ElevatorConstants.RIGHT_MOTOR_ID, MotorType.kBrushless);
 	/** The left motor */
 	private final SparkMax followerElevatorMotor = new SparkMax(ElevatorConstants.LEFT_MOTOR_ID, MotorType.kBrushless);
+
+	/** the elevator target in meters, this may not be safe */
+	private double elevatorTarget = 0;
+
+	/**
+	 * the wrist
+	 */
+	private final SparkMax wristMotor = new SparkMax(WristConstants.MOTOR_ID, MotorType.kBrushless);
 
 	public Elevator() {
 		SparkMaxConfig baseElevatorConfig = new SparkMaxConfig();
@@ -49,6 +58,26 @@ public class Elevator extends SubsystemBase {
 
 		SparkBaseConfig followerElevatorMotorConfig = new SparkMaxConfig().apply(baseElevatorConfig).follow(leaderElevatorMotor);
 		followerElevatorMotor.configure(followerElevatorMotorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+
+		SparkMaxConfig wristConfig = new SparkMaxConfig();
+
+		wristConfig.absoluteEncoder
+				.positionConversionFactor(WristConstants.POSITION_CONVERSION_FACTOR)
+				.velocityConversionFactor(WristConstants.VELOCITY_CONVERSION_FACTOR)
+				.zeroOffset(WristConstants.ZERO_OFFSET);
+
+		wristConfig.closedLoop
+				.p(WristConstants.KP)
+				.i(WristConstants.KI)
+				.d(WristConstants.KD)
+				.outputRange(WristConstants.KMIN_OUTPUT, WristConstants.KMAX_OUTPUT)
+				.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
+
+		wristConfig.closedLoop.maxMotion
+				.maxVelocity(WristConstants.MAX_VELOCITY)
+				.maxAcceleration(WristConstants.MAX_ACCELERATION);
+
+		wristMotor.configure(wristConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 	}
 
 	@Override
