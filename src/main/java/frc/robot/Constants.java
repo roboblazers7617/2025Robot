@@ -229,20 +229,38 @@ public final class Constants {
 		public static final double KD = 0.0;
 		public static final double KMIN_OUTPUT = -1.0;
 		public static final double KMAX_OUTPUT = 1.0;
+		/**
+		 * Max velocity in m/s.
+		 */
 		public static final double MAX_VELOCITY = 1;
+		/**
+		 * Max acceleration in m/s^2.
+		 */
 		public static final double MAX_ACCELERATION = 1;
 
-		/** max position in meters */
+		/**
+		 * Max position in meters.
+		 */
 		public static final double MAX_POSITION = 1;
-		/** min position in meters */
+		/**
+		 * Min position in meters.
+		 */
 		public static final double MIN_POSITION = 0;
-		/** min position where the wrist cannot hit anything, in */
+		/**
+		 * Min position where the wrist cannot hit anything, in meters.
+		 */
 		public static final double SAFE_MIN_POSITION = 0.2;
-		/** change from rotation to meters */
+		/**
+		 * Change from rotation to meters.
+		 */
 		public static final double POSITION_CONVERSION_FACTOR = 1; // TODO
-		/** change from rotation to meters */
+		/**
+		 * Change from rotation to meters.
+		 */
 		public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR;
-		/** zero offset, MUST BE [0,1) */
+		/**
+		 * Zero offset, MUST BE [0,1).
+		 */
 		public static final double ZERO_OFFSET = 0;
 	}
 
@@ -254,20 +272,21 @@ public final class Constants {
 		public static final double KD = 0.0;
 		public static final double KMIN_OUTPUT = -1.0;
 		public static final double KMAX_OUTPUT = 1.0;
+		/** Max velocity in m/s. */
 		public static final double MAX_VELOCITY = 1;
 		public static final double MAX_ACCELERATION = 1;
 
-		/** max position in degrees */
+		/** Max position in degrees. */
 		public static final double MAX_POSITION = 90;
-		/** min position in degrees */
+		/** Min position in degrees. */
 		public static final double MIN_POSITION = 0;
-		/** min position where the wrist cannot hit anything, in degrees */
+		/** Min position where the wrist cannot hit anything, in degrees. */
 		public static final double SAFE_MIN_POSITION = 10;
-		/** change from rotation to meters */
+		/** Change from rotation to meters. */
 		public static final double POSITION_CONVERSION_FACTOR = 1; // TODO
-		/** change from rotation to meters */
+		/** Change from rotation to meters. */
 		public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR;
-		/** zero offset, MUST BE [0,1) */
+		/** Zero offset, MUST BE [0,1). */
 		public static final double ZERO_OFFSET = 0;
 	}
 

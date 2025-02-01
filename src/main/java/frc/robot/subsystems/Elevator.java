@@ -21,6 +21,9 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.Reef;
 import frc.robot.Constants.WristConstants;
 
+/**
+ * The elevator subsystem.
+ */
 public class Elevator extends SubsystemBase {
 	/** The right motor */
 	private final SparkMax leaderElevatorMotor = new SparkMax(ElevatorConstants.RIGHT_MOTOR_ID, MotorType.kBrushless);
@@ -133,7 +136,7 @@ public class Elevator extends SubsystemBase {
 	}
 
 	/**
-	 * a command set the elvator speed in m/s
+	 * A command set the elvator speed in m/s.
 	 * 
 	 * @param speed
 	 * @return the command
@@ -145,7 +148,7 @@ public class Elevator extends SubsystemBase {
 	}
 
 	/**
-	 * a command to move the elevator to l1
+	 * a command to move the elevator to the supplied reef
 	 */
 	public Command setElevator(Reef reef) {
 		return this.runOnce(() -> {
@@ -163,7 +166,7 @@ public class Elevator extends SubsystemBase {
 	}
 
 	/**
-	 * a command set the wrist speed in m/s
+	 * A command set the wrist speed in m/s.
 	 * 
 	 * @param speed
 	 * @return the command
@@ -175,7 +178,7 @@ public class Elevator extends SubsystemBase {
 	}
 
 	/**
-	 * a command to move the wrist to a position
+	 * A command to move the wrist to a position in meters.
 	 * 
 	 * @param position
 	 * @return the command
