@@ -72,9 +72,13 @@ public final class Constants {
 		 */
 		public static final File CONFIG_DIR = new File(Filesystem.getDeployDirectory(), "swerve");
 		/**
-		 * YAGSL telemetry verbosity.
+		 * YAGSL telemetry verbosity when in debug mode.
 		 */
-		public static final TelemetryVerbosity TELEMETRY_VERBOSITY = TelemetryVerbosity.HIGH;
+		public static final TelemetryVerbosity TELEMETRY_VERBOSITY_DEBUG = TelemetryVerbosity.HIGH;
+		/**
+		 * YAGSL telemetry verbosity when in normal mode.
+		 */
+		public static final TelemetryVerbosity TELEMETRY_VERBOSITY_NORMAL = TelemetryVerbosity.POSE;
 		/**
 		 * Translation axis scaling. Changes the overall maximum speed of the drivetrain.
 		 */

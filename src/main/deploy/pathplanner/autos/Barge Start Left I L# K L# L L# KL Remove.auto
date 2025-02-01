@@ -1,0 +1,49 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Barge Start Left to Branch I"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Branch I to Coral Station Left Far"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Coral Station Left Far  to Branch K"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Branch K to Coral Station Left Far"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Coral Station Left Far to Branch L"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Branch L to Reef KL"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "3 Coral .5 Algae",
+  "choreoAuto": false
+}
