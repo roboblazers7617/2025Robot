@@ -27,7 +27,7 @@ public class Elevator extends SubsystemBase {
 	/** The left motor */
 	private final SparkMax followerElevatorMotor = new SparkMax(ElevatorConstants.LEFT_MOTOR_ID, MotorType.kBrushless);
 
-	/** the elevator target in meters, this may not be safe */
+	/** the elevator target in meters, this may not be safe, if no value than it is in speed controll */
 	private Optional<Double> elevatorTarget = Optional.of(0.0);
 
 	/**
@@ -35,7 +35,7 @@ public class Elevator extends SubsystemBase {
 	 */
 	private final SparkMax wristMotor = new SparkMax(WristConstants.MOTOR_ID, MotorType.kBrushless);
 
-	/** the wrist target in degrees, this may not be safe */
+	/** the wrist target in degrees, this may not be safe, if no value than it is in speed controll */
 	private Optional<Double> wristTarget = Optional.of(0.0);
 
 	public Elevator() {
@@ -102,6 +102,7 @@ public class Elevator extends SubsystemBase {
 			if (wristMotor.getEncoder().getPosition() < WristConstants.SAFE_MIN_POSITION && target < ElevatorConstants.SAFE_MIN_POSITION) {
 				target = ElevatorConstants.SAFE_MIN_POSITION;
 			}
+			leaderElevatorMotor.getClosedLoopController().setReference(target, ControlType.kPosition);
 		}
 
 		// if there is no wrist target, do nothing (this is probably because the wrist is being controlled by a speed)
@@ -118,11 +119,11 @@ public class Elevator extends SubsystemBase {
 			if (leaderElevatorMotor.getEncoder().getPosition() < ElevatorConstants.SAFE_MIN_POSITION && target < WristConstants.SAFE_MIN_POSITION) {
 				target = WristConstants.SAFE_MIN_POSITION;
 			}
+			wristMotor.getClosedLoopController().setReference(target, ControlType.kPosition);
 		}
 	}
 
 	private void setElevatorPosition(double position) {
-		// leaderElevatorMotor.getClosedLoopController().setReference(position, ControlType.kPosition);
 		elevatorTarget = Optional.of(position);
 	}
 
@@ -149,6 +150,39 @@ public class Elevator extends SubsystemBase {
 	public Command setElevator(Reef reef) {
 		return this.runOnce(() -> {
 			setElevatorPosition(reef.getHeight());
+		});
+	}
+
+	private void setWristPosition(double position) {
+		wristTarget = Optional.of(position);
+	}
+
+	private void setWristSpeed(double speed) {
+		wristMotor.getClosedLoopController().setReference(speed, ControlType.kVelocity);
+		wristTarget = Optional.empty();
+	}
+
+	/**
+	 * a command set the wrist speed in m/s
+	 * 
+	 * @param speed
+	 * @return the command
+	 */
+	public Command setWristSpeedCommand(DoubleSupplier speed) {
+		return this.runOnce(() -> {
+			setWristSpeed(speed.getAsDouble());
+		});
+	}
+
+	/**
+	 * a command to move the wrist to a position
+	 * 
+	 * @param position
+	 * @return the command
+	 */
+	public Command setWristPositionCommand(DoubleSupplier position) {
+		return this.runOnce(() -> {
+			setWristPosition(position.getAsDouble());
 		});
 	}
 }
