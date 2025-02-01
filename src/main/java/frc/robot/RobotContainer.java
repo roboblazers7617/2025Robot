@@ -80,9 +80,13 @@ public class RobotContainer {
 		return autoChooser.getSelected();
 	}
 
+	/**
+	 * Set the auto chooser
+	 * 
+	 * @param auto
+	 *            a sendable chooser with Commands for the autos
+	 */
 	public void setAutoChooser(SendableChooser<Command> auto) {
-		// TODO Auto-generated method stub
-		// throw new UnsupportedOperationException("Unimplemented method 'setAutoChooser'");
 		autoChooser = auto;
 	}
 }

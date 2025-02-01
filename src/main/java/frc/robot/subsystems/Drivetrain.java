@@ -88,7 +88,6 @@ public class Drivetrain extends SubsystemBase {
 			// Stop the odometry thread if we are using vision that way we can synchronize updates better.
 			swerveDrive.stopOdometryThread();
 		}
-		// setupPathPlanner(DriverStation.Alliance.Blue);
 	}
 
 	/**

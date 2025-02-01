@@ -18,6 +18,9 @@ import frc.robot.RobotContainer;
 import frc.robot.commands.RunOnceDeferred;
 import frc.robot.commands.drivetrain.LockWheelsState;
 
+/**
+ * A class that sets up the driverstation dashboard for the robot.
+ */
 public class Dashboard extends SubsystemBase {
 	final Drivetrain drivetrain;
 	final RobotContainer robotContainer;
@@ -45,11 +48,6 @@ public class Dashboard extends SubsystemBase {
 		pose.setDefaultOption("position 1", new Pose2d(5, 0, new Rotation2d(0)));
 		pose.addOption("position 2", new Pose2d(0, 0, new Rotation2d(45)));
 
-		// pose.onChange((pose) -> {
-		// new RunOnceDeferred(() -> {
-		// drivetrain.resetOdometry(pose);
-		// }).ignoringDisable(true).schedule();
-		// });
 		pose.onChange((pose) -> {
 			drivetrain.resetOdometry(pose);
 		});
@@ -58,8 +56,13 @@ public class Dashboard extends SubsystemBase {
 		SmartDashboard.putData("Pose", pose);
 	}
 
+	/**
+	 * Configures the auto builder using the drivetrain subsystem. Also sets up the auto chooser on the dashboard.
+	 * 
+	 * @param alliance
+	 *            The alliance to configure the auto builder for.
+	 */
 	public void configureAutoBuilder(DriverStation.Alliance alliance) {
-		// drivetrain.setAlliance(alliancePicker.getSelected());
 		if (alliance == null) {
 			System.out.println("BAD! Allicance builder run without selected alliance");
 			return;
