@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.commands.RunOnceDeferred;
-import frc.robot.commands.drivetrain.LockWheelsState;
+import frc.robot.commands.drivetrain.LockWheelsCommand;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 
 /**
@@ -76,7 +76,7 @@ public class Dashboard extends SubsystemBase {
 		Auto.setupPathPlanner(drivetrain, alliance);
 		System.out.println("Configured path planner");
 
-		NamedCommands.registerCommand("LockWheelsState", new LockWheelsState(drivetrain));
+		NamedCommands.registerCommand("LockWheelsState", new LockWheelsCommand(drivetrain));
 		auto = AutoBuilder.buildAutoChooser();
 		SmartDashboard.putData("Auto", auto);
 		robotContainer.setAutoChooser(auto);
