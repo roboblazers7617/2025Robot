@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeAlgaeOnField;
-import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeCoral;
+import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeCoralOnField;
 
 import frc.robot.Constants.LoggingConstants;
 
@@ -137,7 +137,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void simulationInit() {
 		// Add game pieces to MapleSim
-		SimulatedArena.getInstance().addGamePiece(new ReefscapeCoral(
+		SimulatedArena.getInstance().addGamePiece(new ReefscapeCoralOnField(
 				// We must specify a heading since the coral is a tube
 				new Pose2d(2, 2, Rotation2d.fromDegrees(90))));
 
