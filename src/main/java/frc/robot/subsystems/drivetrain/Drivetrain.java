@@ -274,46 +274,6 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	/**
-	 * Get the chassis speeds based on controller input of 2 joysticks. One for speeds in which direction. The other for
-	 * the angle of the robot.
-	 *
-	 * @param xInput
-	 *            X joystick input for the robot to move in the X direction.
-	 * @param yInput
-	 *            Y joystick input for the robot to move in the Y direction.
-	 * @param headingX
-	 *            X joystick which controls the angle of the robot.
-	 * @param headingY
-	 *            Y joystick which controls the angle of the robot.
-	 * @return
-	 *         {@link ChassisSpeeds} which can be sent to the Swerve Drive.
-	 */
-	public ChassisSpeeds getTargetSpeedsFromController(double xInput, double yInput, double headingX, double headingY) {
-		Translation2d curvedInputs = SwerveMath.cubeTranslation(new Translation2d(xInput, yInput));
-
-		return swerveDrive.swerveController.getTargetSpeeds(curvedInputs.getX(), curvedInputs.getY(), headingX, headingY, getHeading().getRadians(), DrivetrainConstants.MAX_SPEED);
-	}
-
-	/**
-	 * Get the chassis speeds based on controller input of 1 joystick and one angle. Control the robot at an offset of
-	 * 90deg.
-	 *
-	 * @param xInput
-	 *            X joystick input for the robot to move in the X direction.
-	 * @param yInput
-	 *            Y joystick input for the robot to move in the Y direction.
-	 * @param angle
-	 *            The angle in as a {@link Rotation2d}.
-	 * @return
-	 *         {@link ChassisSpeeds} which can be sent to the Swerve Drive.
-	 */
-	public ChassisSpeeds getTargetSpeedsFromController(double xInput, double yInput, Rotation2d angle) {
-		Translation2d curvedInputs = SwerveMath.cubeTranslation(new Translation2d(xInput, yInput));
-
-		return swerveDrive.swerveController.getTargetSpeeds(curvedInputs.getX(), curvedInputs.getY(), angle.getRadians(), getHeading().getRadians(), DrivetrainConstants.MAX_SPEED);
-	}
-
-	/**
 	 * Gets the current field-relative velocity (x, y and omega) of the robot.
 	 *
 	 * @return
