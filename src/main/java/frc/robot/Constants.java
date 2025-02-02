@@ -60,7 +60,7 @@ public final class Constants {
 	}
 
 	/**
-	 * Constants used by the {@link frc.robot.subsystems.Drivetrain}.
+	 * Constants used by the {@link frc.robot.subsystems.drivetrain.Drivetrain}.
 	 */
 	public static class DrivetrainConstants {
 		/**
