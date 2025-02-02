@@ -309,5 +309,48 @@ public final class Constants {
 				});
 			}
 		}
+
+		/**
+		 * Constants relating to the processor.
+		 */
+		public static class Processor {
+			/**
+			 * AprilTag ID for the processor on the blue alliance.
+			 */
+			public static final int TAG_ID = 16;
+			/**
+			 * AprilTag pose for the processor on the blue alliance.
+			 */
+			public static final Pose3d TAG_POSE;
+			/**
+			 * Offset from the AprilTag from which scoring should happen.
+			 */
+			public static final Transform2d SCORING_OFFSET = new Transform2d(Meters.of(0.33 / 2), Meters.of(0), new Rotation2d(0));
+			/**
+			 * Pose from which the robot can score on the blue alliance.
+			 */
+			public static final Pose2d SCORING_POSE_BLUE;
+			/**
+			 * Pose from which the robot can score on the red alliance.
+			 */
+			public static final Pose2d SCORING_POSE_RED;
+
+			static {
+				// Find the tag pose.
+				Optional<Pose3d> tagPose = FIELD_LAYOUT.getTagPose(TAG_ID);
+
+				if (tagPose.isPresent()) {
+					TAG_POSE = tagPose.get();
+				} else {
+					TAG_POSE = new Pose3d();
+				}
+
+				// Generate scoring poses.
+				Pose2d pose2d = TAG_POSE.toPose2d();
+
+				SCORING_POSE_BLUE = pose2d.transformBy(SCORING_OFFSET);
+				SCORING_POSE_RED = PoseUtil.flipPose(SCORING_POSE_BLUE);
+			}
+		}
 	}
 }
