@@ -3,6 +3,8 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.AsynchronousInterrupt;
 import edu.wpi.first.wpilibj.DigitalSource;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 
 /**
@@ -12,7 +14,7 @@ public class WaitUntilInterrupt extends Command {
 	/**
 	 * Set to true after the callback is called.
 	 */
-	private boolean hasFinished = false;
+	private AtomicBoolean hasFinished = new AtomicBoolean(false);
 	private final AsynchronousInterrupt interrupt;
 
 	/**
@@ -32,7 +34,7 @@ public class WaitUntilInterrupt extends Command {
 	public WaitUntilInterrupt(DigitalSource source, BiConsumer<Boolean, Boolean> callback, boolean risingEdge, boolean fallingEdge) {
 		interrupt = new AsynchronousInterrupt(source, (rising, falling) -> {
 			callback.accept(rising, falling);
-			hasFinished = true;
+			hasFinished.set(true);
 		});
 		interrupt.setInterruptEdges(risingEdge, fallingEdge);
 	}
@@ -53,7 +55,7 @@ public class WaitUntilInterrupt extends Command {
 
 	@Override
 	public void initialize() {
-		hasFinished = false;
+		hasFinished.set(false);
 		interrupt.enable();
 	}
 
@@ -64,6 +66,6 @@ public class WaitUntilInterrupt extends Command {
 
 	@Override
 	public boolean isFinished() {
-		return hasFinished;
+		return hasFinished.get();
 	}
 }
