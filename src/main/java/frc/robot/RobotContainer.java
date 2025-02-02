@@ -57,8 +57,7 @@ public class RobotContainer {
 	 */
 	public void teleopInit() {
 		// Reset the last angle so the robot doesn't try to spin.
-		var alliance = DriverStation.getAlliance();
-		if (alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false) {
+		if (Util.isRedAlliance()) {
 			drivetrain.resetLastAngleScalarInverted();
 		} else {
 			drivetrain.resetLastAngleScalar();
