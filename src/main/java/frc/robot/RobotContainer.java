@@ -32,7 +32,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
 	private SendableChooser<Command> autoChooser = new SendableChooser<>();
 	// The robot's subsystems and commands are defined here...
+	@NotLogged
 	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
+	@NotLogged
 	private final Dashboard dashboard = new Dashboard(drivetrain, this);
 
 	// Replace with CommandPS4Controller or CommandJoystick if needed
@@ -40,9 +42,11 @@ public class RobotContainer {
 	private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
 	@NotLogged
 	private final CommandXboxController operatorController = new CommandXboxController(OperatorConstants.OPERATOR_CONTROLLER_PORT);
-
+	@NotLogged
 	private final Command driveFieldOrientedDirectAngle = drivetrain.driveFieldOrientedCommand(DrivetrainUtil.driveDirectAngle(drivetrain, driverController));
+	@NotLogged
 	private final Command driveFieldOrientedAnglularVelocity = drivetrain.driveFieldOrientedCommand(DrivetrainUtil.driveAngularVelocity(drivetrain, driverController));
+	@NotLogged
 	private final Command driveFieldOrientedDirectAngleSim = drivetrain.driveFieldOrientedCommand(DrivetrainUtil.driveDirectAngleSim(drivetrain, driverController));
 
 	private GAMEPIECE_MODE gamepieceMode = GAMEPIECE_MODE.CORAL_MODE;
