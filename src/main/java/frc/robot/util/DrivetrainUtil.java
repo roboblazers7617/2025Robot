@@ -22,7 +22,7 @@ public final class DrivetrainUtil {
 	 */
 	public static SwerveInputStream driveAngularVelocity(Drivetrain drivetrain, CommandXboxController controller) {
 		return SwerveInputStream.of(drivetrain.getSwerveDrive(), () -> (-1 * controller.getLeftY()), () -> (-1 * controller.getLeftX()))
-				.withControllerRotationAxis(controller::getRightX)
+				.withControllerRotationAxis(() -> (-1 * controller.getRightX()))
 				.deadband(OperatorConstants.DEADBAND)
 				.scaleTranslation(DrivetrainConstants.TRANSLATION_SCALE)
 				.allianceRelativeControl(true);
@@ -40,7 +40,7 @@ public final class DrivetrainUtil {
 	 */
 	public static SwerveInputStream driveDirectAngle(Drivetrain drivetrain, CommandXboxController controller) {
 		return driveAngularVelocity(drivetrain, controller)
-				.withControllerHeadingAxis(controller::getRightX, controller::getRightY)
+				.withControllerHeadingAxis(() -> (-1 * controller.getRightX()), () -> (-1 * controller.getRightY()))
 				.headingWhile(true);
 	}
 

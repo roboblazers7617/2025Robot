@@ -14,6 +14,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -24,10 +25,13 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.LoggingConstants;
+import frc.robot.util.Util;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -35,6 +39,9 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -43,7 +50,6 @@ import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
 import swervelib.math.SwerveMath;
-import swervelib.parser.SwerveControllerConfiguration;
 import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
@@ -69,7 +75,12 @@ public class Drivetrain extends SubsystemBase {
 	 */
 	public Drivetrain(File directory) {
 		// Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
-		SwerveDriveTelemetry.verbosity = DrivetrainConstants.TELEMETRY_VERBOSITY;
+		if (LoggingConstants.DEBUG_MODE) {
+			SwerveDriveTelemetry.verbosity = DrivetrainConstants.TELEMETRY_VERBOSITY_DEBUG;
+		} else {
+			SwerveDriveTelemetry.verbosity = DrivetrainConstants.TELEMETRY_VERBOSITY_NORMAL;
+		}
+
 		try {
 			swerveDrive = new SwerveParser(directory).createSwerveDrive(DrivetrainConstants.MAX_SPEED, DrivetrainConstants.STARTING_POSITION);
 			// Alternative method if you don't want to supply the conversion factor via JSON files.
@@ -77,29 +88,19 @@ public class Drivetrain extends SubsystemBase {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+		swerveDrive.setAutoCenteringModules(false);
 		swerveDrive.setHeadingCorrection(DrivetrainConstants.ENABLE_HEADING_CORRECTION);
 		swerveDrive.setCosineCompensator(DrivetrainConstants.ENABLE_COSINE_COMPENSATION);// !SwerveDriveTelemetry.isSimulation); // Disables cosine compensation for simulations since it causes discrepancies not seen in real life.
 		swerveDrive.setAngularVelocityCompensation(DrivetrainConstants.AngularVelocityCompensation.USE_IN_TELEOP, DrivetrainConstants.AngularVelocityCompensation.USE_IN_AUTO, DrivetrainConstants.AngularVelocityCompensation.ANGULAR_VELOCITY_COEFFICIENT); // Correct for skew that gets worse as angular velocity increases. Start with a coefficient of 0.1.
 		swerveDrive.setModuleEncoderAutoSynchronize(DrivetrainConstants.EncoderAutoSynchronization.ENABLED, DrivetrainConstants.EncoderAutoSynchronization.DEADBAND); // Enable if you want to resynchronize your absolute encoders and motor encoders periodically when they are not moving.
 		swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder and push the offsets onto it. Throws warning if not possible
+
+		swerveDrive.setMotorIdleMode(true);
 		if (visionDriveTest) {
 			// TODO: Setup vision here
 			// Stop the odometry thread if we are using vision that way we can synchronize updates better.
 			swerveDrive.stopOdometryThread();
 		}
-		setupPathPlanner();
-	}
-
-	/**
-	 * Construct the swerve drive.
-	 *
-	 * @param driveCfg
-	 *            SwerveDriveConfiguration for the swerve.
-	 * @param controllerCfg
-	 *            Swerve Controller.
-	 */
-	public Drivetrain(SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg) {
-		swerveDrive = new SwerveDrive(driveCfg, controllerCfg, DrivetrainConstants.MAX_SPEED, DrivetrainConstants.STARTING_POSITION);
 	}
 
 	@Override
@@ -117,14 +118,14 @@ public class Drivetrain extends SubsystemBase {
 	/**
 	 * Setup AutoBuilder for PathPlanner.
 	 */
-	public void setupPathPlanner() {
+	public void setupPathPlanner(DriverStation.Alliance alliance) {
 		// Load the RobotConfig from the GUI settings. You should probably
 		// store this in your Constants file
 		RobotConfig config;
 		try {
 			config = RobotConfig.fromGUISettings();
 
-			final boolean enableFeedforward = true;
+			final boolean enableFeedforward = false;
 			// Configure AutoBuilder last
 			AutoBuilder.configure(this::getPose,
 					// Robot pose supplier
@@ -151,11 +152,8 @@ public class Drivetrain extends SubsystemBase {
 						// This will flip the path being followed to the red side of the field.
 						// THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-						var alliance = DriverStation.getAlliance();
-						if (alliance.isPresent()) {
-							return alliance.get() == DriverStation.Alliance.Red;
-						}
-						return false;
+						return alliance == DriverStation.Alliance.Red;
+						// return true;
 					}, this
 			// Reference to this subsystem to set requirements
 			);
@@ -261,7 +259,7 @@ public class Drivetrain extends SubsystemBase {
 	 *         SysId Drive Command
 	 */
 	public Command sysIdDriveMotorCommand() {
-		return SwerveDriveTest.generateSysIdCommand(SwerveDriveTest.setDriveSysIdRoutine(new Config(), this, swerveDrive, DrivetrainConstants.SysId.MAX_VOLTS), DrivetrainConstants.SysId.DELAY, DrivetrainConstants.SysId.QUASI_TIMEOUT, DrivetrainConstants.SysId.DYNAMIC_TIMEOUT);
+		return SwerveDriveTest.generateSysIdCommand(SwerveDriveTest.setDriveSysIdRoutine(new Config(), this, swerveDrive, DrivetrainConstants.SysId.MAX_VOLTS, DrivetrainConstants.SysId.TEST_WITH_SPINNING), DrivetrainConstants.SysId.DELAY, DrivetrainConstants.SysId.QUASI_TIMEOUT, DrivetrainConstants.SysId.DYNAMIC_TIMEOUT);
 	}
 
 	/**
@@ -281,8 +279,8 @@ public class Drivetrain extends SubsystemBase {
 	 *         Command to run
 	 */
 	public Command centerModulesCommand() {
-		return run(() -> Arrays.asList(swerveDrive.getModules())
-				.forEach(it -> it.setAngle(0.0)));
+		return Commands.deadline(Commands.waitUntil(() -> (Arrays.asList(swerveDrive.getModules()).stream().allMatch((module) -> (Math.abs(module.getAbsolutePosition()) > 2)))), Commands.run(() -> Arrays.asList(swerveDrive.getModules())
+				.forEach(it -> it.setAngle(0.0))));
 	}
 
 	/**
@@ -295,17 +293,6 @@ public class Drivetrain extends SubsystemBase {
 	 */
 	public void postTrajectory(Trajectory trajectory) {
 		swerveDrive.postTrajectory(trajectory);
-	}
-
-	/**
-	 * Checks if the alliance is red, defaults to false if alliance isn't available.
-	 *
-	 * @return
-	 *         true if the red alliance, false if blue. Defaults to false if none is available.
-	 */
-	private boolean isRedAlliance() {
-		var alliance = DriverStation.getAlliance();
-		return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
 	}
 
 	/**
@@ -324,7 +311,7 @@ public class Drivetrain extends SubsystemBase {
 	 * If red alliance rotate the robot 180 after the drviebase zero command
 	 */
 	public void zeroGyroWithAlliance() {
-		if (isRedAlliance()) {
+		if (Util.isRedAlliance()) {
 			zeroGyro();
 			// Set the pose 180 degrees
 			resetOdometry(new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(180)));
@@ -466,6 +453,22 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	/**
+	 * The method to reset what the heading control will turn to if no angle is inputed. Used to prevent angle snapback.
+	 */
+	public void resetLastAngleScalar() {
+		swerveDrive.swerveController.lastAngleScalar = getHeading().getRadians();
+	}
+
+	/**
+	 * Inverted method to reset what the heading control will turn to if no angle is inputed. Used to prevent angle snapback.
+	 *
+	 * @see #resetLastAngleScalar()
+	 */
+	public void resetLastAngleScalarInverted() {
+		swerveDrive.swerveController.lastAngleScalar = getHeading().rotateBy(Rotation2d.k180deg).getRadians();
+	}
+
+	/**
 	 * Use PathPlanner Path finding to go to a point on the field.
 	 *
 	 * @param pose
@@ -475,13 +478,25 @@ public class Drivetrain extends SubsystemBase {
 	 * @see
 	 *      AutoBuilder#pathfindToPose(Pose2d, PathConstraints, edu.wpi.first.units.measure.LinearVelocity)
 	 */
-	public Command driveToPoseCommand(Pose2d pose) {
+	public Command driveToPoseCommand(Supplier<Pose2d> pose) {
 		// Create the constraints to use while pathfinding
 		PathConstraints constraints = new PathConstraints(MetersPerSecond.of(swerveDrive.getMaximumChassisVelocity()), DrivetrainConstants.Pathfinding.MAX_LINEAR_ACCELERATION, RadiansPerSecond.of(swerveDrive.getMaximumChassisAngularVelocity()), DrivetrainConstants.Pathfinding.MAX_ANGULAR_ACCELERATION);
 
 		// Since AutoBuilder is configured, we can use it to build pathfinding commands
-		return AutoBuilder.pathfindToPose(pose, constraints, MetersPerSecond.of(0) // Goal end velocity in meters/sec
-		);
+		return Commands.defer(() -> AutoBuilder.pathfindToPose(pose.get(), constraints, MetersPerSecond.of(0) // Goal end velocity in meters/sec
+		), new HashSet<Subsystem>(Set.of(this)));
+	}
+
+	/**
+	 * Drives to the nearest pose out of a list.
+	 *
+	 * @param poseList
+	 *            List of poses to choose from.
+	 * @return
+	 *         {@link Command} to run.
+	 */
+	public Command driveToNearestPoseCommand(List<Pose2d> poseList) {
+		return driveToPoseCommand(() -> getPose().nearest(poseList));
 	}
 
 	/**
