@@ -73,7 +73,7 @@ public class Dashboard extends SubsystemBase {
 			System.out.println("BAD! Allicance builder run without selected alliance");
 			return;
 		}
-		drivetrain.setupPathPlanner(alliance);
+		Auto.setupPathPlanner(drivetrain, alliance);
 		System.out.println("Configured path planner");
 
 		NamedCommands.registerCommand("LockWheelsState", new LockWheelsState(drivetrain));
