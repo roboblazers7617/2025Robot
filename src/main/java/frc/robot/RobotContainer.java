@@ -11,9 +11,7 @@ import frc.robot.util.Util;
 import frc.robot.util.DrivetrainUtil;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Drivetrain;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
@@ -58,8 +56,7 @@ public class RobotContainer {
 	 */
 	public void teleopInit() {
 		// Reset the last angle so the robot doesn't try to spin.
-		var alliance = DriverStation.getAlliance();
-		if (alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false) {
+		if (Util.isRedAlliance()) {
 			drivetrain.resetLastAngleScalarInverted();
 		} else {
 			drivetrain.resetLastAngleScalar();
@@ -97,7 +94,7 @@ public class RobotContainer {
 
 	/**
 	 * Set the auto chooser
-	 * 
+	 *
 	 * @param auto
 	 *            a sendable chooser with Commands for the autos
 	 */
