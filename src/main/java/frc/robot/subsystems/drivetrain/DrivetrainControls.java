@@ -1,15 +1,14 @@
-package frc.robot.util;
+package frc.robot.subsystems.drivetrain;
 
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.subsystems.Drivetrain;
 import swervelib.SwerveInputStream;
 
 /**
- * Class that contains utility functions for controlling the {@link frc.robot.subsystems.Drivetrain}.
+ * Class that contains utility functions for controlling the {@link Drivetrain} with HID controllers.
  */
-public final class DrivetrainUtil {
+public final class DrivetrainControls {
 	/**
 	 * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
 	 *

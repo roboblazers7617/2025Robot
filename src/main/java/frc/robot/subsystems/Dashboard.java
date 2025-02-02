@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.commands.RunOnceDeferred;
 import frc.robot.commands.drivetrain.LockWheelsState;
+import frc.robot.subsystems.drivetrain.Drivetrain;
 
 /**
  * A class that sets up the driverstation dashboard for the robot.
