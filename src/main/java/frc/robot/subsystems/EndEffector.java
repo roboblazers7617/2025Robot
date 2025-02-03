@@ -41,6 +41,7 @@ public class EndEffector extends SubsystemBase {
 		endEffectorMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 	}
 
+	// commands.waitUntill
 	@Override
 	public void periodic() {
 		// This method will be called once per scheduler run
@@ -84,12 +85,8 @@ public class EndEffector extends SubsystemBase {
 
 	public Command CoralIntake() {
 		return StartMotor(() -> EndEffectorConstants.CORAL_INTAKE_SPEED)
-				.andThen(Commands.runOnce(() -> {
-					System.out.println("Test");
-				}))
-				.andThen(new WaitUntilInterrupt(coralBeamBreak, (rising, falling) -> {
-					stopMotor();
-				}, false, true));
+				.andThen(Commands.waitUntil(() -> coralBeamBreak.get()))
+				.andThen(StopMotor());
 	}
 
 	public Command CoralOuttake() {
