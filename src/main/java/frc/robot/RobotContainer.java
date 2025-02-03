@@ -67,8 +67,8 @@ public class RobotContainer {
 		driverController.back().onTrue(drivetrain.centerModulesCommand());
 
 		driverController.y()
-				.onTrue(Commands.runOnce(() -> climber.setServoSpeed(0.1), climber))
-				.onFalse(Commands.runOnce(() -> climber.setServoSpeed(0.0), climber));
+				.onTrue(Commands.runOnce(() -> climber.setServoPosition(0.1), climber))
+				.onFalse(Commands.runOnce(() -> climber.setServoPosition(0.0), climber));
 
 		driverController.povUp()
 				.onTrue(Commands.runOnce(() -> climber.setSpeedRampPivot(0.1), climber))

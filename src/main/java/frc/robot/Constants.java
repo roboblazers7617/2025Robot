@@ -207,10 +207,10 @@ public final class Constants {
 		/**
 		 * Port for the ramp pivot motor.
 		 */
-		public static final int RAMP_PIVOT_PORT = 2;
+		public static final int RAMP_PIVOT_PORT = 6;
 		/**
 		 * Port for the climb rachet servo.
 		 */
-		public static final int CLIMB_RACHET_PORT = 3;
+		public static final int CLIMB_RACHET_PORT = 7;
 	}
 }

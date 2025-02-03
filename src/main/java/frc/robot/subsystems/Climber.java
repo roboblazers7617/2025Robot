@@ -7,6 +7,9 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+
+import java.rmi.server.ServerCloneException;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
@@ -25,6 +28,7 @@ public class Climber extends SubsystemBase {
 	private final RelativeEncoder rampPivotEncoder;
 
 	private final Servo climbRachet = new Servo(Constants.ClimberConstants.CLIMB_RACHET_PORT);
+	private double servoPosition = 0.0;
 
 	/** Creates a new Climber. */
 	public Climber() {
@@ -67,15 +71,6 @@ public class Climber extends SubsystemBase {
 	}
 
 	/**
-	 * Set the speed of the servo.
-	 * 
-	 * @param speed
-	 */
-	public void setServoSpeed(double speed) {
-		climbRachet.setSpeed(speed);
-	}
-
-	/**
 	 * Get the position of the ramp pivot motor.
 	 * 
 	 * @return Number the position of the motor
@@ -95,5 +90,7 @@ public class Climber extends SubsystemBase {
 	}
 
 	@Override
-	public void periodic() {}
+	public void periodic() {
+		servoPosition = getServoPosition();
+	}
 }
