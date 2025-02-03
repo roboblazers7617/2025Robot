@@ -259,7 +259,7 @@ public final class Constants {
 		 */
 		public static final double MIN_POSITION = 0;
 		/**
-		 * Min position where the wrist cannot hit anything, in meters.
+		 * Min safe position while the wrist is lowered, in meters.
 		 */
 		public static final double SAFE_MIN_POSITION = 0.2;
 		/**
@@ -267,16 +267,20 @@ public final class Constants {
 		 */
 		public static final double POSITION_CONVERSION_FACTOR = 1; // TODO
 		/**
-		 * Change from rotation to meters.
+		 * Change from rotation to meters per second.
 		 */
-		public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR;
+		public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 60;
 		/**
 		 * Zero offset, MUST BE [0,1).
 		 */
 		public static final double ZERO_OFFSET = 0;
 	}
 
+	/**
+	 * Constants used to configure the wrist.
+	 */
 	public static class WristConstants {
+		/** CAN Motor ID for the wrist. */
 		public static final int MOTOR_ID = -1;
 
 		public static final double KP = 0.1;
@@ -286,18 +290,19 @@ public final class Constants {
 		public static final double KMAX_OUTPUT = 1.0;
 		/** Max velocity in m/s. */
 		public static final double MAX_VELOCITY = 1;
+		/** Max acceleration in m/s^2. */
 		public static final double MAX_ACCELERATION = 1;
 
 		/** Max position in degrees. */
 		public static final double MAX_POSITION = 90;
 		/** Min position in degrees. */
 		public static final double MIN_POSITION = 0;
-		/** Min position where the wrist cannot hit anything, in degrees. */
+		/** Min safe position while the elevator is lowered, in degrees. */
 		public static final double SAFE_MIN_POSITION = 10;
 		/** Change from rotation to meters. */
 		public static final double POSITION_CONVERSION_FACTOR = 1; // TODO
-		/** Change from rotation to meters. */
-		public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR;
+		/** Change from rotation to meters per second. */
+		public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 60;
 		/** Zero offset, MUST BE [0,1). */
 		public static final double ZERO_OFFSET = 0;
 	}

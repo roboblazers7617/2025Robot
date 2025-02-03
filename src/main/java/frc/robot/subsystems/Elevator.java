@@ -22,14 +22,15 @@ import frc.robot.Constants.WristConstants;
 
 /**
  * The elevator subsystem.
+ * Elevator and wrist safety features are in the {@link #periodic()} method.
  */
 public class Elevator extends SubsystemBase {
-	/** The right motor */
+	/** The right motor. */
 	private final SparkMax leaderElevatorMotor = new SparkMax(ElevatorConstants.RIGHT_MOTOR_ID, MotorType.kBrushless);
-	/** The left motor */
+	/** The left motor. */
 	private final SparkMax followerElevatorMotor = new SparkMax(ElevatorConstants.LEFT_MOTOR_ID, MotorType.kBrushless);
 
-	/** the elevator target in meters, this may not be safe, if no value than it is in speed controll */
+	/** The elevator target in meters, this may not be safe, if no value than it is in speed controll. */
 	private Optional<Double> elevatorTarget = Optional.of(0.0);
 
 	/**
@@ -40,6 +41,9 @@ public class Elevator extends SubsystemBase {
 	/** the wrist target in degrees, this may not be safe, if no value than it is in speed controll */
 	private Optional<Double> wristTarget = Optional.of(0.0);
 
+	/**
+	 * This does something to do with the elevator.
+	 */
 	public Elevator() {
 		SparkMaxConfig baseElevatorConfig = new SparkMaxConfig();
 
@@ -88,7 +92,11 @@ public class Elevator extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		// This method will be called once per scheduler run
+		// This function is responsible for they safety of the elevator and wrist.
+		// It uses to elevatorTarget and wristTarget to determine the target position of the elevator and wrist. If the elevator and wrist are both below their SAFE_MIN_POSITION they will collide.
+		// Whenever either one is below their SAFE_MIN_POSITION the other will be limited to the SAFE_MIN_POSITION.
+
+		// If no target is set, the motor will be controlled by speed.
 
 		// if there is no elevator target, do nothing (this is probably because the elevator is being controlled by a speed)
 		if (elevatorTarget.isPresent()) {
@@ -125,10 +133,22 @@ public class Elevator extends SubsystemBase {
 		}
 	}
 
+	/**
+	 * A function to move the elevator to a position in meters.
+	 * 
+	 * @param position
+	 *            the position in meters
+	 */
 	private void setElevatorPosition(double position) {
 		elevatorTarget = Optional.of(position);
 	}
 
+	/**
+	 * A function to move the elevator at a speed in m/s.
+	 * 
+	 * @param speed
+	 *            the speed in m/s
+	 */
 	private void setElevatorSpeed(double speed) {
 		leaderElevatorMotor.getClosedLoopController().setReference(speed, ControlType.kVelocity);
 		elevatorTarget = Optional.empty();
@@ -147,18 +167,21 @@ public class Elevator extends SubsystemBase {
 	}
 
 	/**
-	 * a command to move the elevator to the supplied reef
+	 * A function to move the elevator to a position in meters.
+	 * 
+	 * @param position
+	 *            the position in meters
 	 */
-	// public Command setElevator(Reef reef) {
-	// return this.runOnce(() -> {
-	// setElevatorPosition(reef.getHeight());
-	// });
-	// }
-
 	private void setWristPosition(double position) {
 		wristTarget = Optional.of(position);
 	}
 
+	/**
+	 * A function to move the wrist at a speed in m/s.
+	 * 
+	 * @param speed
+	 *            the speed in m/s
+	 */
 	private void setWristSpeed(double speed) {
 		wristMotor.getClosedLoopController().setReference(speed, ControlType.kVelocity);
 		wristTarget = Optional.empty();
@@ -168,6 +191,7 @@ public class Elevator extends SubsystemBase {
 	 * A command set the wrist speed in m/s.
 	 * 
 	 * @param speed
+	 *            the speed in m/s
 	 * @return the command
 	 */
 	public Command setWristSpeedCommand(DoubleSupplier speed) {
