@@ -19,6 +19,8 @@ public class SparkMaxLogger extends ClassSpecificLogger<SparkMax> {
 		if (Epilogue.shouldLog(Logged.Importance.DEBUG)) {
 			backend.log("Voltage", motor.getBusVoltage());
 			backend.log("Percentage", motor.get());
+			backend.log("Current", motor.getOutputCurrent());
+			backend.log("Temperature", motor.getMotorTemperature());
 			try {
 				// if it doesn't have an encoder it will throw an error
 				backend.log("Relative encoder position", motor.getAlternateEncoder().getPosition());
