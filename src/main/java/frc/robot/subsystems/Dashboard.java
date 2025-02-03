@@ -9,6 +9,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -29,6 +30,8 @@ public class Dashboard extends SubsystemBase {
 	final SendableChooser<DriverStation.Alliance> alliancePicker;
 	final SendableChooser<Pose2d> pose;
 	SendableChooser<Command> auto;
+	final BooleanPublisher isFMSConnected;
+	final BooleanPublisher isDriverStationConnected;
 
 	/** Creates a new Dashboard. */
 	public Dashboard(Drivetrain drivetrain, RobotContainer robotContainer) {
@@ -59,6 +62,9 @@ public class Dashboard extends SubsystemBase {
 		SmartDashboard.putData("Alliance", alliancePicker);
 		SmartDashboard.putData("Pose", pose);
 		SmartDashboard.putData("Reset pose to selected position", resetPose());
+
+		isFMSConnected = NetworkTableInstance.getDefault().getTable("Robot Data").getBooleanTopic("FMS Connected").publish();
+		isDriverStationConnected = NetworkTableInstance.getDefault().getTable("Robot Data").getBooleanTopic("Driver Station Connected").publish();
 	}
 
 	/**
@@ -92,5 +98,7 @@ public class Dashboard extends SubsystemBase {
 	public void periodic() {
 		// This method will be called once per scheduler run
 		// System.out.println(alliancePicker.getSelected());
+		isDriverStationConnected.set(DriverStation.isDSAttached());
+		isFMSConnected.set(DriverStation.isFMSAttached());
 	}
 }

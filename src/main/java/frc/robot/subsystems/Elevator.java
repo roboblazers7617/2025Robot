@@ -18,7 +18,6 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
-import frc.robot.Constants.Reef;
 import frc.robot.Constants.WristConstants;
 
 /**
@@ -150,11 +149,11 @@ public class Elevator extends SubsystemBase {
 	/**
 	 * a command to move the elevator to the supplied reef
 	 */
-	public Command setElevator(Reef reef) {
-		return this.runOnce(() -> {
-			setElevatorPosition(reef.getHeight());
-		});
-	}
+	// public Command setElevator(Reef reef) {
+	// return this.runOnce(() -> {
+	// setElevatorPosition(reef.getHeight());
+	// });
+	// }
 
 	private void setWristPosition(double position) {
 		wristTarget = Optional.of(position);
