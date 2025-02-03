@@ -46,8 +46,8 @@ public class RobotContainer {
 
 		// Configure the trigger bindings
 		configureBindings();
-		driverController.a().whileTrue(endEffector.CoralIntake());
-		driverController.b().whileTrue(endEffector.CoralOuttake());
+		driverController.a().onTrue(endEffector.CoralIntake());
+		driverController.b().onTrue(endEffector.CoralOuttake());
 	}
 
 	/**

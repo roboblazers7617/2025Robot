@@ -229,7 +229,7 @@ public final class Constants {
 		 * End Effector's motor gear ratio.
 		 */
 		// TODO:Set correct gear ratio once finalized
-		public static final double GEAR_RATIO_END_EFFECTOR_MOTOR = (1.0 / 16.0);
+		public static final double GEAR_RATIO_END_EFFECTOR_MOTOR = (1.0 / 1.0);
 		/**
 		 * End Effector's CAN_ID
 		 */
@@ -257,7 +257,7 @@ public final class Constants {
 		/**
 		 * Outtake motor speed for coral. (to be changed and edited later)
 		 */
-		public static final double CORAL_OUTAKE_SPEED = -0.5;
+		public static final double CORAL_OUTAKE_SPEED = -0.2;
 		/**
 		 * Intake motor speed for algae. (to be changed and edited later)
 		 */
