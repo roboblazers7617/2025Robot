@@ -1,0 +1,43 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Barge Start Center to Branch G"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Branch G to Reef GH"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef GH to Processor"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Processor to Reef EF"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef EF to Processor"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "1 Coral 2 Algae",
+  "choreoAuto": false
+}

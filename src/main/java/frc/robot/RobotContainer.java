@@ -6,11 +6,14 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.DrivetrainConstants;
-import frc.robot.commands.Autos;
+import frc.robot.Constants.FieldConstants;
+import frc.robot.util.Util;
 import frc.robot.util.DrivetrainUtil;
+import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -27,8 +30,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 @Logged
 public class RobotContainer {
+	private SendableChooser<Command> autoChooser = new SendableChooser<>();
 	// The robot's subsystems and commands are defined here...
 	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
+	private final Dashboard dashboard = new Dashboard(drivetrain, this);
 	private final Climber climber = new Climber();
 
 	// Replace with CommandPS4Controller or CommandJoystick if needed
@@ -49,6 +54,18 @@ public class RobotContainer {
 	}
 
 	/**
+	 * This method is run at the start of Teleop.
+	 */
+	public void teleopInit() {
+		// Reset the last angle so the robot doesn't try to spin.
+		if (Util.isRedAlliance()) {
+			drivetrain.resetLastAngleScalarInverted();
+		} else {
+			drivetrain.resetLastAngleScalar();
+		}
+	}
+
+	/**
 	 * Use this method to define your trigger->command mappings. Triggers can be created via the
 	 * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
 	 * predicate, or via the named factories in {@link
@@ -60,8 +77,8 @@ public class RobotContainer {
 	private void configureBindings() {
 		// Set the default drivetrain command (used for the driver controller)
 		drivetrain.setDefaultCommand(!RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
-
 		driverController.leftBumper().whileTrue(driveFieldOrientedAnglularVelocity.finallyDo(drivetrain::resetLastAngleScalar));
+		driverController.x().onTrue(Commands.either(drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.SCORING_POSES_RED), drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.SCORING_POSES_BLUE), () -> Util.isRedAlliance()));
 		// TODO: transfer to dashboard
 		driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
 		driverController.back().onTrue(drivetrain.centerModulesCommand());
@@ -86,6 +103,16 @@ public class RobotContainer {
 	 */
 	public Command getAutonomousCommand() {
 		// resetLastAngleScalar stops the robot from trying to turn back to its original angle after the auto ends
-		return drivetrain.getAutonomousCommand("Example Auto").andThen(Commands.runOnce(() -> drivetrain.resetLastAngleScalar()));
+		return autoChooser.getSelected();
+	}
+
+	/**
+	 * Set the auto chooser
+	 *
+	 * @param auto
+	 *            a sendable chooser with Commands for the autos
+	 */
+	public void setAutoChooser(SendableChooser<Command> auto) {
+		autoChooser = auto;
 	}
 }
