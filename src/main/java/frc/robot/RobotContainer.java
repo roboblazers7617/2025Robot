@@ -6,13 +6,12 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.DrivetrainConstants;
-import frc.robot.commands.Autos;
+import frc.robot.Constants.FieldConstants;
+import frc.robot.util.Util;
 import frc.robot.util.DrivetrainUtil;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Drivetrain;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
@@ -57,8 +56,7 @@ public class RobotContainer {
 	 */
 	public void teleopInit() {
 		// Reset the last angle so the robot doesn't try to spin.
-		var alliance = DriverStation.getAlliance();
-		if (alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false) {
+		if (Util.isRedAlliance()) {
 			drivetrain.resetLastAngleScalarInverted();
 		} else {
 			drivetrain.resetLastAngleScalar();
@@ -77,8 +75,8 @@ public class RobotContainer {
 	private void configureBindings() {
 		// Set the default drivetrain command (used for the driver controller)
 		drivetrain.setDefaultCommand(!RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
-
 		driverController.leftBumper().whileTrue(driveFieldOrientedAnglularVelocity.finallyDo(drivetrain::resetLastAngleScalar));
+		driverController.x().onTrue(Commands.either(drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.SCORING_POSES_RED), drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.SCORING_POSES_BLUE), () -> Util.isRedAlliance()));
 		// TODO: transfer to dashboard
 		driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
 		driverController.back().onTrue(drivetrain.centerModulesCommand());
@@ -96,7 +94,7 @@ public class RobotContainer {
 
 	/**
 	 * Set the auto chooser
-	 * 
+	 *
 	 * @param auto
 	 *            a sendable chooser with Commands for the autos
 	 */

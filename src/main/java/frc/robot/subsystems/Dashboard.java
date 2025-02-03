@@ -47,7 +47,7 @@ public class Dashboard extends SubsystemBase {
 		});
 
 		pose = new SendableChooser<Pose2d>();
-		pose.setDefaultOption("position 1", new Pose2d(5, 0, new Rotation2d(0)));
+		pose.setDefaultOption("center edge on blue side", new Pose2d(.5, 4, new Rotation2d(0)));
 		pose.addOption("position 2", new Pose2d(0, 0, new Rotation2d(45)));
 
 		// pose.onChange((pose) -> {
