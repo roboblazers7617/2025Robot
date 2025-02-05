@@ -240,8 +240,12 @@ public final class Constants {
 		public static final double KP = 0.1;
 		public static final double KI = 0.0;
 		public static final double KD = 0.0;
-		public static final double KMIN_OUTPUT = -1.0;
-		public static final double KMAX_OUTPUT = 1.0;
+
+		public static final double KS = 0;
+		public static final double KV = 0;
+		public static final double KA = 0;
+		public static final double KMIN_OUTPUT = -.3;
+		public static final double KMAX_OUTPUT = .3;
 		/**
 		 * Max velocity in m/s.
 		 */
@@ -280,6 +284,10 @@ public final class Constants {
 		 * Zero offset, MUST BE [0,1).
 		 */
 		public static final double ZERO_OFFSET = 0;
+		/**
+		 * Current limit in amps.
+		 */
+		public static final int CURRENT_LIMIT = 20;
 	}
 
 	/**
@@ -293,9 +301,14 @@ public final class Constants {
 		public static final double KP = 0.1;
 		public static final double KI = 0.0;
 		public static final double KD = 0.0;
+
+		public static final double KS = 0;
+		public static final double KG = 0;
+		public static final double KV = 0;
+
 		// TODO: (Brandon) Will the wrist every run full speed? That seems dangerous
-		public static final double KMIN_OUTPUT = -1.0;
-		public static final double KMAX_OUTPUT = 1.0;
+		public static final double KMIN_OUTPUT = -.3;
+		public static final double KMAX_OUTPUT = .3;
 		/** Max velocity in m/s. */
 		// TODO: (Brandon) Update with accurate number
 		public static final double MAX_VELOCITY = 1;
@@ -318,6 +331,8 @@ public final class Constants {
 		public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 60;
 		/** Zero offset, MUST BE [0,1). */
 		public static final double ZERO_OFFSET = 0;
+		/** Current limit in amps. */
+		public static final int CURRENT_LIMIT = 20;
 	}
 
 	/**
