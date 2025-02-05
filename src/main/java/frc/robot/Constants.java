@@ -233,6 +233,7 @@ public final class Constants {
 	}
 
 	public static class ElevatorConstants {
+		// TODO: (Brandon) Update with correct values
 		public static final int RIGHT_MOTOR_ID = -1;
 		public static final int LEFT_MOTOR_ID = -1;
 
@@ -244,15 +245,18 @@ public final class Constants {
 		/**
 		 * Max velocity in m/s.
 		 */
+		// TODO: (Brandon) Update with accurate number. Is the elevator really going to travel 3 feet in one second? Use reca.lc
 		public static final double MAX_VELOCITY = 1;
 		/**
 		 * Max acceleration in m/s^2.
 		 */
+		// TODO: (Brandon) Update with accurate number Use reca.lc
 		public static final double MAX_ACCELERATION = 1;
 
 		/**
 		 * Max position in meters.
 		 */
+		// TODO: (Brandon) Update with accurate number
 		public static final double MAX_POSITION = 1;
 		/**
 		 * Min position in meters.
@@ -261,10 +265,12 @@ public final class Constants {
 		/**
 		 * Min safe position while the wrist is lowered, in meters.
 		 */
+		// TODO: (Brandon) Update with accurate number
 		public static final double SAFE_MIN_POSITION = 0.2;
 		/**
 		 * Change from rotation to meters.
 		 */
+		// TODO: (Brandon) Update with accurate number
 		public static final double POSITION_CONVERSION_FACTOR = 1; // TODO
 		/**
 		 * Change from rotation to meters per second.
@@ -281,25 +287,32 @@ public final class Constants {
 	 */
 	public static class WristConstants {
 		/** CAN Motor ID for the wrist. */
+		// TODO: (Brandon) Update with accurate number
 		public static final int MOTOR_ID = -1;
 
 		public static final double KP = 0.1;
 		public static final double KI = 0.0;
 		public static final double KD = 0.0;
+		// TODO: (Brandon) Will the wrist every run full speed? That seems dangerous
 		public static final double KMIN_OUTPUT = -1.0;
 		public static final double KMAX_OUTPUT = 1.0;
 		/** Max velocity in m/s. */
+		// TODO: (Brandon) Update with accurate number
 		public static final double MAX_VELOCITY = 1;
 		/** Max acceleration in m/s^2. */
+		// TODO: (Brandon) Update with accurate number
 		public static final double MAX_ACCELERATION = 1;
 
 		/** Max position in degrees. */
+		// TODO: (Brandon) Update with accurate number
 		public static final double MAX_POSITION = 90;
 		/** Min position in degrees. */
+		// TODO: (Brandon) Update with accurate number
 		public static final double MIN_POSITION = 0;
 		/** Min safe position while the elevator is lowered, in degrees. */
 		public static final double SAFE_MIN_POSITION = 10;
 		/** Change from rotation to meters. */
+		// TODO: (Brandon) Update with accurate number
 		public static final double POSITION_CONVERSION_FACTOR = 1; // TODO
 		/** Change from rotation to meters per second. */
 		public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 60;

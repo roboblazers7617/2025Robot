@@ -47,6 +47,7 @@ public class Elevator extends SubsystemBase {
 	public Elevator() {
 		SparkMaxConfig baseElevatorConfig = new SparkMaxConfig();
 
+		// TODO: (Brandon) Where is current limit, brake mode, and other basic configs? Please check documentation to ensure all needed values are set
 		baseElevatorConfig.absoluteEncoder
 				.positionConversionFactor(ElevatorConstants.POSITION_CONVERSION_FACTOR)
 				.velocityConversionFactor(ElevatorConstants.VELOCITY_CONVERSION_FACTOR)
@@ -63,14 +64,19 @@ public class Elevator extends SubsystemBase {
 				.maxVelocity(ElevatorConstants.MAX_VELOCITY)
 				.maxAcceleration(ElevatorConstants.MAX_ACCELERATION);
 
+		// TODO: (Brandon) Why are you creating another SparkMaxConfig object? Please look at REV documentation
+		// and/or sample code
 		SparkBaseConfig leaderElevatorMotorConfig = new SparkMaxConfig().apply(baseElevatorConfig);
 		leaderElevatorMotor.configure(leaderElevatorMotorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
+		// TODO: (Brandon) Why are you applying configuration that is not needed?
+		// TODO: (Brandon) Why are you creating another SparkMaxConfig object? Please look at REV documentation
+		// and/or sample code
 		SparkBaseConfig followerElevatorMotorConfig = new SparkMaxConfig().apply(baseElevatorConfig).follow(leaderElevatorMotor);
 		followerElevatorMotor.configure(followerElevatorMotorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
 		SparkMaxConfig wristConfig = new SparkMaxConfig();
-
+		// TODO: (Brandon) Where is current limit, brake mode, and other basic configs? Please check documentation to ensure all needed values are set
 		wristConfig.absoluteEncoder
 				.positionConversionFactor(WristConstants.POSITION_CONVERSION_FACTOR)
 				.velocityConversionFactor(WristConstants.VELOCITY_CONVERSION_FACTOR)
@@ -90,6 +96,7 @@ public class Elevator extends SubsystemBase {
 		wristMotor.configure(wristConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 	}
 
+	// TODO: (Brandon) Please follow coding standard for function ordering
 	@Override
 	public void periodic() {
 		// This function is responsible for they safety of the elevator and wrist.
@@ -99,6 +106,7 @@ public class Elevator extends SubsystemBase {
 		// If no target is set, the motor will be controlled by speed.
 
 		// if there is no elevator target, do nothing (this is probably because the elevator is being controlled by a speed)
+		// TODO: (Brandon) What ensures that elevator / wrist are in safe positions if they are being controlled by speed rather than position?
 		if (elevatorTarget.isPresent()) {
 			// ensure elevator target is within outer most bounds
 			double target = elevatorTarget.get();
@@ -112,6 +120,7 @@ public class Elevator extends SubsystemBase {
 			if (wristMotor.getEncoder().getPosition() < WristConstants.SAFE_MIN_POSITION && target < ElevatorConstants.SAFE_MIN_POSITION) {
 				target = ElevatorConstants.SAFE_MIN_POSITION;
 			}
+			// TODO: (Brandon) Need to use feedforward in addition to feedback control
 			leaderElevatorMotor.getClosedLoopController().setReference(target, ControlType.kPosition);
 		}
 
@@ -129,6 +138,7 @@ public class Elevator extends SubsystemBase {
 			if (leaderElevatorMotor.getEncoder().getPosition() < ElevatorConstants.SAFE_MIN_POSITION && target < WristConstants.SAFE_MIN_POSITION) {
 				target = WristConstants.SAFE_MIN_POSITION;
 			}
+			// TODO: (Brandon) Need to use feedforward in addition to feedback control
 			wristMotor.getClosedLoopController().setReference(target, ControlType.kPosition);
 		}
 	}
@@ -139,6 +149,7 @@ public class Elevator extends SubsystemBase {
 	 * @param position
 	 *            the position in meters
 	 */
+	// TODO: (Brandon) Is any position valid? How do you equate a position as a double with a task such as "intake"
 	private void setElevatorPosition(double position) {
 		elevatorTarget = Optional.of(position);
 	}
@@ -150,6 +161,7 @@ public class Elevator extends SubsystemBase {
 	 *            the speed in m/s
 	 */
 	private void setElevatorSpeed(double speed) {
+		// TODO: (Brandon) Needs to use a feedfoward in addition to feedback controller
 		leaderElevatorMotor.getClosedLoopController().setReference(speed, ControlType.kVelocity);
 		elevatorTarget = Optional.empty();
 	}
@@ -160,6 +172,7 @@ public class Elevator extends SubsystemBase {
 	 * @param speed
 	 * @return the command
 	 */
+	// TODO: (Brandon) I don't think this will work as you intend it to
 	public Command setElevatorSpeedCommand(DoubleSupplier speed) {
 		return this.runOnce(() -> {
 			setElevatorSpeed(speed.getAsDouble());
@@ -172,6 +185,8 @@ public class Elevator extends SubsystemBase {
 	 * @param position
 	 *            the position in meters
 	 */
+	// TODO: (Brandon) How does meters relate to a wrist position?
+	// TODO: (Brandon) Is any position valid? How do you equate a position as a double with a task such as "intake"
 	private void setWristPosition(double position) {
 		wristTarget = Optional.of(position);
 	}
@@ -183,6 +198,7 @@ public class Elevator extends SubsystemBase {
 	 *            the speed in m/s
 	 */
 	private void setWristSpeed(double speed) {
+		// TODO: (Brandon) Needs to use a feedfoward in addition to feedback controller
 		wristMotor.getClosedLoopController().setReference(speed, ControlType.kVelocity);
 		wristTarget = Optional.empty();
 	}
@@ -194,6 +210,8 @@ public class Elevator extends SubsystemBase {
 	 *            the speed in m/s
 	 * @return the command
 	 */
+	// TODO: (Brandon) Is any speed valid? Should it be?
+	// TODO: (Brandon) I don't think this will work as you intend it
 	public Command setWristSpeedCommand(DoubleSupplier speed) {
 		return this.runOnce(() -> {
 			setWristSpeed(speed.getAsDouble());
@@ -206,9 +224,14 @@ public class Elevator extends SubsystemBase {
 	 * @param position
 	 * @return the command
 	 */
+	// TODO: (Brandon) How does meters relate to a wrist position?
+	// TODO: (Brandon) Why is this a double supplier?
+	// TODO: (Brandon) Is any position double valid? How does this relate to the usage of the mechanism?
 	public Command setWristPositionCommand(DoubleSupplier position) {
 		return this.runOnce(() -> {
 			setWristPosition(position.getAsDouble());
 		});
 	}
+
+	// TODO: (Brandon) You have basic commands. Where are the ones that will be tied to buttons for controlled movements?
 }
