@@ -14,6 +14,7 @@ import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -49,7 +50,7 @@ public class RobotContainer {
 	@NotLogged
 	private final Command driveFieldOrientedDirectAngleSim = drivetrain.driveFieldOrientedCommand(DrivetrainUtil.driveDirectAngleSim(drivetrain, driverController));
 
-	private GAMEPIECE_MODE gamepieceMode = GAMEPIECE_MODE.CORAL_MODE;
+	private GAMEPIECE_MODE gamepieceMode;
 	private final Trigger isAlgaeMode = new Trigger(() -> (gamepieceMode == GAMEPIECE_MODE.ALGAE_MODE));
 	private final Trigger isCoralMode = new Trigger(() -> (gamepieceMode == GAMEPIECE_MODE.CORAL_MODE));
 
@@ -61,6 +62,8 @@ public class RobotContainer {
 		// Configure the trigger bindings
 		configureDriverControls();
 		configureOperatorControls();
+		// By default interact with Coral
+		gamepieceMode = GAMEPIECE_MODE.CORAL_MODE;
 	}
 
 	/**
@@ -82,8 +85,8 @@ public class RobotContainer {
 		driverController.y().onTrue(StubbedCommands.Climber.StowRamp());
 
 		driverController.povDown().whileTrue(StubbedCommands.Climber.ClimberDown());
-		driverController.povRight().whileTrue(StubbedCommands.Climber.RampDown());
 		driverController.povLeft().whileTrue(StubbedCommands.Climber.RampUp());
+		driverController.povRight().whileTrue(StubbedCommands.Climber.RampDown());
 		driverController.povUp().whileTrue(StubbedCommands.Climber.AutoClimb());
 
 		driverController.leftBumper().whileTrue(driveFieldOrientedAnglularVelocity.finallyDo(drivetrain::resetLastAngleScalar));
@@ -97,7 +100,10 @@ public class RobotContainer {
 
 	private void configureOperatorControls() {
 		// Set the default elevator command where it moves manually
-		((new StubbedCommands()).new Elevator()).setDefaultCommand(StubbedCommands.Elevator.MoveElevatorAndWristManual(() -> (-1 * operatorController.getLeftX()), () -> (-1 * operatorController.getLeftY())));
+		/*
+		 * StubbedCommands.Elevator elevator = (new StubbedCommands()).new Elevator();
+		 * elevator.setDefaultCommand(elevator.MoveElevatorAndWristManual(() -> (-1 * operatorController.getLeftX()), () -> (-1 * operatorController.getLeftY())));
+		 */
 		// Acts to cancel the currently running command, such as intaking or outaking
 		operatorController.a().onTrue(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector())));
 		operatorController.b().or(operatorController.leftTrigger()).and(isAlgaeMode).onTrue(StubbedCommands.EndEffector.IntakeAlgae().andThen(StubbedCommands.Elevator.StowAlgae()));
@@ -109,21 +115,29 @@ public class RobotContainer {
 
 		operatorController.povDown().and(isAlgaeMode).onTrue(StubbedCommands.Elevator.MoveLowAlgae());
 		operatorController.povDown().and(isCoralMode).onTrue(StubbedCommands.Elevator.MoveL1());
-		operatorController.povRight().or(operatorController.povLeft()).and(isAlgaeMode).onTrue(StubbedCommands.Elevator.MoveProcessor());
-		operatorController.povRight().and(isCoralMode).onTrue(StubbedCommands.Elevator.MoveL2());
-		// POV Left Algae mode is handeled above with POV Right
-		operatorController.povLeft().and(isCoralMode).onTrue(StubbedCommands.Elevator.MoveL3());
+		operatorController.povLeft().or(operatorController.povRight()).and(isAlgaeMode).onTrue(StubbedCommands.Elevator.MoveProcessor());
+		operatorController.povLeft().and(isCoralMode).onTrue(StubbedCommands.Elevator.MoveL2());
+		operatorController.povRight().and(isCoralMode).onTrue(StubbedCommands.Elevator.MoveL3());
+		// POV Right Algae mode is handeled above with POV Left
 		operatorController.povUp().and(isAlgaeMode).onTrue(StubbedCommands.Elevator.MoveHighAlgae());
 		operatorController.povUp().and(isCoralMode).onTrue(StubbedCommands.Elevator.MoveL4());
 
 		// Left Bumper is on an or with the Y button above
 		operatorController.rightBumper().onTrue(Commands.runOnce(() -> {
 			gamepieceMode = GAMEPIECE_MODE.ALGAE_MODE;
-		}, ((new StubbedCommands()).new Elevator()), (new StubbedCommands()).new EndEffector()));
+		}, ((new StubbedCommands()).new Elevator())));
 		// Left Trigger is on an or with the B button above
 		operatorController.rightBumper().onTrue(Commands.runOnce(() -> {
 			gamepieceMode = GAMEPIECE_MODE.CORAL_MODE;
-		}, ((new StubbedCommands()).new Elevator()), (new StubbedCommands()).new EndEffector()));
+		}, ((new StubbedCommands()).new Elevator())));
+
+		SmartDashboard.putData("Algae Mode", Commands.runOnce(() -> {
+			gamepieceMode = GAMEPIECE_MODE.ALGAE_MODE;
+		}, ((new StubbedCommands()).new Elevator())));
+
+		SmartDashboard.putData("Coral Mode", Commands.runOnce(() -> {
+			gamepieceMode = GAMEPIECE_MODE.CORAL_MODE;
+		}, ((new StubbedCommands()).new Elevator())));
 	}
 
 	/**

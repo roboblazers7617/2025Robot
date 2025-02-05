@@ -8,7 +8,6 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /** Add your docs here. */
@@ -69,7 +68,7 @@ public class StubbedCommands {
 		 * </ul>
 		 */
 		public static Command AlignMiddleOfTag() {
-			return Commands.print("Align Left of Tag");
+			return Commands.print("Align Middle of Tag");
 		}
 	}
 
@@ -97,7 +96,7 @@ public class StubbedCommands {
 
 	public class Elevator extends SubsystemBase {
 		public static Command MoveElevatorAndWristManual(Supplier<Double> elevatorControllerInput, Supplier<Double> wristControllerInput) {
-			return Commands.print("Move Elevator and Wrist Manually").andThen(Commands.idle((Subsystem[]) null));
+			return Commands.print("Move Elevator and Wrist Manually");
 		}
 
 		public static Command MoveL4() {
