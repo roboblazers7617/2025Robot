@@ -356,6 +356,17 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	/**
+	 * The command to reset what the heading control will turn to if no angle is inputed. Used to prevent angle snapback.
+	 *
+	 * @return
+	 *         {@link Command} to run.
+	 * @see #resetLastAngleScalar()
+	 */
+	public Command resetLastAngleScalarCommand() {
+		return Commands.runOnce(() -> resetLastAngleScalar(), this);
+	}
+
+	/**
 	 * Inverted method to reset what the heading control will turn to if no angle is inputed. Used to prevent angle snapback.
 	 *
 	 * @see #resetLastAngleScalar()
@@ -365,14 +376,50 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	/**
+	 * Inverted command to reset what the heading control will turn to if no angle is inputed. Used to prevent angle snapback.
+	 *
+	 * @return
+	 *         {@link Command} to run.
+	 * @see #resetLastAngleScalarInverted()
+	 */
+	public Command resetLastAngleScalarInvertedCommand() {
+		return Commands.runOnce(() -> resetLastAngleScalarInverted(), this);
+	}
+
+	/**
+	 * Method to reset what the heading control will turn to if no angle is inputed. Inverted based on alliance color. Used to prevent angle snapback.
+	 *
+	 * @see #resetLastAngleScalar()
+	 * @see #resetLastAngleScalarInverted()
+	 */
+	public void resetLastAngleScalarByAlliance() {
+		if (Util.isRedAlliance()) {
+			resetLastAngleScalarInverted();
+		} else {
+			resetLastAngleScalar();
+		}
+	}
+
+	/**
+	 * Command to reset what the heading control will turn to if no angle is inputed. Inverted based on alliance color. Used to prevent angle snapback.
+	 *
+	 * @return
+	 *         {@link Command} to run.
+	 * @see #resetLastAngleScalarCommand()
+	 * @see #resetLastAngleScalarInvertedCommand()
+	 */
+	public Command resetLastAngleScalarByAllianceCommand() {
+		return Commands.either(resetLastAngleScalarInvertedCommand(), resetLastAngleScalarCommand(), () -> Util.isRedAlliance());
+	}
+
+	/**
 	 * Use PathPlanner Path finding to go to a point on the field.
 	 *
 	 * @param pose
 	 *            Target {@link Pose2d} to go to.
 	 * @return
 	 *         PathFinding command
-	 * @see
-	 *      AutoBuilder#pathfindToPose(Pose2d, PathConstraints, edu.wpi.first.units.measure.LinearVelocity)
+	 * @see AutoBuilder#pathfindToPose(Pose2d, PathConstraints, edu.wpi.first.units.measure.LinearVelocity)
 	 */
 	public Command driveToPoseCommand(Supplier<Pose2d> pose) {
 		// Create the constraints to use while pathfinding
@@ -380,7 +427,8 @@ public class Drivetrain extends SubsystemBase {
 
 		// Since AutoBuilder is configured, we can use it to build pathfinding commands
 		return Commands.defer(() -> AutoBuilder.pathfindToPose(pose.get(), constraints, MetersPerSecond.of(0) // Goal end velocity in meters/sec
-		), new HashSet<Subsystem>(Set.of(this)));
+		), new HashSet<Subsystem>(Set.of(this)))
+				.finallyDo(this::resetLastAngleScalarByAlliance);
 	}
 
 	/**
