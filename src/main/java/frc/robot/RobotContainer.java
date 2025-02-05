@@ -9,6 +9,8 @@ import frc.robot.Constants.OperatorConstants.GAMEPIECE_MODE;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.StubbedCommands;
+import frc.robot.Constants.FieldConstants;
+import frc.robot.util.Util;
 import frc.robot.util.DrivetrainUtil;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Drivetrain;
@@ -64,6 +66,24 @@ public class RobotContainer {
 		configureOperatorControls();
 		// By default interact with Coral
 		gamepieceMode = GAMEPIECE_MODE.CORAL_MODE;
+	}
+
+	/**
+	 * This method is run at the start of Teleop.
+	 */
+	public void teleopInit() {
+		// Reset the last angle so the robot doesn't try to spin.
+		if (Util.isRedAlliance()) {
+			// TODO: (Max) Does this work if you enable/disable as Red alliance multiple times? Won't it keep
+			// switing it by 180 degrees each time?
+			drivetrain.resetLastAngleScalarInverted();
+		} else {
+			drivetrain.resetLastAngleScalar();
+		}
+
+		if (StubbedCommands.EndEffector.isHoldingAlage()) {
+			gamepieceMode = GAMEPIECE_MODE.ALGAE_MODE;
+		}
 	}
 
 	/**
@@ -147,7 +167,7 @@ public class RobotContainer {
 	 */
 	public Command getAutonomousCommand() {
 		// resetLastAngleScalar stops the robot from trying to turn back to its original angle after the auto ends
-		return autoChooser.getSelected().finallyDo(() -> drivetrain.resetLastAngleScalar());
+		return autoChooser.getSelected();
 	}
 
 	/**
@@ -158,11 +178,5 @@ public class RobotContainer {
 	 */
 	public void setAutoChooser(SendableChooser<Command> auto) {
 		autoChooser = auto;
-	}
-
-	public void teleopInit() {
-		if (StubbedCommands.EndEffector.isHoldingAlage()) {
-			gamepieceMode = GAMEPIECE_MODE.ALGAE_MODE;
-		}
 	}
 }

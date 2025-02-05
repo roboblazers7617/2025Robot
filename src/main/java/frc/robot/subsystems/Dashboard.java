@@ -23,6 +23,7 @@ import frc.robot.commands.drivetrain.LockWheelsState;
 /**
  * A class that sets up the driverstation dashboard for the robot.
  */
+// TODO: (Brandon) Why is the Dashboard a Subsystem?
 public class Dashboard extends SubsystemBase {
 	final Drivetrain drivetrain;
 	final RobotContainer robotContainer;
@@ -40,6 +41,7 @@ public class Dashboard extends SubsystemBase {
 		alliancePicker.addOption("Blue", DriverStation.Alliance.Blue);
 		alliancePicker.addOption("Red", DriverStation.Alliance.Red);
 
+		// TODO: (Brandon) What happens if you change the color multiple times? Does this work or crash?
 		alliancePicker.onChange((alliance) -> {
 			new RunOnceDeferred(() -> {
 				configureAutoBuilder(alliance);
@@ -47,7 +49,7 @@ public class Dashboard extends SubsystemBase {
 		});
 
 		pose = new SendableChooser<Pose2d>();
-		pose.setDefaultOption("position 1", new Pose2d(5, 0, new Rotation2d(0)));
+		pose.setDefaultOption("center edge on blue side", new Pose2d(.5, 4, new Rotation2d(0)));
 		pose.addOption("position 2", new Pose2d(0, 0, new Rotation2d(45)));
 
 		// pose.onChange((pose) -> {
@@ -63,7 +65,7 @@ public class Dashboard extends SubsystemBase {
 
 	/**
 	 * Configures the auto builder using the drivetrain subsystem. Also sets up the auto chooser on the dashboard.
-	 * 
+	 *
 	 * @param alliance
 	 *            The alliance to configure the auto builder for.
 	 */
@@ -82,7 +84,10 @@ public class Dashboard extends SubsystemBase {
 	}
 
 	private Command resetPose() {
-		return new InstantCommand(() -> drivetrain.resetOdometry(pose.getSelected())).ignoringDisable(true);
+		return new InstantCommand(() -> {
+			drivetrain.resetOdometry(pose.getSelected());
+			drivetrain.resetLastAngleScalar();
+		}).ignoringDisable(true);
 	}
 
 	@Override
