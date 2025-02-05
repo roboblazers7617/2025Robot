@@ -99,6 +99,8 @@ public class Elevator extends SubsystemBase {
 	// TODO: (Brandon) Please follow coding standard for function ordering
 	@Override
 	public void periodic() {
+		// TODO: (Brandon) Where is the logic for upper bounds control?
+
 		// This function is responsible for they safety of the elevator and wrist.
 		// It uses to elevatorTarget and wristTarget to determine the target position of the elevator and wrist. If the elevator and wrist are both below their SAFE_MIN_POSITION they will collide.
 		// Whenever either one is below their SAFE_MIN_POSITION the other will be limited to the SAFE_MIN_POSITION.
@@ -108,7 +110,10 @@ public class Elevator extends SubsystemBase {
 		// if there is no elevator target, do nothing (this is probably because the elevator is being controlled by a speed)
 		// TODO: (Brandon) What ensures that elevator / wrist are in safe positions if they are being controlled by speed rather than position?
 		if (elevatorTarget.isPresent()) {
-			// ensure elevator target is within outer most bounds
+			// TODO: (Brandon) Shouldn't this live in the function where you set the position of the elevator
+			// as the target doesn't change in periodic, does it? Could use a simple clamp() function
+			// ensure elevator target is within bounds
+			// TODO: (Brandon) Rename target to be more clear such as elevatorTarget as you use target in wrist as well
 			double target = elevatorTarget.get();
 			if (target < ElevatorConstants.MIN_POSITION) {
 				target = ElevatorConstants.MIN_POSITION;
@@ -127,6 +132,10 @@ public class Elevator extends SubsystemBase {
 		// if there is no wrist target, do nothing (this is probably because the wrist is being controlled by a speed)
 		if (wristTarget.isPresent()) {
 			// ensure wrist target is within outer most bounds
+			// TODO: (Brandon) Shouldn't this live in the function where you set the position of the wrist
+			// as the target doesn't change in periodic, does it? Could use a simple clamp() function
+			// ensure wrist target is within bounds
+			// TODO: (Brandon) Rename target to be more clear such as wristTarget as you use target in elevator as well
 			double target = wristTarget.get();
 			if (target < WristConstants.MIN_POSITION) {
 				target = WristConstants.MIN_POSITION;
@@ -233,5 +242,5 @@ public class Elevator extends SubsystemBase {
 		});
 	}
 
-	// TODO: (Brandon) You have basic commands. Where are the ones that will be tied to buttons for controlled movements?
+	// TODO: (Brandon) You have basic commands. Where are the ones that will be tied to buttons for controlled movements to move both wrist and elevator together? How do you move to set positions?
 }
