@@ -126,6 +126,7 @@ public class Elevator extends SubsystemBase {
 				target = ElevatorConstants.SAFE_MIN_POSITION;
 			}
 			// TODO: (Brandon) Need to use feedforward in addition to feedback control
+			// TODO: (Brandon) This should use MaxMotion control
 			leaderElevatorMotor.getClosedLoopController().setReference(target, ControlType.kPosition);
 		}
 
@@ -148,6 +149,7 @@ public class Elevator extends SubsystemBase {
 				target = WristConstants.SAFE_MIN_POSITION;
 			}
 			// TODO: (Brandon) Need to use feedforward in addition to feedback control
+			// TODO: (Brandon) This should use MaxMotion control
 			wristMotor.getClosedLoopController().setReference(target, ControlType.kPosition);
 		}
 	}
@@ -171,6 +173,7 @@ public class Elevator extends SubsystemBase {
 	 */
 	private void setElevatorSpeed(double speed) {
 		// TODO: (Brandon) Needs to use a feedfoward in addition to feedback controller
+		// TODO: (Brandon) This should use MaxMotion control
 		leaderElevatorMotor.getClosedLoopController().setReference(speed, ControlType.kVelocity);
 		elevatorTarget = Optional.empty();
 	}
@@ -208,6 +211,7 @@ public class Elevator extends SubsystemBase {
 	 */
 	private void setWristSpeed(double speed) {
 		// TODO: (Brandon) Needs to use a feedfoward in addition to feedback controller
+		// TODO: (Brandon) This should use MaxMotion control
 		wristMotor.getClosedLoopController().setReference(speed, ControlType.kVelocity);
 		wristTarget = Optional.empty();
 	}
