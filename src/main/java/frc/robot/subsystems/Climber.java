@@ -22,12 +22,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 @Logged
-
 public class Climber extends SubsystemBase {
 	private final SparkMax rampPivot = new SparkMax(Constants.ClimberConstants.RAMP_PIVOT_PORT, MotorType.kBrushless);
 	private final RelativeEncoder rampPivotEncoder;
 
-	private final Servo climbRachet = new Servo(Constants.ClimberConstants.CLIMB_RACHET_PORT);
+	private final SparkMax climbMotor = new SparkMax(Constants.ClimberConstants.CLIMB_MOTOR_PORT, MotorType.kBrushless);
+	private final RelativeEncoder climbMotorEncoder;
+
+	private final Servo climbRachet = new Servo(Constants.ClimberConstants.CLIMB_SERVO_PORT);
 	private double servoPosition = 0.0;
 
 	/** Creates a new Climber. */
@@ -38,6 +40,9 @@ public class Climber extends SubsystemBase {
 		rampPivot.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 		rampPivotEncoder = rampPivot.getEncoder();
 		rampPivotEncoder.setPosition(0.0);
+		climbMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+		climbMotorEncoder = climbMotor.getEncoder();
+		climbMotorEncoder.setPosition(0.0);
 	}
 
 	/**
@@ -50,6 +55,15 @@ public class Climber extends SubsystemBase {
 	}
 
 	/**
+	 * Get the velocity of the rachet motor.
+	 * 
+	 * @return Number the RPM of the motor
+	 */
+	public double getSpeedClimbMotor() {
+		return climbMotorEncoder.getVelocity();
+	}
+
+	/**
 	 * Set the velocity of the ramp pivot motor.
 	 * 
 	 * @param rampPivotSpeed
@@ -58,6 +72,13 @@ public class Climber extends SubsystemBase {
 	public void setSpeedRampPivot(double rampPivotSpeed) {
 		rampPivot.set(rampPivotSpeed);
 	}
+
+	/**
+	 * Set the velocity of the rachet motor.
+	 * 
+	 * @param climbMotorSpeed
+	 *            The speed to set. Value should be between -1.0 and 1.0.
+	 */
 
 	/**
 	 * Set the position of the servo.
@@ -77,6 +98,15 @@ public class Climber extends SubsystemBase {
 	 */
 	public double getPositionRampPivot() {
 		return rampPivotEncoder.getPosition();
+	}
+
+	/**
+	 * Get the position of the rachet motor.
+	 * 
+	 * @return Number the position of the motor
+	 */
+	public double getPositionClimbMotor() {
+		return climbMotorEncoder.getPosition();
 	}
 
 	/**

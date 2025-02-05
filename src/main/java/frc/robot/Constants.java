@@ -220,19 +220,19 @@ public final class Constants {
 	 */
 	public static class ClimberConstants {
 		/**
-		 * Port for the ramp pivot motor.
-		 */
-
-		/**
 		 * Port for the climb rachet servo.
 		 */
-		public static final int CLIMB_RACHET_PORT = 1;
+		public static final int CLIMB_SERVO_PORT = 9;
 
 		/**
 		 * Port for the ramp pivot motor.
 		 */
-		// TODO: (Sam) Please update with correct values
-		public static final int RAMP_PIVOT_PORT = 2;
+		public static final int RAMP_PIVOT_PORT = 51;
+
+		/**
+		 * Port for the climb motor.
+		 */
+		public static final int CLIMB_MOTOR_PORT = 52;
 	}
 
 	/**
