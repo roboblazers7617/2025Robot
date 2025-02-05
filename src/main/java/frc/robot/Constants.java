@@ -52,10 +52,12 @@ public final class Constants {
 		/**
 		 * Mass of the robot in kilograms.
 		 */
+		// TODO: (Max) Need to update with actual weight of robot
 		public static final double ROBOT_MASS = Pounds.of(100).in(Kilograms);
 		/**
 		 * Matter representing the robot chassis.
 		 */
+		// TODO: (Max) Need to udpate with actual COG
 		public static final Matter CHASSIS = new Matter(new Translation3d(0, 0, Inches.of(8).in(Meters)), ROBOT_MASS);
 	}
 
@@ -201,6 +203,7 @@ public final class Constants {
 		public static final PIDConstants ROTATION_PID_CONSTANTS = new PIDConstants(5.0, 0.0, 0.0);
 	}
 
+	// TODO: (Brandon) Add documentation here on what settings should be during comp versus testing
 	public static class LoggingConstants {
 		/**
 		 * Send logging data to NetworkTables. Data is written to storage when set to false.
@@ -219,11 +222,17 @@ public final class Constants {
 		/**
 		 * Port for the ramp pivot motor.
 		 */
-		public static final int RAMP_PIVOT_PORT = 6;
+
 		/**
 		 * Port for the climb rachet servo.
 		 */
-		public static final int CLIMB_RACHET_PORT = 7;
+		public static final int CLIMB_RACHET_PORT = 1;
+
+		/**
+		 * Port for the ramp pivot motor.
+		 */
+		// TODO: (Sam) Please update with correct values
+		public static final int RAMP_PIVOT_PORT = 2;
 	}
 
 	/**
@@ -238,6 +247,7 @@ public final class Constants {
 		/**
 		 * Constants relating to the reef.
 		 */
+		// TODO: (Max) This will work for moving to score a coral. How do you move to remove an algae?
 		public static class Reef {
 			/**
 			 * AprilTag IDs for the reef on the blue alliance.
@@ -273,7 +283,8 @@ public final class Constants {
 				// Generate a list of scoring poses.
 				TAG_POSES.forEach((pose) -> {
 					Pose2d pose2d = pose.toPose2d();
-
+					// TODO: (Max) Should be CORAL_SCORING_POSES_BLUE as for coral only, not algae. Correct?
+					// TODO: (Max) What is "regular" vs "flipped" side? Is it right or left reef branch?
 					// Regular side
 					SCORING_POSES_BLUE.add(pose2d.transformBy(SCORING_OFFSET));
 					// Flipped side

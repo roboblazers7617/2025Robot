@@ -65,6 +65,7 @@ public class Drivetrain extends SubsystemBase {
 	/**
 	 * Enable vision odometry updates while driving.
 	 */
+	// TODO: (Max) This variable doesn't describe what it signals. Also should follow our coding standard for booleans
 	private final boolean visionDriveTest = false;
 
 	/**
@@ -106,6 +107,9 @@ public class Drivetrain extends SubsystemBase {
 	@Override
 	public void periodic() {
 		// When vision is enabled we must manually update odometry in SwerveDrive
+		// TODO: (MAX/LUKAS) Last year we had a button the drivers could use to disable vision updates
+		// if vision was going wonky. It seems that wouldn't work this year as the odometry would no longer
+		// be updated?
 		if (visionDriveTest) {
 			swerveDrive.updateOdometry();
 			// TODO: Update vision here
@@ -311,6 +315,8 @@ public class Drivetrain extends SubsystemBase {
 	 * If red alliance rotate the robot 180 after the drviebase zero command
 	 */
 	public void zeroGyroWithAlliance() {
+		// TODO: (Max) What happens if this is called more than once? Seems like there needs to be logic that it
+		// is only called under certain circumstances.
 		if (Util.isRedAlliance()) {
 			zeroGyro();
 			// Set the pose 180 degrees
