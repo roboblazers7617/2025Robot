@@ -18,11 +18,13 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.commands.RunOnceDeferred;
-import frc.robot.commands.drivetrain.LockWheelsState;
+import frc.robot.commands.drivetrain.LockWheelsCommand;
+import frc.robot.subsystems.drivetrain.Drivetrain;
 
 /**
  * A class that sets up the driverstation dashboard for the robot.
  */
+// TODO: (Brandon) Why is the Dashboard a Subsystem?
 public class Dashboard extends SubsystemBase {
 	final Drivetrain drivetrain;
 	final RobotContainer robotContainer;
@@ -40,6 +42,7 @@ public class Dashboard extends SubsystemBase {
 		alliancePicker.addOption("Blue", DriverStation.Alliance.Blue);
 		alliancePicker.addOption("Red", DriverStation.Alliance.Red);
 
+		// TODO: (Brandon) What happens if you change the color multiple times? Does this work or crash?
 		alliancePicker.onChange((alliance) -> {
 			new RunOnceDeferred(() -> {
 				configureAutoBuilder(alliance);
@@ -72,10 +75,10 @@ public class Dashboard extends SubsystemBase {
 			System.out.println("BAD! Allicance builder run without selected alliance");
 			return;
 		}
-		drivetrain.setupPathPlanner(alliance);
+		Auto.setupPathPlanner(drivetrain, alliance);
 		System.out.println("Configured path planner");
 
-		NamedCommands.registerCommand("LockWheelsState", new LockWheelsState(drivetrain));
+		NamedCommands.registerCommand("LockWheelsState", new LockWheelsCommand(drivetrain));
 		auto = AutoBuilder.buildAutoChooser();
 		SmartDashboard.putData("Auto", auto);
 		robotContainer.setAutoChooser(auto);
