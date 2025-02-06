@@ -25,31 +25,51 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.WristConstants;
 
 /**
- * The elevator subsystem.
+ * Subsystem to control the elevator and wrist.
+ * <p>
  * Elevator and wrist safety features are in the {@link #periodic()} method.
  */
 public class Elevator extends SubsystemBase {
+	/**
+	 * The FeedForward used for the elevator.
+	 */
 	private final ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(ElevatorConstants.KS, ElevatorConstants.KV, ElevatorConstants.KA);
-	/** The right motor. */
+	/**
+	 * The right elevator motor.
+	 */
 	private final SparkMax leaderElevatorMotor = new SparkMax(ElevatorConstants.RIGHT_MOTOR_ID, MotorType.kBrushless);
-	/** The left motor. */
+	/**
+	 * The left elevator motor.
+	 */
 	private final SparkMax followerElevatorMotor = new SparkMax(ElevatorConstants.LEFT_MOTOR_ID, MotorType.kBrushless);
 
-	/** The elevator target in meters, this may not be safe, if no value than it is in speed controll. */
+	/**
+	 * The elevator target in meters, this may not be safe.
+	 *
+	 * @implNote
+	 *           If no value is set then the elevator is in speed control.
+	 */
 	private double elevatorTarget = 0;
 
-	private final ArmFeedforward wristFeedforward = new ArmFeedforward(WristConstants.KS, WristConstants.KG, WristConstants.KV);
-
 	/**
-	 * the wrist
+	 * The FeedForward used for the wrist.
+	 */
+	private final ArmFeedforward wristFeedforward = new ArmFeedforward(WristConstants.KS, WristConstants.KG, WristConstants.KV);
+	/**
+	 * The wrist motor.
 	 */
 	private final SparkMax wristMotor = new SparkMax(WristConstants.MOTOR_ID, MotorType.kBrushless);
 
-	/** the wrist target in degrees, this may not be safe, if no value than it is in speed controll */
+	/**
+	 * The wrist target in degrees, this may not be safe.
+	 *
+	 * @implNote
+	 *           If no value is set then the wrist is in speed control.
+	 */
 	private double wristTarget = 0;
 
 	/**
-	 * This does something to do with the elevator.
+	 * Creates a new Elevator.
 	 */
 	public Elevator() {
 		SparkMaxConfig baseElevatorConfig = new SparkMaxConfig();
@@ -102,13 +122,14 @@ public class Elevator extends SubsystemBase {
 		wristMotor.configure(wristConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 	}
 
+	/**
+	 * This method is responsible for they safety of the elevator and wrist.
+	 * <p>
+	 * This uses the {@link #elevatorTarget} and {@link #wristTarget} to determine the target position of the elevator and wrist. If the elevator and wrist are both below their SAFE_MIN_POSITION they will collide. Whenever either one is below their SAFE_MIN_POSITION the other will be limited to the SAFE_MIN_POSITION.
+	 */
 	@Override
 	public void periodic() {
 		// TODO: (Brandon) Where is the logic for upper bounds control? The outer limits are managed in the set position function. The lower areas where they may collide is handled here.
-
-		// This function is responsible for they safety of the elevator and wrist.
-		// It uses to elevatorTarget and wristTarget to determine the target position of the elevator and wrist. If the elevator and wrist are both below their SAFE_MIN_POSITION they will collide.
-		// Whenever either one is below their SAFE_MIN_POSITION the other will be limited to the SAFE_MIN_POSITION.
 
 		// if there is no elevator target, do nothing (this is probably because the elevator is being controlled by a speed)
 		// TODO: (Brandon) What ensures that elevator / wrist are in safe positions if they are being controlled by speed rather than position? The speed function will now just call set position and will therefore have all the same safety stuff.
@@ -134,9 +155,11 @@ public class Elevator extends SubsystemBase {
 
 	/**
 	 * A command set the elvator speed in m/s.
-	 * 
+	 *
 	 * @param speed
-	 * @return the command
+	 *            The speed in m/s.
+	 * @return
+	 *         {@link Command} to run.
 	 */
 	public Command setElevatorSpeedCommand(DoubleSupplier speed) {
 		Command command = new Command() {
@@ -152,10 +175,11 @@ public class Elevator extends SubsystemBase {
 
 	/**
 	 * A command set the wrist speed in degrees/s.
-	 * 
+	 *
 	 * @param speed
-	 *            the speed in degrees/s
-	 * @return the command
+	 *            The speed in degrees/s.
+	 * @return
+	 *         {@link Command} to run.
 	 */
 	// TODO: (Brandon) Is any speed valid? Should it be? The PID controller has a max velocity built in, that is not something we need to handle.
 	public Command setWristSpeedCommand(DoubleSupplier speed) {
@@ -172,9 +196,11 @@ public class Elevator extends SubsystemBase {
 
 	/**
 	 * A command to move the wrist to a position in degrees.
-	 * 
+	 *
 	 * @param position
-	 * @return the command
+	 *            The position in degrees.
+	 * @return
+	 *         {@link Command} to run.
 	 */
 	// TODO: (Brandon) Why is this a double supplier? If it wasn't a supplier only the value at startup would be used.
 	// TODO: (Brandon) Is any position double valid? How does this relate to the usage of the mechanism? Position is validaded in the setWristPosition function. I don't get your second question.
@@ -186,9 +212,9 @@ public class Elevator extends SubsystemBase {
 
 	/**
 	 * A function to move the elevator to a position in meters.
-	 * 
+	 *
 	 * @param position
-	 *            the position in meters
+	 *            The position in meters.
 	 */
 	// TODO: (Brandon) Is any position valid? How do you equate a position as a double with a task such as "intake". Position is now validaded. This function would be called by commands like "intake" which would supply the position.
 	private void setElevatorPosition(double position) {
@@ -198,9 +224,9 @@ public class Elevator extends SubsystemBase {
 
 	/**
 	 * A function to move the elevator to a position in degrees.
-	 * 
+	 *
 	 * @param position
-	 *            the position in degrees
+	 *            The position in degrees.
 	 */
 	// TODO: (Brandon) Is any position valid? How do you equate a position as a double with a task such as "intake". Position is now validaded. This function would be called by commands like "intake" which would supply the position.
 	private void setWristPosition(double position) {
