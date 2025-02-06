@@ -14,8 +14,9 @@ import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Pounds;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import com.pathplanner.lib.config.PIDConstants;
@@ -213,6 +214,22 @@ public final class Constants {
 		 * Log all data above specified level.
 		 */
 		public static final Logged.Importance DEBUG_LEVEL = Logged.Importance.DEBUG;
+	}
+
+	/**
+	 * Constants used to configure vision.
+	 */
+	public static class VisionConstants {
+		/**
+		 * The name of the limelight.
+		 */
+		public static final String LIMELIGHT_NAME = "limelight";
+		/**
+		 * Enable vision odometry updates.
+		 */
+		public static final boolean ENABLE_VISION = true;
+		public static final Pose3d CAMERA_POSE = null;
+		public static final List<Double> TAGS_TO_TRACK = IntStream.range(1, 23).asDoubleStream().boxed().toList();
 	}
 
 	/**
