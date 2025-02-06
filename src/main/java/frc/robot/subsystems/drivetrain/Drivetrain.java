@@ -350,6 +350,9 @@ public class Drivetrain extends SubsystemBase {
 
 	/**
 	 * The method to reset what the heading control will turn to if no angle is inputed. Used to prevent angle snapback.
+	 *
+	 * @implNote
+	 *           Running this on the Red alliance will cause the robot to flip 180 degrees. Call {@link #resetLastAngleScalarByAlliance()} instead if that is not the desired behavior.
 	 */
 	public void resetLastAngleScalar() {
 		swerveDrive.swerveController.lastAngleScalar = getHeading().getRadians();
@@ -370,6 +373,8 @@ public class Drivetrain extends SubsystemBase {
 	 * Inverted method to reset what the heading control will turn to if no angle is inputed. Used to prevent angle snapback.
 	 *
 	 * @see #resetLastAngleScalar()
+	 * @implNote
+	 *           Running this on the Blue alliance will cause the robot to flip 180 degrees. Call {@link #resetLastAngleScalarByAlliance()} instead if that is not the desired behavior.
 	 */
 	public void resetLastAngleScalarInverted() {
 		swerveDrive.swerveController.lastAngleScalar = getHeading().rotateBy(Rotation2d.k180deg).getRadians();
