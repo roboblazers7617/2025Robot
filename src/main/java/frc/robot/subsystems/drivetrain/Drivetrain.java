@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.LoggingConstants;
+import frc.robot.commands.drivetrain.LockWheelsCommand;
 import frc.robot.util.Util;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -312,6 +313,17 @@ public class Drivetrain extends SubsystemBase {
 	 */
 	public void lock() {
 		swerveDrive.lockPose();
+	}
+
+	/**
+	 * Command to lock the swerve drive to prevent it from moving.
+	 *
+	 * @return
+	 *         A new {@link LockWheelsCommand}.
+	 * @see LockWheelsCommand
+	 */
+	public Command lockCommand() {
+		return new LockWheelsCommand(this);
 	}
 
 	/**
