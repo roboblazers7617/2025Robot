@@ -139,7 +139,15 @@ public class Elevator extends SubsystemBase {
 	 * @return the command
 	 */
 	public Command setElevatorSpeedCommand(DoubleSupplier speed) {
-		return null; // TODO
+		Command command = new Command() {
+			@Override
+			public void execute() {
+				setElevatorPosition(elevatorTarget + (speed.getAsDouble() / 50)); // divide the speed by 50 because their are 50 loops per second
+			}
+		};
+		// command.addRequirements(this); TODO it seems like the subsystem should be required but that would prevent both speed commands from being used at the same time.
+		// also if there is lag after they release the joystick we may need to reset the position target to the current position.
+		return command;
 	}
 
 	/**
@@ -151,7 +159,15 @@ public class Elevator extends SubsystemBase {
 	 */
 	// TODO: (Brandon) Is any speed valid? Should it be? The PID controller has a max velocity built in, that is not something we need to handle.
 	public Command setWristSpeedCommand(DoubleSupplier speed) {
-		return null; // TODO
+		Command command = new Command() {
+			@Override
+			public void execute() {
+				setWristPosition(wristTarget + (speed.getAsDouble() / 50)); // divide the speed by 50 because their are 50 loops per second
+			}
+		};
+		// command.addRequirements(this); TODO it seems like the subsystem should be required but that would prevent both speed commands from being used at the same time.
+		// also if there is lag after they release the joystick we may need to reset the position target to the current position.
+		return command;
 	}
 
 	/**
