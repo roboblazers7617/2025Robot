@@ -87,6 +87,7 @@ public class RobotContainer {
 		// TODO: (Max) Shouldn't this be a whileTrue to allow them to cancel the command if not longer desired?
 		driverController.x().onTrue(Commands.either(drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.SCORING_POSES_RED), drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.SCORING_POSES_BLUE), () -> Util.isRedAlliance()));
 		// TODO: (Max) How does a driver have it align/drive to the 1) coral station and 2) processor?
+		driverController.a().whileTrue(drivetrain.lockCommand());
 
 		// TODO: transfer to dashboard
 		driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
