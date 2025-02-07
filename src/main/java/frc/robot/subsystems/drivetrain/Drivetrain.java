@@ -544,7 +544,7 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	/**
-	 * {@link #driveFieldOrientedCommand(Supplier)} that uses {@link DrivetrainControls#driveAngularVelocity(Drivetrain, CommandXboxController)}.
+	 * {@link #driveFieldOrientedCommand(Supplier)} that uses {@link DrivetrainControls#driveAngularVelocity(Drivetrain, CommandXboxController)}. Calls {@link #resetLastAngleScalar()} on end to prevent snapback.
 	 *
 	 * @param controller
 	 *            Controller to use.
@@ -552,7 +552,8 @@ public class Drivetrain extends SubsystemBase {
 	 *         Command to run.
 	 */
 	public Command driveFieldOrientedAngularVelocityControllerCommand(CommandXboxController controller) {
-		return driveFieldOrientedCommand(DrivetrainControls.driveAngularVelocity(this, controller));
+		return driveFieldOrientedCommand(DrivetrainControls.driveAngularVelocity(this, controller))
+				.finallyDo(this::resetLastAngleScalar);
 	}
 
 	/**
