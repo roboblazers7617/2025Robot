@@ -12,8 +12,13 @@ import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+
+import static edu.wpi.first.units.Units.Meters;
+
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -82,6 +87,8 @@ public class RobotContainer {
 					.whileTrue(drivetrain.driveFieldOrientedAngularVelocityControllerCommand(driverController)
 							.finallyDo(drivetrain::resetLastAngleScalar));
 		}
+		driverController.a()
+				.whileTrue(drivetrain.driveFieldOrientedAimAtPoseControllerCommand(driverController, () -> new Pose2d(Meters.of(1), Meters.of(5), Rotation2d.kZero)));
 		// TODO: (Max) This lets the driver move to the closest reef tag but how do they make it go to the
 		// left or right reef branch of that tag? What if they are on the right side of the tag but
 		// want to drive to the left branch?

@@ -580,6 +580,21 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	/**
+	 * {@link #driveFieldOrientedCommand(Supplier)} that uses {@link DrivetrainControls#driveAim(Drivetrain, CommandXboxController, Supplier)}.
+	 *
+	 * @param controller
+	 *            Controller to use.
+	 * @param pose
+	 *            Pose to aim at.
+	 * @return
+	 *         Command to run.
+	 */
+	public Command driveFieldOrientedAimAtPoseControllerCommand(CommandXboxController controller, Supplier<Pose2d> pose) {
+		return driveFieldOrientedCommand(DrivetrainControls.driveAim(this, controller, pose))
+				.finallyDo(this::resetLastAngleScalar);
+	}
+
+	/**
 	 * Set chassis speeds with closed-loop velocity control.
 	 *
 	 * @param chassisSpeeds
