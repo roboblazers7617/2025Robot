@@ -2,15 +2,11 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.drivetrain;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
@@ -28,7 +24,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
-import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.LoggingConstants;
 import frc.robot.util.Util;
@@ -65,6 +60,7 @@ public class Drivetrain extends SubsystemBase {
 	/**
 	 * Enable vision odometry updates while driving.
 	 */
+	// TODO: (Max) This variable doesn't describe what it signals. Also should follow our coding standard for booleans
 	private final boolean visionDriveTest = false;
 
 	/**
@@ -106,6 +102,9 @@ public class Drivetrain extends SubsystemBase {
 	@Override
 	public void periodic() {
 		// When vision is enabled we must manually update odometry in SwerveDrive
+		// TODO: (MAX/LUKAS) Last year we had a button the drivers could use to disable vision updates
+		// if vision was going wonky. It seems that wouldn't work this year as the odometry would no longer
+		// be updated?
 		if (visionDriveTest) {
 			swerveDrive.updateOdometry();
 			// TODO: Update vision here
@@ -114,58 +113,6 @@ public class Drivetrain extends SubsystemBase {
 
 	@Override
 	public void simulationPeriodic() {}
-
-	/**
-	 * Setup AutoBuilder for PathPlanner.
-	 */
-	public void setupPathPlanner(DriverStation.Alliance alliance) {
-		// Load the RobotConfig from the GUI settings. You should probably
-		// store this in your Constants file
-		RobotConfig config;
-		try {
-			config = RobotConfig.fromGUISettings();
-
-			final boolean enableFeedforward = false;
-			// Configure AutoBuilder last
-			AutoBuilder.configure(this::getPose,
-					// Robot pose supplier
-					this::resetOdometry,
-					// Method to reset odometry (will be called if your auto has a starting pose)
-					this::getRobotVelocity,
-					// ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-					(speedsRobotRelative, moduleFeedForwards) -> {
-						if (enableFeedforward) {
-							swerveDrive.drive(speedsRobotRelative, swerveDrive.kinematics.toSwerveModuleStates(speedsRobotRelative), moduleFeedForwards.linearForces());
-						} else {
-							swerveDrive.setChassisSpeeds(speedsRobotRelative);
-						}
-					},
-					// Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-					new PPHolonomicDriveController(
-							// PPHolonomicController is the built in path following controller for holonomic drive trains
-							AutoConstants.TRANSLATION_PID_CONSTANTS, // Translation PID constants
-							AutoConstants.ROTATION_PID_CONSTANTS // Rotation PID constants
-					), config,
-					// The robot configuration
-					() -> {
-						// Boolean supplier that controls when the path will be mirrored for the red alliance
-						// This will flip the path being followed to the red side of the field.
-						// THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-						return alliance == DriverStation.Alliance.Red;
-						// return true;
-					}, this
-			// Reference to this subsystem to set requirements
-			);
-		} catch (Exception e) {
-			// Handle exception as needed
-			e.printStackTrace();
-		}
-
-		// Preload PathPlanner Path finding
-		// IF USING CUSTOM PATHFINDER ADD BEFORE THIS LINE
-		PathfindingCommand.warmupCommand().schedule();
-	}
 
 	/**
 	 * Gets the swerve drive object.
@@ -240,19 +187,6 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	/**
-	 * Get the path follower with events.
-	 *
-	 * @param pathName
-	 *            PathPlanner path name.
-	 * @return
-	 *         {@link AutoBuilder#followPath(PathPlannerPath)} path command.
-	 */
-	public Command getAutonomousCommand(String pathName) {
-		// Create a path following command using AutoBuilder. This will also trigger event markers.
-		return new PathPlannerAuto(pathName);
-	}
-
-	/**
 	 * Command to characterize the robot drive motors using SysId.
 	 *
 	 * @return
@@ -311,6 +245,8 @@ public class Drivetrain extends SubsystemBase {
 	 * If red alliance rotate the robot 180 after the drviebase zero command
 	 */
 	public void zeroGyroWithAlliance() {
+		// TODO: (Max) What happens if this is called more than once? Seems like there needs to be logic that it
+		// is only called under certain circumstances.
 		if (Util.isRedAlliance()) {
 			zeroGyro();
 			// Set the pose 180 degrees
@@ -341,46 +277,6 @@ public class Drivetrain extends SubsystemBase {
 	 */
 	public Rotation2d getHeading() {
 		return getPose().getRotation();
-	}
-
-	/**
-	 * Get the chassis speeds based on controller input of 2 joysticks. One for speeds in which direction. The other for
-	 * the angle of the robot.
-	 *
-	 * @param xInput
-	 *            X joystick input for the robot to move in the X direction.
-	 * @param yInput
-	 *            Y joystick input for the robot to move in the Y direction.
-	 * @param headingX
-	 *            X joystick which controls the angle of the robot.
-	 * @param headingY
-	 *            Y joystick which controls the angle of the robot.
-	 * @return
-	 *         {@link ChassisSpeeds} which can be sent to the Swerve Drive.
-	 */
-	public ChassisSpeeds getTargetSpeedsFromController(double xInput, double yInput, double headingX, double headingY) {
-		Translation2d curvedInputs = SwerveMath.cubeTranslation(new Translation2d(xInput, yInput));
-
-		return swerveDrive.swerveController.getTargetSpeeds(curvedInputs.getX(), curvedInputs.getY(), headingX, headingY, getHeading().getRadians(), DrivetrainConstants.MAX_SPEED);
-	}
-
-	/**
-	 * Get the chassis speeds based on controller input of 1 joystick and one angle. Control the robot at an offset of
-	 * 90deg.
-	 *
-	 * @param xInput
-	 *            X joystick input for the robot to move in the X direction.
-	 * @param yInput
-	 *            Y joystick input for the robot to move in the Y direction.
-	 * @param angle
-	 *            The angle in as a {@link Rotation2d}.
-	 * @return
-	 *         {@link ChassisSpeeds} which can be sent to the Swerve Drive.
-	 */
-	public ChassisSpeeds getTargetSpeedsFromController(double xInput, double yInput, Rotation2d angle) {
-		Translation2d curvedInputs = SwerveMath.cubeTranslation(new Translation2d(xInput, yInput));
-
-		return swerveDrive.swerveController.getTargetSpeeds(curvedInputs.getX(), curvedInputs.getY(), angle.getRadians(), getHeading().getRadians(), DrivetrainConstants.MAX_SPEED);
 	}
 
 	/**
