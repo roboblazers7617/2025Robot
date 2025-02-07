@@ -5,27 +5,33 @@
 package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.drivetrain.Drivetrain;
 
 /**
- * A state that locks the wheels of the swerve drive to force it to remain stationary
+ * A command that locks the wheels of the swerve drive to force it to remain stationary.
  */
-public class LockWheelsState extends Command {
+public class LockWheelsCommand extends Command {
+	/**
+	 * Drivetrain to lock the wheels of.
+	 */
+	private final Drivetrain drivetrain;
+
 	/**
 	 * Creates a new LockWheelsState.
+	 *
+	 * @param drivetrain
+	 *            Drivetrain to lock the wheels of.
 	 */
-	private final Drivetrain swerveDrive;
-
-	public LockWheelsState(Drivetrain swerveDrive) {
+	public LockWheelsCommand(Drivetrain drivetrain) {
 		// Use addRequirements() here to declare subsystem dependencies.
-		addRequirements(swerveDrive);
-		this.swerveDrive = swerveDrive;
+		addRequirements(drivetrain);
+		this.drivetrain = drivetrain;
 	}
 
 	// Called when the command is initially scheduled.
 	@Override
 	public void initialize() {
-		swerveDrive.lock();
+		drivetrain.lock();
 	}
 
 	// Called every time the scheduler runs while the command is scheduled.
