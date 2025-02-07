@@ -44,10 +44,7 @@ public class Elevator extends SubsystemBase {
 	private final SparkMax followerElevatorMotor = new SparkMax(ElevatorConstants.LEFT_MOTOR_ID, MotorType.kBrushless);
 
 	/**
-	 * The elevator target in meters, this may not be safe.
-	 *
-	 * @implNote
-	 *           If no value is set then the elevator is in speed control.
+	 * The elevator target in meters, This is within the outer bounds of the elevator but the danger zone at the bottom has not been accounted for.
 	 */
 	private double elevatorTarget = 0;
 
@@ -61,10 +58,7 @@ public class Elevator extends SubsystemBase {
 	private final SparkMax wristMotor = new SparkMax(WristConstants.MOTOR_ID, MotorType.kBrushless);
 
 	/**
-	 * The wrist target in degrees, this may not be safe.
-	 *
-	 * @implNote
-	 *           If no value is set then the wrist is in speed control.
+	 * The wrist target in degrees, This is within the outer bounds of the wrist but the danger zone at the bottom has not been accounted for.
 	 */
 	private double wristTarget = 0;
 
@@ -131,8 +125,6 @@ public class Elevator extends SubsystemBase {
 	public void periodic() {
 		// TODO: (Brandon) Where is the logic for upper bounds control? The outer limits are managed in the set position function. The lower areas where they may collide is handled here.
 
-		// if there is no elevator target, do nothing (this is probably because the elevator is being controlled by a speed)
-		// TODO: (Brandon) What ensures that elevator / wrist are in safe positions if they are being controlled by speed rather than position? The speed function will now just call set position and will therefore have all the same safety stuff.
 		// ensure elevator target is within bounds
 		double safeElevatorTarget = elevatorTarget;
 
@@ -141,7 +133,7 @@ public class Elevator extends SubsystemBase {
 			safeElevatorTarget = ElevatorConstants.SAFE_MIN_POSITION;
 		}
 		double elevatorFeedForwardValue = elevatorFeedforward.calculate(5); // TODO
-		leaderElevatorMotor.getClosedLoopController().setReference(safeElevatorTarget, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0, elevatorFeedForwardValue); // TODO ensure slot is correct
+		leaderElevatorMotor.getClosedLoopController().setReference(safeElevatorTarget, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0, elevatorFeedForwardValue);
 
 		double safeWristTarget = wristTarget;
 
@@ -150,7 +142,7 @@ public class Elevator extends SubsystemBase {
 			safeWristTarget = WristConstants.SAFE_MIN_POSITION;
 		}
 		double wristFeedForwardValue = wristFeedforward.calculate(5, 5); // TODO
-		wristMotor.getClosedLoopController().setReference(safeWristTarget, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0, wristFeedForwardValue); // TODO ensure slot is correct
+		wristMotor.getClosedLoopController().setReference(safeWristTarget, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0, wristFeedForwardValue);
 	}
 
 	/**
@@ -165,7 +157,11 @@ public class Elevator extends SubsystemBase {
 		Command command = new Command() {
 			@Override
 			public void execute() {
-				setElevatorPosition(elevatorTarget + (speed.getAsDouble() / 50)); // divide the speed by 50 because their are 50 loops per second
+				double targetSpeed = speed.getAsDouble();
+				if (targetSpeed > ElevatorConstants.MAX_VELOCITY) {
+					targetSpeed = ElevatorConstants.MAX_VELOCITY;
+				}
+				setElevatorPosition(elevatorTarget + (targetSpeed / 50)); // divide the speed by 50 because their are 50 loops per second
 			}
 		};
 		// command.addRequirements(this); TODO it seems like the subsystem should be required but that would prevent both speed commands from being used at the same time.
@@ -181,12 +177,15 @@ public class Elevator extends SubsystemBase {
 	 * @return
 	 *         {@link Command} to run.
 	 */
-	// TODO: (Brandon) Is any speed valid? Should it be? The PID controller has a max velocity built in, that is not something we need to handle.
 	public Command setWristSpeedCommand(DoubleSupplier speed) {
 		Command command = new Command() {
 			@Override
 			public void execute() {
-				setWristPosition(wristTarget + (speed.getAsDouble() / 50)); // divide the speed by 50 because their are 50 loops per second
+				double targetSpeed = speed.getAsDouble();
+				if (targetSpeed > WristConstants.MAX_VELOCITY) {
+					targetSpeed = WristConstants.MAX_VELOCITY;
+				}
+				setWristPosition(wristTarget + (targetSpeed / 50)); // divide the speed by 50 because their are 50 loops per second
 			}
 		};
 		// command.addRequirements(this); TODO it seems like the subsystem should be required but that would prevent both speed commands from being used at the same time.

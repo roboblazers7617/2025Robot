@@ -272,11 +272,11 @@ public final class Constants {
 		 */
 		public static final double KA = 0;
 		/**
-		 * Elevator kMinOutput.
+		 * Elevator kMinOutput as a percentage.
 		 */
 		public static final double KMIN_OUTPUT = -.3;
 		/**
-		 * Elevator kMaxOutput.
+		 * Elevator kMaxOutput as a percentage.
 		 */
 		public static final double KMAX_OUTPUT = .3;
 		/**
@@ -359,7 +359,6 @@ public final class Constants {
 		 */
 		public static final double KV = 0;
 
-		// TODO: (Brandon) Will the wrist every run full speed? That seems dangerous
 		/**
 		 * Wrist kMinOutput.
 		 */
