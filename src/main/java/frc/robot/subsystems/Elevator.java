@@ -20,7 +20,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.WristConstants;
 
@@ -194,19 +196,20 @@ public class Elevator extends SubsystemBase {
 	}
 
 	/**
-	 * A command to move the wrist to a position in degrees.
-	 *
+	 * A command to set the elevator and wrist to a position.
+	 * 
 	 * @param position
-	 *            The position in degrees.
+	 *            The Constants.ArmPosition to set the elevator and wrist to.
 	 * @return
 	 *         {@link Command} to run.
 	 */
-	// TODO: (Brandon) Why is this a double supplier? If it wasn't a supplier only the value at startup would be used.
-	// TODO: (Brandon) Is any position double valid? How does this relate to the usage of the mechanism? Position is validaded in the setWristPosition function. I don't get your second question.
-	public Command setWristPositionCommand(DoubleSupplier position) {
-		return this.runOnce(() -> {
-			setWristPosition(position.getAsDouble());
+	public Command SetPosition(Constants.ArmPosition position) {
+		Command command = new InstantCommand(() -> {
+			setElevatorPosition(position.ELEVATOR_POSITION);
+			setWristPosition(position.WRIST_POSITION);
 		});
+		command.addRequirements(this);
+		return command;
 	}
 
 	/**

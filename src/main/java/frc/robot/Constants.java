@@ -417,6 +417,47 @@ public final class Constants {
 		public static final int CURRENT_LIMIT = 20;
 	}
 
+	public enum ArmPosition {
+		//
+		INTAKE_CORAL_CORAL_STATION(1.5, 0),
+		//
+		INTAKE_ALGAE_LEVEL_2(1, 0),
+		//
+		INTAKE_ALGAE_LEVEL_3(2, 0),
+		//
+		OUTTAKE_CORAL_LEVEL_1(0, 0),
+		//
+		OUTTAKE_CORAL_LEVEL_2(0, 0),
+		//
+		OUTTAKE_CORAL_LEVEL_3(0, 0),
+		//
+		OUTTAKE_CORAL_LEVEL_4(0, 0),
+		//
+		OUTTAKE_ALGAE_PROCESSOR(0, 0),
+		//
+		OUTTAKE_ALGAE_NET(0, 0),
+		//
+		STOW_ALGAE(0, 0),
+		//
+		STOW_CORAL(0, 0),
+		//
+		CLIMB(0, 0);
+
+		/**
+		 * The elevator position in meters.
+		 */
+		public final double ELEVATOR_POSITION;
+		/**
+		 * The wrist position in degrees.
+		 */
+		public final double WRIST_POSITION;
+
+		ArmPosition(double WRIST_POSITION, double ELEVATOR_POSITION) {
+			this.WRIST_POSITION = WRIST_POSITION;
+			this.ELEVATOR_POSITION = ELEVATOR_POSITION;
+		}
+	}
+
 	/**
 	 * Constants that describe the physical layout of the field.
 	 */
