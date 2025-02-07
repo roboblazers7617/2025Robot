@@ -242,15 +242,14 @@ public final class Constants {
 	 * Constants used to configure the elevator.
 	 */
 	public static class ElevatorConstants {
-		// TODO: (Brandon) Update with correct values
 		/**
 		 * CAN ID for the right elevator motor.
 		 */
-		public static final int RIGHT_MOTOR_ID = -1;
+		public static final int RIGHT_MOTOR_ID = 21;
 		/**
 		 * CAN ID for the left elevator motor.
 		 */
-		public static final int LEFT_MOTOR_ID = -1;
+		public static final int LEFT_MOTOR_ID = 22;
 
 		/**
 		 * Elevator kP.
@@ -336,8 +335,7 @@ public final class Constants {
 		/**
 		 * CAN Motor ID for the wrist.
 		 */
-		// TODO: (Brandon) Update with accurate number
-		public static final int MOTOR_ID = -1;
+		public static final int MOTOR_ID = 31;
 
 		/**
 		 * Wrist kP.
