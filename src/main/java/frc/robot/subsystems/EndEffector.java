@@ -86,27 +86,31 @@ public class EndEffector extends SubsystemBase {
 	public Command CoralIntake() {
 		return StartMotor(() -> EndEffectorConstants.CORAL_INTAKE_SPEED)
 				.andThen(Commands.waitUntil(() -> coralBeamBreak.get()))
-				.andThen(StopMotor());
+				.finallyDo(this::stopMotor);
 	}
 
 	public Command CoralOuttake() {
 		return StartMotor(() -> EndEffectorConstants.CORAL_OUTAKE_SPEED)
 				.andThen(Commands.waitUntil(() -> !coralBeamBreak.get()))
 				.andThen(Commands.waitSeconds(EndEffectorConstants.WAIT_TIME))
-				.andThen(StopMotor());
+				.finallyDo(this::stopMotor);
 	}
 
 	public Command AlgaeIntake() {
 		return StartMotor(() -> EndEffectorConstants.ALGAE_INTAKE_SPEED)
-				.andThen(Commands.waitSeconds(EndEffectorConstants.WAIT_TIME)
-						.raceWith(Commands.waitUntil(() -> endEffectorMotor.getOutputCurrent() >= EndEffectorConstants.AlGAE_INTAKE_CURRENT_LIMIT)))
-				.andThen(StopMotor());
+				.andThen(Commands.waitSeconds(EndEffectorConstants.WAIT_TIME))
+				.andThen(/*
+							 * Commands.waitSeconds(EndEffectorConstants.WAIT_TIME_TEST)
+							 * .raceWith
+							 */
+						(Commands.waitUntil(() -> endEffectorMotor.getOutputCurrent() >= EndEffectorConstants.AlGAE_INTAKE_CURRENT_LIMIT)))
+				.finallyDo(this::stopMotor);
 	}
 
 	public Command AlgaeOuttake() {
 		return StartMotor(() -> EndEffectorConstants.ALGAE_OUTAKE_SPEED)
 				.andThen(Commands.waitSeconds(EndEffectorConstants.WAIT_TIME))
-				.andThen(StopMotor());
+				.finallyDo(this::stopMotor);
 	}
 
 	/**
