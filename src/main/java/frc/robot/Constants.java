@@ -221,18 +221,18 @@ public final class Constants {
 	 */
 	public static class VisionConstants {
 		/**
-		 * The name of the front limelight.
+		 * The name of the front Limelight on NetworkTables.
 		 */
 		public static final String FRONT_LIMELIGHT_NAME = "limelight-front";
 		/**
-		 * The name of the back limelight.
+		 * The name of the back Limelight on NetworkTables.
 		 */
 		public static final String BACK_LIMELIGHT_NAME = "limelight-back";
 		/**
 		 * Enable vision odometry updates.
 		 */
 		public static final boolean ENABLE_VISION = true;
-		//public static final List<Double> TAGS_TO_TRACK = IntStream.range(1, 23).asDoubleStream().boxed().toList();
+		// public static final List<Double> TAGS_TO_TRACK = IntStream.range(1, 23).asDoubleStream().boxed().toList();
 	}
 
 	/**
