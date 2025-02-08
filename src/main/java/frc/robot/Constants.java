@@ -186,9 +186,20 @@ public final class Constants {
 		 */
 		public static final int DRIVER_CONTROLLER_PORT = 0;
 		/**
+		 * Controller port index where the operator controller is connected.
+		 */
+		public static final int OPERATOR_CONTROLLER_PORT = 1;
+		/**
 		 * Joystick deadband.
 		 */
 		public static final double DEADBAND = 0.1;
+
+		/**
+		 * If the Elevator and End Effector should act to interact with Coral or Algae
+		 */
+		public static enum GAMEPIECE_MODE {
+			CORAL_MODE, ALGAE_MODE
+		}
 	}
 
 	/**
