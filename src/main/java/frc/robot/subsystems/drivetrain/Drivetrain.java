@@ -60,6 +60,10 @@ public class Drivetrain extends SubsystemBase {
 	 * Swerve drive object.
 	 */
 	private final SwerveDrive swerveDrive;
+	/**
+	 * Vision object.
+	 */
+	private final Vision vision;
 
 	/**
 	 * Initialize {@link SwerveDrive} with the directory provided.
@@ -91,6 +95,9 @@ public class Drivetrain extends SubsystemBase {
 		swerveDrive.setMotorIdleMode(true);
 		// Stop the odometry thread if we are using vision that way we can synchronize updates better.
 		swerveDrive.stopOdometryThread();
+
+		// Set up vision
+		vision = new Vision();
 	}
 
 	@Override
@@ -101,7 +108,7 @@ public class Drivetrain extends SubsystemBase {
 		// be updated?
 		if (VisionConstants.ENABLE_VISION) {
 			swerveDrive.updateOdometry();
-			Vision.updatePoseEstimation(swerveDrive);
+			vision.updatePoseEstimation(swerveDrive);
 		}
 	}
 
