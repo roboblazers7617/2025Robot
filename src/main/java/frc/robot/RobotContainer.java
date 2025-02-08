@@ -10,7 +10,14 @@ import frc.robot.commands.Autos;
 import frc.robot.util.DrivetrainUtil;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.EndEffector;
+import frc.robot.Constants.FieldConstants;
+import frc.robot.util.Util;
+import frc.robot.subsystems.Dashboard;
+import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.drivetrain.DrivetrainControls;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -27,8 +34,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 @Logged
 public class RobotContainer {
+	private SendableChooser<Command> autoChooser = new SendableChooser<>();
 	// The robot's subsystems and commands are defined here...
 	// private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
+	// private final Dashboard dashboard = new Dashboard(drivetrain, this);
 
 	// Replace with CommandPS4Controller or CommandJoystick if needed
 	@NotLogged
@@ -48,6 +57,20 @@ public class RobotContainer {
 		configureBindings();
 		driverController.a().onTrue(endEffector.CoralIntake());
 		driverController.b().onTrue(endEffector.CoralOuttake());
+	}
+
+	/**
+	 * This method is run at the start of Teleop.
+	 */
+	public void teleopInit() {
+		// Reset the last angle so the robot doesn't try to spin.
+		if (Util.isRedAlliance()) {
+			// TODO: (Max) Does this work if you enable/disable as Red alliance multiple times? Won't it keep
+			// switing it by 180 degrees each time?
+			drivetrain.resetLastAngleScalarInverted();
+		} else {
+			drivetrain.resetLastAngleScalar();
+		}
 	}
 
 	/**

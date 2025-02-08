@@ -1,0 +1,261 @@
+{
+	"hubs": [
+		{
+			"x": 0,
+			"y": 43,
+			"width": 1920,
+			"height": 1200,
+			"state": {
+				"sidebar": {
+					"width": 300,
+					"expanded": [
+						"/NT",
+						"/NT/SmartDashboard",
+						"/NT/SmartDashboard/swerve",
+						"/NT/SmartDashboard/swerve/advantagescope",
+						"/NT/SmartDashboard/Field",
+						"/SmartDashboard",
+						"/FieldSimulation",
+						"/Shuffleboard",
+						"/PathPlanner"
+					]
+				},
+				"tabs": {
+					"selected": 5,
+					"tabs": [
+						{
+							"type": 0,
+							"title": "",
+							"controller": null,
+							"controllerUUID": "3irx699ko0gy521z3cc0vnywfme6blho",
+							"renderer": "#/",
+							"controlsHeight": 0
+						},
+						{
+							"type": 1,
+							"title": "Line Graph",
+							"controller": {
+								"leftSources": [],
+								"rightSources": [],
+								"discreteSources": [],
+								"leftLockedRange": null,
+								"rightLockedRange": null,
+								"leftUnitConversion": {
+									"type": null,
+									"factor": 1
+								},
+								"rightUnitConversion": {
+									"type": null,
+									"factor": 1
+								},
+								"leftFilter": 0,
+								"rightFilter": 0
+							},
+							"controllerUUID": "ei45h6cp9gl5l47tvz0n3yf26eaojldd",
+							"renderer": null,
+							"controlsHeight": 200
+						},
+						{
+							"type": 9,
+							"title": "Swerve",
+							"controller": {
+								"sources": [
+									{
+										"type": "states",
+										"logKey": "NT:/SmartDashboard/swerve/advantagescope/currentStates",
+										"logType": "SwerveModuleState[]",
+										"visible": true,
+										"options": {
+											"color": "#ff0000",
+											"arrangement": "0,1,2,3"
+										}
+									},
+									{
+										"type": "chassisSpeeds",
+										"logKey": "NT:/SmartDashboard/swerve/advantagescope/desiredChassisSpeeds",
+										"logType": "ChassisSpeeds",
+										"visible": true,
+										"options": {
+											"color": "#0000ff"
+										}
+									},
+									{
+										"type": "states",
+										"logKey": "NT:/SmartDashboard/swerve/advantagescope/desiredStates",
+										"logType": "SwerveModuleState[]",
+										"visible": true,
+										"options": {
+											"color": "#00ff00",
+											"arrangement": "0,1,2,3"
+										}
+									},
+									{
+										"type": "chassisSpeeds",
+										"logKey": "NT:/SmartDashboard/swerve/advantagescope/measuredChassisSpeeds",
+										"logType": "ChassisSpeeds",
+										"visible": true,
+										"options": {
+											"color": "#ff8c00"
+										}
+									},
+									{
+										"type": "rotation",
+										"logKey": "NT:/SmartDashboard/swerve/advantagescope/robotRotation",
+										"logType": "Rotation2d",
+										"visible": true,
+										"options": {}
+									}
+								],
+								"maxSpeed": 5,
+								"sizeX": 0.65,
+								"sizeY": 0.65,
+								"orientation": 1
+							},
+							"controllerUUID": "jve2qqc6tl093g5euhh9j5f1h3o0nc3l",
+							"renderer": null,
+							"controlsHeight": 200
+						},
+						{
+							"type": 7,
+							"title": "Video",
+							"controller": null,
+							"controllerUUID": "qz84hb6ntjkwdyizfi8x6b4gm3rosxhm",
+							"renderer": null,
+							"controlsHeight": 85
+						},
+						{
+							"type": 2,
+							"title": "Odometry",
+							"controller": {
+								"sources": [
+									{
+										"type": "robotLegacy",
+										"logKey": "NT:/SmartDashboard/Field/Robot",
+										"logType": "NumberArray",
+										"visible": true,
+										"options": {
+											"format": "Pose2d",
+											"units": "degrees"
+										}
+									},
+									{
+										"type": "trajectory",
+										"logKey": "NT:/PathPlanner/activePath",
+										"logType": "Pose2d[]",
+										"visible": true,
+										"options": {
+											"color": "#0000ff",
+											"size": "normal"
+										}
+									},
+									{
+										"type": "ghost",
+										"logKey": "NT:/PathPlanner/targetPose",
+										"logType": "Pose2d",
+										"visible": true,
+										"options": {
+											"color": "#0000ff"
+										}
+									}
+								],
+								"game": "2025 Field",
+								"bumpers": "auto",
+								"origin": "blue",
+								"orientation": 0,
+								"size": 30
+							},
+							"controllerUUID": "hnuqmqglgi2c68r5gq0zkrers9gp6q75",
+							"renderer": null,
+							"controlsHeight": 200
+						},
+						{
+							"type": 3,
+							"title": "3D Field",
+							"controller": {
+								"sources": [
+									{
+										"type": "robotLegacy",
+										"logKey": "NT:/SmartDashboard/Field/OdometryPose",
+										"logType": "NumberArray",
+										"visible": true,
+										"options": {
+											"model": "KitBot",
+											"format": "Pose2d",
+											"units": "degrees"
+										}
+									},
+									{
+										"type": "trajectory",
+										"logKey": "NT:/PathPlanner/activePath",
+										"logType": "Pose2d[]",
+										"visible": true,
+										"options": {
+											"color": "#0000ff",
+											"size": "normal"
+										}
+									},
+									{
+										"type": "ghost",
+										"logKey": "NT:/PathPlanner/targetPose",
+										"logType": "Pose2d",
+										"visible": true,
+										"options": {
+											"model": "KitBot",
+											"color": "#0000ff"
+										}
+									},
+									{
+										"type": "gamePiece",
+										"logKey": "NT:FieldSimulation/Algae",
+										"logType": "Pose3d[]",
+										"visible": true,
+										"options": {
+											"variant": "Algae"
+										}
+									},
+									{
+										"type": "gamePiece",
+										"logKey": "NT:FieldSimulation/Coral",
+										"logType": "Pose3d[]",
+										"visible": true,
+										"options": {
+											"variant": "Coral"
+										}
+									}
+								],
+								"game": "2025 Field",
+								"origin": "blue"
+							},
+							"controllerUUID": "7l0f7dxb5xdvlapfex8picr5ju18ar9f",
+							"renderer": {
+								"cameraIndex": -1,
+								"orbitFov": 50,
+								"cameraPosition": [
+									-9.021103756386207,
+									11.126231595695202,
+									-6.8719708512047655
+								],
+								"cameraTarget": [
+									-1.123373140265434,
+									0.4743119989025372,
+									2.0026777441968173
+								]
+							},
+							"controlsHeight": 200
+						},
+						{
+							"type": 12,
+							"title": "Metadata",
+							"controller": null,
+							"controllerUUID": "h35c5qp8on9trvig49kh543oixeyxns6",
+							"renderer": null,
+							"controlsHeight": 0
+						}
+					]
+				}
+			}
+		}
+	],
+	"satellites": [],
+	"version": "4.1.0"
+}
