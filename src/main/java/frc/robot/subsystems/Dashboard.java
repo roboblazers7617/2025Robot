@@ -81,7 +81,7 @@ public class Dashboard extends SubsystemBase {
 		NamedCommands.registerCommand("LockWheelsState", new LockWheelsCommand(drivetrain));
 		auto = AutoBuilder.buildAutoChooser();
 		SmartDashboard.putData("Auto", auto);
-		// robotContainer.setAutoChooser(auto);
+		robotContainer.setAutoChooser(auto);
 	}
 
 	private Command resetPose() {

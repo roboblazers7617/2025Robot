@@ -267,7 +267,8 @@ public final class Constants {
 		 */
 		public static final int CAN_ID_END_EFFECTOR = (41);
 		/*
-		 * I Belive we used this to make the numbers apear correctly in the dirvers station
+		 * I Belive we used this to make the numbers apear correctly in the dirvers station?
+		 * may be a usesless holdover from arm code test though
 		 */
 		public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO_END_EFFECTOR_MOTOR * 360.0;
 		/**
