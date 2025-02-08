@@ -231,15 +231,19 @@ public final class Constants {
 		// TODO:Set correct gear ratio once finalized
 		public static final double GEAR_RATIO_END_EFFECTOR_MOTOR = (1.0 / 1.0);
 		/**
-		 * End Effector's CAN_ID
+		 * Neo's current limit
 		 */
-		public static final int CAN_ID_END_EFFECTOR = (41); // I belive this was the 40's one?
+		public static final int MAX_CURRENT_LIMIT = 40;
+		/**
+		 * End Effector's Spark Max CAN_ID
+		 */
+		public static final int CAN_ID_END_EFFECTOR = (41);
 		/*
 		 * I Belive we used this to make the numbers apear correctly in the dirvers station
 		 */
 		public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO_END_EFFECTOR_MOTOR * 360.0;
-		// PID values block to be updated with actual values
 		/**
+		 * TODO: PID values block to be updated with actual values
 		 * PID config for the motor controller.
 		 */
 		public static final ClosedLoopConfig CLOSED_LOOP_CONFIG = new ClosedLoopConfig()
@@ -267,9 +271,12 @@ public final class Constants {
 		 */
 		public static final double ALGAE_OUTAKE_SPEED = -0.5;
 		/**
-		 * /**
 		 * Time (in seconds) that the motors run after beam break detects no coral/algae.
 		 */
-		public static final double WAIT_TIME = 0.5;
+		public static final double WAIT_TIME = 0.3;
+		/**
+		 * limit to the current before it shuts off the motor for the Algae Intake system.
+		 */
+		public static final double AlGAE_INTAKE_CURRENT_LIMIT = 20.0;
 	}
 }

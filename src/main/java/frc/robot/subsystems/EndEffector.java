@@ -20,7 +20,6 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
@@ -28,12 +27,13 @@ import edu.wpi.first.wpilibj2.command.Commands;
 
 public class EndEffector extends SubsystemBase {
 	/** Creates a new EndEffector. */
+	private double speed;
 	private final SparkMax endEffectorMotor = new SparkMax(EndEffectorConstants.CAN_ID_END_EFFECTOR, MotorType.kBrushless);
 	private final DigitalInput coralBeamBreak = new DigitalInput(EndEffectorConstants.BEAM_BREAK_DIO);
 
 	public EndEffector() {
 		SparkBaseConfig motorConfig = new SparkMaxConfig()
-				.smartCurrentLimit(40)
+				.smartCurrentLimit(EndEffectorConstants.MAX_CURRENT_LIMIT)
 				.idleMode(IdleMode.kBrake)
 				.apply(EndEffectorConstants.CLOSED_LOOP_CONFIG);
 		motorConfig.encoder.positionConversionFactor(EndEffectorConstants.POSITION_CONVERSION_FACTOR);
@@ -45,7 +45,7 @@ public class EndEffector extends SubsystemBase {
 	@Override
 	public void periodic() {
 		// This method will be called once per scheduler run
-		SmartDashboard.putNumber("End Effector Velocity", endEffectorMotor.getEncoder().getVelocity());
+		speed = endEffectorMotor.getEncoder().getVelocity();
 	}
 
 	private void stopMotor() {
@@ -85,26 +85,28 @@ public class EndEffector extends SubsystemBase {
 
 	public Command CoralIntake() {
 		return StartMotor(() -> EndEffectorConstants.CORAL_INTAKE_SPEED)
-				.andThen(Commands.waitUntil(() -> !coralBeamBreak.get()))
+				.andThen(Commands.waitUntil(() -> coralBeamBreak.get()))
 				.andThen(StopMotor());
 	}
 
 	public Command CoralOuttake() {
 		return StartMotor(() -> EndEffectorConstants.CORAL_OUTAKE_SPEED)
-				.andThen(Commands.waitUntil(() -> coralBeamBreak.get()))
+				.andThen(Commands.waitUntil(() -> !coralBeamBreak.get()))
 				.andThen(Commands.waitSeconds(EndEffectorConstants.WAIT_TIME))
 				.andThen(StopMotor());
 	}
 
 	public Command AlgaeIntake() {
-		return null;
+		return StartMotor(() -> EndEffectorConstants.ALGAE_INTAKE_SPEED)
+				.andThen(Commands.waitSeconds(EndEffectorConstants.WAIT_TIME)
+						.raceWith(Commands.waitUntil(() -> endEffectorMotor.getOutputCurrent() >= EndEffectorConstants.AlGAE_INTAKE_CURRENT_LIMIT)))
+				.andThen(StopMotor());
 	}
 
-	/*
-	 * 
-	 */
 	public Command AlgaeOuttake() {
-		return null;
+		return StartMotor(() -> EndEffectorConstants.ALGAE_OUTAKE_SPEED)
+				.andThen(Commands.waitSeconds(EndEffectorConstants.WAIT_TIME))
+				.andThen(StopMotor());
 	}
 
 	/**
