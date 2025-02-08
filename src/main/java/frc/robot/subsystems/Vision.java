@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.DegreesPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.math.VecBuilder;
 import frc.robot.Constants.VisionConstants;
@@ -39,13 +40,13 @@ public class Vision {
 		// Get MegaTag2 pose
 		// If the pose is present, a tag is detected, and the robot is not spinning over 720 degrees per second, add it to the pose estimator
 		frontLimelight.getPoseEstimator(true).getPoseEstimate().ifPresent((PoseEstimate poseEstimate) -> {
-			if (Math.abs(swerveDrive.getMaximumChassisAngularVelocity()) < 720 && poseEstimate.tagCount > 0) {
+			if (Math.abs(RadiansPerSecond.of(swerveDrive.getRobotVelocity().omegaRadiansPerSecond).in(DegreesPerSecond)) < 720 && poseEstimate.tagCount > 0) {
 				swerveDrive.addVisionMeasurement(poseEstimate.pose.toPose2d(), poseEstimate.timestampSeconds, VecBuilder.fill(.7, .7, 9999999));
 			}
 		});
 
 		backLimelight.getPoseEstimator(true).getPoseEstimate().ifPresent((PoseEstimate poseEstimate) -> {
-			if (Math.abs(swerveDrive.getMaximumChassisAngularVelocity()) < 720 && poseEstimate.tagCount > 0) {
+			if (Math.abs(RadiansPerSecond.of(swerveDrive.getRobotVelocity().omegaRadiansPerSecond).in(DegreesPerSecond)) < 720 && poseEstimate.tagCount > 0) {
 				swerveDrive.addVisionMeasurement(poseEstimate.pose.toPose2d(), poseEstimate.timestampSeconds, VecBuilder.fill(.7, .7, 9999999));
 			}
 		});
