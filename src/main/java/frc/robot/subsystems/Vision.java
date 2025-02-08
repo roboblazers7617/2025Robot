@@ -8,6 +8,7 @@ import limelight.Limelight;
 import limelight.networktables.AngularVelocity3d;
 import limelight.networktables.Orientation3d;
 import limelight.networktables.PoseEstimate;
+import limelight.networktables.LimelightSettings.ImuMode;
 import swervelib.SwerveDrive;
 
 /**
@@ -15,7 +16,13 @@ import swervelib.SwerveDrive;
  */
 public class Vision {
 	private static AngularVelocity3d zeroAngularVelocity3d = new AngularVelocity3d(DegreesPerSecond.zero(), DegreesPerSecond.zero(), DegreesPerSecond.zero());
-	private static Limelight limelight = new Limelight(VisionConstants.LIMELIGHT_NAME);
+	private static Limelight frontLimelight = new Limelight(VisionConstants.FRONT_LIMELIGHT_NAME);
+	private static Limelight backLimelight = new Limelight(VisionConstants.BACK_LIMELIGHT_NAME);
+
+	// Tell the LL4 to only use provided gyro values
+	static {
+		backLimelight.getSettings().withImuMode(ImuMode.ExternalImu);
+	}
 
 	/**
 	 * Update the pose estimation inside of {@link SwerveDrive} with data from Limelight.
@@ -26,11 +33,18 @@ public class Vision {
 	public static void updatePoseEstimation(SwerveDrive swerveDrive) {
 		// Get robot pose from YAGSL and use it to set the orientation in Limelight
 		// ANGULAR VELOCITY IS NEGLIGABLE SO PASS IN ZEROS
-		limelight.getSettings().withRobotOrientation(new Orientation3d(swerveDrive.getGyroRotation3d(), zeroAngularVelocity3d)).save();
+		frontLimelight.getSettings().withRobotOrientation(new Orientation3d(swerveDrive.getGyroRotation3d(), zeroAngularVelocity3d)).save();
+		backLimelight.getSettings().withRobotOrientation(new Orientation3d(swerveDrive.getGyroRotation3d(), zeroAngularVelocity3d)).save();
 
 		// Get MegaTag2 pose
 		// If the pose is present, a tag is detected, and the robot is not spinning over 720 degrees per second, add it to the pose estimator
-		limelight.getPoseEstimator(true).getPoseEstimate().ifPresent((PoseEstimate poseEstimate) -> {
+		frontLimelight.getPoseEstimator(true).getPoseEstimate().ifPresent((PoseEstimate poseEstimate) -> {
+			if (Math.abs(swerveDrive.getMaximumChassisAngularVelocity()) < 720 && poseEstimate.tagCount > 0) {
+				swerveDrive.addVisionMeasurement(poseEstimate.pose.toPose2d(), poseEstimate.timestampSeconds, VecBuilder.fill(.7, .7, 9999999));
+			}
+		});
+
+		backLimelight.getPoseEstimator(true).getPoseEstimate().ifPresent((PoseEstimate poseEstimate) -> {
 			if (Math.abs(swerveDrive.getMaximumChassisAngularVelocity()) < 720 && poseEstimate.tagCount > 0) {
 				swerveDrive.addVisionMeasurement(poseEstimate.pose.toPose2d(), poseEstimate.timestampSeconds, VecBuilder.fill(.7, .7, 9999999));
 			}
