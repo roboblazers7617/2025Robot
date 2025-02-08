@@ -10,8 +10,6 @@ import frc.robot.Constants.FieldConstants;
 import frc.robot.util.Util;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.drivetrain.Drivetrain;
-import frc.robot.subsystems.drivetrain.DrivetrainControls;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.epilogue.Logged;
@@ -38,10 +36,6 @@ public class RobotContainer {
 	// Replace with CommandPS4Controller or CommandJoystick if needed
 	@NotLogged
 	private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
-
-	private final Command driveFieldOrientedDirectAngle = drivetrain.driveFieldOrientedCommand(DrivetrainControls.driveDirectAngle(drivetrain, driverController));
-	private final Command driveFieldOrientedAnglularVelocity = drivetrain.driveFieldOrientedCommand(DrivetrainControls.driveAngularVelocity(drivetrain, driverController));
-	private final Command driveFieldOrientedDirectAngleSim = drivetrain.driveFieldOrientedCommand(DrivetrainControls.driveDirectAngleSim(drivetrain, driverController));
 
 	/** The container for the robot. Contains subsystems, OI devices, and commands. */
 	public RobotContainer() {
@@ -71,8 +65,16 @@ public class RobotContainer {
 	 */
 	private void configureBindings() {
 		// Set the default drivetrain command (used for the driver controller)
-		drivetrain.setDefaultCommand(!RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
-		driverController.leftBumper().whileTrue(driveFieldOrientedAnglularVelocity.finallyDo(drivetrain::resetLastAngleScalarByAlliance));
+		if (RobotBase.isSimulation()) {
+			// Heading control
+			drivetrain.setDefaultCommand(drivetrain.driveFieldOrientedDirectAngleSimControllerCommand(driverController));
+		} else {
+			// Heading control
+			drivetrain.setDefaultCommand(drivetrain.driveFieldOrientedDirectAngleControllerCommand(driverController));
+			// Angular velocity control
+			driverController.leftBumper()
+					.whileTrue(drivetrain.driveFieldOrientedAngularVelocityControllerCommand(driverController));
+		}
 		// TODO: (Max) This lets the driver move to the closest reef tag but how do they make it go to the
 		// left or right reef branch of that tag? What if they are on the right side of the tag but
 		// want to drive to the left branch?
