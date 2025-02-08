@@ -257,7 +257,6 @@ public final class Constants {
 		/**
 		 * End Effector's motor gear ratio.
 		 */
-		// TODO:Set correct gear ratio once finalized
 		public static final double GEAR_RATIO_END_EFFECTOR_MOTOR = (1.0 / 1.0);
 		/**
 		 * Neo's current limit
