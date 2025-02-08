@@ -5,7 +5,12 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.OperatorConstants.GAMEPIECE_MODE;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.subsystems.drivetrain.DrivetrainControls;
+import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.EndEffector;
+import frc.robot.commands.StubbedCommands;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.util.Util;
 import frc.robot.subsystems.Dashboard;
@@ -14,6 +19,7 @@ import frc.robot.subsystems.drivetrain.DrivetrainControls;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -38,10 +44,17 @@ public class RobotContainer {
 	// Replace with CommandPS4Controller or CommandJoystick if needed
 	@NotLogged
 	private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
+	@NotLogged
+	private final CommandXboxController operatorController = new CommandXboxController(OperatorConstants.OPERATOR_CONTROLLER_PORT);
 
-	private final Command driveFieldOrientedDirectAngle = drivetrain.driveFieldOrientedCommand(DrivetrainControls.driveDirectAngle(drivetrain, driverController));
-	private final Command driveFieldOrientedAnglularVelocity = drivetrain.driveFieldOrientedCommand(DrivetrainControls.driveAngularVelocity(drivetrain, driverController));
-	private final Command driveFieldOrientedDirectAngleSim = drivetrain.driveFieldOrientedCommand(DrivetrainControls.driveDirectAngleSim(drivetrain, driverController));
+	// private final Command driveFieldOrientedDirectAngle = drivetrain.driveFieldOrientedCommand(DrivetrainUtil.driveDirectAngle(drivetrain, driverController));
+	// private final Command driveFieldOrientedAnglularVelocity = drivetrain.driveFieldOrientedCommand(DrivetrainUtil.driveAngularVelocity(drivetrain, driverController));
+	// private final Command driveFieldOrientedDirectAngleSim = drivetrain.driveFieldOrientedCommand(DrivetrainUtil.driveDirectAngleSim(drivetrain, driverController));
+	private final EndEffector endEffector = new EndEffector();
+
+	private GAMEPIECE_MODE gamepieceMode;
+	private final Trigger isAlgaeMode = new Trigger(() -> (gamepieceMode == GAMEPIECE_MODE.ALGAE_MODE));
+	private final Trigger isCoralMode = new Trigger(() -> (gamepieceMode == GAMEPIECE_MODE.CORAL_MODE));
 
 	/** The container for the robot. Contains subsystems, OI devices, and commands. */
 	public RobotContainer() {
@@ -49,7 +62,10 @@ public class RobotContainer {
 		VersionConstants.publishNetworkTables(NetworkTableInstance.getDefault().getTable("/Metadata"));
 
 		// Configure the trigger bindings
-		configureBindings();
+		configureDriverControls();
+		configureOperatorControls();
+		// By default interact with Coral
+		gamepieceMode = GAMEPIECE_MODE.CORAL_MODE;
 	}
 
 	/**
@@ -60,9 +76,13 @@ public class RobotContainer {
 		if (Util.isRedAlliance()) {
 			// TODO: (Max) Does this work if you enable/disable as Red alliance multiple times? Won't it keep
 			// switing it by 180 degrees each time?
-			drivetrain.resetLastAngleScalarInverted();
+			// drivetrain.resetLastAngleScalarInverted();
 		} else {
-			drivetrain.resetLastAngleScalar();
+			// drivetrain.resetLastAngleScalar();
+		}
+
+		if (StubbedCommands.EndEffector.isHoldingAlage()) {
+			gamepieceMode = GAMEPIECE_MODE.ALGAE_MODE;
 		}
 	}
 
@@ -75,20 +95,61 @@ public class RobotContainer {
 	 * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
 	 * joysticks}.
 	 */
-	private void configureBindings() {
-		// Set the default drivetrain command (used for the driver controller)
-		drivetrain.setDefaultCommand(!RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
-		driverController.leftBumper().whileTrue(driveFieldOrientedAnglularVelocity.finallyDo(drivetrain::resetLastAngleScalar));
-		// TODO: (Max) This lets the driver move to the closest reef tag but how do they make it go to the
-		// left or right reef branch of that tag? What if they are on the right side of the tag but
-		// want to drive to the left branch?
-		// TODO: (Max) Shouldn't this be a whileTrue to allow them to cancel the command if not longer desired?
-		driverController.x().onTrue(Commands.either(drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.SCORING_POSES_RED), drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.SCORING_POSES_BLUE), () -> Util.isRedAlliance()));
-		// TODO: (Max) How does a driver have it align/drive to the 1) coral station and 2) processor?
+	private void configureDriverControls() {
+		// Set the default drivetrain command
+		// drivetrain.setDefaultCommand(!RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
 
-		// TODO: transfer to dashboard
-		driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
-		driverController.back().onTrue(drivetrain.centerModulesCommand());
+		driverController.a().whileTrue(StubbedCommands.Drivetrain.DriverSlowMode());
+		driverController.b().whileTrue(StubbedCommands.Drivetrain.DriverFastMode());
+		driverController.x().whileTrue(StubbedCommands.Drivetrain.LockWheels());
+		driverController.y().onTrue(StubbedCommands.Climber.StowRamp());
+
+		driverController.povDown().whileTrue(StubbedCommands.Climber.ClimberDown());
+		driverController.povLeft().whileTrue(StubbedCommands.Climber.RampUp());
+		driverController.povRight().whileTrue(StubbedCommands.Climber.RampDown());
+		driverController.povUp().whileTrue(StubbedCommands.Climber.AutoClimb());
+
+		// driverController.leftBumper().whileTrue(driveFieldOrientedAnglularVelocity.finallyDo(drivetrain::resetLastAngleScalar));
+		driverController.rightBumper().whileTrue(StubbedCommands.Drivetrain.AlignMiddleOfTag());
+		driverController.leftTrigger().whileTrue(StubbedCommands.Drivetrain.AlignLeftOfTag());
+		driverController.rightTrigger().whileTrue(StubbedCommands.Drivetrain.AlignRightOfTag());
+
+		// driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
+		driverController.back().onTrue(StubbedCommands.Drivetrain.DisableVision());
+	}
+
+	private void configureOperatorControls() {
+		// Set the default elevator command where it moves manually
+		/*
+		 * StubbedCommands.Elevator elevator = (new StubbedCommands()).new Elevator();
+		 * elevator.setDefaultCommand(elevator.MoveElevatorAndWristManual(() -> (-1 * operatorController.getLeftX()), () -> (-1 * operatorController.getLeftY())));
+		 */
+		// Acts to cancel the currently running command, such as intaking or outaking
+		operatorController.a().onTrue(Commands.runOnce((() -> {}), endEffector));
+		operatorController.b().or(operatorController.leftTrigger()).and(isAlgaeMode).onTrue(endEffector.AlgaeIntake().andThen(StubbedCommands.Elevator.StowAlgae()));
+		operatorController.b().or(operatorController.leftTrigger()).and(isCoralMode).onTrue(StubbedCommands.Elevator.MoveIntakeCoral().andThen(endEffector.CoralIntake(), StubbedCommands.Elevator.StowCoral()));
+		operatorController.x().and(isAlgaeMode).onTrue(StubbedCommands.Elevator.StowAlgae().alongWith(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector()))));
+		operatorController.x().and(isCoralMode).onTrue(StubbedCommands.Elevator.StowCoral().alongWith(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector()))));
+		operatorController.y().or(operatorController.leftBumper()).and(isAlgaeMode).onTrue(endEffector.AlgaeOuttake());
+		operatorController.y().or(operatorController.leftBumper()).and(isCoralMode).onTrue(endEffector.CoralOuttake());
+
+		operatorController.povDown().and(isAlgaeMode).onTrue(StubbedCommands.Elevator.MoveLowAlgae());
+		operatorController.povDown().and(isCoralMode).onTrue(StubbedCommands.Elevator.MoveL1());
+		operatorController.povLeft().or(operatorController.povRight()).and(isAlgaeMode).onTrue(StubbedCommands.Elevator.MoveProcessor());
+		operatorController.povLeft().and(isCoralMode).onTrue(StubbedCommands.Elevator.MoveL2());
+		operatorController.povRight().and(isCoralMode).onTrue(StubbedCommands.Elevator.MoveL3());
+		// POV Right Algae mode is handeled above with POV Left
+		operatorController.povUp().and(isAlgaeMode).onTrue(StubbedCommands.Elevator.MoveHighAlgae());
+		operatorController.povUp().and(isCoralMode).onTrue(StubbedCommands.Elevator.MoveL4());
+
+		// Left Bumper is on an or with the Y button above
+		operatorController.rightBumper().onTrue(Commands.runOnce(() -> {
+			gamepieceMode = GAMEPIECE_MODE.ALGAE_MODE;
+		}));
+		// Left Trigger is on an or with the B button above
+		operatorController.rightTrigger().onTrue(Commands.runOnce(() -> {
+			gamepieceMode = GAMEPIECE_MODE.CORAL_MODE;
+		}));
 	}
 
 	/**
@@ -98,16 +159,7 @@ public class RobotContainer {
 	 */
 	public Command getAutonomousCommand() {
 		// resetLastAngleScalar stops the robot from trying to turn back to its original angle after the auto ends
-		return autoChooser.getSelected();
-	}
-
-	/**
-	 * Set the auto chooser
-	 *
-	 * @param auto
-	 *            a sendable chooser with Commands for the autos
-	 */
-	public void setAutoChooser(SendableChooser<Command> auto) {
-		autoChooser = auto;
+		// return drivetrain.getAutonomousCommand("Example Auto").andThen(Commands.runOnce(() -> drivetrain.resetLastAngleScalar()));
+		return null;
 	}
 }

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.pathplanner.lib.config.PIDConstants;
+import com.revrobotics.spark.config.ClosedLoopConfig;
 
 import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.util.PoseUtil;
@@ -184,9 +185,20 @@ public final class Constants {
 		 */
 		public static final int DRIVER_CONTROLLER_PORT = 0;
 		/**
+		 * Controller port index where the operator controller is connected.
+		 */
+		public static final int OPERATOR_CONTROLLER_PORT = 1;
+		/**
 		 * Joystick deadband.
 		 */
 		public static final double DEADBAND = 0.1;
+
+		/**
+		 * If the Elevator and End Effector should act to interact with Coral or Algae
+		 */
+		public static enum GAMEPIECE_MODE {
+			CORAL_MODE, ALGAE_MODE
+		}
 	}
 
 	/**
@@ -239,8 +251,76 @@ public final class Constants {
 	}
 
 	/**
-	 * Constants that describe the physical layout of the field.
+	 * Constants used to configure the end effector.
 	 */
+	public static class EndEffectorConstants {
+		/**
+		 * End Effector's motor gear ratio.
+		 */
+		public static final double GEAR_RATIO_END_EFFECTOR_MOTOR = (1.0 / 1.0);
+		/**
+		 * Neo's current limit
+		 */
+		public static final int MAX_CURRENT_LIMIT = 40;
+		/**
+		 * End Effector's Spark Max CAN_ID
+		 */
+		public static final int CAN_ID_END_EFFECTOR = (41);
+		/*
+		 * I Belive we used this to make the numbers apear correctly in the dirvers station?
+		 * may be a usesless holdover from arm code test though
+		 */
+		public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO_END_EFFECTOR_MOTOR * 360.0;
+		/**
+		 * TODO: PID values block to be updated with actual values
+		 * PID config for the motor controller.
+		 */
+		public static final ClosedLoopConfig CLOSED_LOOP_CONFIG = new ClosedLoopConfig()
+				.p(0)
+				.i(0)
+				.d(0);
+		/**
+		 * DIO pin for the beam break.
+		 */
+		public static final int BEAM_BREAK_DIO = 1;
+		/**
+		 * Intake motor speed for coral. (to be changed and edited later)
+		 */
+		public static final double CORAL_INTAKE_SPEED = 0.2;
+		/**
+		 * Outtake motor speed for coral. (to be changed and edited later)
+		 */
+		public static final double CORAL_OUTAKE_SPEED = -0.2;
+		/**
+		 * Intake motor speed for algae. (to be changed and edited later)
+		 */
+		public static final double ALGAE_INTAKE_SPEED = 0.2;
+		/**
+		 * Outtake motor speed for algae. (to be changed and edited later)
+		 */
+		public static final double ALGAE_OUTAKE_SPEED = -0.5;
+		/**
+		 * Time (in seconds) that the motors run after beam break detects no coral.
+		 */
+		public static final double WAIT_TIME = 0.3;
+		/**
+		 * Time (in seconds) determines how long the break period is before the Current spike can be detected
+		 * this allows it to not shutoff with the initial motor startup spike. this will need to be adjusted.
+		 */
+		public static final double MOTOR_TIMER_CURRENT = 0.1;
+		/**
+		 * limit to the current before it shuts off the motor for the Algae Intake system. also needs to be adjusted.
+		 */
+		public static final double AlGAE_INTAKE_CURRENT_LIMIT = 15.0;
+	}
+
+	/**
+	 * Constants that
+	 * describe the
+	 * physical layout
+	 * of the field.
+	 */
+
 	public static class FieldConstants {
 		/**
 		 * AprilTag Field Layout for the current game.
