@@ -263,15 +263,23 @@ public final class Constants {
 			/**
 			 * Offset from the AprilTag from which scoring should happen.
 			 */
-			public static final Transform2d SCORING_OFFSET = new Transform2d(Meters.of(0.33 / 2), Meters.of(0.5), new Rotation2d(0));
+			public static final Transform2d SCORING_OFFSET = new Transform2d(Meters.of(0.33 / 2), Meters.of(0.5), Rotation2d.k180deg);
 			/**
-			 * Poses from which the robot can score on the blue alliance.
+			 * Poses from which the robot can score coral on the left side on the blue alliance.
 			 */
-			public static final List<Pose2d> SCORING_POSES_BLUE = new ArrayList<Pose2d>();
+			public static final List<Pose2d> CORAL_SCORING_POSES_BLUE_LEFT = new ArrayList<Pose2d>();
 			/**
-			 * Poses from which the robot can score on the red alliance.
+			 * Poses from which the robot can score coral on the right side on the blue alliance.
 			 */
-			public static final List<Pose2d> SCORING_POSES_RED = new ArrayList<Pose2d>();
+			public static final List<Pose2d> CORAL_SCORING_POSES_BLUE_RIGHT = new ArrayList<Pose2d>();
+			/**
+			 * Poses from which the robot can score coral on the left side on the red alliance.
+			 */
+			public static final List<Pose2d> CORAL_SCORING_POSES_RED_LEFT = new ArrayList<Pose2d>();
+			/**
+			 * Poses from which the robot can score coral on the right side on the red alliance.
+			 */
+			public static final List<Pose2d> CORAL_SCORING_POSES_RED_RIGHT = new ArrayList<Pose2d>();
 
 			static {
 				// Generate a list of tag poses.
@@ -283,20 +291,21 @@ public final class Constants {
 					}
 				});
 
-				// Generate a list of scoring poses.
+				// Generate lists of scoring poses.
 				TAG_POSES.forEach((pose) -> {
 					Pose2d pose2d = pose.toPose2d();
-					// TODO: (Max) Should be CORAL_SCORING_POSES_BLUE as for coral only, not algae. Correct?
-					// TODO: (Max) What is "regular" vs "flipped" side? Is it right or left reef branch?
 					// Regular side
-					SCORING_POSES_BLUE.add(pose2d.transformBy(SCORING_OFFSET));
+					CORAL_SCORING_POSES_BLUE_RIGHT.add(pose2d.transformBy(SCORING_OFFSET));
 					// Flipped side
-					SCORING_POSES_BLUE.add(pose2d.transformBy(new Transform2d(SCORING_OFFSET.getMeasureX(), SCORING_OFFSET.getMeasureY().times(-1), SCORING_OFFSET.getRotation())));
+					CORAL_SCORING_POSES_BLUE_LEFT.add(pose2d.transformBy(new Transform2d(SCORING_OFFSET.getMeasureX(), SCORING_OFFSET.getMeasureY().times(-1), SCORING_OFFSET.getRotation())));
 				});
 
-				// Generate a list of scoring poses for the other alliance.
-				SCORING_POSES_BLUE.forEach((pose) -> {
-					SCORING_POSES_RED.add(PoseUtil.flipPose(pose));
+				// Generate lists of scoring poses for the other alliance.
+				CORAL_SCORING_POSES_BLUE_LEFT.forEach((pose) -> {
+					CORAL_SCORING_POSES_RED_LEFT.add(PoseUtil.flipPose(pose));
+				});
+				CORAL_SCORING_POSES_BLUE_RIGHT.forEach((pose) -> {
+					CORAL_SCORING_POSES_RED_RIGHT.add(PoseUtil.flipPose(pose));
 				});
 			}
 		}
