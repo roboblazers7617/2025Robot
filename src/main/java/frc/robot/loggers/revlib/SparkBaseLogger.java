@@ -27,6 +27,8 @@ public class SparkBaseLogger extends ClassSpecificLogger<SparkBase> {
 		if (Epilogue.shouldLog(Logged.Importance.DEBUG)) {
 			backend.log("Voltage", motor.getBusVoltage());
 			backend.log("Percentage", motor.get());
+			backend.log("Output Current", motor.getOutputCurrent());
+			backend.log("Motor Temperature", motor.getMotorTemperature());
 			backend.log("Sticky Faults", motor.getStickyFaults().rawBits, SparkFaultsStruct.inst);
 			backend.log("Sticky Warnings", motor.getStickyWarnings().rawBits, SparkWarningsStruct.inst);
 		}
