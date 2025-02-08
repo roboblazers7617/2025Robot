@@ -125,13 +125,13 @@ public class RobotContainer {
 		 * elevator.setDefaultCommand(elevator.MoveElevatorAndWristManual(() -> (-1 * operatorController.getLeftX()), () -> (-1 * operatorController.getLeftY())));
 		 */
 		// Acts to cancel the currently running command, such as intaking or outaking
-		operatorController.a().onTrue(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector())));
-		operatorController.b().or(operatorController.leftTrigger()).and(isAlgaeMode).onTrue(StubbedCommands.EndEffector.IntakeAlgae().andThen(StubbedCommands.Elevator.StowAlgae()));
-		operatorController.b().or(operatorController.leftTrigger()).and(isCoralMode).onTrue(StubbedCommands.Elevator.MoveIntakeCoral().andThen(StubbedCommands.EndEffector.IntakeCoral(), StubbedCommands.Elevator.StowCoral()));
+		operatorController.a().onTrue(Commands.runOnce((() -> {}), endEffector));
+		operatorController.b().or(operatorController.leftTrigger()).and(isAlgaeMode).onTrue(endEffector.AlgaeIntake().andThen(StubbedCommands.Elevator.StowAlgae()));
+		operatorController.b().or(operatorController.leftTrigger()).and(isCoralMode).onTrue(StubbedCommands.Elevator.MoveIntakeCoral().andThen(endEffector.CoralIntake(), StubbedCommands.Elevator.StowCoral()));
 		operatorController.x().and(isAlgaeMode).onTrue(StubbedCommands.Elevator.StowAlgae().alongWith(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector()))));
 		operatorController.x().and(isCoralMode).onTrue(StubbedCommands.Elevator.StowCoral().alongWith(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector()))));
-		operatorController.y().or(operatorController.leftBumper()).and(isAlgaeMode).onTrue(StubbedCommands.EndEffector.OutakeAlgae());
-		operatorController.y().or(operatorController.leftBumper()).and(isCoralMode).onTrue(StubbedCommands.EndEffector.OutakeCoral());
+		operatorController.y().or(operatorController.leftBumper()).and(isAlgaeMode).onTrue(endEffector.AlgaeOuttake());
+		operatorController.y().or(operatorController.leftBumper()).and(isCoralMode).onTrue(endEffector.CoralOuttake());
 
 		operatorController.povDown().and(isAlgaeMode).onTrue(StubbedCommands.Elevator.MoveLowAlgae());
 		operatorController.povDown().and(isCoralMode).onTrue(StubbedCommands.Elevator.MoveL1());
