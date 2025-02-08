@@ -19,6 +19,10 @@ public class SparkMaxLogger extends ClassSpecificLogger<SparkMax> {
 		if (Epilogue.shouldLog(Logged.Importance.DEBUG)) {
 			backend.log("Voltage", motor.getBusVoltage());
 			backend.log("Percentage", motor.get());
+			/**
+			 * testing code used on board will be replaced with actual one later
+			 */
+			// backend.log("Motor Current", motor.get());
 			try {
 				// if it doesn't have an encoder it will throw an error
 				// TODO: (Brandon) Shouldn't this be getEncoder?

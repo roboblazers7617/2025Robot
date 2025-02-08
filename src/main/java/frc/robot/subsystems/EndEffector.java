@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.EndEffectorConstants;
-import frc.robot.commands.WaitUntilInterrupt;
 
 import java.util.function.Supplier;
 
@@ -57,9 +56,6 @@ public class EndEffector extends SubsystemBase {
 	}
 
 	/**
-	 * Should be able to use multiple speeds for the motors bassed on the buttons?
-	 * this may be wrong though.
-	 * 
 	 * @param speed
 	 *            Speed to set [-1,1].
 	 * @return
@@ -98,12 +94,9 @@ public class EndEffector extends SubsystemBase {
 
 	public Command AlgaeIntake() {
 		return StartMotor(() -> EndEffectorConstants.ALGAE_INTAKE_SPEED)
-				.andThen(Commands.waitSeconds(EndEffectorConstants.WAIT_TIME))
-				.andThen(/*
-							 * Commands.waitSeconds(EndEffectorConstants.WAIT_TIME_TEST)
-							 * .raceWith
-							 */
-						(Commands.waitUntil(() -> endEffectorMotor.getOutputCurrent() >= EndEffectorConstants.AlGAE_INTAKE_CURRENT_LIMIT)))
+				.andThen(Commands.waitSeconds(EndEffectorConstants.MOTOR_TIMER_CURRENT))
+				.andThen((Commands.waitUntil(() -> endEffectorMotor
+						.getOutputCurrent() >= EndEffectorConstants.AlGAE_INTAKE_CURRENT_LIMIT)))
 				.finallyDo(this::stopMotor);
 	}
 
@@ -111,23 +104,5 @@ public class EndEffector extends SubsystemBase {
 		return StartMotor(() -> EndEffectorConstants.ALGAE_OUTAKE_SPEED)
 				.andThen(Commands.waitSeconds(EndEffectorConstants.WAIT_TIME))
 				.finallyDo(this::stopMotor);
-	}
-
-	/**
-	 * Tests the beam break sensor by printing to standard output when an interrupt is triggered.
-	 * 
-	 * @return
-	 *         Command to run.
-	 */
-	public Command TestBeamBreak() {
-		return new WaitUntilInterrupt(coralBeamBreak, (rising, falling) -> {
-			if (rising) {
-				System.out.println("Interrupt triggered on the rising edge.");
-			}
-
-			if (falling) {
-				System.out.println("Interrupt triggered on the falling edge.");
-			}
-		});
 	}
 }

@@ -300,13 +300,18 @@ public final class Constants {
 		 */
 		public static final double ALGAE_OUTAKE_SPEED = -0.5;
 		/**
-		 * Time (in seconds) that the motors run after beam break detects no coral/algae.
+		 * Time (in seconds) that the motors run after beam break detects no coral.
 		 */
 		public static final double WAIT_TIME = 0.3;
 		/**
-		 * limit to the current before it shuts off the motor for the Algae Intake system.
+		 * Time (in seconds) determines how long the break period is before the Current spike can be detected
+		 * this allows it to not shutoff with the initial motor startup spike. this will need to be adjusted.
 		 */
-		public static final double AlGAE_INTAKE_CURRENT_LIMIT = 20.0;
+		public static final double MOTOR_TIMER_CURRENT = 0.1;
+		/**
+		 * limit to the current before it shuts off the motor for the Algae Intake system. also needs to be adjusted.
+		 */
+		public static final double AlGAE_INTAKE_CURRENT_LIMIT = 15.0;
 	}
 
 	/**
