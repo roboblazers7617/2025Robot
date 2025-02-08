@@ -22,7 +22,8 @@ public class Vision {
 
 	// Tell the LL4 to only use provided gyro values
 	static {
-		backLimelight.getSettings().withImuMode(ImuMode.ExternalImu);
+		backLimelight.getSettings()
+				.withImuMode(ImuMode.ExternalImu);
 	}
 
 	/**
@@ -34,8 +35,12 @@ public class Vision {
 	public static void updatePoseEstimation(SwerveDrive swerveDrive) {
 		// Get robot pose from YAGSL and use it to set the orientation in Limelight
 		// ANGULAR VELOCITY IS NEGLIGABLE SO PASS IN ZEROS
-		frontLimelight.getSettings().withRobotOrientation(new Orientation3d(swerveDrive.getGyroRotation3d(), zeroAngularVelocity3d)).save();
-		backLimelight.getSettings().withRobotOrientation(new Orientation3d(swerveDrive.getGyroRotation3d(), zeroAngularVelocity3d)).save();
+		frontLimelight.getSettings()
+				.withRobotOrientation(new Orientation3d(swerveDrive.getGyroRotation3d(), zeroAngularVelocity3d))
+				.save();
+		backLimelight.getSettings()
+				.withRobotOrientation(new Orientation3d(swerveDrive.getGyroRotation3d(), zeroAngularVelocity3d))
+				.save();
 
 		// Get MegaTag2 pose
 		// If the pose is present, a tag is detected, and the robot is not spinning over 720 degrees per second, add it to the pose estimator
