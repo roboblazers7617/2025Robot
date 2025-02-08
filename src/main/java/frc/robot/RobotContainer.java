@@ -145,19 +145,19 @@ public class RobotContainer {
 		// Left Bumper is on an or with the Y button above
 		operatorController.rightBumper().onTrue(Commands.runOnce(() -> {
 			gamepieceMode = GAMEPIECE_MODE.ALGAE_MODE;
-		}, ((new StubbedCommands()).new Elevator())));
+		}).andThen(Commands.print("Algae")));
 		// Left Trigger is on an or with the B button above
-		operatorController.rightBumper().onTrue(Commands.runOnce(() -> {
+		operatorController.rightTrigger().onTrue(Commands.runOnce(() -> {
 			gamepieceMode = GAMEPIECE_MODE.CORAL_MODE;
-		}, ((new StubbedCommands()).new Elevator())));
+		}).andThen(Commands.print("Coral")));
 
 		SmartDashboard.putData("Algae Mode", Commands.runOnce(() -> {
 			gamepieceMode = GAMEPIECE_MODE.ALGAE_MODE;
-		}, ((new StubbedCommands()).new Elevator())));
+		}));
 
 		SmartDashboard.putData("Coral Mode", Commands.runOnce(() -> {
 			gamepieceMode = GAMEPIECE_MODE.CORAL_MODE;
-		}, ((new StubbedCommands()).new Elevator())));
+		}));
 	}
 
 	/**
