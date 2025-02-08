@@ -6,9 +6,8 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.DrivetrainConstants;
-import frc.robot.commands.Autos;
-import frc.robot.util.DrivetrainUtil;
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.drivetrain.DrivetrainControls;
+import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.EndEffector;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.util.Util;
@@ -67,9 +66,9 @@ public class RobotContainer {
 		if (Util.isRedAlliance()) {
 			// TODO: (Max) Does this work if you enable/disable as Red alliance multiple times? Won't it keep
 			// switing it by 180 degrees each time?
-			drivetrain.resetLastAngleScalarInverted();
+			// drivetrain.resetLastAngleScalarInverted();
 		} else {
-			drivetrain.resetLastAngleScalar();
+			// drivetrain.resetLastAngleScalar();
 		}
 	}
 

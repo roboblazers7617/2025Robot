@@ -295,70 +295,74 @@ public final class Constants {
 		/**
 		 * limit to the current before it shuts off the motor for the Algae Intake system.
 		 */
-		public static final double AlGAE_INTAKE_CURRENT_LIMIT = 20.0;*
-		Constants that
-		describe the
-		physical layout
-		of the field.*/
+		public static final double AlGAE_INTAKE_CURRENT_LIMIT = 20.0;
+	}
 
-		public static class FieldConstants {
+	/**
+	 * Constants that
+	 * describe the
+	 * physical layout
+	 * of the field.
+	 */
+
+	public static class FieldConstants {
+		/**
+		 * AprilTag Field Layout for the current game.
+		 */
+		public static final AprilTagFieldLayout FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+
+		/**
+		 * Constants relating to the reef.
+		 */
+		// TODO: (Max) This will work for moving to score a coral. How do you move to remove an algae?
+		public static class Reef {
 			/**
-			 * AprilTag Field Layout for the current game.
+			 * AprilTag IDs for the reef on the blue alliance.
 			 */
-			public static final AprilTagFieldLayout FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
-
+			public static final List<Integer> TAG_IDS = new ArrayList<Integer>(List.of(17, 18, 19, 20, 21, 22));
 			/**
-			 * Constants relating to the reef.
+			 * AprilTag poses for the reef on the blue alliance.
 			 */
-			// TODO: (Max) This will work for moving to score a coral. How do you move to remove an algae?
-			public static class Reef {
-				/**
-				 * AprilTag IDs for the reef on the blue alliance.
-				 */
-				public static final List<Integer> TAG_IDS = new ArrayList<Integer>(List.of(17, 18, 19, 20, 21, 22));
-				/**
-				 * AprilTag poses for the reef on the blue alliance.
-				 */
-				public static final List<Pose3d> TAG_POSES = new ArrayList<Pose3d>();
-				/**
-				 * Offset from the AprilTag from which scoring should happen.
-				 */
-				public static final Transform2d SCORING_OFFSET = new Transform2d(Meters.of(0.33 / 2), Meters.of(0.5), new Rotation2d(0));
-				/**
-				 * Poses from which the robot can score on the blue alliance.
-				 */
-				public static final List<Pose2d> SCORING_POSES_BLUE = new ArrayList<Pose2d>();
-				/**
-				 * Poses from which the robot can score on the red alliance.
-				 */
-				public static final List<Pose2d> SCORING_POSES_RED = new ArrayList<Pose2d>();
+			public static final List<Pose3d> TAG_POSES = new ArrayList<Pose3d>();
+			/**
+			 * Offset from the AprilTag from which scoring should happen.
+			 */
+			public static final Transform2d SCORING_OFFSET = new Transform2d(Meters.of(0.33 / 2), Meters.of(0.5), new Rotation2d(0));
+			/**
+			 * Poses from which the robot can score on the blue alliance.
+			 */
+			public static final List<Pose2d> SCORING_POSES_BLUE = new ArrayList<Pose2d>();
+			/**
+			 * Poses from which the robot can score on the red alliance.
+			 */
+			public static final List<Pose2d> SCORING_POSES_RED = new ArrayList<Pose2d>();
 
-				static {
-					// Generate a list of tag poses.
-					TAG_IDS.forEach((id) -> {
-						Optional<Pose3d> tagPose = FIELD_LAYOUT.getTagPose(id);
+			static {
+				// Generate a list of tag poses.
+				TAG_IDS.forEach((id) -> {
+					Optional<Pose3d> tagPose = FIELD_LAYOUT.getTagPose(id);
 
-						if (tagPose.isPresent()) {
-							TAG_POSES.add(tagPose.get());
-						}
-					});
+					if (tagPose.isPresent()) {
+						TAG_POSES.add(tagPose.get());
+					}
+				});
 
-					// Generate a list of scoring poses.
-					TAG_POSES.forEach((pose) -> {
-						Pose2d pose2d = pose.toPose2d();
-						// TODO: (Max) Should be CORAL_SCORING_POSES_BLUE as for coral only, not algae. Correct?
-						// TODO: (Max) What is "regular" vs "flipped" side? Is it right or left reef branch?
-						// Regular side
-						SCORING_POSES_BLUE.add(pose2d.transformBy(SCORING_OFFSET));
-						// Flipped side
-						SCORING_POSES_BLUE.add(pose2d.transformBy(new Transform2d(SCORING_OFFSET.getMeasureX(), SCORING_OFFSET.getMeasureY().times(-1), SCORING_OFFSET.getRotation())));
-					});
+				// Generate a list of scoring poses.
+				TAG_POSES.forEach((pose) -> {
+					Pose2d pose2d = pose.toPose2d();
+					// TODO: (Max) Should be CORAL_SCORING_POSES_BLUE as for coral only, not algae. Correct?
+					// TODO: (Max) What is "regular" vs "flipped" side? Is it right or left reef branch?
+					// Regular side
+					SCORING_POSES_BLUE.add(pose2d.transformBy(SCORING_OFFSET));
+					// Flipped side
+					SCORING_POSES_BLUE.add(pose2d.transformBy(new Transform2d(SCORING_OFFSET.getMeasureX(), SCORING_OFFSET.getMeasureY().times(-1), SCORING_OFFSET.getRotation())));
+				});
 
-					// Generate a list of scoring poses for the other alliance.
-					SCORING_POSES_BLUE.forEach((pose) -> {
-						SCORING_POSES_RED.add(PoseUtil.flipPose(pose));
-					});
-				}
+				// Generate a list of scoring poses for the other alliance.
+				SCORING_POSES_BLUE.forEach((pose) -> {
+					SCORING_POSES_RED.add(PoseUtil.flipPose(pose));
+				});
 			}
 		}
+	}
 }
