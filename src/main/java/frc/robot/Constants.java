@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.pathplanner.lib.config.PIDConstants;
+import com.reduxrobotics.sensors.canandcolor.DigoutChannel.Index;
 
 import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.util.PoseUtil;
@@ -34,6 +35,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.measure.AngularAcceleration;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 
 /**
@@ -236,6 +238,37 @@ public final class Constants {
 		 */
 		// TODO: (Sam) Please update with correct values
 		public static final int RAMP_PIVOT_PORT = 2;
+	}
+
+	public static class LEDConstants {
+		/**
+		 * LED PWM header number (change to apropriate number later)
+		 */
+		public static final int LED_PWM_HEADER = 0;
+		/**
+		 * LED total amount (length)
+		 */
+		public static final int LED_AMMOUNT_TOTAL = 500;
+		/**
+		 * LED strip LED density meters/pixel amount
+		 */
+		public static final Distance LED_SPACING = Meters.of(1 / 120.0);
+		/**
+		 * The first led that this buffer has accses to
+		 */
+		public static final int LEFT_BUFFER_INDEX_START = 0;
+		/**
+		 * The first led that this buffer has accses to
+		 */
+		public static final int LEFT_BUFFER_INDEX_END = 249;
+		/**
+		 * The first led that this buffer has accses to
+		 */
+		public static final int RIGHT_BUFFER_INDEX_START = 250;
+		/**
+		 * The first led that this buffer has accses to
+		 */
+		public static final int RIGHT_BUFFER_INDEX_END = 499;
 	}
 
 	/**
