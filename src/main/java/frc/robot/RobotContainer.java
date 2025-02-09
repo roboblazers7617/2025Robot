@@ -51,13 +51,7 @@ public class RobotContainer {
 	 */
 	public void teleopInit() {
 		// Reset the last angle so the robot doesn't try to spin.
-		if (Util.isRedAlliance()) {
-			// TODO: (Max) Does this work if you enable/disable as Red alliance multiple times? Won't it keep
-			// switing it by 180 degrees each time?
-			drivetrain.resetLastAngleScalarInverted();
-		} else {
-			drivetrain.resetLastAngleScalar();
-		}
+		drivetrain.resetLastAngleScalarByAlliance();
 	}
 
 	/**
