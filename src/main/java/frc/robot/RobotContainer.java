@@ -12,8 +12,6 @@ import frc.robot.Constants.FieldConstants;
 import frc.robot.util.Util;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.drivetrain.Drivetrain;
-import frc.robot.subsystems.drivetrain.DrivetrainControls;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -45,10 +43,6 @@ public class RobotContainer {
 	private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
 	@NotLogged
 	private final CommandXboxController operatorController = new CommandXboxController(OperatorConstants.OPERATOR_CONTROLLER_PORT);
-
-	private final Command driveFieldOrientedDirectAngle = drivetrain.driveFieldOrientedCommand(DrivetrainControls.driveDirectAngle(drivetrain, driverController));
-	private final Command driveFieldOrientedAnglularVelocity = drivetrain.driveFieldOrientedCommand(DrivetrainControls.driveAngularVelocity(drivetrain, driverController));
-	private final Command driveFieldOrientedDirectAngleSim = drivetrain.driveFieldOrientedCommand(DrivetrainControls.driveDirectAngleSim(drivetrain, driverController));
 
 	private GAMEPIECE_MODE gamepieceMode;
 	private final Trigger isAlgaeMode = new Trigger(() -> (gamepieceMode == GAMEPIECE_MODE.ALGAE_MODE));
@@ -94,8 +88,17 @@ public class RobotContainer {
 	 * joysticks}.
 	 */
 	private void configureDriverControls() {
-		// Set the default drivetrain command
-		drivetrain.setDefaultCommand(!RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
+		// Set the default drivetrain command (used for the driver controller)
+		if (RobotBase.isSimulation()) {
+			// Heading control
+			drivetrain.setDefaultCommand(drivetrain.driveFieldOrientedDirectAngleSimControllerCommand(driverController));
+		} else {
+			// Heading control
+			drivetrain.setDefaultCommand(drivetrain.driveFieldOrientedDirectAngleControllerCommand(driverController));
+			// Angular velocity control
+			driverController.leftBumper()
+					.whileTrue(drivetrain.driveFieldOrientedAngularVelocityControllerCommand(driverController));
+		}
 
 		driverController.a().whileTrue(StubbedCommands.Drivetrain.DriverSlowMode());
 		driverController.b().whileTrue(StubbedCommands.Drivetrain.DriverFastMode());
@@ -107,10 +110,16 @@ public class RobotContainer {
 		driverController.povRight().whileTrue(StubbedCommands.Climber.RampDown());
 		driverController.povUp().whileTrue(StubbedCommands.Climber.AutoClimb());
 
-		driverController.leftBumper().whileTrue(driveFieldOrientedAnglularVelocity.finallyDo(drivetrain::resetLastAngleScalar));
 		driverController.rightBumper().whileTrue(StubbedCommands.Drivetrain.AlignMiddleOfTag());
 		driverController.leftTrigger().whileTrue(StubbedCommands.Drivetrain.AlignLeftOfTag());
 		driverController.rightTrigger().whileTrue(StubbedCommands.Drivetrain.AlignRightOfTag());
+
+		// TODO: (Max) This lets the driver move to the closest reef tag but how do they make it go to the
+		// left or right reef branch of that tag? What if they are on the right side of the tag but
+		// want to drive to the left branch?
+		// TODO: (Max) Shouldn't this be a whileTrue to allow them to cancel the command if not longer desired?
+		driverController.leftTrigger().onTrue(Commands.either(drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.SCORING_POSES_RED), drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.SCORING_POSES_BLUE), () -> Util.isRedAlliance()));
+		// TODO: (Max) How does a driver have it align/drive to the 1) coral station and 2) processor?
 
 		driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
 		driverController.back().onTrue(StubbedCommands.Drivetrain.DisableVision());

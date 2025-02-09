@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.LoggingConstants;
@@ -540,6 +541,43 @@ public class Drivetrain extends SubsystemBase {
 		return run(() -> {
 			swerveDrive.driveFieldOriented(velocity.get());
 		});
+	}
+
+	/**
+	 * {@link #driveFieldOrientedCommand(Supplier)} that uses {@link DrivetrainControls#driveAngularVelocity(Drivetrain, CommandXboxController)}. Calls {@link #resetLastAngleScalar()} on end to prevent snapback.
+	 *
+	 * @param controller
+	 *            Controller to use.
+	 * @return
+	 *         Command to run.
+	 */
+	public Command driveFieldOrientedAngularVelocityControllerCommand(CommandXboxController controller) {
+		return driveFieldOrientedCommand(DrivetrainControls.driveAngularVelocity(this, controller))
+				.finallyDo(this::resetLastAngleScalar);
+	}
+
+	/**
+	 * {@link #driveFieldOrientedCommand(Supplier)} that uses {@link DrivetrainControls#driveDirectAngle(Drivetrain, CommandXboxController)}.
+	 *
+	 * @param controller
+	 *            Controller to use.
+	 * @return
+	 *         Command to run.
+	 */
+	public Command driveFieldOrientedDirectAngleControllerCommand(CommandXboxController controller) {
+		return driveFieldOrientedCommand(DrivetrainControls.driveDirectAngle(this, controller));
+	}
+
+	/**
+	 * {@link #driveFieldOrientedCommand(Supplier)} that uses {@link DrivetrainControls#driveDirectAngleSim(Drivetrain, CommandXboxController)}.
+	 *
+	 * @param controller
+	 *            Controller to use.
+	 * @return
+	 *         Command to run.
+	 */
+	public Command driveFieldOrientedDirectAngleSimControllerCommand(CommandXboxController controller) {
+		return driveFieldOrientedCommand(DrivetrainControls.driveDirectAngleSim(this, controller));
 	}
 
 	/**
