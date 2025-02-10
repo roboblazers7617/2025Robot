@@ -79,7 +79,10 @@ public class RobotContainer {
 		// left or right reef branch of that tag? What if they are on the right side of the tag but
 		// want to drive to the left branch?
 		// TODO: (Max) Shouldn't this be a whileTrue to allow them to cancel the command if not longer desired?
-		driverController.x().onTrue(Commands.either(drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.SCORING_POSES_RED), drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.SCORING_POSES_BLUE), () -> Util.isRedAlliance()));
+		driverController.x()
+				.onTrue(Commands.either(drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.CORAL_SCORING_POSES_RED_LEFT), drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.CORAL_SCORING_POSES_BLUE_LEFT), () -> Util.isRedAlliance()));
+		driverController.y()
+				.onTrue(Commands.either(drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.CORAL_SCORING_POSES_RED_RIGHT), drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.CORAL_SCORING_POSES_BLUE_RIGHT), () -> Util.isRedAlliance()));
 		// TODO: (Max) How does a driver have it align/drive to the 1) coral station and 2) processor?
 
 		// TODO: transfer to dashboard
