@@ -68,6 +68,20 @@
               "data_type": "double",
               "show_submit_button": false
             }
+          },
+          {
+            "title": "Target Game Piece",
+            "x": 384.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Telemetry/m_robotContainer/gamepieceMode",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
           }
         ]
       }
