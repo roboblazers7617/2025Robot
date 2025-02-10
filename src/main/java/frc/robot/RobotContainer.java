@@ -129,10 +129,10 @@ public class RobotContainer {
 		 */
 		// Acts to cancel the currently running command, such as intaking or outaking
 		operatorController.a().onTrue(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector())));
-		operatorController.b().or(operatorController.leftTrigger()).and(isAlgaeMode).onTrue(StubbedCommands.EndEffector.IntakeAlgae().andThen(StubbedCommands.Elevator.StowAlgae()));
-		operatorController.b().or(operatorController.leftTrigger()).and(isCoralMode).onTrue(StubbedCommands.Elevator.MoveIntakeCoral().andThen(StubbedCommands.EndEffector.IntakeCoral(), StubbedCommands.Elevator.StowCoral()));
-		operatorController.x().and(isAlgaeMode).onTrue(StubbedCommands.Elevator.StowAlgae().alongWith(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector()))));
-		operatorController.x().and(isCoralMode).onTrue(StubbedCommands.Elevator.StowCoral().alongWith(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector()))));
+		operatorController.b().or(operatorController.leftTrigger()).and(isAlgaeMode).onTrue(StubbedCommands.EndEffector.IntakeAlgae().andThen(StubbedCommands.Elevator.StowAlgae()).andThen(led.algaeHeld()));
+		operatorController.b().or(operatorController.leftTrigger()).and(isCoralMode).onTrue(StubbedCommands.Elevator.MoveIntakeCoral().andThen(StubbedCommands.EndEffector.IntakeCoral(), StubbedCommands.Elevator.StowCoral()).andThen(led.coralHeld()));
+		operatorController.x().and(isAlgaeMode).onTrue(StubbedCommands.Elevator.StowAlgae().alongWith(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector()))).andThen(led.algaeAbsent()));
+		operatorController.x().and(isCoralMode).onTrue(StubbedCommands.Elevator.StowCoral().alongWith(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector()))).andThen(led.coralAbsent()));
 		operatorController.y().or(operatorController.leftBumper()).and(isAlgaeMode).onTrue(StubbedCommands.EndEffector.OutakeAlgae());
 		operatorController.y().or(operatorController.leftBumper()).and(isCoralMode).onTrue(StubbedCommands.EndEffector.OutakeCoral());
 

@@ -24,6 +24,9 @@ public class LED extends SubsystemBase {
 	private final LEDPattern scrollingRainbow = rainbow.scrollAtAbsoluteSpeed(MetersPerSecond.of(1), LEDConstants.LED_SPACING);
 	private final LEDPattern scrollingRainbow2 = LEDPattern.rainbow(255, 255).reversed().scrollAtAbsoluteSpeed(MetersPerSecond.of(1), LEDConstants.LED_SPACING);
 	private final LEDPattern red = LEDPattern.solid(Color.kRed);
+	private final LEDPattern white = LEDPattern.solid(Color.kWhite);
+	private final LEDPattern purple = LEDPattern.solid(Color.kPurple);
+	private final LEDPattern green = LEDPattern.solid(Color.kDarkGreen);
 
 	public LED() {
 		led = new AddressableLED(LEDConstants.LED_PWM_HEADER);
@@ -57,5 +60,21 @@ public class LED extends SubsystemBase {
 
 	public Command scrollingRainbow() {
 		return runPattern(scrollingRainbow, scrollingRainbow2);
+	}
+
+	public Command coralHeld() {
+		return runPattern(white, green);
+	}
+
+	public Command coralAbsent() {
+		return runPattern(white, red);
+	}
+
+	public Command algaeHeld() {
+		return runPattern(purple, green);
+	}
+
+	public Command algaeAbsent() {
+		return runPattern(purple, red);
 	}
 }
