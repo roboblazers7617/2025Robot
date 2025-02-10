@@ -233,6 +233,10 @@ public final class Constants {
 		 */
 		public static final boolean ENABLE_VISION = true;
 		// public static final List<Double> TAGS_TO_TRACK = IntStream.range(1, 23).asDoubleStream().boxed().toList();
+		/**
+		 * Use MegaTag2 for pose estimation.
+		 */
+		public static final boolean ENABLE_MEGATAG2 = true;
 	}
 
 	/**

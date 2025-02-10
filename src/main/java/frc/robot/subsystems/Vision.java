@@ -50,8 +50,8 @@ public class Vision {
 		backLimelight = new Limelight(VisionConstants.BACK_LIMELIGHT_NAME);
 
 		// Create the pose estimators.
-		frontPoseEstimator = frontLimelight.getPoseEstimator(true);
-		backPoseEstimator = backLimelight.getPoseEstimator(true);
+		frontPoseEstimator = frontLimelight.getPoseEstimator(VisionConstants.ENABLE_MEGATAG2);
+		backPoseEstimator = backLimelight.getPoseEstimator(VisionConstants.ENABLE_MEGATAG2);
 
 		// Tell the LL4 to only use provided gyro values
 		backLimelight.getSettings()
