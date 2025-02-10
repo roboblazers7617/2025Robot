@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.LoggingConstants;
@@ -350,18 +351,71 @@ public class Drivetrain extends SubsystemBase {
 
 	/**
 	 * The method to reset what the heading control will turn to if no angle is inputed. Used to prevent angle snapback.
+	 *
+	 * @implNote
+	 *           Running this on the Red alliance will cause the robot to flip 180 degrees. Call {@link #resetLastAngleScalarByAlliance()} instead if that is not the desired behavior.
 	 */
 	public void resetLastAngleScalar() {
 		swerveDrive.swerveController.lastAngleScalar = getHeading().getRadians();
 	}
 
 	/**
+	 * The command to reset what the heading control will turn to if no angle is inputed. Used to prevent angle snapback.
+	 *
+	 * @return
+	 *         {@link Command} to run.
+	 * @see #resetLastAngleScalar()
+	 */
+	public Command resetLastAngleScalarCommand() {
+		return Commands.runOnce(() -> resetLastAngleScalar(), this);
+	}
+
+	/**
 	 * Inverted method to reset what the heading control will turn to if no angle is inputed. Used to prevent angle snapback.
 	 *
 	 * @see #resetLastAngleScalar()
+	 * @implNote
+	 *           Running this on the Blue alliance will cause the robot to flip 180 degrees. Call {@link #resetLastAngleScalarByAlliance()} instead if that is not the desired behavior.
 	 */
 	public void resetLastAngleScalarInverted() {
 		swerveDrive.swerveController.lastAngleScalar = getHeading().rotateBy(Rotation2d.k180deg).getRadians();
+	}
+
+	/**
+	 * Inverted command to reset what the heading control will turn to if no angle is inputed. Used to prevent angle snapback.
+	 *
+	 * @return
+	 *         {@link Command} to run.
+	 * @see #resetLastAngleScalarInverted()
+	 */
+	public Command resetLastAngleScalarInvertedCommand() {
+		return Commands.runOnce(() -> resetLastAngleScalarInverted(), this);
+	}
+
+	/**
+	 * Method to reset what the heading control will turn to if no angle is inputed. Inverted based on alliance color. Used to prevent angle snapback.
+	 *
+	 * @see #resetLastAngleScalar()
+	 * @see #resetLastAngleScalarInverted()
+	 */
+	public void resetLastAngleScalarByAlliance() {
+		if (Util.isRedAlliance()) {
+			resetLastAngleScalarInverted();
+		} else {
+			resetLastAngleScalar();
+		}
+	}
+
+	/**
+	 * Command to reset what the heading control will turn to if no angle is inputed. Inverted based on alliance color. Used to prevent angle snapback.
+	 *
+	 * @return
+	 *         {@link Command} to run.
+	 * @see #resetLastAngleScalarCommand()
+	 * @see #resetLastAngleScalarInvertedCommand()
+	 */
+	public Command resetLastAngleScalarByAllianceCommand() {
+		return Commands.either(resetLastAngleScalarInvertedCommand(), resetLastAngleScalarCommand(), () -> Util.isRedAlliance());
 	}
 
 	/**
@@ -371,8 +425,7 @@ public class Drivetrain extends SubsystemBase {
 	 *            Target {@link Pose2d} to go to.
 	 * @return
 	 *         PathFinding command
-	 * @see
-	 *      AutoBuilder#pathfindToPose(Pose2d, PathConstraints, edu.wpi.first.units.measure.LinearVelocity)
+	 * @see AutoBuilder#pathfindToPose(Pose2d, PathConstraints, edu.wpi.first.units.measure.LinearVelocity)
 	 */
 	public Command driveToPoseCommand(Supplier<Pose2d> pose) {
 		// Create the constraints to use while pathfinding
@@ -380,7 +433,8 @@ public class Drivetrain extends SubsystemBase {
 
 		// Since AutoBuilder is configured, we can use it to build pathfinding commands
 		return Commands.defer(() -> AutoBuilder.pathfindToPose(pose.get(), constraints, MetersPerSecond.of(0) // Goal end velocity in meters/sec
-		), new HashSet<Subsystem>(Set.of(this)));
+		), new HashSet<Subsystem>(Set.of(this)))
+				.finallyDo(this::resetLastAngleScalarByAlliance);
 	}
 
 	/**
@@ -540,6 +594,43 @@ public class Drivetrain extends SubsystemBase {
 		return run(() -> {
 			swerveDrive.driveFieldOriented(velocity.get());
 		});
+	}
+
+	/**
+	 * {@link #driveFieldOrientedCommand(Supplier)} that uses {@link DrivetrainControls#driveAngularVelocity(Drivetrain, CommandXboxController)}. Calls {@link #resetLastAngleScalar()} on end to prevent snapback.
+	 *
+	 * @param controller
+	 *            Controller to use.
+	 * @return
+	 *         Command to run.
+	 */
+	public Command driveFieldOrientedAngularVelocityControllerCommand(CommandXboxController controller) {
+		return driveFieldOrientedCommand(DrivetrainControls.driveAngularVelocity(this, controller))
+				.finallyDo(this::resetLastAngleScalarByAlliance);
+	}
+
+	/**
+	 * {@link #driveFieldOrientedCommand(Supplier)} that uses {@link DrivetrainControls#driveDirectAngle(Drivetrain, CommandXboxController)}.
+	 *
+	 * @param controller
+	 *            Controller to use.
+	 * @return
+	 *         Command to run.
+	 */
+	public Command driveFieldOrientedDirectAngleControllerCommand(CommandXboxController controller) {
+		return driveFieldOrientedCommand(DrivetrainControls.driveDirectAngle(this, controller));
+	}
+
+	/**
+	 * {@link #driveFieldOrientedCommand(Supplier)} that uses {@link DrivetrainControls#driveDirectAngleSim(Drivetrain, CommandXboxController)}.
+	 *
+	 * @param controller
+	 *            Controller to use.
+	 * @return
+	 *         Command to run.
+	 */
+	public Command driveFieldOrientedDirectAngleSimControllerCommand(CommandXboxController controller) {
+		return driveFieldOrientedCommand(DrivetrainControls.driveDirectAngleSim(this, controller));
 	}
 
 	/**
