@@ -70,11 +70,8 @@ public class RobotContainer {
 			// Heading control
 			drivetrain.setDefaultCommand(drivetrain.driveFieldOrientedDirectAngleSimControllerCommand(driverController));
 		} else {
-			// Heading control
-			drivetrain.setDefaultCommand(drivetrain.driveFieldOrientedDirectAngleControllerCommand(driverController));
-			// Angular velocity control
-			driverController.leftBumper()
-					.whileTrue(drivetrain.driveFieldOrientedAngularVelocityControllerCommand(driverController));
+			// ButtonBox heading control
+			drivetrain.setDefaultCommand(drivetrain.driveFieldOrientedButtonBoxCommand(buttonBox));
 		}
 		// TODO: (Max) This lets the driver move to the closest reef tag but how do they make it go to the
 		// left or right reef branch of that tag? What if they are on the right side of the tag but
