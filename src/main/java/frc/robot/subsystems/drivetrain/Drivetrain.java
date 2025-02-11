@@ -514,7 +514,7 @@ public class Drivetrain extends SubsystemBase {
 		return Commands.defer(() -> AutoBuilder.pathfindToPose(pose.get(), constraints, MetersPerSecond.of(0) // Goal end velocity in meters/sec
 		), new HashSet<Subsystem>(Set.of(this)))
 				.andThen(setLastAngleScalarByAllianceCommand(() -> pose.get().getRotation()))
-				.finallyDo(this::resetLastAngleScalarByAlliance);
+				.handleInterrupt(this::resetLastAngleScalarByAlliance);
 	}
 
 	/**
