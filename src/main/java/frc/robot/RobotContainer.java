@@ -42,6 +42,10 @@ public class RobotContainer {
 	// Replace with CommandPS4Controller or CommandJoystick if needed
 	@NotLogged
 	private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
+	/**
+	 * Driver controller GenericHID object. Used for rumble.
+	 */
+	private final XboxController driverControllerHID = driverController.getHID();
 
 	/** The container for the robot. Contains subsystems, OI devices, and commands. */
 	public RobotContainer() {
