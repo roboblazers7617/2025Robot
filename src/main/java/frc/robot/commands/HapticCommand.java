@@ -1,0 +1,93 @@
+package frc.robot.commands;
+
+import static edu.wpi.first.units.Units.Seconds;
+
+import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj2.command.Command;
+
+/**
+ * Triggers controller rumble for a specified amount of time.
+ */
+public class HapticCommand extends Command {
+	/**
+	 * The timer used to time the rumble.
+	 */
+	private Timer timer = new Timer();
+
+	/**
+	 * Controller to rumble.
+	 */
+	private final GenericHID controller;
+	/**
+	 * Type of rumble to use.
+	 */
+	private final RumbleType type;
+	/**
+	 * Rumble strength [0-1];
+	 */
+	private final double strength;
+	/**
+	 * Duration to rumble for in seconds.
+	 */
+	private final double duration;
+
+	/**
+	 * Creates a Command that triggers controller rumble for a specified amount of time.
+	 *
+	 * @param controller
+	 *            Controller to rumble.
+	 * @param type
+	 *            Rumble type to set.
+	 * @param strength
+	 *            Rumble strength [0-1];
+	 * @param duration
+	 *            Rumble duration in seconds.
+	 */
+	public HapticCommand(GenericHID controller, RumbleType type, double strength, double duration) {
+		this.controller = controller;
+		this.type = type;
+		this.strength = strength;
+		this.duration = duration;
+	}
+
+	/**
+	 * Creates a Command that triggers controller rumble for a specified amount of time.
+	 *
+	 * @param controller
+	 *            Controller to rumble.
+	 * @param type
+	 *            Rumble type to set.
+	 * @param strength
+	 *            Rumble strength [0-1];
+	 * @param duration
+	 *            Rumble duration.
+	 */
+	public HapticCommand(GenericHID controller, RumbleType type, double strength, Time duration) {
+		this(controller, type, strength, duration.in(Seconds));
+	}
+
+	@Override
+	public void initialize() {
+		timer.start();
+		controller.setRumble(type, strength);
+	}
+
+	@Override
+	public void end(boolean interrupted) {
+		timer.stop();
+		controller.setRumble(type, 0);
+	}
+
+	@Override
+	public boolean isFinished() {
+		return timer.hasElapsed(duration);
+	}
+
+	@Override
+	public boolean runsWhenDisabled() {
+		return true;
+	}
+}
