@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Corner Start Right Reverse to Branch B"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Branch B to Coral Station Right Near"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Coral Station Right Near to Branch A"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Funni 2 Coral",
+  "choreoAuto": false
+}
