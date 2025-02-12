@@ -73,7 +73,7 @@ public final class DrivetrainControls {
 	 */
 	public static SwerveInputStream driveButtonBox(Drivetrain drivetrain, ButtonBox buttonBox) {
 		return SwerveInputStream.of(drivetrain.getSwerveDrive(), () -> (buttonBox.getDriverJoystick().getY() * 2 - 1), () -> ((buttonBox.getDriverJoystick().getX() * 2 - 1) * -1))
-				.withControllerHeadingAxis(() -> Math.sin(buttonBox.getDriverSteeringKnob().getPosition() * Math.PI) * (Math.PI * 2), () -> Math.cos(buttonBox.getDriverSteeringKnob().getPosition() * Math.PI) * (Math.PI * 2))
+				.withControllerHeadingAxis(() -> Math.sin((buttonBox.getDriverSteeringKnob().getPosition() * 2 - 1) * Math.PI) * (Math.PI * 2), () -> Math.cos((buttonBox.getDriverSteeringKnob().getPosition() * 2 - 1) * Math.PI) * (Math.PI * 2))
 				.deadband(OperatorConstants.DEADBAND)
 				.scaleTranslation(DrivetrainConstants.TRANSLATION_SCALE)
 				.allianceRelativeControl(true)
