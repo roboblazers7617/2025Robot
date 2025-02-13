@@ -6,12 +6,6 @@ plugins {
 	id 'edu.wpi.first.WpilibTools' version '1.3.0'
 }
 
-repositories {
-	flatDir {
-		dirs '../libs'
-	}
-}
-
 application {
 	mainClass = 'io.github.roboblazers7617.robot2025.buttonbox.ButtonBoxBridge'
 }
@@ -51,9 +45,6 @@ dependencies {
 
 	implementation group: "org.ejml", name: "ejml-simple", version: wpi.versions.ejmlVersion.get()
 	implementation group: "us.hebi.quickbuf", name: "quickbuf-runtime", version: wpi.versions.quickbufVersion.get();
-
-	implementation name: 'buttonbox-lib'
-	implementation name: 'buttonbox-lib-midi'
 }
 
 shadowJar {
