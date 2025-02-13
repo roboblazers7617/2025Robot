@@ -327,13 +327,13 @@ public final class Constants {
 			 */
 			public static final Transform2d SCORING_OFFSET = new Transform2d(Meters.of(0.33 / 2), Meters.of(0), Rotation2d.k180deg);
 			/**
-			 * Pose from which the robot can score on the blue alliance.
+			 * Pose from which the robot can score algae on the blue alliance.
 			 */
-			public static final Pose2d SCORING_POSE_BLUE;
+			public static final Pose2d ALGAE_SCORING_POSE_BLUE;
 			/**
-			 * Pose from which the robot can score on the red alliance.
+			 * Pose from which the robot can score algae on the red alliance.
 			 */
-			public static final Pose2d SCORING_POSE_RED;
+			public static final Pose2d ALGAE_SCORING_POSE_RED;
 
 			static {
 				// Find the tag pose.
@@ -348,8 +348,8 @@ public final class Constants {
 				// Generate scoring poses.
 				Pose2d pose2d = TAG_POSE.toPose2d();
 
-				SCORING_POSE_BLUE = pose2d.transformBy(SCORING_OFFSET);
-				SCORING_POSE_RED = PoseUtil.flipPose(SCORING_POSE_BLUE);
+				ALGAE_SCORING_POSE_BLUE = pose2d.transformBy(SCORING_OFFSET);
+				ALGAE_SCORING_POSE_RED = PoseUtil.flipPose(ALGAE_SCORING_POSE_BLUE);
 			}
 		}
 	}
