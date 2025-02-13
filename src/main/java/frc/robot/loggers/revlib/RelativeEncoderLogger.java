@@ -22,7 +22,7 @@ public class RelativeEncoderLogger extends ClassSpecificLogger<RelativeEncoder> 
 
 	@Override
 	protected void update(EpilogueBackend backend, RelativeEncoder encoder) {
-		if (Epilogue.shouldLog(Logged.Importance.DEBUG)) {
+		if (Epilogue.shouldLog(Logged.Importance.INFO)) {
 			backend.log("Position", encoder.getPosition());
 			backend.log("Velocity", encoder.getVelocity());
 		}

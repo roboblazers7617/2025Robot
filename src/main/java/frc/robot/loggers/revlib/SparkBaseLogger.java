@@ -24,15 +24,15 @@ public class SparkBaseLogger extends ClassSpecificLogger<SparkBase> {
 
 	@Override
 	protected void update(EpilogueBackend backend, SparkBase motor) {
-		if (Epilogue.shouldLog(Logged.Importance.DEBUG)) {
+		if (Epilogue.shouldLog(Logged.Importance.INFO)) {
 			backend.log("Voltage", motor.getBusVoltage());
 			backend.log("Percentage", motor.get());
 			backend.log("Output Current", motor.getOutputCurrent());
 			backend.log("Motor Temperature", motor.getMotorTemperature());
+		}
+		if (Epilogue.shouldLog(Logged.Importance.CRITICAL)) {
 			backend.log("Sticky Faults", motor.getStickyFaults().rawBits, SparkFaultsStruct.inst);
 			backend.log("Sticky Warnings", motor.getStickyWarnings().rawBits, SparkWarningsStruct.inst);
-		}
-		if (Epilogue.shouldLog(Logged.Importance.INFO)) {
 			backend.log("Active Faults", motor.getFaults().rawBits, SparkFaultsStruct.inst);
 			backend.log("Active Warnings", motor.getWarnings().rawBits, SparkWarningsStruct.inst);
 		}
