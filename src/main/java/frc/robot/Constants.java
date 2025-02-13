@@ -325,7 +325,7 @@ public final class Constants {
 			/**
 			 * Offset from the AprilTag from which scoring should happen.
 			 */
-			public static final Transform2d SCORING_OFFSET = new Transform2d(Meters.of(0.33 / 2), Meters.of(0), new Rotation2d(0));
+			public static final Transform2d SCORING_OFFSET = new Transform2d(Meters.of(0.33 / 2), Meters.of(0), Rotation2d.k180deg);
 			/**
 			 * Pose from which the robot can score on the blue alliance.
 			 */
