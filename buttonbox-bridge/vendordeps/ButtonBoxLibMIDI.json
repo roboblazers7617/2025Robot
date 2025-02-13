@@ -1,7 +1,7 @@
 {
 	"fileName": "ButtonBoxLibMIDI.json",
 	"name": "ButtonBoxLibMIDI",
-	"version": "2025.0.0-beta0",
+	"version": "2025.0.0-beta1",
 	"frcYear": "2025",
 	"uuid": "4aed0cd1-70c8-424e-8c35-6d0126e4f5a8",
 	"mavenUrls": [
@@ -12,7 +12,7 @@
 		{
 			"groupId": "io.github.roboblazers7617.buttonbox.midi",
 			"artifactId": "ButtonBoxLibMIDI-java",
-			"version": "2025.0.0-beta0"
+			"version": "2025.0.0-beta1"
 		}
 	],
 	"requires": [
