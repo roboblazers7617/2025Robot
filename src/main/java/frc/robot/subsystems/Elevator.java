@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import java.util.function.DoubleSupplier;
 
 import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
@@ -45,6 +46,8 @@ public class Elevator extends SubsystemBase {
 	 */
 	private final SparkMax followerElevatorMotor = new SparkMax(ElevatorConstants.LEFT_MOTOR_ID, MotorType.kBrushless);
 
+	private final SparkAbsoluteEncoder elevatorEncoder;
+
 	/**
 	 * The elevator target in meters, This is within the outer bounds of the elevator but the danger zone at the bottom has not been accounted for.
 	 */
@@ -58,6 +61,8 @@ public class Elevator extends SubsystemBase {
 	 * The wrist motor.
 	 */
 	private final SparkMax wristMotor = new SparkMax(WristConstants.MOTOR_ID, MotorType.kBrushless);
+
+	private final SparkAbsoluteEncoder wristEncoder;
 
 	/**
 	 * The wrist target in degrees, This is within the outer bounds of the wrist but the danger zone at the bottom has not been accounted for.
@@ -79,6 +84,7 @@ public class Elevator extends SubsystemBase {
 				.positionConversionFactor(ElevatorConstants.POSITION_CONVERSION_FACTOR)
 				.velocityConversionFactor(ElevatorConstants.VELOCITY_CONVERSION_FACTOR)
 				.zeroOffset(ElevatorConstants.ZERO_OFFSET);
+		elevatorEncoder = leaderElevatorMotor.getAbsoluteEncoder();
 
 		baseElevatorConfig.closedLoop
 				.p(ElevatorConstants.KP)
@@ -103,6 +109,7 @@ public class Elevator extends SubsystemBase {
 				.positionConversionFactor(WristConstants.POSITION_CONVERSION_FACTOR)
 				.velocityConversionFactor(WristConstants.VELOCITY_CONVERSION_FACTOR)
 				.zeroOffset(WristConstants.ZERO_OFFSET);
+		wristEncoder = wristMotor.getAbsoluteEncoder();
 
 		wristConfig.closedLoop
 				.p(WristConstants.KP)
@@ -131,19 +138,19 @@ public class Elevator extends SubsystemBase {
 		double safeElevatorTarget = elevatorTarget;
 
 		// ensure elevator target is not too low if the wrist is low
-		if (wristMotor.getEncoder().getPosition() < WristConstants.SAFE_MIN_POSITION && safeElevatorTarget < ElevatorConstants.SAFE_MIN_POSITION) {
+		if (wristEncoder.getPosition() < WristConstants.SAFE_MIN_POSITION && safeElevatorTarget < ElevatorConstants.SAFE_MIN_POSITION) {
 			safeElevatorTarget = ElevatorConstants.SAFE_MIN_POSITION;
 		}
-		double elevatorFeedForwardValue = elevatorFeedforward.calculate(5); // TODO
+		double elevatorFeedForwardValue = elevatorFeedforward.calculate(elevatorEncoder.getVelocity()); // this is technically supposed to be the velocity setpoint
 		leaderElevatorMotor.getClosedLoopController().setReference(safeElevatorTarget, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0, elevatorFeedForwardValue);
 
 		double safeWristTarget = wristTarget;
 
 		// ensure wrist target is not too low if the elevator is low
-		if (leaderElevatorMotor.getEncoder().getPosition() < ElevatorConstants.SAFE_MIN_POSITION && safeWristTarget < WristConstants.SAFE_MIN_POSITION) {
+		if (elevatorEncoder.getPosition() < ElevatorConstants.SAFE_MIN_POSITION && safeWristTarget < WristConstants.SAFE_MIN_POSITION) {
 			safeWristTarget = WristConstants.SAFE_MIN_POSITION;
 		}
-		double wristFeedForwardValue = wristFeedforward.calculate(5, 5); // TODO
+		double wristFeedForwardValue = wristFeedforward.calculate(Math.toRadians(elevatorEncoder.getPosition()), Math.toRadians(elevatorEncoder.getVelocity()));
 		wristMotor.getClosedLoopController().setReference(safeWristTarget, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0, wristFeedForwardValue);
 	}
 
