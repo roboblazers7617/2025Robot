@@ -263,7 +263,7 @@ public final class Constants {
 			/**
 			 * Offset from the AprilTag from which coral scoring should happen.
 			 */
-			public static final Transform2d CORAL_SCORING_OFFSET = new Transform2d(Meters.of(0.33 / 2), Meters.of(0.5), Rotation2d.k180deg);
+			public static final Transform2d CORAL_SCORING_OFFSET = new Transform2d(Meters.of(0.4), Meters.of(0.33 / 2), Rotation2d.k180deg);
 			/**
 			 * Offset from the AprilTag from which algae scoring should happen.
 			 */
@@ -307,9 +307,9 @@ public final class Constants {
 				TAG_POSES.forEach((pose) -> {
 					Pose2d pose2d = pose.toPose2d();
 					// Regular side
-					CORAL_SCORING_POSES_BLUE_RIGHT.add(pose2d.transformBy(ALGAE_SCORING_OFFSET));
+					CORAL_SCORING_POSES_BLUE_RIGHT.add(pose2d.transformBy(CORAL_SCORING_OFFSET));
 					// Flipped side
-					CORAL_SCORING_POSES_BLUE_LEFT.add(pose2d.transformBy(new Transform2d(ALGAE_SCORING_OFFSET.getMeasureX(), ALGAE_SCORING_OFFSET.getMeasureY().times(-1), ALGAE_SCORING_OFFSET.getRotation())));
+					CORAL_SCORING_POSES_BLUE_LEFT.add(pose2d.transformBy(new Transform2d(CORAL_SCORING_OFFSET.getMeasureX(), CORAL_SCORING_OFFSET.getMeasureY().times(-1), CORAL_SCORING_OFFSET.getRotation())));
 				});
 
 				// Generate lists of coral scoring poses for the other alliance.
