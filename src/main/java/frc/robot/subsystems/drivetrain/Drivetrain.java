@@ -350,13 +350,23 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	/**
+	 * Sets the {@link SwerveController#lastAngleScalar last angle scalar}.
+	 *
+	 * @param lastAngleScalar
+	 *            Angle to set it to.
+	 */
+	public void setLastAngleScalar(Rotation2d lastAngleScalar) {
+		swerveDrive.swerveController.lastAngleScalar = lastAngleScalar.getRadians();
+	}
+
+	/**
 	 * The method to reset what the heading control will turn to if no angle is inputed. Used to prevent angle snapback.
 	 *
 	 * @implNote
 	 *           Running this on the Red alliance will cause the robot to flip 180 degrees. Call {@link #resetLastAngleScalarByAlliance()} instead if that is not the desired behavior.
 	 */
 	public void resetLastAngleScalar() {
-		swerveDrive.swerveController.lastAngleScalar = getHeading().getRadians();
+		setLastAngleScalar(getHeading());
 	}
 
 	/**
@@ -378,7 +388,7 @@ public class Drivetrain extends SubsystemBase {
 	 *           Running this on the Blue alliance will cause the robot to flip 180 degrees. Call {@link #resetLastAngleScalarByAlliance()} instead if that is not the desired behavior.
 	 */
 	public void resetLastAngleScalarInverted() {
-		swerveDrive.swerveController.lastAngleScalar = getHeading().rotateBy(Rotation2d.k180deg).getRadians();
+		setLastAngleScalar(getHeading().rotateBy(Rotation2d.k180deg));
 	}
 
 	/**
