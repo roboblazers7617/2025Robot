@@ -353,7 +353,8 @@ public class Drivetrain extends SubsystemBase {
 	 * Sets the angle that heading control will return to if no angle is inputed.
 	 *
 	 * @param angle
-	 *            Angle to set as a scalar [-1,1].
+	 *            Angle to set in radians.
+	 * @see SwerveController#lastAngleScalar
 	 * @implNote
 	 *           Running this on the Red alliance will cause the angle to be flipped 180 degrees. Call {@link #setLastAngleScalarByAlliance(Rotation2d)} instead if that is not the desired behavior.
 	 */
@@ -366,6 +367,7 @@ public class Drivetrain extends SubsystemBase {
 	 *
 	 * @param rotation
 	 *            Angle to set.
+	 * @see SwerveController#lastAngleScalar
 	 * @implNote
 	 *           Running this on the Red alliance will cause the angle to be flipped 180 degrees. Call {@link #setLastAngleScalarByAlliance(Rotation2d)} instead if that is not the desired behavior.
 	 */
