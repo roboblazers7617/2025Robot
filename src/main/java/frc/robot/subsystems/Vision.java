@@ -10,17 +10,24 @@ import swervelib.SwerveDrive;
  */
 public class Vision {
 	/**
-	 * Creates a new Vision.
+	 * SwerveDrive to write vision updates to.
 	 */
-	public Vision() {}
+	private final SwerveDrive swerveDrive;
 
 	/**
-	 * Update the pose estimation inside of {@link SwerveDrive} with data from Limelight.
+	 * Creates a new Vision.
 	 *
 	 * @param swerveDrive
-	 *            {@link SwerveDrive} to use.
+	 *            {@link SwerveDrive} to update.
 	 */
-	public void updatePoseEstimation(SwerveDrive swerveDrive) {
+	public Vision(SwerveDrive swerveDrive) {
+		this.swerveDrive = swerveDrive;
+	}
+
+	/**
+	 * Update the pose estimation inside of {@link #swerveDrive} with data from Limelight.
+	 */
+	public void updatePoseEstimation() {
 		// Get robot pose from YAGSL and use it to set the orientation in Limelight
 		LimelightHelpers.SetRobotOrientation(VisionConstants.FRONT_LIMELIGHT_NAME, swerveDrive.getYaw().getDegrees(), 0, swerveDrive.getPitch().getDegrees(), 0, swerveDrive.getRoll().getDegrees(), 0);
 		LimelightHelpers.SetRobotOrientation(VisionConstants.BACK_LIMELIGHT_NAME, swerveDrive.getYaw().getDegrees(), 0, swerveDrive.getPitch().getDegrees(), 0, swerveDrive.getRoll().getDegrees(), 0);

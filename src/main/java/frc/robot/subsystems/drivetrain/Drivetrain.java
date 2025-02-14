@@ -97,7 +97,7 @@ public class Drivetrain extends SubsystemBase {
 		swerveDrive.stopOdometryThread();
 
 		// Set up vision
-		vision = new Vision();
+		vision = new Vision(swerveDrive);
 	}
 
 	@Override
@@ -108,7 +108,7 @@ public class Drivetrain extends SubsystemBase {
 		// be updated?
 		if (VisionConstants.ENABLE_VISION) {
 			swerveDrive.updateOdometry();
-			vision.updatePoseEstimation(swerveDrive);
+			vision.updatePoseEstimation();
 		}
 	}
 
