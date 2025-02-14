@@ -11,6 +11,7 @@ import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -42,6 +43,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+
 import org.json.simple.parser.ParseException;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
@@ -64,6 +66,10 @@ public class Drivetrain extends SubsystemBase {
 	 */
 	// TODO: (Max) This variable doesn't describe what it signals. Also should follow our coding standard for booleans
 	private final boolean visionDriveTest = false;
+	/**
+	 * ButtonBox that controls the drivetrain.
+	 */
+	private final ButtonBox buttonBox;
 
 	/**
 	 * Initialize {@link SwerveDrive} with the directory provided.
@@ -71,7 +77,9 @@ public class Drivetrain extends SubsystemBase {
 	 * @param directory
 	 *            Directory of swerve drive config files.
 	 */
-	public Drivetrain(File directory) {
+	public Drivetrain(File directory, ButtonBox buttonBox) {
+		this.buttonBox = buttonBox;
+
 		// Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
 		if (LoggingConstants.DEBUG_MODE) {
 			SwerveDriveTelemetry.verbosity = DrivetrainConstants.TELEMETRY_VERBOSITY_DEBUG;
@@ -351,13 +359,24 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	/**
+	 * Sets the {@link SwerveController#lastAngleScalar last angle scalar}.
+	 *
+	 * @param lastAngleScalar
+	 *            Angle to set it to.
+	 */
+	public void setLastAngleScalar(Rotation2d lastAngleScalar) {
+		swerveDrive.swerveController.lastAngleScalar = lastAngleScalar.getRadians();
+		buttonBox.getDriverSteeringKnob().setPosition(MathUtil.inputModulus(lastAngleScalar.rotateBy(Rotation2d.k180deg).getRotations(), 0.0, 1.0));
+	}
+
+	/**
 	 * The method to reset what the heading control will turn to if no angle is inputed. Used to prevent angle snapback.
 	 *
 	 * @implNote
 	 *           Running this on the Red alliance will cause the robot to flip 180 degrees. Call {@link #resetLastAngleScalarByAlliance()} instead if that is not the desired behavior.
 	 */
 	public void resetLastAngleScalar() {
-		swerveDrive.swerveController.lastAngleScalar = getHeading().getRadians();
+		setLastAngleScalar(getHeading());
 	}
 
 	/**
@@ -379,7 +398,7 @@ public class Drivetrain extends SubsystemBase {
 	 *           Running this on the Blue alliance will cause the robot to flip 180 degrees. Call {@link #resetLastAngleScalarByAlliance()} instead if that is not the desired behavior.
 	 */
 	public void resetLastAngleScalarInverted() {
-		swerveDrive.swerveController.lastAngleScalar = getHeading().rotateBy(Rotation2d.k180deg).getRadians();
+		setLastAngleScalar(getHeading().rotateBy(Rotation2d.k180deg));
 	}
 
 	/**
