@@ -26,6 +26,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.VisionConstants;
+import frc.robot.subsystems.vision.Vision;
 import frc.robot.Constants.LoggingConstants;
 import frc.robot.commands.drivetrain.LockWheelsCommand;
 import frc.robot.util.Util;
@@ -60,10 +62,9 @@ public class Drivetrain extends SubsystemBase {
 	 */
 	private final SwerveDrive swerveDrive;
 	/**
-	 * Enable vision odometry updates while driving.
+	 * Vision object.
 	 */
-	// TODO: (Max) This variable doesn't describe what it signals. Also should follow our coding standard for booleans
-	private final boolean visionDriveTest = false;
+	private final Vision vision;
 
 	/**
 	 * Initialize {@link SwerveDrive} with the directory provided.
@@ -92,13 +93,12 @@ public class Drivetrain extends SubsystemBase {
 		swerveDrive.setAngularVelocityCompensation(DrivetrainConstants.AngularVelocityCompensation.USE_IN_TELEOP, DrivetrainConstants.AngularVelocityCompensation.USE_IN_AUTO, DrivetrainConstants.AngularVelocityCompensation.ANGULAR_VELOCITY_COEFFICIENT); // Correct for skew that gets worse as angular velocity increases. Start with a coefficient of 0.1.
 		swerveDrive.setModuleEncoderAutoSynchronize(DrivetrainConstants.EncoderAutoSynchronization.ENABLED, DrivetrainConstants.EncoderAutoSynchronization.DEADBAND); // Enable if you want to resynchronize your absolute encoders and motor encoders periodically when they are not moving.
 		swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder and push the offsets onto it. Throws warning if not possible
-
 		swerveDrive.setMotorIdleMode(true);
-		if (visionDriveTest) {
-			// TODO: Setup vision here
-			// Stop the odometry thread if we are using vision that way we can synchronize updates better.
-			swerveDrive.stopOdometryThread();
-		}
+		// Stop the odometry thread if we are using vision that way we can synchronize updates better.
+		swerveDrive.stopOdometryThread();
+
+		// Set up vision
+		vision = new Vision(swerveDrive);
 	}
 
 	@Override
@@ -107,9 +107,9 @@ public class Drivetrain extends SubsystemBase {
 		// TODO: (MAX/LUKAS) Last year we had a button the drivers could use to disable vision updates
 		// if vision was going wonky. It seems that wouldn't work this year as the odometry would no longer
 		// be updated?
-		if (visionDriveTest) {
+		if (VisionConstants.ENABLE_VISION) {
 			swerveDrive.updateOdometry();
-			// TODO: Update vision here
+			vision.updatePoseEstimation();
 		}
 	}
 
