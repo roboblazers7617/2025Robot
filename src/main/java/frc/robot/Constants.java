@@ -193,10 +193,17 @@ public final class Constants {
 		public static final double DEADBAND = 0.1;
 
 		/**
-		 * If the Elevator and End Effector should act to interact with Coral or Algae
+		 * Type of game piece for the robot to interact with.
 		 */
-		public static enum GAMEPIECE_MODE {
-			CORAL_MODE, ALGAE_MODE
+		public static enum GamepieceMode {
+			/**
+			 * To interact with Coral
+			 */
+			CORAL_MODE,
+			/**
+			 * To interact with Algae
+			 */
+			ALGAE_MODE
 		}
 	}
 
