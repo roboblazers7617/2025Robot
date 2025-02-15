@@ -325,15 +325,15 @@ public class LimelightSettings {
 	 */
 	public enum ImuMode {
 		/**
-		 * Use external IMU yaw submitted via {@link withRobotOrientation} for MT2 localization. The internal IMU is ignored entirely.
+		 * Use external IMU yaw submitted via {@link Limelight#setRobotOrientation(edu.wpi.first.math.geometry.Rotation3d)} for MT2 localization. The internal IMU is ignored entirely.
 		 */
 		ExternalImu,
 		/**
-		 * Use external IMU yaw submitted via {@link withRobotOrientation} for MT2 localization. The internal IMU is synced with the external IMU.
+		 * Use external IMU yaw submitted via {@link Limelight#setRobotOrientation(edu.wpi.first.math.geometry.Rotation3d)} for MT2 localization. The internal IMU is synced with the external IMU.
 		 */
 		SyncInternalImu,
 		/**
-		 * Use internal IMU for MT2 localization. Ignores external IMU updates from {@link withRobotOrientation}.
+		 * Use internal IMU for MT2 localization. Ignores external IMU updates from {@link Limelight#setRobotOrientation(edu.wpi.first.math.geometry.Rotation3d)}.
 		 */
 		InternalImu
 	}
