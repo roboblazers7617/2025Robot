@@ -141,7 +141,7 @@ public final class Constants {
 			/**
 			 * Maximium linear acceleration.
 			 */
-			public static final LinearAcceleration MAX_LINEAR_ACCELERATION = MetersPerSecondPerSecond.of(4.0);
+			public static final LinearAcceleration MAX_LINEAR_ACCELERATION = MetersPerSecondPerSecond.of(2.0);
 			/**
 			 * Maximum angular acceleration.
 			 */
