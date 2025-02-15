@@ -238,10 +238,20 @@ public final class Constants {
 		public static final int RAMP_PIVOT_PORT = 2;
 	}
 
+	// wrist is 3:1
 	/**
 	 * Constants used to configure the elevator.
 	 */
 	public static class ElevatorConstants {
+		/*
+		 * A bunch of stuff about the elevator
+		 * Neos: 2
+		 * ratio: 16:1
+		 * current limit: 40 amp
+		 * position conversion factor:
+		 * mass: Mass - (2 * 6lbs constant force spring)
+		 * spool diamaeter:
+		 */
 		/**
 		 * CAN ID for the right elevator motor.
 		 */
@@ -271,7 +281,7 @@ public final class Constants {
 		/**
 		 * Elevator kV.
 		 */
-		public static final double KV = 0;
+		public static final double KV = 0; // Leave as zero Max motion will take care of this
 		/**
 		 * Elevator kA.
 		 */
@@ -332,6 +342,15 @@ public final class Constants {
 	 * Constants used to configure the wrist.
 	 */
 	public static class WristConstants {
+		/*
+		 * A bunch of stuff about the wrist
+		 * Neos: 1
+		 * ratio: 10:58 then 18:58
+		 * current limit: 40 amp
+		 * center of mass distance:
+		 * position conversion factor:
+		 * mass:
+		 */
 		/**
 		 * CAN Motor ID for the wrist.
 		 */
@@ -361,7 +380,7 @@ public final class Constants {
 		/**
 		 * Wrist kV.
 		 */
-		public static final double KV = 0;
+		public static final double KV = 0; // Leave as zero, Max motion will take care of this
 
 		/**
 		 * Wrist kMinOutput.
