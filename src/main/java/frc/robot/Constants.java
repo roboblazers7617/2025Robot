@@ -184,9 +184,27 @@ public final class Constants {
 		 */
 		public static final int DRIVER_CONTROLLER_PORT = 0;
 		/**
+		 * Controller port index where the operator controller is connected.
+		 */
+		public static final int OPERATOR_CONTROLLER_PORT = 1;
+		/**
 		 * Joystick deadband.
 		 */
 		public static final double DEADBAND = 0.1;
+
+		/**
+		 * Type of game piece for the robot to interact with.
+		 */
+		public static enum GamepieceMode {
+			/**
+			 * To interact with Coral
+			 */
+			CORAL_MODE,
+			/**
+			 * To interact with Algae
+			 */
+			ALGAE_MODE
+		}
 	}
 
 	/**
