@@ -84,6 +84,7 @@ public class RobotContainer {
 		driverController.y()
 				.onTrue(Commands.either(drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.CORAL_SCORING_POSES_RED_RIGHT), drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.CORAL_SCORING_POSES_BLUE_RIGHT), () -> Util.isRedAlliance()));
 		// TODO: (Max) How does a driver have it align/drive to the 1) coral station and 2) processor?
+		driverController.a().whileTrue(drivetrain.lockCommand());
 
 		// TODO: transfer to dashboard
 		driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
