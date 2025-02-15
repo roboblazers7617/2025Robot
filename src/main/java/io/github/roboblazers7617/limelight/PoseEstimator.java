@@ -1,8 +1,8 @@
-package io.github.roboblazers7617.classylimelights;
+package io.github.roboblazers7617.limelight;
 
 import edu.wpi.first.networktables.DoubleArrayEntry;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
-import io.github.roboblazers7617.classylimelights.targets.RawFiducialTarget;
+import io.github.roboblazers7617.limelight.targets.RawFiducialTarget;
 import limelight.networktables.LimelightPoseEstimator.BotPose;
 
 public class PoseEstimator {

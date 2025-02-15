@@ -1,10 +1,10 @@
-package io.github.roboblazers7617.classylimelights.targets;
+package io.github.roboblazers7617.limelight.targets;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import io.github.roboblazers7617.classylimelights.JsonUtilities;
+import io.github.roboblazers7617.limelight.JsonUtilities;
 
 /**
  * Represents a Color/Retroreflective Target Result extracted from JSON Output

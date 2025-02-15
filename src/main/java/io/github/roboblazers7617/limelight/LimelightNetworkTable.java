@@ -1,4 +1,4 @@
-package io.github.roboblazers7617.classylimelights;
+package io.github.roboblazers7617.limelight;
 
 import java.net.MalformedURLException;
 import java.net.URL;

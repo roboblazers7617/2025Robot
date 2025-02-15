@@ -1,4 +1,4 @@
-package io.github.roboblazers7617.classylimelights.targets;
+package io.github.roboblazers7617.limelight.targets;
 
 /**
  * Represents a Limelight Raw Fiducial result from Limelight's NetworkTables output.

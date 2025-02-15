@@ -1,4 +1,4 @@
-package io.github.roboblazers7617.classylimelights;
+package io.github.roboblazers7617.limelight;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -6,8 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import io.github.roboblazers7617.classylimelights.targets.RawFiducialTarget;
-import io.github.roboblazers7617.classylimelights.targets.neural.RawDetection;
+import io.github.roboblazers7617.limelight.targets.RawFiducialTarget;
+import io.github.roboblazers7617.limelight.targets.neural.RawDetection;
 
 public class PipelineDataCollator {
 	private final Limelight limelight;

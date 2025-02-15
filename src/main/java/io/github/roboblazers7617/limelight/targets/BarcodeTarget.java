@@ -1,4 +1,4 @@
-package io.github.roboblazers7617.classylimelights.targets;
+package io.github.roboblazers7617.limelight.targets;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

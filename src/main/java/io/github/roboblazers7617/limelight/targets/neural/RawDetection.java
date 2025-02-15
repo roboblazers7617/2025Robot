@@ -1,4 +1,4 @@
-package io.github.roboblazers7617.classylimelights.targets.neural;
+package io.github.roboblazers7617.limelight.targets.neural;
 
 /**
  * Represents a Limelight Raw Neural Detector result from Limelight's NetworkTables output.

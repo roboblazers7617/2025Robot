@@ -1,4 +1,4 @@
-package io.github.roboblazers7617.classylimelights;
+package io.github.roboblazers7617.limelight;
 
 import static edu.wpi.first.units.Units.Degrees;
 
@@ -9,7 +9,7 @@ import java.util.concurrent.CompletableFuture;
 
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.networktables.DoubleArrayEntry;
-import io.github.roboblazers7617.classylimelights.PoseEstimator.PoseEstimators;
+import io.github.roboblazers7617.limelight.PoseEstimator.PoseEstimators;
 
 public class Limelight {
 	public final String name;

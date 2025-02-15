@@ -1,4 +1,4 @@
-package io.github.roboblazers7617.classylimelights;
+package io.github.roboblazers7617.limelight;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation3d;

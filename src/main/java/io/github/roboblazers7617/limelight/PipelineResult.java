@@ -1,4 +1,4 @@
-package io.github.roboblazers7617.classylimelights;
+package io.github.roboblazers7617.limelight;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
@@ -6,11 +6,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import io.github.roboblazers7617.classylimelights.targets.BarcodeTarget;
-import io.github.roboblazers7617.classylimelights.targets.FiducialTarget;
-import io.github.roboblazers7617.classylimelights.targets.RetroreflectiveTarget;
-import io.github.roboblazers7617.classylimelights.targets.neural.ClassifierTarget;
-import io.github.roboblazers7617.classylimelights.targets.neural.DetectorTarget;
+import io.github.roboblazers7617.limelight.targets.BarcodeTarget;
+import io.github.roboblazers7617.limelight.targets.FiducialTarget;
+import io.github.roboblazers7617.limelight.targets.RetroreflectiveTarget;
+import io.github.roboblazers7617.limelight.targets.neural.ClassifierTarget;
+import io.github.roboblazers7617.limelight.targets.neural.DetectorTarget;
 
 /**
  * Limelight PipelineResult object, parsed from a Limelight's JSON results output.
@@ -94,10 +94,10 @@ public class PipelineResult {
 	public FiducialTarget[] targets_Fiducials;
 
 	@JsonProperty("Classifier")
-	public io.github.roboblazers7617.classylimelights.targets.neural.ClassifierTarget[] targets_Classifier;
+	public io.github.roboblazers7617.limelight.targets.neural.ClassifierTarget[] targets_Classifier;
 
 	@JsonProperty("Detector")
-	public io.github.roboblazers7617.classylimelights.targets.neural.DetectorTarget[] targets_Detector;
+	public io.github.roboblazers7617.limelight.targets.neural.DetectorTarget[] targets_Detector;
 
 	@JsonProperty("Barcode")
 	public BarcodeTarget[] targets_Barcode;
