@@ -29,13 +29,13 @@ public class Robot extends TimedRobot {
 	/**
 	 * Input voltage of the PDH.
 	 */
-	@SuppressWarnings("unused") // for logging
+	@Logged
 	private double voltage;
 
 	/**
 	 * Total current draw of the PDH.
 	 */
-	@SuppressWarnings("unused") // for logging
+	@Logged
 	private double totalCurrent;
 
 	/**
