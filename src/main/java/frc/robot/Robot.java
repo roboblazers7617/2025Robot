@@ -8,6 +8,7 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.logging.FileBackend;
 import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -39,6 +40,7 @@ public class Robot extends TimedRobot {
 	 */
 	public Robot() {
 		DataLogManager.start();
+		DriverStation.startDataLog(DataLogManager.getLog());
 		Epilogue.configure(config -> {
 			// if not in debug mode write data to a file
 			if (!LoggingConstants.DEBUG_MODE) {
