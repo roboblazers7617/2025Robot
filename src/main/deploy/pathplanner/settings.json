@@ -1,6 +1,6 @@
 {
-  "robotWidth": 0.76,
-  "robotLength": 0.76,
+  "robotWidth": 0.88,
+  "robotLength": 0.88,
   "holonomicMode": true,
   "pathFolders": [],
   "autoFolders": [],
@@ -12,7 +12,7 @@
   "robotMass": 27.7,
   "robotMOI": 2.666,
   "robotTrackwidth": 0.546,
-  "driveWheelRadius": 0.051,
+  "driveWheelRadius": 0.04955,
   "driveGearing": 6.75,
   "maxDriveSpeed": 3.91,
   "driveMotorType": "NEO",
