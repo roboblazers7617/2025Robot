@@ -21,9 +21,14 @@ import frc.robot.Constants.LoggingConstants;
  */
 @Logged
 public class Robot extends TimedRobot {
-	private Command m_autonomousCommand;
-
-	private final RobotContainer m_robotContainer;
+	/**
+	 * Command that contains the autonomous routine. Set and run at the start of {@link #autonomousInit()}.
+	 */
+	private Command autonomousCommand;
+	/**
+	 * Class that contains most of the robot initialization and control logic.
+	 */
+	private final RobotContainer robotContainer;
 
 	@Logged
 	private final PowerDistribution pdh = new PowerDistribution();
@@ -46,7 +51,7 @@ public class Robot extends TimedRobot {
 		Epilogue.bind(this);
 		// Instantiate our RobotContainer. This will perform all our button bindings, and put our
 		// autonomous chooser on the dashboard.
-		m_robotContainer = new RobotContainer();
+		robotContainer = new RobotContainer();
 	}
 
 	/**
@@ -75,11 +80,11 @@ public class Robot extends TimedRobot {
 	/** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
 	@Override
 	public void autonomousInit() {
-		m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+		autonomousCommand = robotContainer.getAutonomousCommand();
 
 		// schedule the autonomous command (example)
-		if (m_autonomousCommand != null) {
-			m_autonomousCommand.schedule();
+		if (autonomousCommand != null) {
+			autonomousCommand.schedule();
 		}
 	}
 
@@ -89,14 +94,14 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
-		m_robotContainer.teleopInit();
+		robotContainer.teleopInit();
 
 		// This makes sure that the autonomous stops running when
 		// teleop starts running. If you want the autonomous to
 		// continue until interrupted by another command, remove
 		// this line or comment it out.
-		if (m_autonomousCommand != null) {
-			m_autonomousCommand.cancel();
+		if (autonomousCommand != null) {
+			autonomousCommand.cancel();
 		}
 	}
 
