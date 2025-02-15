@@ -1,0 +1,17 @@
+name: 'Block untested PRs'
+
+on:
+  pull_request:
+    types:
+      - opened
+      - labeled
+      - unlabeled
+
+jobs:
+  fail-by-label:
+    if: contains(github.event.pull_request.labels.*.name, 'needs testing')
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Fail CI
+        run: exit 1
