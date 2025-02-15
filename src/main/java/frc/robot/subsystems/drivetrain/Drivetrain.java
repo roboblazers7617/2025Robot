@@ -234,11 +234,20 @@ public class Drivetrain extends SubsystemBase {
 	/**
 	 * Resets the gyro angle to zero and resets odometry to the same position, but facing toward 0.
 	 *
-	 * @see
-	 *      SwerveDrive#zeroGyro()
+	 * @see SwerveDrive#zeroGyro()
 	 */
 	public void zeroGyro() {
 		swerveDrive.zeroGyro();
+	}
+
+	/**
+	 * Resets the gyro angle to zero and resets odometry to the same position, but facing toward 0.
+	 *
+	 * @see #zeroGyro()
+	 */
+	public Command zeroGyroCommand() {
+		return Commands.runOnce(() -> zeroGyro(), this)
+				.ignoringDisable(true);
 	}
 
 	/**

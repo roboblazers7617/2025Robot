@@ -87,7 +87,7 @@ public class RobotContainer {
 		driverController.a().whileTrue(drivetrain.lockCommand());
 
 		// TODO: transfer to dashboard
-		driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
+		driverController.start().onTrue(drivetrain.zeroGyroCommand());
 		driverController.back().onTrue(drivetrain.centerModulesCommand());
 	}
 
