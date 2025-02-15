@@ -8,6 +8,7 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.logging.FileBackend;
 import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -23,6 +24,19 @@ public class Robot extends TimedRobot {
 	private Command m_autonomousCommand;
 
 	private final RobotContainer m_robotContainer;
+
+	private final PowerDistribution pdh = new PowerDistribution();
+	/**
+	 * Input voltage of the PDH.
+	 */
+	@SuppressWarnings("unused") // for logging
+	private double voltage;
+
+	/**
+	 * Total current draw of the PDH.
+	 */
+	@SuppressWarnings("unused") // for logging
+	private double totalCurrent;
 
 	/**
 	 * This function is run when the robot is first started up and should be used for any
@@ -59,6 +73,8 @@ public class Robot extends TimedRobot {
 		// and running subsystem periodic() methods. This must be called from the robot's periodic
 		// block in order for anything in the Command-based framework to work.
 		CommandScheduler.getInstance().run();
+		voltage = pdh.getVoltage();
+		totalCurrent = pdh.getTotalCurrent();
 	}
 
 	/** This function is called once each time the robot enters Disabled mode. */
