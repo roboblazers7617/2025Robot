@@ -95,6 +95,7 @@ public class Drivetrain extends SubsystemBase {
 		swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder and push the offsets onto it. Throws warning if not possible
 		swerveDrive.setMotorIdleMode(true);
 		// Stop the odometry thread if we are using vision that way we can synchronize updates better.
+		// TODO: #112 (Max/Lukas) If we disable vision updates, do we need to restart this thread to ensure odometry is udpated?
 		swerveDrive.stopOdometryThread();
 
 		// Set up vision
@@ -104,7 +105,7 @@ public class Drivetrain extends SubsystemBase {
 	@Override
 	public void periodic() {
 		// When vision is enabled we must manually update odometry in SwerveDrive
-		// TODO: (MAX/LUKAS) Last year we had a button the drivers could use to disable vision updates
+		// TODO: #106 (MAX/LUKAS) Last year we had a button the drivers could use to disable vision updates
 		// if vision was going wonky. It seems that wouldn't work this year as the odometry would no longer
 		// be updated?
 		if (VisionConstants.ENABLE_VISION) {
@@ -332,6 +333,7 @@ public class Drivetrain extends SubsystemBase {
 	 *         A new {@link LockWheelsCommand}.
 	 * @see LockWheelsCommand
 	 */
+	// TODO: #113 (Max) Only putting in one comment for entire class, but all Commands should start with a capital letter per coding standards. Please update.
 	public Command lockCommand() {
 		return new LockWheelsCommand(this);
 	}
