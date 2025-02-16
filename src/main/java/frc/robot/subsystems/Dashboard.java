@@ -4,13 +4,17 @@
 
 package frc.robot.subsystems;
 
+import java.util.List;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,11 +35,22 @@ public class Dashboard extends SubsystemBase {
 	final SendableChooser<DriverStation.Alliance> alliancePicker;
 	final SendableChooser<Pose2d> pose;
 	SendableChooser<Command> auto;
+	/**
+	 * Field2d used to preview and monitor auto paths.
+	 */
+	private final Field2d autoFieldPreview;
+	/**
+	 * Field2d used to monitor the robot state in teleop.
+	 */
+	private final Field2d teleopFieldPreview;
 
 	/** Creates a new Dashboard. */
 	public Dashboard(Drivetrain drivetrain, RobotContainer robotContainer) {
 		this.drivetrain = drivetrain;
 		this.robotContainer = robotContainer;
+
+		autoFieldPreview = new Field2d();
+		teleopFieldPreview = new Field2d();
 
 		alliancePicker = new SendableChooser<DriverStation.Alliance>();
 		alliancePicker.setDefaultOption("None", null);
@@ -54,15 +69,35 @@ public class Dashboard extends SubsystemBase {
 		pose.addOption("position 2", new Pose2d(0, 0, new Rotation2d(45)));
 		pose.addOption("center edge on red side", new Pose2d(17, 4, new Rotation2d(0)));
 
-		// pose.onChange((pose) -> {
-		// drivetrain.resetOdometry(pose);
-		// });
+		pose.onChange((pose) -> {
+			autoFieldPreview.getObject("Selected Pose")
+					.setPose(pose);
+		});
+
+		PathPlannerLogging.setLogActivePathCallback((List<Pose2d> activePath) -> {
+			autoFieldPreview.getObject("PathPlanner Path")
+					.setPoses(activePath);
+			teleopFieldPreview.getObject("PathPlanner Path")
+					.setPoses(activePath);
+		});
+		PathPlannerLogging.setLogCurrentPoseCallback((Pose2d currentPose) -> {
+			autoFieldPreview.getObject("PathPlanner Current Pose")
+					.setPose(currentPose);
+		});
+		PathPlannerLogging.setLogTargetPoseCallback((Pose2d targetPose) -> {
+			autoFieldPreview.getObject("PathPlanner Target")
+					.setPose(targetPose);
+			teleopFieldPreview.getObject("PathPlanner Target")
+					.setPose(targetPose);
+		});
 
 		NetworkTableInstance.getDefault().getTable("SmartDashboard/Alliance").getEntry("selected").setString("None");
 		NetworkTableInstance.getDefault().getTable("SmartDashboard/Alliance").getEntry("active").setString("None");
 		SmartDashboard.putData("Alliance", alliancePicker);
 		SmartDashboard.putData("Pose", pose);
 		SmartDashboard.putData("Reset pose to selected position", resetPose());
+		SmartDashboard.putData("Auto Field Preview", autoFieldPreview);
+		SmartDashboard.putData("Teleop Field Preview", teleopFieldPreview);
 	}
 
 	/**
@@ -96,5 +131,11 @@ public class Dashboard extends SubsystemBase {
 	public void periodic() {
 		// This method will be called once per scheduler run
 		// System.out.println(alliancePicker.getSelected());
+		autoFieldPreview.setRobotPose(drivetrain.getSwerveDrive().field.getRobotPose());
+		teleopFieldPreview.setRobotPose(drivetrain.getSwerveDrive().field.getRobotPose());
+		autoFieldPreview.getObject("XModules")
+				.setPoses(drivetrain.getSwerveDrive().field.getObject("XModules").getPoses());
+		teleopFieldPreview.getObject("XModules")
+				.setPoses(drivetrain.getSwerveDrive().field.getObject("XModules").getPoses());
 	}
 }
