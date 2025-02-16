@@ -78,12 +78,13 @@ public class RobotContainer {
 		// TODO: (Max) This lets the driver move to the closest reef tag but how do they make it go to the
 		// left or right reef branch of that tag? What if they are on the right side of the tag but
 		// want to drive to the left branch?
-		// TODO: (Max) Shouldn't this be a whileTrue to allow them to cancel the command if not longer desired?
+		// TODO: #99 (Max) Shouldn't this be a whileTrue to allow them to cancel the command if not longer desired?
+		// TODO: #110 (Max) Please use the controller buttons outlined in the Controls branch. This needs to be merged ASAP
 		driverController.x()
 				.onTrue(Commands.either(drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.CORAL_SCORING_POSES_RED_LEFT), drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.CORAL_SCORING_POSES_BLUE_LEFT), () -> Util.isRedAlliance()));
 		driverController.y()
 				.onTrue(Commands.either(drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.CORAL_SCORING_POSES_RED_RIGHT), drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.CORAL_SCORING_POSES_BLUE_RIGHT), () -> Util.isRedAlliance()));
-		// TODO: (Max) How does a driver have it align/drive to the 1) coral station and 2) processor?
+		// TODO: #100 (Max) How does a driver have it align/drive to the 1) coral station and 2) processor?
 		driverController.a().whileTrue(drivetrain.lockCommand());
 
 		// TODO: transfer to dashboard

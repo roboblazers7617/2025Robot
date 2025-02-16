@@ -95,6 +95,7 @@ public class Drivetrain extends SubsystemBase {
 		swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder and push the offsets onto it. Throws warning if not possible
 		swerveDrive.setMotorIdleMode(true);
 		// Stop the odometry thread if we are using vision that way we can synchronize updates better.
+		// TODO: #112 (Max/Lukas) If we disable vision updates, do we need to restart this thread to ensure odometry is udpated?
 		swerveDrive.stopOdometryThread();
 
 		// Set up vision
@@ -104,7 +105,7 @@ public class Drivetrain extends SubsystemBase {
 	@Override
 	public void periodic() {
 		// When vision is enabled we must manually update odometry in SwerveDrive
-		// TODO: (MAX/LUKAS) Last year we had a button the drivers could use to disable vision updates
+		// TODO: #106 (MAX/LUKAS) Last year we had a button the drivers could use to disable vision updates
 		// if vision was going wonky. It seems that wouldn't work this year as the odometry would no longer
 		// be updated?
 		if (VisionConstants.ENABLE_VISION) {
@@ -331,6 +332,7 @@ public class Drivetrain extends SubsystemBase {
 	 *         A new {@link LockWheelsCommand}.
 	 * @see LockWheelsCommand
 	 */
+	// TODO: #113 (Max) Only putting in one comment for entire class, but all Commands should start with a capital letter per coding standards. Please update.
 	public Command lockCommand() {
 		return new LockWheelsCommand(this);
 	}
@@ -370,6 +372,8 @@ public class Drivetrain extends SubsystemBase {
 		swerveDrive.drive(translation, rotation, fieldRelative, false); // Open loop is disabled since it shouldn't be used most of the time.
 	}
 
+	// TODO: #115 (Max) Please simplify this code. There are 12 functions/commands related to resetting the
+	// lastAngleScalar.
 	/**
 	 * Sets the angle that heading control will return to if no angle is inputed.
 	 *
@@ -379,6 +383,7 @@ public class Drivetrain extends SubsystemBase {
 	 * @implNote
 	 *           Running this on the Red alliance will cause the angle to be flipped 180 degrees. Call {@link #setLastAngleScalarByAlliance(Rotation2d)} instead if that is not the desired behavior.
 	 */
+	// TODO: #114 (Max) Shouldn't this be private to ensure that the wrong function isn't used? Should always use ByAlliance version
 	public void setLastAngleScalar(double angle) {
 		swerveDrive.swerveController.lastAngleScalar = angle;
 	}
@@ -392,6 +397,7 @@ public class Drivetrain extends SubsystemBase {
 	 * @implNote
 	 *           Running this on the Red alliance will cause the angle to be flipped 180 degrees. Call {@link #setLastAngleScalarByAlliance(Rotation2d)} instead if that is not the desired behavior.
 	 */
+	// TODO: (Max) Shouldn't this be private to ensure that the wrong function isn't used? Should always use ByAlliance version
 	public void setLastAngleScalar(Rotation2d rotation) {
 		swerveDrive.swerveController.lastAngleScalar = rotation.getRadians();
 	}
@@ -405,6 +411,8 @@ public class Drivetrain extends SubsystemBase {
 	 * @implNote
 	 *           Running this on the Blue alliance will cause the angle to be flipped 180 degrees. Call {@link #setLastAngleScalarByAlliance(Rotation2d)} instead if that is not the desired behavior.
 	 */
+	// TODO: (Max) Shouldn't this be private to ensure that the wrong function isn't used? Should always use ByAlliance version
+	// TODO: #116 (Max) Have you tested this works?
 	public void setLastAngleScalarInverted(Rotation2d rotation) {
 		swerveDrive.swerveController.lastAngleScalar = rotation.rotateBy(Rotation2d.k180deg).getRadians();
 	}
