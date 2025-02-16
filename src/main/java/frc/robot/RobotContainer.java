@@ -202,7 +202,8 @@ public class RobotContainer {
 	 */
 	public Command getAutonomousCommand() {
 		// resetLastAngleScalar stops the robot from trying to turn back to its original angle after the auto ends
-		return autoChooser.getSelected();
+		return autoChooser.getSelected()
+				.finallyDo(drivetrain::resetLastAngleScalarByAlliance);
 	}
 
 	/**

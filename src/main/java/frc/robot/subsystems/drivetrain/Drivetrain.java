@@ -26,7 +26,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.VisionConstants;
+import frc.robot.subsystems.vision.Vision;
 import frc.robot.Constants.LoggingConstants;
+import frc.robot.commands.drivetrain.LockWheelsCommand;
 import frc.robot.util.Util;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -59,10 +62,9 @@ public class Drivetrain extends SubsystemBase {
 	 */
 	private final SwerveDrive swerveDrive;
 	/**
-	 * Enable vision odometry updates while driving.
+	 * Vision object.
 	 */
-	// TODO: (Max) This variable doesn't describe what it signals. Also should follow our coding standard for booleans
-	private final boolean visionDriveTest = false;
+	private final Vision vision;
 
 	/**
 	 * Initialize {@link SwerveDrive} with the directory provided.
@@ -91,13 +93,12 @@ public class Drivetrain extends SubsystemBase {
 		swerveDrive.setAngularVelocityCompensation(DrivetrainConstants.AngularVelocityCompensation.USE_IN_TELEOP, DrivetrainConstants.AngularVelocityCompensation.USE_IN_AUTO, DrivetrainConstants.AngularVelocityCompensation.ANGULAR_VELOCITY_COEFFICIENT); // Correct for skew that gets worse as angular velocity increases. Start with a coefficient of 0.1.
 		swerveDrive.setModuleEncoderAutoSynchronize(DrivetrainConstants.EncoderAutoSynchronization.ENABLED, DrivetrainConstants.EncoderAutoSynchronization.DEADBAND); // Enable if you want to resynchronize your absolute encoders and motor encoders periodically when they are not moving.
 		swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder and push the offsets onto it. Throws warning if not possible
-
 		swerveDrive.setMotorIdleMode(true);
-		if (visionDriveTest) {
-			// TODO: Setup vision here
-			// Stop the odometry thread if we are using vision that way we can synchronize updates better.
-			swerveDrive.stopOdometryThread();
-		}
+		// Stop the odometry thread if we are using vision that way we can synchronize updates better.
+		swerveDrive.stopOdometryThread();
+
+		// Set up vision
+		vision = new Vision(swerveDrive);
 	}
 
 	@Override
@@ -106,9 +107,9 @@ public class Drivetrain extends SubsystemBase {
 		// TODO: (MAX/LUKAS) Last year we had a button the drivers could use to disable vision updates
 		// if vision was going wonky. It seems that wouldn't work this year as the odometry would no longer
 		// be updated?
-		if (visionDriveTest) {
+		if (VisionConstants.ENABLE_VISION) {
 			swerveDrive.updateOdometry();
-			// TODO: Update vision here
+			vision.updatePoseEstimation();
 		}
 	}
 
@@ -233,11 +234,20 @@ public class Drivetrain extends SubsystemBase {
 	/**
 	 * Resets the gyro angle to zero and resets odometry to the same position, but facing toward 0.
 	 *
-	 * @see
-	 *      SwerveDrive#zeroGyro()
+	 * @see SwerveDrive#zeroGyro()
 	 */
 	public void zeroGyro() {
 		swerveDrive.zeroGyro();
+	}
+
+	/**
+	 * Resets the gyro angle to zero and resets odometry to the same position, but facing toward 0.
+	 *
+	 * @see #zeroGyro()
+	 */
+	public Command zeroGyroCommand() {
+		return Commands.runOnce(() -> zeroGyro(), this)
+				.ignoringDisable(true);
 	}
 
 	/**
@@ -315,6 +325,17 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	/**
+	 * Command to lock the swerve drive to prevent it from moving.
+	 *
+	 * @return
+	 *         A new {@link LockWheelsCommand}.
+	 * @see LockWheelsCommand
+	 */
+	public Command lockCommand() {
+		return new LockWheelsCommand(this);
+	}
+
+	/**
 	 * Gets the current pitch angle of the robot, as reported by the imu.
 	 *
 	 * @return
@@ -350,13 +371,94 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	/**
+	 * Sets the angle that heading control will return to if no angle is inputed.
+	 *
+	 * @param angle
+	 *            Angle to set in radians.
+	 * @see SwerveController#lastAngleScalar
+	 * @implNote
+	 *           Running this on the Red alliance will cause the angle to be flipped 180 degrees. Call {@link #setLastAngleScalarByAlliance(Rotation2d)} instead if that is not the desired behavior.
+	 */
+	public void setLastAngleScalar(double angle) {
+		swerveDrive.swerveController.lastAngleScalar = angle;
+	}
+
+	/**
+	 * Sets the angle that heading control will return to if no angle is inputed.
+	 *
+	 * @param rotation
+	 *            Angle to set.
+	 * @see SwerveController#lastAngleScalar
+	 * @implNote
+	 *           Running this on the Red alliance will cause the angle to be flipped 180 degrees. Call {@link #setLastAngleScalarByAlliance(Rotation2d)} instead if that is not the desired behavior.
+	 */
+	public void setLastAngleScalar(Rotation2d rotation) {
+		swerveDrive.swerveController.lastAngleScalar = rotation.getRadians();
+	}
+
+	/**
+	 * Sets the angle that heading control will return to if no angle is inputed.
+	 *
+	 * @param rotation
+	 *            Angle to set. Rotated by 180 degrees.
+	 * @see SwerveController#lastAngleScalar
+	 * @implNote
+	 *           Running this on the Blue alliance will cause the angle to be flipped 180 degrees. Call {@link #setLastAngleScalarByAlliance(Rotation2d)} instead if that is not the desired behavior.
+	 */
+	public void setLastAngleScalarInverted(Rotation2d rotation) {
+		swerveDrive.swerveController.lastAngleScalar = rotation.rotateBy(Rotation2d.k180deg).getRadians();
+	}
+
+	/**
+	 * Sets the angle that heading control will turn to if no angle is inputed. Inverted based on alliance color.
+	 *
+	 * @param rotation
+	 *            Angle to set.
+	 * @see #setLastAngleScalar(Rotation2d)
+	 * @see #setLastAngleScalarInverted(Rotation2d)
+	 */
+	public void setLastAngleScalarByAlliance(Rotation2d rotation) {
+		if (Util.isRedAlliance()) {
+			setLastAngleScalarInverted(rotation);
+		} else {
+			setLastAngleScalar(rotation);
+		}
+	}
+
+	/**
+	 * Sets the angle that heading control will turn to if no angle is inputed. Inverted based on alliance color.
+	 *
+	 * @param rotation
+	 *            Angle to set.
+	 * @see #setLastAngleScalar(Rotation2d)
+	 * @see #setLastAngleScalarInverted(Rotation2d)
+	 */
+	public void setLastAngleScalarByAlliance(Supplier<Rotation2d> rotation) {
+		setLastAngleScalarByAlliance(rotation.get());
+	}
+
+	/**
+	 * Command to set the angle that heading control will turn to if no angle is inputed. Inverted based on alliance color.
+	 *
+	 * @param rotation
+	 *            Angle to set.
+	 * @return
+	 *         {@link Command} to run.
+	 * @see #setLastAngleScalarByAlliance(Rotation2d)
+	 */
+	public Command setLastAngleScalarByAllianceCommand(Supplier<Rotation2d> rotation) {
+		return Commands.runOnce(() -> setLastAngleScalarByAlliance(rotation));
+	}
+
+	/**
 	 * The method to reset what the heading control will turn to if no angle is inputed. Used to prevent angle snapback.
 	 *
+	 * @see #setLastAngleScalar(Rotation2d)
 	 * @implNote
 	 *           Running this on the Red alliance will cause the robot to flip 180 degrees. Call {@link #resetLastAngleScalarByAlliance()} instead if that is not the desired behavior.
 	 */
 	public void resetLastAngleScalar() {
-		swerveDrive.swerveController.lastAngleScalar = getHeading().getRadians();
+		setLastAngleScalar(getHeading());
 	}
 
 	/**
@@ -374,11 +476,12 @@ public class Drivetrain extends SubsystemBase {
 	 * Inverted method to reset what the heading control will turn to if no angle is inputed. Used to prevent angle snapback.
 	 *
 	 * @see #resetLastAngleScalar()
+	 * @see #setLastAngleScalarInverted(Rotation2d)
 	 * @implNote
 	 *           Running this on the Blue alliance will cause the robot to flip 180 degrees. Call {@link #resetLastAngleScalarByAlliance()} instead if that is not the desired behavior.
 	 */
 	public void resetLastAngleScalarInverted() {
-		swerveDrive.swerveController.lastAngleScalar = getHeading().rotateBy(Rotation2d.k180deg).getRadians();
+		setLastAngleScalarInverted(getHeading());
 	}
 
 	/**
@@ -434,7 +537,8 @@ public class Drivetrain extends SubsystemBase {
 		// Since AutoBuilder is configured, we can use it to build pathfinding commands
 		return Commands.defer(() -> AutoBuilder.pathfindToPose(pose.get(), constraints, MetersPerSecond.of(0) // Goal end velocity in meters/sec
 		), new HashSet<Subsystem>(Set.of(this)))
-				.finallyDo(this::resetLastAngleScalarByAlliance);
+				.andThen(setLastAngleScalarByAllianceCommand(() -> pose.get().getRotation()))
+				.handleInterrupt(this::resetLastAngleScalarByAlliance);
 	}
 
 	/**
