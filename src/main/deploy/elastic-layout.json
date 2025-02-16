@@ -54,8 +54,8 @@
           },
           {
             "title": "Target Game Piece",
-            "x": 384.0,
-            "y": 0.0,
+            "x": 0.0,
+            "y": 128.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Text Display",
@@ -64,6 +64,26 @@
               "period": 0.06,
               "data_type": "string",
               "show_submit_button": false
+            }
+          },
+          {
+            "title": "Teleop Field Preview",
+            "x": 256.0,
+            "y": 0.0,
+            "width": 1024.0,
+            "height": 512.0,
+            "type": "Field",
+            "properties": {
+              "topic": "/SmartDashboard/Teleop Field Preview",
+              "period": 0.06,
+              "field_game": "Crescendo",
+              "robot_width": 0.85,
+              "robot_length": 0.85,
+              "show_other_objects": true,
+              "show_trajectories": true,
+              "field_rotation": 0.0,
+              "robot_color": 4294198070,
+              "trajectory_color": 4294967295
             }
           }
         ]
@@ -98,26 +118,6 @@
               "topic": "/SmartDashboard/Auto",
               "period": 0.06,
               "sort_options": false
-            }
-          },
-          {
-            "title": "Field",
-            "x": 384.0,
-            "y": 0.0,
-            "width": 1152.0,
-            "height": 512.0,
-            "type": "Field",
-            "properties": {
-              "topic": "/SmartDashboard/Field",
-              "period": 0.06,
-              "field_game": "Crescendo",
-              "robot_width": 0.85,
-              "robot_length": 0.85,
-              "show_other_objects": true,
-              "show_trajectories": true,
-              "field_rotation": 0.0,
-              "robot_color": 4294198070,
-              "trajectory_color": 4294967295
             }
           },
           {
@@ -161,6 +161,26 @@
               "false_color": 4279632127,
               "true_icon": "None",
               "false_icon": "None"
+            }
+          },
+          {
+            "title": "Auto Field Preview",
+            "x": 384.0,
+            "y": 0.0,
+            "width": 896.0,
+            "height": 512.0,
+            "type": "Field",
+            "properties": {
+              "topic": "/SmartDashboard/Auto Field Preview",
+              "period": 0.06,
+              "field_game": "Crescendo",
+              "robot_width": 0.85,
+              "robot_length": 0.85,
+              "show_other_objects": true,
+              "show_trajectories": true,
+              "field_rotation": 0.0,
+              "robot_color": 4294198070,
+              "trajectory_color": 4294967295
             }
           }
         ]
