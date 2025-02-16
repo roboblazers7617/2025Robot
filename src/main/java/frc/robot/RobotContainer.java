@@ -51,7 +51,7 @@ public class RobotContainer {
 	 */
 	public void teleopInit() {
 		// Reset the last angle so the robot doesn't try to spin.
-		drivetrain.resetLastAngleScalarByAlliance();
+		drivetrain.resetLastAngleScalar();
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class RobotContainer {
 	public Command getAutonomousCommand() {
 		// resetLastAngleScalar stops the robot from trying to turn back to its original angle after the auto ends
 		return autoChooser.getSelected()
-				.finallyDo(drivetrain::resetLastAngleScalarByAlliance);
+				.finallyDo(drivetrain::resetLastAngleScalar);
 	}
 
 	/**
