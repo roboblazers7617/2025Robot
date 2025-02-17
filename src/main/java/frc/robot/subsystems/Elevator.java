@@ -36,7 +36,7 @@ public class Elevator extends SubsystemBase {
 	/**
 	 * The FeedForward used for the elevator.
 	 */
-	private final ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(ElevatorConstants.KS, ElevatorConstants.KV, ElevatorConstants.KA);
+	private final ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(ElevatorConstants.KS, ElevatorConstants.KG, ElevatorConstants.KV);
 	/**
 	 * The right elevator motor.
 	 */

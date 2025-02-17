@@ -301,19 +301,19 @@ public final class Constants {
 		 * Elevator kD.
 		 */
 		public static final double KD = 0.0;
-
 		/**
 		 * Elevator kS.
 		 */
 		public static final double KS = 0;
 		/**
+		 * Elevator kG.
+		 */
+		public static final double KG = 0;
+		/**
 		 * Elevator kV.
 		 */
 		public static final double KV = 0; // Leave as zero Max motion will take care of this
-		/**
-		 * Elevator kA.
-		 */
-		public static final double KA = 0;
+
 		/**
 		 * Elevator kMinOutput as a percentage.
 		 */
