@@ -278,7 +278,7 @@ public final class Constants {
 		 * current limit: 40 amp
 		 * position conversion factor:
 		 * mass: Mass - (2 * 6lbs constant force spring)
-		 * spool diamaeter:
+		 * spool diamaeter: 3.8cm
 		 */
 		/**
 		 * CAN ID for the right elevator motor.
@@ -348,10 +348,9 @@ public final class Constants {
 		// TODO: (Brandon) Update with accurate number
 		public static final double SAFE_MIN_POSITION = 0.2;
 		/**
-		 * Conversion factor from rotation to meters.
+		 * Conversion factor from rotation to meters. 3.81cm diameter spool, 16:1 gear ratio
 		 */
-		// TODO: (Brandon) Update with accurate number
-		public static final double POSITION_CONVERSION_FACTOR = 1; // TODO
+		public static final double POSITION_CONVERSION_FACTOR = 3.81 / 100 / 16; // TODO: check
 		/**
 		 * Conversion factor from rotation to meters per second.
 		 */
