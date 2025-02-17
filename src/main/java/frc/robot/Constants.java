@@ -14,8 +14,9 @@ import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Pounds;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import com.pathplanner.lib.config.PIDConstants;
@@ -203,7 +204,7 @@ public final class Constants {
 		public static final PIDConstants ROTATION_PID_CONSTANTS = new PIDConstants(5.0, 0.0, 0.0);
 	}
 
-	// TODO: (Brandon) Add documentation here on what settings should be during comp versus testing
+	// TODO: #98 (Brandon) Add documentation here on what settings should be during comp versus testing
 	public static class LoggingConstants {
 		/**
 		 * Send logging data to NetworkTables. Data is written to storage when set to false.
@@ -213,6 +214,29 @@ public final class Constants {
 		 * Log all data above specified level.
 		 */
 		public static final Logged.Importance DEBUG_LEVEL = Logged.Importance.DEBUG;
+	}
+
+	/**
+	 * Constants used to configure vision.
+	 */
+	public static class VisionConstants {
+		/**
+		 * The name of the front Limelight on NetworkTables.
+		 */
+		public static final String FRONT_LIMELIGHT_NAME = "limelight-front";
+		/**
+		 * The name of the back Limelight on NetworkTables.
+		 */
+		public static final String BACK_LIMELIGHT_NAME = "limelight-back";
+		/**
+		 * Enable vision odometry updates.
+		 */
+		public static final boolean ENABLE_VISION = true;
+		// public static final List<Double> TAGS_TO_TRACK = IntStream.range(1, 23).asDoubleStream().boxed().toList();
+		/**
+		 * Use MegaTag2 for pose estimation.
+		 */
+		public static final boolean ENABLE_MEGATAG2 = true;
 	}
 
 	/**
@@ -487,7 +511,7 @@ public final class Constants {
 		/**
 		 * Constants relating to the reef.
 		 */
-		// TODO: (Max) This will work for moving to score a coral. How do you move to remove an algae?
+		// TODO: #101 (Max) This will work for moving to score a coral. How do you move to remove an algae?
 		public static class Reef {
 			/**
 			 * AprilTag IDs for the reef on the blue alliance.
@@ -498,17 +522,37 @@ public final class Constants {
 			 */
 			public static final List<Pose3d> TAG_POSES = new ArrayList<Pose3d>();
 			/**
-			 * Offset from the AprilTag from which scoring should happen.
+			 * Offset from the AprilTag from which coral scoring should happen.
 			 */
-			public static final Transform2d SCORING_OFFSET = new Transform2d(Meters.of(0.33 / 2), Meters.of(0.5), new Rotation2d(0));
+			public static final Transform2d CORAL_SCORING_OFFSET = new Transform2d(Meters.of(0.4), Meters.of(0.33 / 2), Rotation2d.k180deg);
 			/**
-			 * Poses from which the robot can score on the blue alliance.
+			 * Offset from the AprilTag from which algae scoring should happen.
 			 */
-			public static final List<Pose2d> SCORING_POSES_BLUE = new ArrayList<Pose2d>();
+			public static final Transform2d ALGAE_SCORING_OFFSET = new Transform2d(Meters.of(0.5), Meters.of(0), Rotation2d.k180deg);
 			/**
-			 * Poses from which the robot can score on the red alliance.
+			 * Poses from which the robot can score coral on the left side on the blue alliance.
 			 */
-			public static final List<Pose2d> SCORING_POSES_RED = new ArrayList<Pose2d>();
+			public static final List<Pose2d> CORAL_SCORING_POSES_BLUE_LEFT = new ArrayList<Pose2d>();
+			/**
+			 * Poses from which the robot can score coral on the right side on the blue alliance.
+			 */
+			public static final List<Pose2d> CORAL_SCORING_POSES_BLUE_RIGHT = new ArrayList<Pose2d>();
+			/**
+			 * Poses from which the robot can score coral on the left side on the red alliance.
+			 */
+			public static final List<Pose2d> CORAL_SCORING_POSES_RED_LEFT = new ArrayList<Pose2d>();
+			/**
+			 * Poses from which the robot can score coral on the right side on the red alliance.
+			 */
+			public static final List<Pose2d> CORAL_SCORING_POSES_RED_RIGHT = new ArrayList<Pose2d>();
+			/**
+			 * Poses from which the robot can score algae on the blue alliance.
+			 */
+			public static final List<Pose2d> ALGAE_SCORING_POSES_BLUE = new ArrayList<Pose2d>();
+			/**
+			 * Poses from which the robot can score algae on the red alliance.
+			 */
+			public static final List<Pose2d> ALGAE_SCORING_POSES_RED = new ArrayList<Pose2d>();
 
 			static {
 				// Generate a list of tag poses.
@@ -520,21 +564,76 @@ public final class Constants {
 					}
 				});
 
-				// Generate a list of scoring poses.
+				// Generate lists of coral scoring poses.
 				TAG_POSES.forEach((pose) -> {
 					Pose2d pose2d = pose.toPose2d();
-					// TODO: (Max) Should be CORAL_SCORING_POSES_BLUE as for coral only, not algae. Correct?
-					// TODO: (Max) What is "regular" vs "flipped" side? Is it right or left reef branch?
 					// Regular side
-					SCORING_POSES_BLUE.add(pose2d.transformBy(SCORING_OFFSET));
+					CORAL_SCORING_POSES_BLUE_RIGHT.add(pose2d.transformBy(CORAL_SCORING_OFFSET));
 					// Flipped side
-					SCORING_POSES_BLUE.add(pose2d.transformBy(new Transform2d(SCORING_OFFSET.getMeasureX(), SCORING_OFFSET.getMeasureY().times(-1), SCORING_OFFSET.getRotation())));
+					CORAL_SCORING_POSES_BLUE_LEFT.add(pose2d.transformBy(new Transform2d(CORAL_SCORING_OFFSET.getMeasureX(), CORAL_SCORING_OFFSET.getMeasureY().times(-1), CORAL_SCORING_OFFSET.getRotation())));
 				});
 
-				// Generate a list of scoring poses for the other alliance.
-				SCORING_POSES_BLUE.forEach((pose) -> {
-					SCORING_POSES_RED.add(PoseUtil.flipPose(pose));
+				// Generate lists of coral scoring poses for the other alliance.
+				CORAL_SCORING_POSES_BLUE_LEFT.forEach((pose) -> {
+					CORAL_SCORING_POSES_RED_LEFT.add(PoseUtil.flipPose(pose));
 				});
+				CORAL_SCORING_POSES_BLUE_RIGHT.forEach((pose) -> {
+					CORAL_SCORING_POSES_RED_RIGHT.add(PoseUtil.flipPose(pose));
+				});
+
+				// Generate a list of algae scoring poses.
+				TAG_POSES.forEach((pose) -> {
+					Pose2d pose2d = pose.toPose2d();
+					ALGAE_SCORING_POSES_BLUE.add(pose2d.transformBy(ALGAE_SCORING_OFFSET));
+				});
+
+				// Generate a list of algae scoring poses for the other alliance.
+				ALGAE_SCORING_POSES_BLUE.forEach((pose) -> {
+					ALGAE_SCORING_POSES_RED.add(PoseUtil.flipPose(pose));
+				});
+			}
+		}
+
+		/**
+		 * Constants relating to the processor.
+		 */
+		public static class Processor {
+			/**
+			 * AprilTag ID for the processor on the blue alliance.
+			 */
+			public static final int TAG_ID = 16;
+			/**
+			 * AprilTag pose for the processor on the blue alliance.
+			 */
+			public static final Pose3d TAG_POSE;
+			/**
+			 * Offset from the AprilTag from which scoring should happen.
+			 */
+			public static final Transform2d SCORING_OFFSET = new Transform2d(Meters.of(0.33 / 2), Meters.of(0), Rotation2d.k180deg);
+			/**
+			 * Pose from which the robot can score algae on the blue alliance.
+			 */
+			public static final Pose2d ALGAE_SCORING_POSE_BLUE;
+			/**
+			 * Pose from which the robot can score algae on the red alliance.
+			 */
+			public static final Pose2d ALGAE_SCORING_POSE_RED;
+
+			static {
+				// Find the tag pose.
+				Optional<Pose3d> tagPose = FIELD_LAYOUT.getTagPose(TAG_ID);
+
+				if (tagPose.isPresent()) {
+					TAG_POSE = tagPose.get();
+				} else {
+					TAG_POSE = new Pose3d();
+				}
+
+				// Generate scoring poses.
+				Pose2d pose2d = TAG_POSE.toPose2d();
+
+				ALGAE_SCORING_POSE_BLUE = pose2d.transformBy(SCORING_OFFSET);
+				ALGAE_SCORING_POSE_RED = PoseUtil.flipPose(ALGAE_SCORING_POSE_BLUE);
 			}
 		}
 	}
