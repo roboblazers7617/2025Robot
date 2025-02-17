@@ -204,7 +204,10 @@ public final class Constants {
 		public static final PIDConstants ROTATION_PID_CONSTANTS = new PIDConstants(5.0, 0.0, 0.0);
 	}
 
-	// TODO: #98 (Brandon) Add documentation here on what settings should be during comp versus testing
+	/**
+	 * Constants used to configure logging.
+	 * During a competition debug mode should be false to reduce network and CPU usage. All data will still be logged it just won't be accessible until after the match.
+	 */
 	public static class LoggingConstants {
 		/**
 		 * Send logging data to NetworkTables. Data is written to storage when set to false.
@@ -372,7 +375,7 @@ public final class Constants {
 		 * ratio: 10:58 then 18:58
 		 * current limit: 40 amp
 		 * center of mass distance:
-		 * position conversion factor:
+		 * position conversion factor: 1/(10/58 * 18/58)
 		 * mass:
 		 */
 		/**
@@ -415,12 +418,12 @@ public final class Constants {
 		 */
 		public static final double KMAX_OUTPUT = .3;
 		/**
-		 * Maximum velocity in m/s.
+		 * Maximum velocity in degrees/s.
 		 */
 		// TODO: (Brandon) Update with accurate number
 		public static final double MAX_VELOCITY = 1;
 		/**
-		 * Maximum acceleration in m/s^2.
+		 * Maximum acceleration in degrees/s^2.
 		 */
 		// TODO: (Brandon) Update with accurate number
 		public static final double MAX_ACCELERATION = 1;
@@ -442,8 +445,7 @@ public final class Constants {
 		/**
 		 * Conversion factor from rotation to meters.
 		 */
-		// TODO: (Brandon) Update with accurate number
-		public static final double POSITION_CONVERSION_FACTOR = 1; // TODO
+		public static final double POSITION_CONVERSION_FACTOR = 1 / ((10 / 58) * (18 / 58)); // TODO: check
 		/**
 		 * Conversion factor from rotation to meters per second.
 		 */
