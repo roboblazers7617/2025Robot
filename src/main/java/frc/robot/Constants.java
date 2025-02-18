@@ -376,7 +376,7 @@ public final class Constants {
 		 * current limit: 40 amp
 		 * center of mass distance:
 		 * position conversion factor: 1/(10/58 * 18/58)
-		 * mass:
+		 * mass: 16lbs
 		 */
 		/**
 		 * CAN Motor ID for the wrist.
