@@ -168,10 +168,10 @@ public class Elevator extends SubsystemBase {
 		Command command = new Command() {
 			@Override
 			public void execute() {
-				double targetElevatorSpeed = elevatorSpeed.getAsDouble() * ElevatorConstants.MAX_VELOCITY;
+				double targetElevatorSpeed = MathUtil.clamp(elevatorSpeed.getAsDouble(), -1, 1) * ElevatorConstants.MAX_VELOCITY;
 				setElevatorPosition(elevatorTarget + (targetElevatorSpeed / 50)); // divide the speed by 50 because their are 50 loops per second
 
-				double targetWristSpeed = wristSpeed.getAsDouble() * WristConstants.MAX_VELOCITY;
+				double targetWristSpeed = MathUtil.clamp(wristSpeed.getAsDouble(), -1, 1) * WristConstants.MAX_VELOCITY;
 				setWristPosition(wristTarget + (targetWristSpeed / 50)); // divide the speed by 50 because their are 50 loops per second
 			}
 		};
