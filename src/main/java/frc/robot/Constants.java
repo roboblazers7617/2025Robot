@@ -207,6 +207,7 @@ public final class Constants {
 	/**
 	 * Constants used to configure logging.
 	 * During a competition debug mode should be false to reduce network and CPU usage. All data will still be logged it just won't be accessible until after the match.
+	 * During testing debug mode should be true to allow for real-time data viewing.
 	 */
 	public static class LoggingConstants {
 		/**
@@ -277,7 +278,7 @@ public final class Constants {
 		 * current limit: 40 amp
 		 * position conversion factor:
 		 * mass: Mass - (2 * 6lbs constant force spring)
-		 * spool diamaeter:
+		 * spool diamaeter: 3.8cm
 		 */
 		/**
 		 * CAN ID for the right elevator motor.
@@ -300,19 +301,19 @@ public final class Constants {
 		 * Elevator kD.
 		 */
 		public static final double KD = 0.0;
-
 		/**
 		 * Elevator kS.
 		 */
 		public static final double KS = 0;
 		/**
+		 * Elevator kG.
+		 */
+		public static final double KG = 0;
+		/**
 		 * Elevator kV.
 		 */
 		public static final double KV = 0; // Leave as zero Max motion will take care of this
-		/**
-		 * Elevator kA.
-		 */
-		public static final double KA = 0;
+
 		/**
 		 * Elevator kMinOutput as a percentage.
 		 */
@@ -347,10 +348,9 @@ public final class Constants {
 		// TODO: (Brandon) Update with accurate number
 		public static final double SAFE_MIN_POSITION = 0.2;
 		/**
-		 * Conversion factor from rotation to meters.
+		 * Conversion factor from rotation to meters. 3.81cm diameter spool, 16:1 gear ratio
 		 */
-		// TODO: (Brandon) Update with accurate number
-		public static final double POSITION_CONVERSION_FACTOR = 1; // TODO
+		public static final double POSITION_CONVERSION_FACTOR = 3.81 / 100 / 16; // TODO: check
 		/**
 		 * Conversion factor from rotation to meters per second.
 		 */
@@ -376,7 +376,7 @@ public final class Constants {
 		 * current limit: 40 amp
 		 * center of mass distance:
 		 * position conversion factor: 1/(10/58 * 18/58)
-		 * mass:
+		 * mass: 16lbs
 		 */
 		/**
 		 * CAN Motor ID for the wrist.
