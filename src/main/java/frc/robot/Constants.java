@@ -328,11 +328,6 @@ public final class Constants {
 		// TODO: (Brandon) Update with accurate number. Is the elevator really going to travel 3 feet in one second? Use reca.lc
 		public static final double MAX_VELOCITY = 1;
 		/**
-		 * Minimum velocity in m/s.
-		 */
-		public static final double MIN_VELOCITY = -1;
-
-		/**
 		 * Maximum acceleration in m/s^2.
 		 */
 		// TODO: (Brandon) Update with accurate number Use reca.lc
