@@ -265,16 +265,16 @@ public final class Constants {
 		/**
 		 * End Effector's Spark Max CAN_ID
 		 */
-		public static final int CAN_ID_END_EFFECTOR = (41);
+		public static final int CAN_ID_END_EFFECTOR = 41;
 		/*
 		 * I Belive we used this to make the numbers apear correctly in the dirvers station?
 		 * may be a usesless holdover from arm code test though
 		 */
 		public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO_END_EFFECTOR_MOTOR * 360.0;
 		/**
-		 * TODO: PID values block to be updated with actual values
 		 * PID config for the motor controller.
 		 */
+		// TODO: PID values block to be updated with actual values
 		public static final ClosedLoopConfig CLOSED_LOOP_CONFIG = new ClosedLoopConfig()
 				.p(0)
 				.i(0)
@@ -282,6 +282,7 @@ public final class Constants {
 		/**
 		 * DIO pin for the beam break.
 		 */
+		// TODO: update to reflect final pin number once finalized.
 		public static final int BEAM_BREAK_DIO = 1;
 		/**
 		 * Intake motor speed for coral. (to be changed and edited later)
@@ -300,18 +301,22 @@ public final class Constants {
 		 */
 		public static final double ALGAE_OUTAKE_SPEED = -0.5;
 		/**
-		 * Time (in seconds) that the motors run after beam break detects no coral.
+		 * Time (in seconds) that the motors run after beam break detects no coral after using the outtake command
 		 */
-		public static final double WAIT_TIME = 0.3;
+		public static final double OUTTAKE_WAIT_TIME = 0.3;
+		/**
+		 * Time (in seconds) that the motors run after algae outake is called to eject algae.
+		 */
+		public static final double ALGAE_OUTTAKE_RUN_TIME = 0.3;
 		/**
 		 * Time (in seconds) determines how long the break period is before the Current spike can be detected
 		 * this allows it to not shutoff with the initial motor startup spike. this will need to be adjusted.
 		 */
-		public static final double MOTOR_TIMER_CURRENT = 0.1;
+		public static final double MOTOR_CURRENT_CHECK_DELAY = 0.1;
 		/**
 		 * limit to the current before it shuts off the motor for the Algae Intake system. also needs to be adjusted.
 		 */
-		public static final double AlGAE_INTAKE_CURRENT_LIMIT = 15.0;
+		public static final double AlGAE_INTAKE_CURRENT_SHUTOFF_THRESHOLD = 15.0;
 	}
 
 	/**

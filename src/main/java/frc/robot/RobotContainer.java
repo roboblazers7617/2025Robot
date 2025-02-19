@@ -47,9 +47,9 @@ public class RobotContainer {
 	@NotLogged
 	private final CommandXboxController operatorController = new CommandXboxController(OperatorConstants.OPERATOR_CONTROLLER_PORT);
 
-	// private final Command driveFieldOrientedDirectAngle = drivetrain.driveFieldOrientedCommand(DrivetrainUtil.driveDirectAngle(drivetrain, driverController));
-	// private final Command driveFieldOrientedAnglularVelocity = drivetrain.driveFieldOrientedCommand(DrivetrainUtil.driveAngularVelocity(drivetrain, driverController));
-	// private final Command driveFieldOrientedDirectAngleSim = drivetrain.driveFieldOrientedCommand(DrivetrainUtil.driveDirectAngleSim(drivetrain, driverController));
+	private final Command driveFieldOrientedDirectAngle = drivetrain.driveFieldOrientedCommand(DrivetrainUtil.driveDirectAngle(drivetrain, driverController));
+	private final Command driveFieldOrientedAnglularVelocity = drivetrain.driveFieldOrientedCommand(DrivetrainUtil.driveAngularVelocity(drivetrain, driverController));
+	private final Command driveFieldOrientedDirectAngleSim = drivetrain.driveFieldOrientedCommand(DrivetrainUtil.driveDirectAngleSim(drivetrain, driverController));
 	private final EndEffector endEffector = new EndEffector();
 
 	private GAMEPIECE_MODE gamepieceMode;
@@ -76,9 +76,9 @@ public class RobotContainer {
 		if (Util.isRedAlliance()) {
 			// TODO: (Max) Does this work if you enable/disable as Red alliance multiple times? Won't it keep
 			// switing it by 180 degrees each time?
-			// drivetrain.resetLastAngleScalarInverted();
+			drivetrain.resetLastAngleScalarInverted();
 		} else {
-			// drivetrain.resetLastAngleScalar();
+			drivetrain.resetLastAngleScalar();
 		}
 
 		if (StubbedCommands.EndEffector.isHoldingAlage()) {
@@ -97,7 +97,7 @@ public class RobotContainer {
 	 */
 	private void configureDriverControls() {
 		// Set the default drivetrain command
-		// drivetrain.setDefaultCommand(!RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
+		drivetrain.setDefaultCommand(!RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
 
 		driverController.a().whileTrue(StubbedCommands.Drivetrain.DriverSlowMode());
 		driverController.b().whileTrue(StubbedCommands.Drivetrain.DriverFastMode());
@@ -109,12 +109,12 @@ public class RobotContainer {
 		driverController.povRight().whileTrue(StubbedCommands.Climber.RampDown());
 		driverController.povUp().whileTrue(StubbedCommands.Climber.AutoClimb());
 
-		// driverController.leftBumper().whileTrue(driveFieldOrientedAnglularVelocity.finallyDo(drivetrain::resetLastAngleScalar));
+		driverController.leftBumper().whileTrue(driveFieldOrientedAnglularVelocity.finallyDo(drivetrain::resetLastAngleScalar));
 		driverController.rightBumper().whileTrue(StubbedCommands.Drivetrain.AlignMiddleOfTag());
 		driverController.leftTrigger().whileTrue(StubbedCommands.Drivetrain.AlignLeftOfTag());
 		driverController.rightTrigger().whileTrue(StubbedCommands.Drivetrain.AlignRightOfTag());
 
-		// driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
+		driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
 		driverController.back().onTrue(StubbedCommands.Drivetrain.DisableVision());
 	}
 
@@ -159,7 +159,6 @@ public class RobotContainer {
 	 */
 	public Command getAutonomousCommand() {
 		// resetLastAngleScalar stops the robot from trying to turn back to its original angle after the auto ends
-		// return drivetrain.getAutonomousCommand("Example Auto").andThen(Commands.runOnce(() -> drivetrain.resetLastAngleScalar()));
-		return null;
+		return drivetrain.getAutonomousCommand("Example Auto").andThen(Commands.runOnce(() -> drivetrain.resetLastAngleScalar()));
 	}
 }
