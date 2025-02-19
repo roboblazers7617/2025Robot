@@ -155,8 +155,34 @@ public class Elevator extends SubsystemBase {
 	}
 
 	/**
+	 * A command to set the speeds of the elevator and wrist.
+	 * 
+	 * @param elevatorSpeed
+	 *            The speed of the elevator as a percentage of max speed. [-1, 1]
+	 * @param wristSpeed
+	 *            The speed of the wrist as a percentage of max speed. [-1, 1] //TODO #127
+	 * @return
+	 *         {@link Command} to run.
+	 */
+	public Command setSpeedsCommand(DoubleSupplier elevatorSpeed, DoubleSupplier wristSpeed) {
+		Command command = new Command() {
+			@Override
+			public void execute() {
+				double targetElevatorSpeed = elevatorSpeed.getAsDouble() * ElevatorConstants.MAX_VELOCITY;
+				setElevatorPosition(elevatorTarget + (targetElevatorSpeed / 50)); // divide the speed by 50 because their are 50 loops per second
+
+				double targetWristSpeed = wristSpeed.getAsDouble() * WristConstants.MAX_VELOCITY;
+				setWristPosition(wristTarget + (targetWristSpeed / 50)); // divide the speed by 50 because their are 50 loops per second
+			}
+		};
+		command.addRequirements(this);
+		return command;
+	}
+
+	/**
 	 * A command set the elvator speed in m/s.
-	 *
+	 * 
+	 * @deprecated use {@link #setSpeedsCommand(DoubleSupplier, DoubleSupplier)} instead.
 	 * @param speed
 	 *            The speed in m/s.
 	 * @return
@@ -180,7 +206,8 @@ public class Elevator extends SubsystemBase {
 
 	/**
 	 * A command set the wrist speed in degrees/s.
-	 *
+	 * * @deprecated use {@link #setSpeedsCommand(DoubleSupplier, DoubleSupplier)} instead.
+	 * 
 	 * @param speed
 	 *            The speed in degrees/s.
 	 * @return
