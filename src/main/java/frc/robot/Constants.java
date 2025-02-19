@@ -230,7 +230,7 @@ public final class Constants {
 		public static final PIDConstants ROTATION_PID_CONSTANTS = new PIDConstants(5.0, 0.0, 0.0);
 	}
 
-	// TODO: (Brandon) Add documentation here on what settings should be during comp versus testing
+	// TODO: #98 (Brandon) Add documentation here on what settings should be during comp versus testing
 	public static class LoggingConstants {
 		/**
 		 * Send logging data to NetworkTables. Data is written to storage when set to false.
@@ -300,7 +300,7 @@ public final class Constants {
 		/**
 		 * Constants relating to the reef.
 		 */
-		// TODO: (Max) This will work for moving to score a coral. How do you move to remove an algae?
+		// TODO: #101 (Max) This will work for moving to score a coral. How do you move to remove an algae?
 		public static class Reef {
 			/**
 			 * AprilTag IDs for the reef on the blue alliance.
