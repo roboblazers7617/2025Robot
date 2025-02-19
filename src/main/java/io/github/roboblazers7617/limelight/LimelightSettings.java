@@ -24,9 +24,9 @@ import java.util.List;
  */
 public class LimelightSettings {
 	/**
-	 * {@link LimelightNetworkTable} for the {@link Limelight}
+	 * {@link NetworkTable} for the {@link Limelight}
 	 */
-	private LimelightNetworkTable limelightTable;
+	private NetworkTable limelightTable;
 	/**
 	 * {@link Limelight} to fetch data for.
 	 */
@@ -94,12 +94,12 @@ public class LimelightSettings {
 		pipelineIndex = limelightTable.getEntry("pipeline");
 		priorityTagID = limelightTable.getEntry("priorityid");
 		streamMode = limelightTable.getEntry("stream");
-		cropWindow = limelightTable.getLimelightTable().getDoubleArrayTopic("crop").getEntry(new double[0]);
+		cropWindow = limelightTable.getDoubleArrayTopic("crop").getEntry(new double[0]);
 		imuMode = limelightTable.getEntry("imumode_set");
 		downscale = limelightTable.getEntry("fiducial_downscale_set");
-		fiducial3DOffset = limelightTable.getLimelightTable().getDoubleArrayTopic("fiducial_offset_set").getEntry(new double[0]);
-		cameraToRobot = limelightTable.getLimelightTable().getDoubleArrayTopic("camerapose_robotspace_set").getEntry(new double[0]);
-		fiducialIDFiltersOverride = limelightTable.getLimelightTable().getDoubleArrayTopic("fiducial_id_filters_set").getEntry(new double[0]);
+		fiducial3DOffset = limelightTable.getDoubleArrayTopic("fiducial_offset_set").getEntry(new double[0]);
+		cameraToRobot = limelightTable.getDoubleArrayTopic("camerapose_robotspace_set").getEntry(new double[0]);
+		fiducialIDFiltersOverride = limelightTable.getDoubleArrayTopic("fiducial_id_filters_set").getEntry(new double[0]);
 	}
 
 	/**

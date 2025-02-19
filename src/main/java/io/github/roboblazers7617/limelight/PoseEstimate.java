@@ -53,4 +53,16 @@ public class PoseEstimate {
 	public Pose2d getPose2d() {
 		return pose.toPose2d();
 	}
+
+	public RawFiducialTarget[] getDetectedTags() {
+		return rawFiducials;
+	}
+
+	public double getTimestampSeconds() {
+		return timestampSeconds;
+	}
+
+	public int getTagCount() {
+		return tagCount;
+	}
 }

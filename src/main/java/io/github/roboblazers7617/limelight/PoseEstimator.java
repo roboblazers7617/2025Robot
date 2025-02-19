@@ -1,25 +1,35 @@
 package io.github.roboblazers7617.limelight;
 
-import edu.wpi.first.networktables.DoubleArrayEntry;
+import java.util.Arrays;
+
+import edu.wpi.first.networktables.DoubleArraySubscriber;
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
 import io.github.roboblazers7617.limelight.targets.RawFiducialTarget;
 import limelight.networktables.LimelightPoseEstimator.BotPose;
 
 public class PoseEstimator {
-	private final LimelightNetworkTable networkTable;
+	private final NetworkTable networkTable;
 	private final PoseEstimators poseEstimator;
-	private final DoubleArrayEntry poseEntry;
+	private final DoubleArraySubscriber poseSubscriber;
 
 	protected PoseEstimator(Limelight limelight, PoseEstimators poseEstimator) {
 		networkTable = limelight.networkTable;
 		this.poseEstimator = poseEstimator;
-		poseEntry = networkTable.getLimelightTable().getDoubleArrayTopic(poseEstimator.getNTEntry()).getEntry(new double[0]);
+		poseSubscriber = networkTable.getDoubleArrayTopic(poseEstimator.getEntry()).subscribe(new double[0]);
 	}
 
-	public PoseEstimate getBotPoseEstimate() {
-		TimestampedDoubleArray tsValue = poseEntry.getAtomic();
-		double[] poseArray = tsValue.value;
-		long timestamp = tsValue.timestamp;
+	public PoseEstimate[] getBotPoseEstimates() {
+		return (PoseEstimate[]) (Arrays.stream(poseSubscriber.readQueue())
+				.map((poseEstimateArray) -> {
+					return genPoseEstimateFromNT(poseEstimateArray);
+				})
+				.toArray());
+	}
+
+	private PoseEstimate genPoseEstimateFromNT(TimestampedDoubleArray poseTimestamped) {
+		double[] poseArray = poseTimestamped.value;
+		long timestamp = poseTimestamped.timestamp;
 
 		if (poseArray.length == 0) {
 			// Handle the case where no data is available
@@ -57,6 +67,39 @@ public class PoseEstimator {
 		}
 
 		return new PoseEstimate(pose, adjustedTimestamp, latency, tagCount, tagSpan, tagDist, tagArea, rawFiducials, poseEstimator.isMegaTag2());
+	}
+
+	/**
+	 * Gets the latest raw fiducial/AprilTag detection results from NetworkTables.
+	 * name
+	 *
+	 * @return Array of RawFiducialTarget objects containing detection details
+	 */
+	public RawFiducialTarget[] getRawFiducialTargets() {
+		var entry = networkTable.getEntry("rawfiducials");
+		var rawFiducialArray = entry.getDoubleArray(new double[0]);
+		int valsPerEntry = 7;
+		if (rawFiducialArray.length % valsPerEntry != 0) {
+			return new RawFiducialTarget[0];
+		}
+
+		int numFiducials = rawFiducialArray.length / valsPerEntry;
+		RawFiducialTarget[] rawFiducials = new RawFiducialTarget[numFiducials];
+
+		for (int i = 0; i < numFiducials; i++) {
+			int baseIndex = i * valsPerEntry;
+			int id = (int) JsonUtilities.extractArrayEntry(rawFiducialArray, baseIndex);
+			double txnc = JsonUtilities.extractArrayEntry(rawFiducialArray, baseIndex + 1);
+			double tync = JsonUtilities.extractArrayEntry(rawFiducialArray, baseIndex + 2);
+			double ta = JsonUtilities.extractArrayEntry(rawFiducialArray, baseIndex + 3);
+			double distToCamera = JsonUtilities.extractArrayEntry(rawFiducialArray, baseIndex + 4);
+			double distToRobot = JsonUtilities.extractArrayEntry(rawFiducialArray, baseIndex + 5);
+			double ambiguity = JsonUtilities.extractArrayEntry(rawFiducialArray, baseIndex + 6);
+
+			rawFiducials[i] = new RawFiducialTarget(id, txnc, tync, ta, distToCamera, distToRobot, ambiguity);
+		}
+
+		return rawFiducials;
 	}
 
 	/**
@@ -150,7 +193,7 @@ public class PoseEstimator {
 			this.isMegaTag2 = isMegaTag2;
 		}
 
-		public String getNTEntry() {
+		public String getEntry() {
 			return entry;
 		}
 

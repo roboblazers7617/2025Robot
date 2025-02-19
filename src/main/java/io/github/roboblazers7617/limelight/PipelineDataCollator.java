@@ -5,13 +5,14 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import io.github.roboblazers7617.limelight.targets.RawFiducialTarget;
 import io.github.roboblazers7617.limelight.targets.neural.RawDetection;
 
 public class PipelineDataCollator {
 	private final Limelight limelight;
-	private final LimelightNetworkTable networkTable;
+	private final NetworkTable networkTable;
 	private static final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
 	public PipelineDataCollator(Limelight limelight) {
@@ -120,7 +121,7 @@ public class PipelineDataCollator {
 	 * @return True if a valid target is present, false otherwise
 	 */
 	public boolean getTV() {
-		return 1.0 == networkTable.getDouble("tv");
+		return 1.0 == networkTable.getDoubleTopic("tv").getEntry(0).get();
 	}
 
 	/**
@@ -129,7 +130,7 @@ public class PipelineDataCollator {
 	 * @return Horizontal offset angle in degrees
 	 */
 	public double getTX() {
-		return networkTable.getDouble("tx");
+		return networkTable.getDoubleTopic("tx").getEntry(0).get();
 	}
 
 	/**
@@ -138,7 +139,7 @@ public class PipelineDataCollator {
 	 * @return Vertical offset angle in degrees
 	 */
 	public double getTY() {
-		return networkTable.getDouble("ty");
+		return networkTable.getDoubleTopic("ty").getEntry(0).get();
 	}
 
 	/**
@@ -147,7 +148,7 @@ public class PipelineDataCollator {
 	 * @return Horizontal offset angle in degrees
 	 */
 	public double getTXNC() {
-		return networkTable.getDouble("txnc");
+		return networkTable.getDoubleTopic("txnc").getEntry(0).get();
 	}
 
 	/**
@@ -156,7 +157,7 @@ public class PipelineDataCollator {
 	 * @return Vertical offset angle in degrees
 	 */
 	public double getTYNC() {
-		return networkTable.getDouble("tync");
+		return networkTable.getDoubleTopic("tync").getEntry(0).get();
 	}
 
 	/**
@@ -165,7 +166,7 @@ public class PipelineDataCollator {
 	 * @return Target area percentage (0-100)
 	 */
 	public double getTA() {
-		return networkTable.getDouble("ta");
+		return networkTable.getDoubleTopic("ta").getEntry(0).get();
 	}
 
 	/**
@@ -175,7 +176,7 @@ public class PipelineDataCollator {
 	 *         targetClassIndexClassifier, targetLongSidePixels, targetShortSidePixels, targetHorizontalExtentPixels, targetVerticalExtentPixels, targetSkewDegrees]
 	 */
 	public double[] getT2DArray() {
-		return networkTable.getDoubleArray("t2d");
+		return networkTable.getDoubleArrayTopic("t2d").getEntry(new double[0]).get();
 	}
 
 	/**
@@ -223,7 +224,7 @@ public class PipelineDataCollator {
 	 * @return Class name string from classifier pipeline
 	 */
 	public String getClassifierClass() {
-		return networkTable.getString("tcclass");
+		return networkTable.getStringTopic("tcclass").getEntry("").get();
 	}
 
 	/**
@@ -232,7 +233,7 @@ public class PipelineDataCollator {
 	 * @return Class name string from detector pipeline
 	 */
 	public String getDetectorClass() {
-		return networkTable.getString("tdclass");
+		return networkTable.getStringTopic("tdclass").getEntry("").get();
 	}
 
 	/**
@@ -241,7 +242,7 @@ public class PipelineDataCollator {
 	 * @return Pipeline latency in milliseconds
 	 */
 	public double getLatency_Pipeline() {
-		return networkTable.getDouble("tl");
+		return networkTable.getDoubleTopic("tl").getEntry(0).get();
 	}
 
 	/**
@@ -250,7 +251,7 @@ public class PipelineDataCollator {
 	 * @return Capture latency in milliseconds
 	 */
 	public double getLatency_Capture() {
-		return networkTable.getDouble("cl");
+		return networkTable.getDoubleTopic("cl").getEntry(0).get();
 	}
 
 	/**
@@ -259,7 +260,7 @@ public class PipelineDataCollator {
 	 * @return Current pipeline index (0-9)
 	 */
 	public double getCurrentPipelineIndex() {
-		return networkTable.getDouble("getpipe");
+		return networkTable.getDoubleTopic("getpipe").getEntry(0).get();
 	}
 
 	/**
@@ -268,7 +269,7 @@ public class PipelineDataCollator {
 	 * @return Pipeline type string (e.g. "retro", "apriltag", etc)
 	 */
 	public String getCurrentPipelineType() {
-		return networkTable.getString("getpipetype");
+		return networkTable.getStringTopic("getpipetype").getEntry("").get();
 	}
 
 	/**
@@ -277,7 +278,7 @@ public class PipelineDataCollator {
 	 * @return JSON string containing all current results
 	 */
 	public String getJSONDump() {
-		return networkTable.getString("json");
+		return networkTable.getStringTopic("json").getEntry("").get();
 	}
 
 	/**
@@ -286,7 +287,7 @@ public class PipelineDataCollator {
 	 * @return Pose3d object representing the robot's position and orientation relative to the target
 	 */
 	public Pose3d getBotPose3d_TargetSpace() {
-		double[] poseArray = networkTable.getDoubleArray("botpose_targetspace");
+		double[] poseArray = networkTable.getDoubleArrayTopic("botpose_targetspace").getEntry(new double[0]).get();
 		return JsonUtilities.toPose3D(poseArray);
 	}
 
@@ -296,7 +297,7 @@ public class PipelineDataCollator {
 	 * @return Pose3d object representing the camera's position and orientation relative to the target
 	 */
 	public Pose3d getCameraPose3d_TargetSpace() {
-		double[] poseArray = networkTable.getDoubleArray("camerapose_targetspace");
+		double[] poseArray = networkTable.getDoubleArrayTopic("camerapose_targetspace").getEntry(new double[0]).get();
 		return JsonUtilities.toPose3D(poseArray);
 	}
 
@@ -306,7 +307,7 @@ public class PipelineDataCollator {
 	 * @return Pose3d object representing the target's position and orientation relative to the camera
 	 */
 	public Pose3d getTargetPose3d_CameraSpace() {
-		double[] poseArray = networkTable.getDoubleArray("targetpose_cameraspace");
+		double[] poseArray = networkTable.getDoubleArrayTopic("targetpose_cameraspace").getEntry(new double[0]).get();
 		return JsonUtilities.toPose3D(poseArray);
 	}
 
@@ -316,7 +317,8 @@ public class PipelineDataCollator {
 	 * @return Pose3d object representing the target's position and orientation relative to the robot
 	 */
 	public Pose3d getTargetPose3d_RobotSpace() {
-		double[] poseArray = networkTable.getDoubleArray("targetpose_robotspace");
+		double[] poseArray = networkTable.getDoubleArrayTopic("targetpose_robotspace").getEntry(new double[0]).get();
+		;
 		return JsonUtilities.toPose3D(poseArray);
 	}
 
@@ -326,23 +328,24 @@ public class PipelineDataCollator {
 	 * @return Pose3d object representing the camera's position and orientation relative to the robot
 	 */
 	public Pose3d getCameraPose3d_RobotSpace() {
-		double[] poseArray = networkTable.getDoubleArray("camerapose_robotspace");
+		double[] poseArray = networkTable.getDoubleArrayTopic("camerapose_robotspace").getEntry(new double[0]).get();
+		;
 		return JsonUtilities.toPose3D(poseArray);
 	}
 
 	public double[] getTargetColor() {
-		return networkTable.getDoubleArray("tc");
+		return networkTable.getDoubleArrayTopic("tc").getEntry(new double[0]).get();
 	}
 
 	public double getFiducialID() {
-		return networkTable.getDouble("tid");
+		return networkTable.getDoubleTopic("tid").getEntry(0).get();
 	}
 
 	public String getNeuralClassID() {
-		return networkTable.getString("tclass");
+		return networkTable.getStringTopic("tclass").getEntry("").get();
 	}
 
 	public String[] getRawBarcodeData() {
-		return networkTable.getStringArray("rawbarcodes");
+		return networkTable.getStringArrayTopic("rawbarcodes").getEntry(new String[0]).get();
 	}
 }
