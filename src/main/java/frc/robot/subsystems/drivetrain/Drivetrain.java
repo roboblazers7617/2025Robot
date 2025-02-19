@@ -65,6 +65,10 @@ public class Drivetrain extends SubsystemBase {
 	 * Vision object.
 	 */
 	private final Vision vision;
+	/**
+	 * Speed multiplier used for scaling controller inputs.
+	 */
+	private double controllerSpeedMultiplier;
 
 	/**
 	 * Initialize {@link SwerveDrive} with the directory provided.
@@ -97,6 +101,9 @@ public class Drivetrain extends SubsystemBase {
 		// Stop the odometry thread if we are using vision that way we can synchronize updates better.
 		// TODO: #112 (Max/Lukas) If we disable vision updates, do we need to restart this thread to ensure odometry is udpated?
 		swerveDrive.stopOdometryThread();
+
+		// Set up controls
+		resetControllerSpeedMultiplier();
 
 		// Set up vision
 		vision = new Vision(swerveDrive);
@@ -685,11 +692,21 @@ public class Drivetrain extends SubsystemBase {
 	 *
 	 * @param velocity
 	 *            Velocity according to the field.
-	 * @see
-	 *      SwerveDrive#driveFieldOriented(ChassisSpeeds)
+	 * @see SwerveDrive#driveFieldOriented(ChassisSpeeds)
 	 */
 	public void driveFieldOriented(ChassisSpeeds velocity) {
 		swerveDrive.driveFieldOriented(velocity);
+	}
+
+	/**
+	 * Drive the robot given a chassis field oriented velocity, scaled with the {@link #controllerSpeedMultiplier}.
+	 *
+	 * @param velocity
+	 *            Velocity according to the field.
+	 * @see SwerveDrive#driveFieldOriented(ChassisSpeeds)
+	 */
+	public void driveFieldOrientedScaled(ChassisSpeeds velocity) {
+		driveFieldOriented(velocity.times(controllerSpeedMultiplier));
 	}
 
 	/**
@@ -699,17 +716,61 @@ public class Drivetrain extends SubsystemBase {
 	 *            Velocity according to the field.
 	 * @return
 	 *         Command to run
-	 * @see
-	 *      SwerveDrive#driveFieldOriented(ChassisSpeeds)
+	 * @see SwerveDrive#driveFieldOriented(ChassisSpeeds)
 	 */
 	public Command driveFieldOrientedCommand(Supplier<ChassisSpeeds> velocity) {
 		return run(() -> {
-			swerveDrive.driveFieldOriented(velocity.get());
+			driveFieldOriented(velocity.get());
 		});
 	}
 
 	/**
-	 * {@link #driveFieldOrientedCommand(Supplier)} that uses {@link DrivetrainControls#driveAngularVelocity(Drivetrain, CommandXboxController)}. Calls {@link #resetLastAngleScalar()} on end to prevent snapback.
+	 * Drive the robot given a chassis field oriented velocity, scaled with the {@link #controllerSpeedMultiplier}.
+	 *
+	 * @param velocity
+	 *            Velocity according to the field.
+	 * @return
+	 *         Command to run
+	 * @see SwerveDrive#driveFieldOriented(ChassisSpeeds)
+	 */
+	public Command driveFieldOrientedScaledCommand(Supplier<ChassisSpeeds> velocity) {
+		return run(() -> {
+			driveFieldOrientedScaled(velocity.get());
+		});
+	}
+
+	/**
+	 * Sets the controller speed multiplier.
+	 *
+	 * @param speedMultiplier
+	 *            Multiplier to set.
+	 */
+	public void setControllerSpeedMultiplier(double speedMultiplier) {
+		controllerSpeedMultiplier = speedMultiplier;
+	}
+
+	/**
+	 * Sets the controller speed multiplier back to {@link DrivetrainConstants#TRANSLATION_SCALE}.
+	 */
+	public void resetControllerSpeedMultiplier() {
+		controllerSpeedMultiplier = DrivetrainConstants.TRANSLATION_SCALE;
+	}
+
+	/**
+	 * Sets the controller speed multiplier. Resets the multiplier when canceled.
+	 *
+	 * @param speedMultiplier
+	 *            Multiplier to set.
+	 * @return
+	 *         Command to run.
+	 */
+	public Command setControllerSpeedMultiplierCommand(Supplier<Double> speedMultiplier) {
+		return Commands.run(() -> setControllerSpeedMultiplier(speedMultiplier.get()))
+				.finallyDo(() -> resetControllerSpeedMultiplier());
+	}
+
+	/**
+	 * {@link #driveFieldOrientedScaledCommand(Supplier)} that uses {@link DrivetrainControls#driveAngularVelocity(Drivetrain, CommandXboxController)}. Calls {@link #resetLastAngleScalar()} on end to prevent snapback.
 	 *
 	 * @param controller
 	 *            Controller to use.
@@ -717,12 +778,12 @@ public class Drivetrain extends SubsystemBase {
 	 *         Command to run.
 	 */
 	public Command driveFieldOrientedAngularVelocityControllerCommand(CommandXboxController controller) {
-		return driveFieldOrientedCommand(DrivetrainControls.driveAngularVelocity(this, controller))
+		return driveFieldOrientedScaledCommand(DrivetrainControls.driveAngularVelocity(this, controller))
 				.finallyDo(this::resetLastAngleScalarByAlliance);
 	}
 
 	/**
-	 * {@link #driveFieldOrientedCommand(Supplier)} that uses {@link DrivetrainControls#driveDirectAngle(Drivetrain, CommandXboxController)}.
+	 * {@link #driveFieldOrientedScaledCommand(Supplier)} that uses {@link DrivetrainControls#driveDirectAngle(Drivetrain, CommandXboxController)}.
 	 *
 	 * @param controller
 	 *            Controller to use.
@@ -730,11 +791,11 @@ public class Drivetrain extends SubsystemBase {
 	 *         Command to run.
 	 */
 	public Command driveFieldOrientedDirectAngleControllerCommand(CommandXboxController controller) {
-		return driveFieldOrientedCommand(DrivetrainControls.driveDirectAngle(this, controller));
+		return driveFieldOrientedScaledCommand(DrivetrainControls.driveDirectAngle(this, controller));
 	}
 
 	/**
-	 * {@link #driveFieldOrientedCommand(Supplier)} that uses {@link DrivetrainControls#driveDirectAngleSim(Drivetrain, CommandXboxController)}.
+	 * {@link #driveFieldOrientedScaledCommand(Supplier)} that uses {@link DrivetrainControls#driveDirectAngleSim(Drivetrain, CommandXboxController)}.
 	 *
 	 * @param controller
 	 *            Controller to use.
@@ -742,7 +803,7 @@ public class Drivetrain extends SubsystemBase {
 	 *         Command to run.
 	 */
 	public Command driveFieldOrientedDirectAngleSimControllerCommand(CommandXboxController controller) {
-		return driveFieldOrientedCommand(DrivetrainControls.driveDirectAngleSim(this, controller));
+		return driveFieldOrientedScaledCommand(DrivetrainControls.driveDirectAngleSim(this, controller));
 	}
 
 	/**
