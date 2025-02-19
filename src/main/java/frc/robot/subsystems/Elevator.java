@@ -142,6 +142,7 @@ public class Elevator extends SubsystemBase {
 			safeElevatorTarget = ElevatorConstants.SAFE_MIN_POSITION;
 		}
 		double elevatorFeedForwardValue = elevatorFeedforward.calculate(elevatorEncoder.getVelocity()); // this is technically supposed to be the velocity setpoint
+		// TODO: #128 Pass in Units for Elevator FF
 		leaderElevatorMotor.getClosedLoopController().setReference(safeElevatorTarget, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0, elevatorFeedForwardValue);
 
 		double safeWristTarget = wristTarget;
@@ -150,7 +151,10 @@ public class Elevator extends SubsystemBase {
 		if (elevatorEncoder.getPosition() < ElevatorConstants.SAFE_MIN_POSITION && safeWristTarget < WristConstants.SAFE_MIN_POSITION) {
 			safeWristTarget = WristConstants.SAFE_MIN_POSITION;
 		}
+		// TODO: #130 Control upper bound of wrist
+
 		double wristFeedForwardValue = wristFeedforward.calculate(Math.toRadians(elevatorEncoder.getPosition()), Math.toRadians(elevatorEncoder.getVelocity()));
+		// TODO: #129 Pass in Units for Wrist FF
 		wristMotor.getClosedLoopController().setReference(safeWristTarget, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0, wristFeedForwardValue);
 	}
 
@@ -188,10 +192,12 @@ public class Elevator extends SubsystemBase {
 	 * @return
 	 *         {@link Command} to run.
 	 */
+	// TODO: #125 Change units of parameter
 	public Command setElevatorSpeedCommand(DoubleSupplier speed) {
 		Command command = new Command() {
 			@Override
 			public void execute() {
+				// TODO: #124 Check for Min_velocity as well (if going backward)
 				double targetSpeed = speed.getAsDouble();
 				if (targetSpeed > ElevatorConstants.MAX_VELOCITY) {
 					targetSpeed = ElevatorConstants.MAX_VELOCITY;
@@ -213,10 +219,12 @@ public class Elevator extends SubsystemBase {
 	 * @return
 	 *         {@link Command} to run.
 	 */
+	// TODO: #126 Change Units for Parameter for setWristSpeedCommand
 	public Command setWristSpeedCommand(DoubleSupplier speed) {
 		Command command = new Command() {
 			@Override
 			public void execute() {
+				// TODO: #127 Check for minimum value for wrist speed
 				double targetSpeed = speed.getAsDouble();
 				if (targetSpeed > WristConstants.MAX_VELOCITY) {
 					targetSpeed = WristConstants.MAX_VELOCITY;
