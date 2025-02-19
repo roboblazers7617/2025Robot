@@ -8,13 +8,10 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.OperatorConstants.GamepieceMode;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.commands.StubbedCommands;
-import frc.robot.Constants.FieldConstants;
-import frc.robot.util.Util;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -78,6 +75,10 @@ public class RobotContainer {
 
 		if (StubbedCommands.EndEffector.isHoldingAlage()) {
 			gamepieceMode = GamepieceMode.ALGAE_MODE;
+		}
+
+		else {
+			gamepieceMode = GamepieceMode.CORAL_MODE;
 		}
 	}
 

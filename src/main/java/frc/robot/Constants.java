@@ -83,9 +83,17 @@ public final class Constants {
 		 */
 		public static final TelemetryVerbosity TELEMETRY_VERBOSITY_NORMAL = TelemetryVerbosity.POSE;
 		/**
-		 * Translation axis scaling. Changes the overall maximum speed of the drivetrain.
+		 * Translation axis scaling. Changes the overall maximum speed of the drivetrain in fast mode.
 		 */
-		public static final double TRANSLATION_SCALE = 0.8;
+		public static final double TRANSLATION_SCALE_FAST = 1;
+		/**
+		 * Translation axis scaling. Changes the overall maximum speed of the drivetrain in normal mode.
+		 */
+		public static final double TRANSLATION_SCALE_NORMAL = 0.8;
+		/**
+		 * Translation axis scaling. Changes the overall maximum speed of the drivetrain in slow mode.
+		 */
+		public static final double TRANSLATION_SCALE_SLOW = 0.6;
 		/**
 		 * Starting pose.
 		 */
