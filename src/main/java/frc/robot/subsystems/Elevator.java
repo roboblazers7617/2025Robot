@@ -78,8 +78,6 @@ public class Elevator extends SubsystemBase {
 
 		baseElevatorConfig.idleMode(IdleMode.kBrake);
 		baseElevatorConfig.smartCurrentLimit(ElevatorConstants.CURRENT_LIMIT);
-		// baseElevatorConfig.closedLoopRampRate(0.5); TODO I've added current limits and break mode. The only other things I found were these but I don't think we want them.
-		// baseElevatorConfig.voltageCompensation(12); or this
 
 		baseElevatorConfig.absoluteEncoder
 				.positionConversionFactor(ElevatorConstants.POSITION_CONVERSION_FACTOR)
@@ -100,7 +98,7 @@ public class Elevator extends SubsystemBase {
 
 		leaderElevatorMotor.configure(baseElevatorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
-		SparkBaseConfig followerElevatorMotorConfig = new SparkMaxConfig().apply(baseElevatorConfig).follow(leaderElevatorMotor); // TODO I could not find any documentation on this and I'm not sure if I just use the base config and add a follow if that could effect the leader motor.
+		SparkBaseConfig followerElevatorMotorConfig = new SparkMaxConfig().apply(baseElevatorConfig).follow(leaderElevatorMotor);
 		followerElevatorMotor.configure(followerElevatorMotorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
 		SparkMaxConfig wristConfig = new SparkMaxConfig();
@@ -133,8 +131,6 @@ public class Elevator extends SubsystemBase {
 	 */
 	@Override
 	public void periodic() {
-		// TODO: (Brandon) Where is the logic for upper bounds control? The outer limits are managed in the set position function. The lower areas where they may collide is handled here.
-
 		// ensure elevator target is within bounds
 		double safeElevatorTarget = elevatorTarget;
 
@@ -143,7 +139,6 @@ public class Elevator extends SubsystemBase {
 			safeElevatorTarget = ElevatorConstants.SAFE_MIN_POSITION;
 		}
 		double elevatorFeedForwardValue = elevatorFeedforward.calculate(elevatorEncoder.getVelocity()); // this is technically supposed to be the velocity setpoint
-		// TODO: #128 Pass in Units for Elevator FF
 		leaderElevatorMotor.getClosedLoopController().setReference(safeElevatorTarget, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0, elevatorFeedForwardValue, ArbFFUnits.kVoltage);
 
 		double safeWristTarget = wristTarget;
@@ -152,10 +147,8 @@ public class Elevator extends SubsystemBase {
 		if (elevatorEncoder.getPosition() < ElevatorConstants.SAFE_MIN_POSITION && safeWristTarget < WristConstants.SAFE_MIN_POSITION) {
 			safeWristTarget = WristConstants.SAFE_MIN_POSITION;
 		}
-		// TODO: #130 Control upper bound of wrist
 
 		double wristFeedForwardValue = wristFeedforward.calculate(Math.toRadians(elevatorEncoder.getPosition()), Math.toRadians(elevatorEncoder.getVelocity()));
-		// TODO: #129 Pass in Units for Wrist FF
 		wristMotor.getClosedLoopController().setReference(safeWristTarget, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0, wristFeedForwardValue, ArbFFUnits.kVoltage);
 	}
 
@@ -165,7 +158,7 @@ public class Elevator extends SubsystemBase {
 	 * @param elevatorSpeed
 	 *            The speed of the elevator as a percentage of max speed. [-1, 1]
 	 * @param wristSpeed
-	 *            The speed of the wrist as a percentage of max speed. [-1, 1] //TODO #127
+	 *            The speed of the wrist as a percentage of max speed. [-1, 1]
 	 * @return
 	 *         {@link Command} to run.
 	 */
@@ -187,60 +180,6 @@ public class Elevator extends SubsystemBase {
 			}
 		};
 		command.addRequirements(this);
-		return command;
-	}
-
-	/**
-	 * A command set the elvator speed in m/s.
-	 * 
-	 * @deprecated use {@link #setSpeedsCommand(DoubleSupplier, DoubleSupplier)} instead.
-	 * @param speed
-	 *            The speed in m/s.
-	 * @return
-	 *         {@link Command} to run.
-	 */
-	// TODO: #125 Change units of parameter
-	public Command setElevatorSpeedCommand(DoubleSupplier speed) {
-		Command command = new Command() {
-			@Override
-			public void execute() {
-				// TODO: #124 Check for Min_velocity as well (if going backward)
-				double targetSpeed = speed.getAsDouble();
-				if (targetSpeed > ElevatorConstants.MAX_VELOCITY) {
-					targetSpeed = ElevatorConstants.MAX_VELOCITY;
-				}
-				setElevatorPosition(elevatorTarget + (targetSpeed / 50)); // divide the speed by 50 because their are 50 loops per second
-			}
-		};
-		// command.addRequirements(this); TODO it seems like the subsystem should be required but that would prevent both speed commands from being used at the same time.
-		// also if there is lag after they release the joystick we may need to reset the position target to the current position.
-		return command;
-	}
-
-	/**
-	 * A command set the wrist speed in degrees/s.
-	 * * @deprecated use {@link #setSpeedsCommand(DoubleSupplier, DoubleSupplier)} instead.
-	 * 
-	 * @param speed
-	 *            The speed in degrees/s.
-	 * @return
-	 *         {@link Command} to run.
-	 */
-	// TODO: #126 Change Units for Parameter for setWristSpeedCommand
-	public Command setWristSpeedCommand(DoubleSupplier speed) {
-		Command command = new Command() {
-			@Override
-			public void execute() {
-				// TODO: #127 Check for minimum value for wrist speed
-				double targetSpeed = speed.getAsDouble();
-				if (targetSpeed > WristConstants.MAX_VELOCITY) {
-					targetSpeed = WristConstants.MAX_VELOCITY;
-				}
-				setWristPosition(wristTarget + (targetSpeed / 50)); // divide the speed by 50 because their are 50 loops per second
-			}
-		};
-		// command.addRequirements(this); TODO it seems like the subsystem should be required but that would prevent both speed commands from being used at the same time.
-		// also if there is lag after they release the joystick we may need to reset the position target to the current position.
 		return command;
 	}
 
@@ -267,7 +206,6 @@ public class Elevator extends SubsystemBase {
 	 * @param position
 	 *            The position in meters.
 	 */
-	// TODO: (Brandon) Is any position valid? How do you equate a position as a double with a task such as "intake". Position is now validaded. This function would be called by commands like "intake" which would supply the position.
 	private void setElevatorPosition(double position) {
 		MathUtil.clamp(position, ElevatorConstants.MIN_POSITION, ElevatorConstants.MAX_POSITION);
 		elevatorTarget = position;
@@ -279,11 +217,8 @@ public class Elevator extends SubsystemBase {
 	 * @param position
 	 *            The position in degrees.
 	 */
-	// TODO: (Brandon) Is any position valid? How do you equate a position as a double with a task such as "intake". Position is now validaded. This function would be called by commands like "intake" which would supply the position.
 	private void setWristPosition(double position) {
 		MathUtil.clamp(position, WristConstants.MIN_POSITION, WristConstants.MAX_POSITION);
 		wristTarget = position;
 	}
-
-	// TODO: (Brandon) You have basic commands. Where are the ones that will be tied to buttons for controlled movements to move both wrist and elevator together? How do you move to set positions?
 }
