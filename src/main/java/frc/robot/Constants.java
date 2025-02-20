@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import com.pathplanner.lib.config.PIDConstants;
+import com.revrobotics.spark.config.ClosedLoopConfig;
 
 import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.util.PoseUtil;
@@ -260,6 +261,47 @@ public final class Constants {
 		 */
 		// TODO: (Sam) Please update with correct values
 		public static final int RAMP_PIVOT_PORT = 2;
+	}
+
+	/**
+	 * Constants for the Rampmotor
+	 */
+	public static class RampConstants {
+		/**
+		 * Ramp gear ratio
+		 */
+		// TODO: set proper gear ratio
+		public static final double RAMP_MOTOR_GEAR_RATIO = (1.0 / 1.0);
+		/**
+		 * Ramp CAN_ID
+		 */
+		// TODO: set ramp CAN_ID once assigned
+		public static final int RAMP_MOTOR_CAN_ID = 8;
+		/**
+		 * Ramp SparkMax current limit
+		 */
+		/**
+		 * PID config for the motor controller.
+		 */
+		// TODO: PID values block to be updated with actual values
+		public static final ClosedLoopConfig CLOSED_LOOP_CONFIG = new ClosedLoopConfig()
+				.p(0)
+				.i(0)
+				.d(0);
+		public static final int RAMP_MOTOR_CURRENT_LIMIT = 40;
+		/*
+		 * I Belive we used this to make the numbers apear correctly in the dirvers station?
+		 * may be a usesless holdover from arm code test though
+		 */
+		public static final double POSITION_CONVERSION_FACTOR = RAMP_MOTOR_GEAR_RATIO * 360.0;
+		/**
+		 * Motor speed whille deploying ramp
+		 */
+		public static final double RAMP_DEPLOY_SPEED = 0.2;
+		/**
+		 * Motor speed whille retracting ramp
+		 */
+		public static final double RAMP_RETRACT_SPEED = -0.2;
 	}
 
 	/**
