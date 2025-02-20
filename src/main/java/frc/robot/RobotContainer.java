@@ -51,13 +51,7 @@ public class RobotContainer {
 	 */
 	public void teleopInit() {
 		// Reset the last angle so the robot doesn't try to spin.
-		if (Util.isRedAlliance()) {
-			// TODO: (Max) Does this work if you enable/disable as Red alliance multiple times? Won't it keep
-			// switing it by 180 degrees each time?
-			drivetrain.resetLastAngleScalarInverted();
-		} else {
-			drivetrain.resetLastAngleScalar();
-		}
+		drivetrain.resetLastAngleScalarByAlliance();
 	}
 
 	/**
@@ -84,12 +78,17 @@ public class RobotContainer {
 		// TODO: (Max) This lets the driver move to the closest reef tag but how do they make it go to the
 		// left or right reef branch of that tag? What if they are on the right side of the tag but
 		// want to drive to the left branch?
-		// TODO: (Max) Shouldn't this be a whileTrue to allow them to cancel the command if not longer desired?
-		driverController.x().onTrue(Commands.either(drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.SCORING_POSES_RED), drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.SCORING_POSES_BLUE), () -> Util.isRedAlliance()));
-		// TODO: (Max) How does a driver have it align/drive to the 1) coral station and 2) processor?
+		// TODO: #99 (Max) Shouldn't this be a whileTrue to allow them to cancel the command if not longer desired?
+		// TODO: #110 (Max) Please use the controller buttons outlined in the Controls branch. This needs to be merged ASAP
+		driverController.x()
+				.onTrue(Commands.either(drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.CORAL_SCORING_POSES_RED_LEFT), drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.CORAL_SCORING_POSES_BLUE_LEFT), () -> Util.isRedAlliance()));
+		driverController.y()
+				.onTrue(Commands.either(drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.CORAL_SCORING_POSES_RED_RIGHT), drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.CORAL_SCORING_POSES_BLUE_RIGHT), () -> Util.isRedAlliance()));
+		// TODO: #100 (Max) How does a driver have it align/drive to the 1) coral station and 2) processor?
+		driverController.a().whileTrue(drivetrain.lockCommand());
 
 		// TODO: transfer to dashboard
-		driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
+		driverController.start().onTrue(drivetrain.zeroGyroCommand());
 		driverController.back().onTrue(drivetrain.centerModulesCommand());
 	}
 
@@ -100,7 +99,8 @@ public class RobotContainer {
 	 */
 	public Command getAutonomousCommand() {
 		// resetLastAngleScalar stops the robot from trying to turn back to its original angle after the auto ends
-		return autoChooser.getSelected();
+		return autoChooser.getSelected()
+				.finallyDo(drivetrain::resetLastAngleScalarByAlliance);
 	}
 
 	/**
