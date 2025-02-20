@@ -78,6 +78,7 @@ public class Elevator extends SubsystemBase {
 
 		baseElevatorConfig.idleMode(IdleMode.kBrake);
 		baseElevatorConfig.smartCurrentLimit(ElevatorConstants.CURRENT_LIMIT);
+		// ramp rate?
 
 		baseElevatorConfig.absoluteEncoder
 				.positionConversionFactor(ElevatorConstants.POSITION_CONVERSION_FACTOR)
@@ -138,8 +139,14 @@ public class Elevator extends SubsystemBase {
 		if (wristEncoder.getPosition() < WristConstants.SAFE_MIN_POSITION && safeElevatorTarget < ElevatorConstants.SAFE_MIN_POSITION) {
 			safeElevatorTarget = ElevatorConstants.SAFE_MIN_POSITION;
 		}
+		// ensure the elevator target is not too high if wrist is high (wrist collides with metal connecter thing on top of the robot)
+
 		double elevatorFeedForwardValue = elevatorFeedforward.calculate(elevatorEncoder.getVelocity()); // this is technically supposed to be the velocity setpoint
 		leaderElevatorMotor.getClosedLoopController().setReference(safeElevatorTarget, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0, elevatorFeedForwardValue, ArbFFUnits.kVoltage);
+
+		//
+		//
+		//
 
 		double safeWristTarget = wristTarget;
 
@@ -147,6 +154,10 @@ public class Elevator extends SubsystemBase {
 		if (elevatorEncoder.getPosition() < ElevatorConstants.SAFE_MIN_POSITION && safeWristTarget < WristConstants.SAFE_MIN_POSITION) {
 			safeWristTarget = WristConstants.SAFE_MIN_POSITION;
 		}
+
+		// ensure wrist target is not too high if the elevator is high
+
+		// ensure wrist target is not too high (a different too high, a smaller one) if it is holding algae
 
 		double wristFeedForwardValue = wristFeedforward.calculate(Math.toRadians(elevatorEncoder.getPosition()), Math.toRadians(elevatorEncoder.getVelocity()));
 		wristMotor.getClosedLoopController().setReference(safeWristTarget, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0, wristFeedForwardValue, ArbFFUnits.kVoltage);

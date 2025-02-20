@@ -442,6 +442,8 @@ public final class Constants {
 		 * Minimum safe position while the elevator is lowered, in degrees.
 		 */
 		public static final double SAFE_MIN_POSITION = 10;
+
+		public static final double SAFE_MAX_POSITION = 80;
 		/**
 		 * Conversion factor from rotation to meters.
 		 */
