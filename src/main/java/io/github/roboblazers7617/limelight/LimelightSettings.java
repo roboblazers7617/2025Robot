@@ -9,8 +9,9 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import java.util.List;
 
 /**
- * Sourced from Yet Another Limelight Lib(YALL)
  * Settings class to apply configurable options to the {@link Limelight}
+ * Sourced from Yet Another Limelight Lib(YALL)
+
  * <p>
  * These settings are sent from the roboRIO back to the Limelight to affect the LL.
  * <p>
