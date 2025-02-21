@@ -184,7 +184,7 @@ public class Elevator extends SubsystemBase {
 
 				setElevatorPosition(elevatorTarget + (targetElevatorSpeed / 50)); // divide the speed by 50 because their are 50 loops per second
 
-				double targetWristSpeed = MathUtil.clamp(wristSpeed.getAsDouble(), -1, 1) * WristConstants.MAX_VELOCITY;
+				double targetWristSpeed = MathUtil.clamp(wristSpeed.getAsDouble() * WristConstants.MAX_VELOCITY, -WristConstants.MAX_VELOCITY, WristConstants.MAX_VELOCITY);
 				setWristPosition(wristTarget + (targetWristSpeed / 50)); // divide the speed by 50 because their are 50 loops per second
 			}
 		};
