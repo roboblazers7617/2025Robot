@@ -473,7 +473,7 @@ public final class Constants {
 		/**
 		 * Conversion factor from rotation to meters.
 		 */
-		public static final double POSITION_CONVERSION_FACTOR = 1 / ((10 / 58) * (18 / 58)); // TODO: check
+		public static final double POSITION_CONVERSION_FACTOR = 1 / ((10.0 / 58) * (18 / 58)); // TODO: check
 		/**
 		 * Conversion factor from rotation to meters per second.
 		 */
