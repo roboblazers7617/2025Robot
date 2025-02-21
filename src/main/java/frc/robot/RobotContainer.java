@@ -94,18 +94,6 @@ public class RobotContainer {
 		// TODO: transfer to dashboard
 		driverController.start().onTrue(drivetrain.zeroGyroCommand());
 		driverController.back().onTrue(drivetrain.centerModulesCommand());
-
-		driverController.y()
-				.onTrue(Commands.runOnce(() -> climber.setServoPosition(0.1), climber))
-				.onFalse(Commands.runOnce(() -> climber.setServoPosition(0.0), climber));
-
-		driverController.povUp()
-				.onTrue(Commands.runOnce(() -> climber.setSpeedRampPivot(0.1), climber))
-				.onFalse(Commands.runOnce(() -> climber.setSpeedRampPivot(0.0), climber));
-
-		driverController.povDown()
-				.onTrue(Commands.runOnce(() -> climber.setSpeedRampPivot(-0.1), climber))
-				.onFalse(Commands.runOnce(() -> climber.setSpeedRampPivot(0.0), climber));
 	}
 
 	/**

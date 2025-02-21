@@ -23,9 +23,6 @@ import frc.robot.Constants;
 
 @Logged
 public class Climber extends SubsystemBase {
-	private final SparkMax rampPivot = new SparkMax(Constants.ClimberConstants.RAMP_PIVOT_PORT, MotorType.kBrushless);
-	private final RelativeEncoder rampPivotEncoder;
-
 	private final SparkMax climbMotor = new SparkMax(Constants.ClimberConstants.CLIMB_MOTOR_PORT, MotorType.kBrushless);
 	private final RelativeEncoder climbMotorEncoder;
 
@@ -37,21 +34,9 @@ public class Climber extends SubsystemBase {
 		SparkBaseConfig motorConfig = new SparkMaxConfig()
 				.idleMode(IdleMode.kBrake);
 
-		rampPivot.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-		rampPivotEncoder = rampPivot.getEncoder();
-		rampPivotEncoder.setPosition(0.0);
 		climbMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 		climbMotorEncoder = climbMotor.getEncoder();
 		climbMotorEncoder.setPosition(0.0);
-	}
-
-	/**
-	 * Get the velocity of the ramp pivot motor.
-	 * 
-	 * @return Number the RPM of the motor
-	 */
-	public double getSpeedRampPivot() {
-		return rampPivotEncoder.getVelocity();
 	}
 
 	/**
@@ -61,16 +46,6 @@ public class Climber extends SubsystemBase {
 	 */
 	public double getSpeedClimbMotor() {
 		return climbMotorEncoder.getVelocity();
-	}
-
-	/**
-	 * Set the velocity of the ramp pivot motor.
-	 * 
-	 * @param rampPivotSpeed
-	 *            The speed to set. Value should be between -1.0 and 1.0.
-	 */
-	public void setSpeedRampPivot(double rampPivotSpeed) {
-		rampPivot.set(rampPivotSpeed);
 	}
 
 	/**
@@ -89,15 +64,6 @@ public class Climber extends SubsystemBase {
 	public void setServoPosition(double position) {
 		// climbRachet.set(position);
 		climbRachet.set(position);
-	}
-
-	/**
-	 * Get the position of the ramp pivot motor.
-	 * 
-	 * @return Number the position of the motor
-	 */
-	public double getPositionRampPivot() {
-		return rampPivotEncoder.getPosition();
 	}
 
 	/**
