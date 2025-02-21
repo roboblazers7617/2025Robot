@@ -6,7 +6,67 @@
       "name": "Teleoperated",
       "grid_layout": {
         "layouts": [],
-        "containers": []
+        "containers": [
+          {
+            "title": "FMS Connected",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/Robot Data/FMS Connected",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "BuildDate",
+            "x": 0.0,
+            "y": 512.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Metadata//BuildDate",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Last Run",
+            "x": 256.0,
+            "y": 512.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Epilogue/Stats/Last Run",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Target Game Piece",
+            "x": 384.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Telemetry/m_robotContainer/gamepieceMode",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          }
+        ]
       }
     },
     {
@@ -50,7 +110,7 @@
             "properties": {
               "topic": "/SmartDashboard/Field",
               "period": 0.06,
-              "field_game": "Reefscape",
+              "field_game": "Crescendo",
               "robot_width": 0.85,
               "robot_length": 0.85,
               "show_other_objects": true,
@@ -84,6 +144,23 @@
               "topic": "/SmartDashboard/Reset pose to selected position",
               "period": 0.06,
               "show_type": true
+            }
+          },
+          {
+            "title": "FMS: Alliance",
+            "x": 256.0,
+            "y": 0.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/FMSInfo/IsRedAlliance",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4294901764,
+              "false_color": 4279632127,
+              "true_icon": "None",
+              "false_icon": "None"
             }
           }
         ]

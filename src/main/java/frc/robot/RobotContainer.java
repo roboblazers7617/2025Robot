@@ -5,21 +5,16 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.Constants.OperatorConstants.GAMEPIECE_MODE;
+import frc.robot.Constants.OperatorConstants.GamepieceMode;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.subsystems.drivetrain.DrivetrainControls;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.EndEffector;
 import frc.robot.commands.StubbedCommands;
-import frc.robot.Constants.FieldConstants;
-import frc.robot.util.Util;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.drivetrain.Drivetrain;
-import frc.robot.subsystems.drivetrain.DrivetrainControls;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -43,10 +38,22 @@ public class RobotContainer {
 
 	// Replace with CommandPS4Controller or CommandJoystick if needed
 	@NotLogged
+	/**
+	 * The Controller used by the Driver of the robot, primarily controlling the drivetrain.
+	 */
 	private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
 	@NotLogged
+	/**
+	 * The Controller used by the Operator of the robot, primarily controlling the superstructure.
+	 */
 	private final CommandXboxController operatorController = new CommandXboxController(OperatorConstants.OPERATOR_CONTROLLER_PORT);
 
+	/**
+	 * Used to store what the currently select game piece to interact with is.
+	 */
+	private GamepieceMode gamepieceMode;
+	private final Trigger isAlgaeModeTrigger = new Trigger(() -> (gamepieceMode == GamepieceMode.ALGAE_MODE));
+	private final Trigger isCoralModeTrigger = new Trigger(() -> (gamepieceMode == GamepieceMode.CORAL_MODE));
 	private final Command driveFieldOrientedDirectAngle = drivetrain.driveFieldOrientedCommand(DrivetrainControls.driveDirectAngle(drivetrain, driverController));
 	private final Command driveFieldOrientedAnglularVelocity = drivetrain.driveFieldOrientedCommand(DrivetrainControls.driveAngularVelocity(drivetrain, driverController));
 	private final Command driveFieldOrientedDirectAngleSim = drivetrain.driveFieldOrientedCommand(DrivetrainControls.driveDirectAngleSim(drivetrain, driverController));
@@ -65,7 +72,7 @@ public class RobotContainer {
 		configureDriverControls();
 		configureOperatorControls();
 		// By default interact with Coral
-		gamepieceMode = GAMEPIECE_MODE.CORAL_MODE;
+		gamepieceMode = GamepieceMode.CORAL_MODE;
 	}
 
 	/**
@@ -73,31 +80,32 @@ public class RobotContainer {
 	 */
 	public void teleopInit() {
 		// Reset the last angle so the robot doesn't try to spin.
-		if (Util.isRedAlliance()) {
-			// TODO: (Max) Does this work if you enable/disable as Red alliance multiple times? Won't it keep
-			// switing it by 180 degrees each time?
-			drivetrain.resetLastAngleScalarInverted();
-		} else {
-			drivetrain.resetLastAngleScalar();
-		}
+		drivetrain.resetLastAngleScalarByAlliance();
 
 		if (StubbedCommands.EndEffector.isHoldingAlage()) {
-			gamepieceMode = GAMEPIECE_MODE.ALGAE_MODE;
+			gamepieceMode = GamepieceMode.ALGAE_MODE;
+		}
+
+		else {
+			gamepieceMode = GamepieceMode.CORAL_MODE;
 		}
 	}
 
 	/**
-	 * Use this method to define your trigger->command mappings. Triggers can be created via the
-	 * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-	 * predicate, or via the named factories in {@link
-	 * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-	 * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-	 * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-	 * joysticks}.
+	 * Configures {@link Triggers} to bind Commands to the Driver Controller buttons.
 	 */
 	private void configureDriverControls() {
-		// Set the default drivetrain command
-		drivetrain.setDefaultCommand(!RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngleSim);
+		// Set the default drivetrain command (used for the driver controller)
+		if (RobotBase.isSimulation()) {
+			// Heading control
+			drivetrain.setDefaultCommand(drivetrain.driveFieldOrientedDirectAngleSimControllerCommand(driverController));
+		} else {
+			// Heading control
+			drivetrain.setDefaultCommand(drivetrain.driveFieldOrientedDirectAngleControllerCommand(driverController));
+			// Angular velocity control
+			driverController.leftBumper()
+					.whileTrue(drivetrain.driveFieldOrientedAngularVelocityControllerCommand(driverController));
+		}
 
 		driverController.a().whileTrue(StubbedCommands.Drivetrain.DriverSlowMode());
 		driverController.b().whileTrue(StubbedCommands.Drivetrain.DriverFastMode());
@@ -109,7 +117,6 @@ public class RobotContainer {
 		driverController.povRight().whileTrue(StubbedCommands.Climber.RampDown());
 		driverController.povUp().whileTrue(StubbedCommands.Climber.AutoClimb());
 
-		driverController.leftBumper().whileTrue(driveFieldOrientedAnglularVelocity.finallyDo(drivetrain::resetLastAngleScalar));
 		driverController.rightBumper().whileTrue(StubbedCommands.Drivetrain.AlignMiddleOfTag());
 		driverController.leftTrigger().whileTrue(StubbedCommands.Drivetrain.AlignLeftOfTag());
 		driverController.rightTrigger().whileTrue(StubbedCommands.Drivetrain.AlignRightOfTag());
@@ -118,6 +125,9 @@ public class RobotContainer {
 		driverController.back().onTrue(StubbedCommands.Drivetrain.DisableVision());
 	}
 
+	/**
+	 * Configures {@link Triggers} to bind Commands to the Operator Controller buttons.
+	 */
 	private void configureOperatorControls() {
 		// Set the default elevator command where it moves manually
 		/*
@@ -125,6 +135,35 @@ public class RobotContainer {
 		 * elevator.setDefaultCommand(elevator.MoveElevatorAndWristManual(() -> (-1 * operatorController.getLeftX()), () -> (-1 * operatorController.getLeftY())));
 		 */
 		// Acts to cancel the currently running command, such as intaking or outaking
+		operatorController.a()
+				.onTrue(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector())));
+		operatorController.b()
+				.or(operatorController.leftTrigger())
+				.and(isAlgaeModeTrigger)
+				.onTrue(StubbedCommands.EndEffector.IntakeAlgae()
+						.andThen(StubbedCommands.Elevator.StowAlgae()));
+		operatorController.b()
+				.or(operatorController.leftTrigger())
+				.and(isCoralModeTrigger)
+				.onTrue(StubbedCommands.Elevator.MoveIntakeCoral()
+						.andThen(StubbedCommands.EndEffector.IntakeCoral())
+						.andThen(StubbedCommands.Elevator.StowCoral()));
+		operatorController.x()
+				.and(isAlgaeModeTrigger)
+				.onTrue(StubbedCommands.Elevator.StowAlgae()
+						.alongWith(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector()))));
+		operatorController.x()
+				.and(isCoralModeTrigger)
+				.onTrue(StubbedCommands.Elevator.StowCoral()
+						.alongWith(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector()))));
+		operatorController.y()
+				.or(operatorController.leftBumper())
+				.and(isAlgaeModeTrigger)
+				.onTrue(StubbedCommands.EndEffector.OutakeAlgae());
+		operatorController.y()
+				.or(operatorController.leftBumper())
+				.and(isCoralModeTrigger)
+				.onTrue(StubbedCommands.EndEffector.OutakeCoral());
 		operatorController.a().onTrue(Commands.runOnce((() -> {}), endEffector));
 		operatorController.b().or(operatorController.leftTrigger()).and(isAlgaeMode).onTrue(endEffector.AlgaeIntake().andThen(StubbedCommands.Elevator.StowAlgae()));
 		operatorController.b().or(operatorController.leftTrigger()).and(isCoralMode).onTrue(StubbedCommands.Elevator.MoveIntakeCoral().andThen(endEffector.CoralIntake(), StubbedCommands.Elevator.StowCoral()));
@@ -133,23 +172,44 @@ public class RobotContainer {
 		operatorController.y().or(operatorController.leftBumper()).and(isAlgaeMode).onTrue(endEffector.AlgaeOuttake());
 		operatorController.y().or(operatorController.leftBumper()).and(isCoralMode).onTrue(endEffector.CoralOuttake());
 
-		operatorController.povDown().and(isAlgaeMode).onTrue(StubbedCommands.Elevator.MoveLowAlgae());
-		operatorController.povDown().and(isCoralMode).onTrue(StubbedCommands.Elevator.MoveL1());
-		operatorController.povLeft().or(operatorController.povRight()).and(isAlgaeMode).onTrue(StubbedCommands.Elevator.MoveProcessor());
-		operatorController.povLeft().and(isCoralMode).onTrue(StubbedCommands.Elevator.MoveL2());
-		operatorController.povRight().and(isCoralMode).onTrue(StubbedCommands.Elevator.MoveL3());
+		operatorController.povDown()
+				.and(isAlgaeModeTrigger)
+				.onTrue(StubbedCommands.Elevator.MoveLowAlgae());
+		operatorController.povDown()
+				.and(isCoralModeTrigger)
+				.onTrue(StubbedCommands.Elevator.MoveL1());
+		operatorController.povLeft()
+				.or(operatorController.povRight())
+				.and(isAlgaeModeTrigger)
+				.onTrue(StubbedCommands.Elevator.MoveProcessor());
+		operatorController.povLeft()
+				.and(isCoralModeTrigger)
+				.onTrue(StubbedCommands.Elevator.MoveL2());
+		operatorController.povRight()
+				.and(isCoralModeTrigger)
+				.onTrue(StubbedCommands.Elevator.MoveL3());
 		// POV Right Algae mode is handeled above with POV Left
-		operatorController.povUp().and(isAlgaeMode).onTrue(StubbedCommands.Elevator.MoveHighAlgae());
-		operatorController.povUp().and(isCoralMode).onTrue(StubbedCommands.Elevator.MoveL4());
+		operatorController.povUp()
+				.and(isAlgaeModeTrigger)
+				.onTrue(StubbedCommands.Elevator.MoveHighAlgae());
+		operatorController.povUp()
+				.and(isCoralModeTrigger)
+				.onTrue(StubbedCommands.Elevator.MoveL4());
 
 		// Left Bumper is on an or with the Y button above
-		operatorController.rightBumper().onTrue(Commands.runOnce(() -> {
-			gamepieceMode = GAMEPIECE_MODE.ALGAE_MODE;
-		}));
+		operatorController.rightBumper().onTrue(setGamepieceModeCommand(GamepieceMode.ALGAE_MODE));
 		// Left Trigger is on an or with the B button above
-		operatorController.rightTrigger().onTrue(Commands.runOnce(() -> {
-			gamepieceMode = GAMEPIECE_MODE.CORAL_MODE;
-		}));
+		operatorController.rightTrigger().onTrue(setGamepieceModeCommand(GamepieceMode.CORAL_MODE));
+	}
+
+	public GamepieceMode getGamepieceMode() {
+		return gamepieceMode;
+	}
+
+	private Command setGamepieceModeCommand(GamepieceMode mode) {
+		return Commands.runOnce(() -> {
+			gamepieceMode = mode;
+		});
 	}
 
 	/**
@@ -159,7 +219,8 @@ public class RobotContainer {
 	 */
 	public Command getAutonomousCommand() {
 		// resetLastAngleScalar stops the robot from trying to turn back to its original angle after the auto ends
-		return autoChooser.getSelected();
+		return autoChooser.getSelected()
+				.finallyDo(drivetrain::resetLastAngleScalarByAlliance);
 	}
 
 	/**
