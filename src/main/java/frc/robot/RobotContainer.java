@@ -6,9 +6,11 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.OperatorConstants.GamepieceMode;
+import frc.robot.Constants.ArmPosition;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.commands.StubbedCommands;
 import frc.robot.subsystems.Dashboard;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -34,6 +36,8 @@ public class RobotContainer {
 	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
 	@NotLogged
 	private final Dashboard dashboard = new Dashboard(drivetrain, this);
+	@NotLogged
+	private final Elevator elevator = new Elevator();
 
 	// Replace with CommandPS4Controller or CommandJoystick if needed
 	@NotLogged
@@ -132,20 +136,20 @@ public class RobotContainer {
 				.or(operatorController.leftTrigger())
 				.and(isAlgaeModeTrigger)
 				.onTrue(StubbedCommands.EndEffector.IntakeAlgae()
-						.andThen(StubbedCommands.Elevator.StowAlgae()));
+						.andThen(elevator.SetPosition(ArmPosition.STOW_ALGAE)));
 		operatorController.b()
 				.or(operatorController.leftTrigger())
 				.and(isCoralModeTrigger)
-				.onTrue(StubbedCommands.Elevator.MoveIntakeCoral()
+				.onTrue(elevator.SetPosition(ArmPosition.INTAKE_CORAL_CORAL_STATION)
 						.andThen(StubbedCommands.EndEffector.IntakeCoral())
-						.andThen(StubbedCommands.Elevator.StowCoral()));
+						.andThen(elevator.SetPosition(ArmPosition.STOW_CORAL)));
 		operatorController.x()
 				.and(isAlgaeModeTrigger)
-				.onTrue(StubbedCommands.Elevator.StowAlgae()
+				.onTrue(elevator.SetPosition(ArmPosition.STOW_ALGAE)
 						.alongWith(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector()))));
 		operatorController.x()
 				.and(isCoralModeTrigger)
-				.onTrue(StubbedCommands.Elevator.StowCoral()
+				.onTrue(elevator.SetPosition(ArmPosition.STOW_CORAL)
 						.alongWith(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector()))));
 		operatorController.y()
 				.or(operatorController.leftBumper())
@@ -158,27 +162,27 @@ public class RobotContainer {
 
 		operatorController.povDown()
 				.and(isAlgaeModeTrigger)
-				.onTrue(StubbedCommands.Elevator.MoveLowAlgae());
+				.onTrue(elevator.SetPosition(ArmPosition.INTAKE_ALGAE_LEVEL_2));
 		operatorController.povDown()
 				.and(isCoralModeTrigger)
-				.onTrue(StubbedCommands.Elevator.MoveL1());
+				.onTrue(elevator.SetPosition(ArmPosition.OUTTAKE_CORAL_LEVEL_1));
 		operatorController.povLeft()
 				.or(operatorController.povRight())
 				.and(isAlgaeModeTrigger)
-				.onTrue(StubbedCommands.Elevator.MoveProcessor());
+				.onTrue(elevator.SetPosition(ArmPosition.OUTTAKE_ALGAE_PROCESSOR));
 		operatorController.povLeft()
 				.and(isCoralModeTrigger)
-				.onTrue(StubbedCommands.Elevator.MoveL2());
+				.onTrue(elevator.SetPosition(ArmPosition.OUTTAKE_CORAL_LEVEL_2));
 		operatorController.povRight()
 				.and(isCoralModeTrigger)
-				.onTrue(StubbedCommands.Elevator.MoveL3());
+				.onTrue(elevator.SetPosition(ArmPosition.OUTTAKE_CORAL_LEVEL_3));
 		// POV Right Algae mode is handeled above with POV Left
 		operatorController.povUp()
 				.and(isAlgaeModeTrigger)
-				.onTrue(StubbedCommands.Elevator.MoveHighAlgae());
+				.onTrue(elevator.SetPosition(ArmPosition.INTAKE_ALGAE_LEVEL_3));
 		operatorController.povUp()
 				.and(isCoralModeTrigger)
-				.onTrue(StubbedCommands.Elevator.MoveL4());
+				.onTrue(elevator.SetPosition(ArmPosition.OUTTAKE_CORAL_LEVEL_4));
 
 		// Left Bumper is on an or with the Y button above
 		operatorController.rightBumper().onTrue(setGamepieceModeCommand(GamepieceMode.ALGAE_MODE));
