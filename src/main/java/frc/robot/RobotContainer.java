@@ -57,6 +57,8 @@ public class RobotContainer {
 	private final Command driveFieldOrientedDirectAngle = drivetrain.driveFieldOrientedCommand(DrivetrainControls.driveDirectAngle(drivetrain, driverController));
 	private final Command driveFieldOrientedAnglularVelocity = drivetrain.driveFieldOrientedCommand(DrivetrainControls.driveAngularVelocity(drivetrain, driverController));
 	private final Command driveFieldOrientedDirectAngleSim = drivetrain.driveFieldOrientedCommand(DrivetrainControls.driveDirectAngleSim(drivetrain, driverController));
+
+	// TODO: Move this up to where drivetrain is created so all the subsystems are together
 	private final EndEffector endEffector = new EndEffector();
 
 	/** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -132,6 +134,7 @@ public class RobotContainer {
 		 */
 		// Acts to cancel the currently running command, such as intaking or outaking
 		// Cancel Intake
+		// TODO: #133 Cancel all actions or just the intake running?
 		operatorController.a()
 				.onTrue(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector())));
 		operatorController.b()

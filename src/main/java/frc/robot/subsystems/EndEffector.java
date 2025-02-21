@@ -35,6 +35,7 @@ public class EndEffector extends SubsystemBase {
 	 * True = is holding coral
 	 * False = is not holding coral
 	 */
+	// TODO: #134 Rename to follow coding standards / ease reading code
 	private final DigitalInput coralBeamBreak = new DigitalInput(EndEffectorConstants.BEAM_BREAK_DIO);
 
 	public EndEffector() {
@@ -103,6 +104,7 @@ public class EndEffector extends SubsystemBase {
 	public Command AlgaeIntake() {
 		return StartMotor(() -> EndEffectorConstants.ALGAE_INTAKE_SPEED)
 				.andThen(Commands.waitSeconds(EndEffectorConstants.MOTOR_CURRENT_CHECK_DELAY))
+				// TODO: #135 Check also for speed = 0 (or some small number)
 				.andThen((Commands.waitUntil(() -> endEffectorMotor
 						.getOutputCurrent() >= EndEffectorConstants.AlGAE_INTAKE_CURRENT_SHUTOFF_THRESHOLD)))
 				.finallyDo(this::stopMotor);
