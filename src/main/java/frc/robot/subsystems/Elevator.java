@@ -6,13 +6,12 @@ package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -47,7 +46,9 @@ public class Elevator extends SubsystemBase {
 	 */
 	private final SparkMax followerElevatorMotor = new SparkMax(ElevatorConstants.LEFT_MOTOR_ID, MotorType.kBrushless);
 
-	private final SparkAbsoluteEncoder elevatorEncoder;
+	// private final SparkAbsoluteEncoder elevatorAbsoluteEncoder;
+
+	private final RelativeEncoder elevatorRelativeEncoder;
 
 	/**
 	 * The elevator target in meters, This is within the outer bounds of the elevator but the danger zone at the bottom has not been accounted for.
@@ -63,7 +64,7 @@ public class Elevator extends SubsystemBase {
 	 */
 	private final SparkMax wristMotor = new SparkMax(WristConstants.MOTOR_ID, MotorType.kBrushless);
 
-	private final SparkAbsoluteEncoder wristEncoder;
+	private final RelativeEncoder wristEncoder;
 
 	/**
 	 * The wrist target in degrees, This is within the outer bounds of the wrist but the danger zone at the bottom has not been accounted for.
@@ -80,18 +81,19 @@ public class Elevator extends SubsystemBase {
 		baseElevatorConfig.smartCurrentLimit(ElevatorConstants.CURRENT_LIMIT);
 		// ramp rate?
 
-		baseElevatorConfig.absoluteEncoder
+		baseElevatorConfig.encoder
 				.positionConversionFactor(ElevatorConstants.POSITION_CONVERSION_FACTOR)
-				.velocityConversionFactor(ElevatorConstants.VELOCITY_CONVERSION_FACTOR)
-				.zeroOffset(ElevatorConstants.ZERO_OFFSET);
-		elevatorEncoder = leaderElevatorMotor.getAbsoluteEncoder();
+				.velocityConversionFactor(ElevatorConstants.VELOCITY_CONVERSION_FACTOR);
+		// elevatorAbsoluteEncoder = leaderElevatorMotor.getAbsoluteEncoder();
+		elevatorRelativeEncoder = leaderElevatorMotor.getEncoder();
+		elevatorRelativeEncoder.setPosition(ElevatorConstants.ZERO_OFFSET);
 
 		baseElevatorConfig.closedLoop
 				.p(ElevatorConstants.KP)
 				.i(ElevatorConstants.KI)
 				.d(ElevatorConstants.KD)
-				.outputRange(ElevatorConstants.KMIN_OUTPUT, ElevatorConstants.KMAX_OUTPUT)
-				.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
+				.outputRange(ElevatorConstants.KMIN_OUTPUT, ElevatorConstants.KMAX_OUTPUT);
+		// .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
 		baseElevatorConfig.closedLoop.maxMotion
 				.maxVelocity(ElevatorConstants.MAX_VELOCITY)
@@ -105,18 +107,19 @@ public class Elevator extends SubsystemBase {
 		SparkMaxConfig wristConfig = new SparkMaxConfig();
 		wristConfig.idleMode(IdleMode.kBrake);
 		wristConfig.smartCurrentLimit(WristConstants.CURRENT_LIMIT);
-		wristConfig.absoluteEncoder
+		wristConfig.encoder
 				.positionConversionFactor(WristConstants.POSITION_CONVERSION_FACTOR)
-				.velocityConversionFactor(WristConstants.VELOCITY_CONVERSION_FACTOR)
-				.zeroOffset(WristConstants.ZERO_OFFSET);
-		wristEncoder = wristMotor.getAbsoluteEncoder();
+				.velocityConversionFactor(WristConstants.VELOCITY_CONVERSION_FACTOR);
+		// .zeroOffset(WristConstants.ZERO_OFFSET);
+		wristEncoder = wristMotor.getEncoder();
+		wristEncoder.setPosition(WristConstants.ZERO_OFFSET);
 
 		wristConfig.closedLoop
 				.p(WristConstants.KP)
 				.i(WristConstants.KI)
 				.d(WristConstants.KD)
-				.outputRange(WristConstants.KMIN_OUTPUT, WristConstants.KMAX_OUTPUT)
-				.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
+				.outputRange(WristConstants.KMIN_OUTPUT, WristConstants.KMAX_OUTPUT);
+		// .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
 
 		wristConfig.closedLoop.maxMotion
 				.maxVelocity(WristConstants.MAX_VELOCITY)
@@ -141,7 +144,7 @@ public class Elevator extends SubsystemBase {
 		}
 		// ensure the elevator target is not too high if wrist is high (wrist collides with metal connecter thing on top of the robot)
 
-		double elevatorFeedForwardValue = elevatorFeedforward.calculate(elevatorEncoder.getVelocity()); // this is technically supposed to be the velocity setpoint
+		double elevatorFeedForwardValue = elevatorFeedforward.calculate(elevatorRelativeEncoder.getVelocity()); // this is technically supposed to be the velocity setpoint
 		leaderElevatorMotor.getClosedLoopController().setReference(safeElevatorTarget, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0, elevatorFeedForwardValue, ArbFFUnits.kVoltage);
 
 		//
@@ -151,7 +154,7 @@ public class Elevator extends SubsystemBase {
 		double safeWristTarget = wristTarget;
 
 		// ensure wrist target is not too low if the elevator is low
-		if (elevatorEncoder.getPosition() < ElevatorConstants.SAFE_MIN_POSITION && safeWristTarget < WristConstants.SAFE_MIN_POSITION) {
+		if (elevatorRelativeEncoder.getPosition() < ElevatorConstants.SAFE_MIN_POSITION && safeWristTarget < WristConstants.SAFE_MIN_POSITION) {
 			safeWristTarget = WristConstants.SAFE_MIN_POSITION;
 		}
 
@@ -159,7 +162,7 @@ public class Elevator extends SubsystemBase {
 
 		// ensure wrist target is not too high (a different too high, a smaller one) if it is holding algae
 
-		double wristFeedForwardValue = wristFeedforward.calculate(Math.toRadians(elevatorEncoder.getPosition()), Math.toRadians(elevatorEncoder.getVelocity()));
+		double wristFeedForwardValue = wristFeedforward.calculate(Math.toRadians(elevatorRelativeEncoder.getPosition()), Math.toRadians(elevatorRelativeEncoder.getVelocity()));
 		wristMotor.getClosedLoopController().setReference(safeWristTarget, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0, wristFeedForwardValue, ArbFFUnits.kVoltage);
 	}
 

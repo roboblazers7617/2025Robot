@@ -382,7 +382,7 @@ public final class Constants {
 		 */
 		public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 60;
 		/**
-		 * Zero offset, MUST BE [0,1).
+		 * Zero offset, meters.
 		 */
 		public static final double ZERO_OFFSET = 0;
 		/**
@@ -479,7 +479,7 @@ public final class Constants {
 		 */
 		public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 60;
 		/**
-		 * Zero offset, MUST BE [0,1).
+		 * Zero offset, in degrees.
 		 */
 		public static final double ZERO_OFFSET = 0;
 		/**
