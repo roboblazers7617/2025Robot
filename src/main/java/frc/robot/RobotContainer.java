@@ -7,6 +7,9 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.OperatorConstants.GamepieceMode;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.subsystems.drivetrain.DrivetrainControls;
+import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.EndEffector;
 import frc.robot.commands.StubbedCommands;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.drivetrain.Drivetrain;
@@ -30,9 +33,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
 	private SendableChooser<Command> autoChooser = new SendableChooser<>();
 	// The robot's subsystems and commands are defined here...
-	@NotLogged
 	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
-	@NotLogged
 	private final Dashboard dashboard = new Dashboard(drivetrain, this);
 
 	// Replace with CommandPS4Controller or CommandJoystick if needed
@@ -53,6 +54,12 @@ public class RobotContainer {
 	private GamepieceMode gamepieceMode;
 	private final Trigger isAlgaeModeTrigger = new Trigger(() -> (gamepieceMode == GamepieceMode.ALGAE_MODE));
 	private final Trigger isCoralModeTrigger = new Trigger(() -> (gamepieceMode == GamepieceMode.CORAL_MODE));
+	private final Command driveFieldOrientedDirectAngle = drivetrain.driveFieldOrientedCommand(DrivetrainControls.driveDirectAngle(drivetrain, driverController));
+	private final Command driveFieldOrientedAnglularVelocity = drivetrain.driveFieldOrientedCommand(DrivetrainControls.driveAngularVelocity(drivetrain, driverController));
+	private final Command driveFieldOrientedDirectAngleSim = drivetrain.driveFieldOrientedCommand(DrivetrainControls.driveDirectAngleSim(drivetrain, driverController));
+
+	// TODO: Move this up to where drivetrain is created so all the subsystems are together
+	private final EndEffector endEffector = new EndEffector();
 
 	/** The container for the robot. Contains subsystems, OI devices, and commands. */
 	public RobotContainer() {
@@ -126,35 +133,37 @@ public class RobotContainer {
 		 * elevator.setDefaultCommand(elevator.MoveElevatorAndWristManual(() -> (-1 * operatorController.getLeftX()), () -> (-1 * operatorController.getLeftY())));
 		 */
 		// Acts to cancel the currently running command, such as intaking or outaking
+		// Cancel Intake
+		// TODO: #133 Cancel all actions or just the intake running?
 		operatorController.a()
 				.onTrue(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector())));
 		operatorController.b()
 				.or(operatorController.leftTrigger())
 				.and(isAlgaeModeTrigger)
-				.onTrue(StubbedCommands.EndEffector.IntakeAlgae()
+				.onTrue(endEffector.AlgaeOuttake()
 						.andThen(StubbedCommands.Elevator.StowAlgae()));
 		operatorController.b()
 				.or(operatorController.leftTrigger())
 				.and(isCoralModeTrigger)
 				.onTrue(StubbedCommands.Elevator.MoveIntakeCoral()
-						.andThen(StubbedCommands.EndEffector.IntakeCoral())
+						.andThen(endEffector.CoralIntake())
 						.andThen(StubbedCommands.Elevator.StowCoral()));
 		operatorController.x()
 				.and(isAlgaeModeTrigger)
 				.onTrue(StubbedCommands.Elevator.StowAlgae()
-						.alongWith(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector()))));
+						.alongWith(endEffector.StopMotor()));
 		operatorController.x()
 				.and(isCoralModeTrigger)
 				.onTrue(StubbedCommands.Elevator.StowCoral()
-						.alongWith(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector()))));
+						.alongWith(endEffector.StopMotor()));
 		operatorController.y()
 				.or(operatorController.leftBumper())
 				.and(isAlgaeModeTrigger)
-				.onTrue(StubbedCommands.EndEffector.OutakeAlgae());
+				.onTrue(endEffector.AlgaeOuttake());
 		operatorController.y()
 				.or(operatorController.leftBumper())
 				.and(isCoralModeTrigger)
-				.onTrue(StubbedCommands.EndEffector.OutakeCoral());
+				.onTrue(endEffector.CoralOuttake());
 
 		operatorController.povDown()
 				.and(isAlgaeModeTrigger)
