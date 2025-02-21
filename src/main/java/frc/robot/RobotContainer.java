@@ -59,10 +59,6 @@ public class RobotContainer {
 	private final Command driveFieldOrientedDirectAngleSim = drivetrain.driveFieldOrientedCommand(DrivetrainControls.driveDirectAngleSim(drivetrain, driverController));
 	private final EndEffector endEffector = new EndEffector();
 
-	private GAMEPIECE_MODE gamepieceMode;
-	private final Trigger isAlgaeMode = new Trigger(() -> (gamepieceMode == GAMEPIECE_MODE.ALGAE_MODE));
-	private final Trigger isCoralMode = new Trigger(() -> (gamepieceMode == GAMEPIECE_MODE.CORAL_MODE));
-
 	/** The container for the robot. Contains subsystems, OI devices, and commands. */
 	public RobotContainer() {
 		// Publish version metadata
@@ -135,42 +131,36 @@ public class RobotContainer {
 		 * elevator.setDefaultCommand(elevator.MoveElevatorAndWristManual(() -> (-1 * operatorController.getLeftX()), () -> (-1 * operatorController.getLeftY())));
 		 */
 		// Acts to cancel the currently running command, such as intaking or outaking
+		// Cancel Intake
 		operatorController.a()
 				.onTrue(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector())));
 		operatorController.b()
 				.or(operatorController.leftTrigger())
 				.and(isAlgaeModeTrigger)
-				.onTrue(StubbedCommands.EndEffector.IntakeAlgae()
+				.onTrue(endEffector.AlgaeOuttake()
 						.andThen(StubbedCommands.Elevator.StowAlgae()));
 		operatorController.b()
 				.or(operatorController.leftTrigger())
 				.and(isCoralModeTrigger)
 				.onTrue(StubbedCommands.Elevator.MoveIntakeCoral()
-						.andThen(StubbedCommands.EndEffector.IntakeCoral())
+						.andThen(endEffector.CoralIntake())
 						.andThen(StubbedCommands.Elevator.StowCoral()));
 		operatorController.x()
 				.and(isAlgaeModeTrigger)
 				.onTrue(StubbedCommands.Elevator.StowAlgae()
-						.alongWith(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector()))));
+						.alongWith(endEffector.StopMotor()));
 		operatorController.x()
 				.and(isCoralModeTrigger)
 				.onTrue(StubbedCommands.Elevator.StowCoral()
-						.alongWith(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector()))));
+						.alongWith(endEffector.StopMotor()));
 		operatorController.y()
 				.or(operatorController.leftBumper())
 				.and(isAlgaeModeTrigger)
-				.onTrue(StubbedCommands.EndEffector.OutakeAlgae());
+				.onTrue(endEffector.AlgaeOuttake());
 		operatorController.y()
 				.or(operatorController.leftBumper())
 				.and(isCoralModeTrigger)
-				.onTrue(StubbedCommands.EndEffector.OutakeCoral());
-		operatorController.a().onTrue(Commands.runOnce((() -> {}), endEffector));
-		operatorController.b().or(operatorController.leftTrigger()).and(isAlgaeMode).onTrue(endEffector.AlgaeIntake().andThen(StubbedCommands.Elevator.StowAlgae()));
-		operatorController.b().or(operatorController.leftTrigger()).and(isCoralMode).onTrue(StubbedCommands.Elevator.MoveIntakeCoral().andThen(endEffector.CoralIntake(), StubbedCommands.Elevator.StowCoral()));
-		operatorController.x().and(isAlgaeMode).onTrue(StubbedCommands.Elevator.StowAlgae().alongWith(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector()))));
-		operatorController.x().and(isCoralMode).onTrue(StubbedCommands.Elevator.StowCoral().alongWith(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector()))));
-		operatorController.y().or(operatorController.leftBumper()).and(isAlgaeMode).onTrue(endEffector.AlgaeOuttake());
-		operatorController.y().or(operatorController.leftBumper()).and(isCoralMode).onTrue(endEffector.CoralOuttake());
+				.onTrue(endEffector.CoralOuttake());
 
 		operatorController.povDown()
 				.and(isAlgaeModeTrigger)
