@@ -53,12 +53,12 @@ public final class Constants {
 		/**
 		 * Mass of the robot in kilograms.
 		 */
-		// TODO: (Max) Need to update with actual weight of robot
+		// TODO: #140 (Max) Need to update with actual weight of robot
 		public static final double ROBOT_MASS = Pounds.of(100).in(Kilograms);
 		/**
 		 * Matter representing the robot chassis.
 		 */
-		// TODO: (Max) Need to udpate with actual COG
+		// TODO: #141 Need to udpate with actual COG
 		public static final Matter CHASSIS = new Matter(new Translation3d(0, 0, Inches.of(8).in(Meters)), ROBOT_MASS);
 	}
 

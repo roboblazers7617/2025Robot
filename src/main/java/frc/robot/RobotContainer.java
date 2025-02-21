@@ -108,6 +108,7 @@ public class RobotContainer {
 		driverController.povRight().whileTrue(StubbedCommands.Climber.RampDown());
 		driverController.povUp().whileTrue(StubbedCommands.Climber.AutoClimb());
 
+		// TODO: #137 Put actual commands to align to reef
 		driverController.rightBumper().whileTrue(StubbedCommands.Drivetrain.AlignMiddleOfTag());
 		driverController.leftTrigger().whileTrue(StubbedCommands.Drivetrain.AlignLeftOfTag());
 		driverController.rightTrigger().whileTrue(StubbedCommands.Drivetrain.AlignRightOfTag());
@@ -126,6 +127,7 @@ public class RobotContainer {
 		 * elevator.setDefaultCommand(elevator.MoveElevatorAndWristManual(() -> (-1 * operatorController.getLeftX()), () -> (-1 * operatorController.getLeftY())));
 		 */
 		// Acts to cancel the currently running command, such as intaking or outaking
+		// TODO: #138 Cancel on EndEffector or all mechanism commands?
 		operatorController.a()
 				.onTrue(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector())));
 		operatorController.b()
