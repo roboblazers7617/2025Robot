@@ -32,7 +32,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 @Logged
 public class RobotContainer {
-	private SendableChooser<Command> autoChooser = new SendableChooser<>();
+	/*
+	 * The sendable chooser for the autonomous command. This is added in the setAutoChooser method which is run when autobuilder is created after an alliance is selected.
+	 */
+	private SendableChooser<Command> autoChooser;
 	// The robot's subsystems and commands are defined here...
 	@NotLogged
 	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
@@ -219,6 +222,9 @@ public class RobotContainer {
 	 */
 	public Command getAutonomousCommand() {
 		// resetLastAngleScalar stops the robot from trying to turn back to its original angle after the auto ends
+		if (autoChooser == null) {
+			return Commands.runOnce(() -> System.out.println("Auto builder not made! Is the alliance set?"));
+		}
 		return autoChooser.getSelected()
 				.finallyDo(drivetrain::resetLastAngleScalarByAlliance);
 	}
