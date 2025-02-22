@@ -243,6 +243,20 @@ public final class Constants {
 	}
 
 	/**
+	 * Constants used to configure the driver dashboard.
+	 */
+	public static class DashboardConstants {
+		/**
+		 * The name of the tab used in Auto.
+		 */
+		public static final String AUTO_TAB_NAME = "Autonomous";
+		/**
+		 * The name of the tab used in Teleop.
+		 */
+		public static final String TELEOP_TAB_NAME = "Teleoperated";
+	}
+
+	/**
 	 * Constants used to configure vision.
 	 */
 	public static class VisionConstants {
@@ -295,7 +309,7 @@ public final class Constants {
 		/**
 		 * AprilTag Field Layout for the current game.
 		 */
-		public static final AprilTagFieldLayout FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+		public static final AprilTagFieldLayout FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
 
 		/**
 		 * Constants relating to the reef.
