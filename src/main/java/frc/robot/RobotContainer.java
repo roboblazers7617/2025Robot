@@ -87,7 +87,8 @@ public class RobotContainer {
 	 */
 	public void teleopInit() {
 		// Reset the last angle so the robot doesn't try to spin.
-		drivetrain.resetLastAngleScalarByAlliance();
+		drivetrain.resetLastAngleScalar();
+
 
 		// Set the Elastic tab
 		Elastic.selectTab(DashboardConstants.TELEOP_TAB_NAME);
@@ -98,6 +99,7 @@ public class RobotContainer {
 		else {
 			gamepieceMode = GamepieceMode.CORAL_MODE;
 		}
+
 	}
 
 	/**
@@ -227,7 +229,7 @@ public class RobotContainer {
 			return Commands.runOnce(() -> System.out.println("Auto builder not made! Is the alliance set?"));
 		}
 		return autoChooser.getSelected()
-				.finallyDo(drivetrain::resetLastAngleScalarByAlliance);
+				.finallyDo(drivetrain::resetLastAngleScalar);
 	}
 
 	/**
