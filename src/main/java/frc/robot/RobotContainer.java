@@ -129,7 +129,7 @@ public class RobotContainer {
 		// Acts to cancel the currently running command, such as intaking or outaking
 		// TODO: #138 Cancel on EndEffector or all mechanism commands?
 		operatorController.a()
-				.onTrue(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector())));
+				.onTrue(StubbedCommands.EndEffector.StopIntake());
 		operatorController.b()
 				.or(operatorController.leftTrigger())
 				.and(isAlgaeModeTrigger)
@@ -144,11 +144,11 @@ public class RobotContainer {
 		operatorController.x()
 				.and(isAlgaeModeTrigger)
 				.onTrue(StubbedCommands.Elevator.StowAlgae()
-						.alongWith(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector()))));
+						.alongWith(StubbedCommands.EndEffector.StopIntake()));
 		operatorController.x()
 				.and(isCoralModeTrigger)
 				.onTrue(StubbedCommands.Elevator.StowCoral()
-						.alongWith(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector()))));
+						.alongWith(StubbedCommands.EndEffector.StopIntake()));
 		operatorController.y()
 				.or(operatorController.leftBumper())
 				.and(isAlgaeModeTrigger)
@@ -183,9 +183,9 @@ public class RobotContainer {
 				.onTrue(StubbedCommands.Elevator.MoveL4());
 
 		// Left Bumper is on an or with the Y button above
-		operatorController.rightBumper().onTrue(setGamepieceModeCommand(GamepieceMode.ALGAE_MODE));
+		operatorController.rightBumper().onTrue(setGamepieceModeCommand(GamepieceMode.ALGAE_MODE).alongWith(StubbedCommands.EndEffector.StopIntake()));
 		// Left Trigger is on an or with the B button above
-		operatorController.rightTrigger().onTrue(setGamepieceModeCommand(GamepieceMode.CORAL_MODE));
+		operatorController.rightTrigger().onTrue(setGamepieceModeCommand(GamepieceMode.CORAL_MODE).alongWith(StubbedCommands.EndEffector.StopIntake()));
 	}
 
 	public GamepieceMode getGamepieceMode() {

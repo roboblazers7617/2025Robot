@@ -157,6 +157,10 @@ public class StubbedCommands {
 			return Commands.print("Run automation to outake Algae");
 		}
 
+		public static Command StopIntake() {
+			return Commands.print("Stop intake");
+		}
+
 		/**
 		 * Returns true if the robot is currently holding an algae
 		 */
