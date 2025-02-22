@@ -10,6 +10,7 @@ import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.commands.StubbedCommands;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.drivetrain.Drivetrain;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.epilogue.Logged;
@@ -62,6 +63,9 @@ public class RobotContainer {
 		// Configure the trigger bindings
 		configureDriverControls();
 		configureOperatorControls();
+		// Configure the Limelight mode switching
+		new Trigger(DriverStation::isEnabled).onTrue(drivetrain.getVision().onEnableCommand());
+		new Trigger(DriverStation::isDisabled).onTrue(drivetrain.getVision().onDisableCommand());
 		// By default interact with Coral
 		gamepieceMode = GamepieceMode.CORAL_MODE;
 	}

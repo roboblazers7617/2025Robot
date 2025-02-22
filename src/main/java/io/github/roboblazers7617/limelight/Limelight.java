@@ -21,7 +21,7 @@ public class Limelight {
 	public final LimelightSettings settings;
 	private final DoubleArrayEntry robotOrientationEntry;
 
-	Limelight(String name) {
+	public Limelight(String name) {
 		this.name = JsonUtilities.sanitizeName(name);
 
 		networkTable = NetworkTableInstance.getDefault().getTable(name);

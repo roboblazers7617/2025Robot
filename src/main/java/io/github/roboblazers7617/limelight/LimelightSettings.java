@@ -11,7 +11,6 @@ import java.util.List;
 /**
  * Settings class to apply configurable options to the {@link Limelight}
  * Sourced from Yet Another Limelight Lib(YALL)
-
  * <p>
  * These settings are sent from the roboRIO back to the Limelight to affect the LL.
  * <p>
@@ -59,6 +58,14 @@ public class LimelightSettings {
 	 */
 	private NetworkTableEntry imuMode;
 	/**
+	 * Imu assist alpha/strengh while in the Imu assist modes using a complementary filter. Default is 0.001.
+	 */
+	private NetworkTableEntry imuAssistAlpha;
+	/**
+	 * The number of frames to skip between processing the contents of a frame.
+	 */
+	private NetworkTableEntry processFrameFrequency;
+	/**
 	 * Sets 3d offset point for easy 3d targeting Sets the 3D point-of-interest offset for the current fiducial pipeline.
 	 * <p>
 	 * https://docs.limelightvision.io/docs/docs-limelight/pipeline-apriltag/apriltag-3d#point-of-interest-tracking
@@ -97,6 +104,8 @@ public class LimelightSettings {
 		streamMode = limelightTable.getEntry("stream");
 		cropWindow = limelightTable.getDoubleArrayTopic("crop").getEntry(new double[0]);
 		imuMode = limelightTable.getEntry("imumode_set");
+		imuAssistAlpha = limelightTable.getEntry("imuassistalpha_set");
+		processFrameFrequency = limelightTable.getEntry("throttle_set");
 		downscale = limelightTable.getEntry("fiducial_downscale_set");
 		fiducial3DOffset = limelightTable.getDoubleArrayTopic("fiducial_offset_set").getEntry(new double[0]);
 		cameraToRobot = limelightTable.getDoubleArrayTopic("camerapose_robotspace_set").getEntry(new double[0]);
@@ -190,6 +199,34 @@ public class LimelightSettings {
 	 */
 	public LimelightSettings withImuMode(ImuMode mode) {
 		imuMode.setNumber(mode.ordinal());
+		return this;
+	}
+
+	/**
+	 * Set the IMU's alpha value for its complementary filter while in one of the {@link ImuMode}'s assist modes.
+	 * <p>
+	 * This method changes the Limelight - normally immediately.
+	 *
+	 * @param alpha
+	 *            Alpha value to set for the complementary filter. Default of 0.001.
+	 * @return {@link LimelightSettings} for chaining.
+	 */
+	public LimelightSettings withImuAssistAlpha(double alpha) {
+		imuAssistAlpha.setDouble(alpha);
+		return this;
+	}
+
+	/**
+	 * Sets the number of frames to skip between processing the contents of a frame.
+	 * <p>
+	 * This method changes the Limelight - normally immediately.
+	 *
+	 * @param skippedFrames
+	 *            Number of frames to skip in between processing camera data.
+	 * @return {@link LimelightSettings} for chaining.
+	 */
+	public LimelightSettings withProcessedFrameFrequency(int skippedFrames) {
+		processFrameFrequency.setNumber(skippedFrames);
 		return this;
 	}
 
@@ -336,6 +373,14 @@ public class LimelightSettings {
 		/**
 		 * Use internal IMU for MT2 localization. Ignores external IMU updates from {@link Limelight#setRobotOrientation(edu.wpi.first.math.geometry.Rotation3d)}.
 		 */
-		InternalImu
+		InternalImu,
+		/**
+		 * Use internal IMU for MT2 localization while using correcting it with estimated yaws from MT1. Ignores external IMU updates from {@link Limelight#setRobotOrientation(edu.wpi.first.math.geometry.Rotation3d)}.
+		 */
+		MT1AssistInternalImu,
+		/**
+		 * Use internal IMU for MT2 localization while correcting it with external IMU updates from {@link Limelight#setRobotOrientation(edu.wpi.first.math.geometry.Rotation3d)}.
+		 */
+		ExternalAssistInternalIMU
 	}
 }
