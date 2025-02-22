@@ -5,8 +5,12 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.Constants.OperatorConstants.GamepieceMode;
+import frc.robot.Constants.DashboardConstants;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.FieldConstants;
+import frc.robot.util.Elastic;
+import frc.robot.util.Util;
+import frc.robot.Constants.OperatorConstants.GamepieceMode;
 import frc.robot.commands.StubbedCommands;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.drivetrain.Drivetrain;
@@ -67,12 +71,22 @@ public class RobotContainer {
 	}
 
 	/**
+	 * This method is run at the start of Auto.
+	 */
+	public void autoInit() {
+		// Set the Elastic tab
+		Elastic.selectTab(DashboardConstants.AUTO_TAB_NAME);
+	}
+
+	/**
 	 * This method is run at the start of Teleop.
 	 */
 	public void teleopInit() {
 		// Reset the last angle so the robot doesn't try to spin.
 		drivetrain.resetLastAngleScalarByAlliance();
 
+		// Set the Elastic tab
+		Elastic.selectTab(DashboardConstants.TELEOP_TAB_NAME);
 		if (StubbedCommands.EndEffector.isHoldingAlage()) {
 			gamepieceMode = GamepieceMode.ALGAE_MODE;
 		}
