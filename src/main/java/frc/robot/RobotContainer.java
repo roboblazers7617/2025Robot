@@ -5,10 +5,11 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.Constants.OperatorConstants.GamepieceMode;
+import frc.robot.Constants.DashboardConstants;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.util.Elastic;
+import frc.robot.Constants.OperatorConstants.GamepieceMode;
 import frc.robot.commands.StubbedCommands;
-import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -29,7 +30,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 @Logged
 public class RobotContainer {
-	private SendableChooser<Command> autoChooser = new SendableChooser<>();
+	/*
+	 * The sendable chooser for the autonomous command. This is added in the setAutoChooser method which is run when autobuilder is created after an alliance is selected.
+	 */
+	private SendableChooser<Command> autoChooser;
 	// The robot's subsystems and commands are defined here...
 	@NotLogged
 	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
@@ -71,12 +75,22 @@ public class RobotContainer {
 	}
 
 	/**
+	 * This method is run at the start of Auto.
+	 */
+	public void autoInit() {
+		// Set the Elastic tab
+		Elastic.selectTab(DashboardConstants.AUTO_TAB_NAME);
+	}
+
+	/**
 	 * This method is run at the start of Teleop.
 	 */
 	public void teleopInit() {
 		// Reset the last angle so the robot doesn't try to spin.
 		drivetrain.resetLastAngleScalarByAlliance();
 
+		// Set the Elastic tab
+		Elastic.selectTab(DashboardConstants.TELEOP_TAB_NAME);
 		if (StubbedCommands.EndEffector.isHoldingAlage()) {
 			gamepieceMode = GamepieceMode.ALGAE_MODE;
 		}
@@ -209,6 +223,9 @@ public class RobotContainer {
 	 */
 	public Command getAutonomousCommand() {
 		// resetLastAngleScalar stops the robot from trying to turn back to its original angle after the auto ends
+		if (autoChooser == null) {
+			return Commands.runOnce(() -> System.out.println("Auto builder not made! Is the alliance set?"));
+		}
 		return autoChooser.getSelected()
 				.finallyDo(drivetrain::resetLastAngleScalarByAlliance);
 	}
