@@ -49,22 +49,21 @@ public class Vision {
 		frontPoseEstimator = frontLimelight.makePoseEstimator(VisionConstants.POSE_ESTIMATOR_TYPE);
 		backPoseEstimator = backLimelight.makePoseEstimator(VisionConstants.POSE_ESTIMATOR_TYPE);
 
-		frontLimelight.settings.withImuMode(VisionConstants.DISABLED_IMU_MODE).withProcessedFrameFrequency(VisionConstants.DISABLED_UPDATE_FREQUENCY).save();
+		backLimelight.settings.withImuMode(VisionConstants.DISABLED_IMU_MODE).withProcessedFrameFrequency(VisionConstants.DISABLED_UPDATE_FREQUENCY).save();
 	}
 
 	public Command onEnableCommand() {
 		return Commands.runOnce(() -> {
-			frontLimelight.settings.withImuMode(VisionConstants.ENABLED_IMU_MODE).withProcessedFrameFrequency(0).save();
+			backLimelight.settings.withImuMode(VisionConstants.ENABLED_IMU_MODE).withProcessedFrameFrequency(0).save();
 		});
 	}
 
 	public Command onDisableCommand() {
 		return Commands.runOnce(() -> {
-			frontLimelight.settings.withImuMode(VisionConstants.DISABLED_IMU_MODE).withProcessedFrameFrequency(VisionConstants.DISABLED_UPDATE_FREQUENCY).save();
+			backLimelight.settings.withImuMode(VisionConstants.DISABLED_IMU_MODE).withProcessedFrameFrequency(VisionConstants.DISABLED_UPDATE_FREQUENCY).save();
 		});
 	}
 
-	// TODO: #118 (Lukas) Please incorporate setup of LL4 parameters
 	/**
 	 * Update the pose estimation inside of {@link #swerveDrive} with data from Limelight.
 	 */
