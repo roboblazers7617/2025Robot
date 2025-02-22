@@ -78,6 +78,7 @@ public class Auto {
 	 */
 	public static Command getAutonomousCommand(String pathName) {
 		// Create a path following command using AutoBuilder. This will also trigger event markers.
+		// TODO: #119 (Max) I think would be better to add the ResetLastAngularScalar here
 		return new PathPlannerAuto(pathName);
 	}
 }

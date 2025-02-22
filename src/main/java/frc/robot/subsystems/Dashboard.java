@@ -24,7 +24,7 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 /**
  * A class that sets up the driverstation dashboard for the robot.
  */
-// TODO: (Brandon) Why is the Dashboard a Subsystem?
+// TODO: #104 (Brandon) Why is the Dashboard a Subsystem?
 public class Dashboard extends SubsystemBase {
 	final Drivetrain drivetrain;
 	final RobotContainer robotContainer;
@@ -42,7 +42,7 @@ public class Dashboard extends SubsystemBase {
 		alliancePicker.addOption("Blue", DriverStation.Alliance.Blue);
 		alliancePicker.addOption("Red", DriverStation.Alliance.Red);
 
-		// TODO: (Brandon) What happens if you change the color multiple times? Does this work or crash?
+		// TODO: #103 (Brandon) What happens if you change the color multiple times? Does this work or crash?
 		alliancePicker.onChange((alliance) -> {
 			new RunOnceDeferred(() -> {
 				configureAutoBuilder(alliance);

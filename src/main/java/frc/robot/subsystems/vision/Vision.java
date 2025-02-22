@@ -23,6 +23,7 @@ public class Vision {
 		this.swerveDrive = swerveDrive;
 	}
 
+	// TODO: #118 (Lukas) Please incorporate setup of LL4 parameters
 	/**
 	 * Update the pose estimation inside of {@link #swerveDrive} with data from Limelight.
 	 */

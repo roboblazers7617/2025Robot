@@ -53,12 +53,12 @@ public final class Constants {
 		/**
 		 * Mass of the robot in kilograms.
 		 */
-		// TODO: (Max) Need to update with actual weight of robot
+		// TODO: #140 (Max) Need to update with actual weight of robot
 		public static final double ROBOT_MASS = Pounds.of(100).in(Kilograms);
 		/**
 		 * Matter representing the robot chassis.
 		 */
-		// TODO: (Max) Need to udpate with actual COG
+		// TODO: #141 Need to udpate with actual COG
 		public static final Matter CHASSIS = new Matter(new Translation3d(0, 0, Inches.of(8).in(Meters)), ROBOT_MASS);
 	}
 
@@ -83,9 +83,17 @@ public final class Constants {
 		 */
 		public static final TelemetryVerbosity TELEMETRY_VERBOSITY_NORMAL = TelemetryVerbosity.POSE;
 		/**
-		 * Translation axis scaling. Changes the overall maximum speed of the drivetrain.
+		 * Translation axis scaling. Changes the overall maximum speed of the drivetrain in fast mode.
 		 */
-		public static final double TRANSLATION_SCALE = 0.8;
+		public static final double TRANSLATION_SCALE_FAST = 1;
+		/**
+		 * Translation axis scaling. Changes the overall maximum speed of the drivetrain in normal mode.
+		 */
+		public static final double TRANSLATION_SCALE_NORMAL = 0.8;
+		/**
+		 * Translation axis scaling. Changes the overall maximum speed of the drivetrain in slow mode.
+		 */
+		public static final double TRANSLATION_SCALE_SLOW = 0.6;
 		/**
 		 * Starting pose.
 		 */
@@ -185,9 +193,27 @@ public final class Constants {
 		 */
 		public static final int DRIVER_CONTROLLER_PORT = 0;
 		/**
+		 * Controller port index where the operator controller is connected.
+		 */
+		public static final int OPERATOR_CONTROLLER_PORT = 1;
+		/**
 		 * Joystick deadband.
 		 */
 		public static final double DEADBAND = 0.1;
+
+		/**
+		 * Type of game piece for the robot to interact with.
+		 */
+		public static enum GamepieceMode {
+			/**
+			 * To interact with Coral
+			 */
+			CORAL_MODE,
+			/**
+			 * To interact with Algae
+			 */
+			ALGAE_MODE
+		}
 	}
 
 	/**
@@ -204,7 +230,7 @@ public final class Constants {
 		public static final PIDConstants ROTATION_PID_CONSTANTS = new PIDConstants(5.0, 0.0, 0.0);
 	}
 
-	// TODO: (Brandon) Add documentation here on what settings should be during comp versus testing
+	// TODO: #98 (Brandon) Add documentation here on what settings should be during comp versus testing
 	public static class LoggingConstants {
 		/**
 		 * Send logging data to NetworkTables. Data is written to storage when set to false.
@@ -214,6 +240,20 @@ public final class Constants {
 		 * Log all data above specified level.
 		 */
 		public static final Logged.Importance DEBUG_LEVEL = Logged.Importance.DEBUG;
+	}
+
+	/**
+	 * Constants used to configure the driver dashboard.
+	 */
+	public static class DashboardConstants {
+		/**
+		 * The name of the tab used in Auto.
+		 */
+		public static final String AUTO_TAB_NAME = "Autonomous";
+		/**
+		 * The name of the tab used in Teleop.
+		 */
+		public static final String TELEOP_TAB_NAME = "Teleoperated";
 	}
 
 	/**
@@ -274,7 +314,7 @@ public final class Constants {
 		/**
 		 * Constants relating to the reef.
 		 */
-		// TODO: (Max) This will work for moving to score a coral. How do you move to remove an algae?
+		// TODO: #101 (Max) This will work for moving to score a coral. How do you move to remove an algae?
 		public static class Reef {
 			/**
 			 * AprilTag IDs for the reef on the blue alliance.
