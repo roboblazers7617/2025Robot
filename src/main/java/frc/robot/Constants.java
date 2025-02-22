@@ -295,14 +295,10 @@ public final class Constants {
 		 */
 		public static final double POSITION_CONVERSION_FACTOR = RAMP_MOTOR_GEAR_RATIO * 360.0;
 		/**
-		 * Motor speed whille deploying ramp
+		 * Ramp Stow Position
 		 */
-		public static final double RAMP_DEPLOY_SPEED = 0.2;
-		/**
-		 * Motor speed whille retracting ramp
-		 */
-		public static final double RAMP_RETRACT_SPEED = -0.2;
-	}
+		//TODO: Update with final value
+		public static final double RAMP_STOW_POSITION = 20;
 
 	/**
 	 * Constants that describe the physical layout of the field.
