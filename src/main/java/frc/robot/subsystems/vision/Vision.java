@@ -75,7 +75,7 @@ public class Vision {
 
 		// Get pose estimates from Limelights
 		PoseEstimate[] frontLimelightPoseEstimates = frontPoseEstimator.getBotPoseEstimates();
-		PoseEstimate[] backLimelightPoseEstimates = frontPoseEstimator.getBotPoseEstimates();
+		PoseEstimate[] backLimelightPoseEstimates = backPoseEstimator.getBotPoseEstimates();
 
 		for (PoseEstimate poseEstimate : frontLimelightPoseEstimates) {
 			// Don't try to use a null PoseEstimate
