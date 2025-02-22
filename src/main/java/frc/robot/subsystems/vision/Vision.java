@@ -55,13 +55,13 @@ public class Vision {
 	public Command onEnableCommand() {
 		return Commands.runOnce(() -> {
 			backLimelight.settings.withImuMode(VisionConstants.ENABLED_IMU_MODE).withProcessedFrameFrequency(0).save();
-		});
+		}).ignoringDisable(true);
 	}
 
 	public Command onDisableCommand() {
 		return Commands.runOnce(() -> {
 			backLimelight.settings.withImuMode(VisionConstants.DISABLED_IMU_MODE).withProcessedFrameFrequency(VisionConstants.DISABLED_UPDATE_FREQUENCY).save();
-		});
+		}).ignoringDisable(true);
 	}
 
 	/**

@@ -20,11 +20,11 @@ public class PoseEstimator {
 	}
 
 	public PoseEstimate[] getBotPoseEstimates() {
-		return (PoseEstimate[]) (Arrays.stream(poseSubscriber.readQueue())
+		return Arrays.stream(poseSubscriber.readQueue())
 				.map((poseEstimateArray) -> {
 					return genPoseEstimateFromNT(poseEstimateArray);
 				})
-				.toArray());
+				.toArray(PoseEstimate[]::new);
 	}
 
 	private PoseEstimate genPoseEstimateFromNT(TimestampedDoubleArray poseTimestamped) {
