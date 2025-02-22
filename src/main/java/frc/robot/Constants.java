@@ -23,6 +23,8 @@ import com.pathplanner.lib.config.PIDConstants;
 
 import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.util.PoseUtil;
+import io.github.roboblazers7617.limelight.LimelightSettings.ImuMode;
+import io.github.roboblazers7617.limelight.PoseEstimator.PoseEstimators;
 import swervelib.math.Matter;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -53,12 +55,12 @@ public final class Constants {
 		/**
 		 * Mass of the robot in kilograms.
 		 */
-		// TODO: (Max) Need to update with actual weight of robot
+		// TODO: #140 (Max) Need to update with actual weight of robot
 		public static final double ROBOT_MASS = Pounds.of(100).in(Kilograms);
 		/**
 		 * Matter representing the robot chassis.
 		 */
-		// TODO: (Max) Need to udpate with actual COG
+		// TODO: #141 Need to udpate with actual COG
 		public static final Matter CHASSIS = new Matter(new Translation3d(0, 0, Inches.of(8).in(Meters)), ROBOT_MASS);
 	}
 
@@ -83,9 +85,17 @@ public final class Constants {
 		 */
 		public static final TelemetryVerbosity TELEMETRY_VERBOSITY_NORMAL = TelemetryVerbosity.POSE;
 		/**
-		 * Translation axis scaling. Changes the overall maximum speed of the drivetrain.
+		 * Translation axis scaling. Changes the overall maximum speed of the drivetrain in fast mode.
 		 */
-		public static final double TRANSLATION_SCALE = 0.8;
+		public static final double TRANSLATION_SCALE_FAST = 1;
+		/**
+		 * Translation axis scaling. Changes the overall maximum speed of the drivetrain in normal mode.
+		 */
+		public static final double TRANSLATION_SCALE_NORMAL = 0.8;
+		/**
+		 * Translation axis scaling. Changes the overall maximum speed of the drivetrain in slow mode.
+		 */
+		public static final double TRANSLATION_SCALE_SLOW = 0.6;
 		/**
 		 * Starting pose.
 		 */
@@ -185,9 +195,27 @@ public final class Constants {
 		 */
 		public static final int DRIVER_CONTROLLER_PORT = 0;
 		/**
+		 * Controller port index where the operator controller is connected.
+		 */
+		public static final int OPERATOR_CONTROLLER_PORT = 1;
+		/**
 		 * Joystick deadband.
 		 */
 		public static final double DEADBAND = 0.1;
+
+		/**
+		 * Type of game piece for the robot to interact with.
+		 */
+		public static enum GamepieceMode {
+			/**
+			 * To interact with Coral
+			 */
+			CORAL_MODE,
+			/**
+			 * To interact with Algae
+			 */
+			ALGAE_MODE
+		}
 	}
 
 	/**
@@ -217,6 +245,20 @@ public final class Constants {
 	}
 
 	/**
+	 * Constants used to configure the driver dashboard.
+	 */
+	public static class DashboardConstants {
+		/**
+		 * The name of the tab used in Auto.
+		 */
+		public static final String AUTO_TAB_NAME = "Autonomous";
+		/**
+		 * The name of the tab used in Teleop.
+		 */
+		public static final String TELEOP_TAB_NAME = "Teleoperated";
+	}
+
+	/**
 	 * Constants used to configure vision.
 	 */
 	public static class VisionConstants {
@@ -232,11 +274,22 @@ public final class Constants {
 		 * Enable vision odometry updates.
 		 */
 		public static final boolean ENABLE_VISION = true;
-		// public static final List<Double> TAGS_TO_TRACK = IntStream.range(1, 23).asDoubleStream().boxed().toList();
 		/**
 		 * Use MegaTag2 for pose estimation.
 		 */
-		public static final boolean ENABLE_MEGATAG2 = true;
+		public static final PoseEstimators POSE_ESTIMATOR_TYPE = PoseEstimators.BLUE_MEGATAG2;
+		/**
+		 * The frequency of processed vision frames while disabled.
+		 */
+		public static final int DISABLED_UPDATE_FREQUENCY = 60;
+		/**
+		 * The {@link ImuMode} to use while disabled.
+		 */
+		public static final ImuMode DISABLED_IMU_MODE = ImuMode.SyncInternalImu;
+		/**
+		 * The {@link ImuMode} to use while enabled.
+		 */
+		public static final ImuMode ENABLED_IMU_MODE = ImuMode.ExternalAssistInternalIMU;
 	}
 
 	/**
@@ -269,7 +322,7 @@ public final class Constants {
 		/**
 		 * AprilTag Field Layout for the current game.
 		 */
-		public static final AprilTagFieldLayout FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+		public static final AprilTagFieldLayout FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
 
 		/**
 		 * Constants relating to the reef.
