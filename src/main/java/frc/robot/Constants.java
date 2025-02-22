@@ -296,8 +296,7 @@ public final class Constants {
 		/**
 		 * End Effector's motor gear ratio.
 		 */
-		// TODO: #136 Update Gear Ratio for End Effector
-		public static final double GEAR_RATIO_END_EFFECTOR_MOTOR = (1.0 / 1.0);
+		public static final double GEAR_RATIO_END_EFFECTOR_MOTOR = (2.5 / 1.0);
 		/**
 		 * Neo's current limit
 		 */
@@ -357,6 +356,10 @@ public final class Constants {
 		 * limit to the current before it shuts off the motor for the Algae Intake system. also needs to be adjusted.
 		 */
 		public static final double AlGAE_INTAKE_CURRENT_SHUTOFF_THRESHOLD = 15.0;
+		/**
+		 * Alternate method to shutof algae intake method using a minimum motor speed limit.
+		 */
+		public static final double ALGAE_INTAKE_MINIMUM_SHUTOFF_SPEED = 0.05;
 	}
 
 	/**

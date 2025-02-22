@@ -36,7 +36,7 @@ public class EndEffector extends SubsystemBase {
 	 * False = is not holding coral
 	 */
 	// TODO: #134 Rename to follow coding standards / ease reading code
-	private final DigitalInput coralBeamBreak = new DigitalInput(EndEffectorConstants.BEAM_BREAK_DIO);
+	private final DigitalInput isHoldingCoral = new DigitalInput(EndEffectorConstants.BEAM_BREAK_DIO);
 
 	public EndEffector() {
 		SparkBaseConfig motorConfig = new SparkMaxConfig()
@@ -64,7 +64,7 @@ public class EndEffector extends SubsystemBase {
 
 	/**
 	 * Starts the intake motor.
-	 * 
+	 *
 	 * @param speed
 	 *            Speed to set [-1,1].
 	 * @return
@@ -78,11 +78,11 @@ public class EndEffector extends SubsystemBase {
 
 	/**
 	 * Stops the intake motor.
-	 * 
+	 *
 	 * @return
 	 *         Command to run.
 	 */
-	public Command StopMotor() {
+	public Command StopIntakeMotor() {
 		return this.runOnce(() -> {
 			stopMotor();
 		});
@@ -90,13 +90,13 @@ public class EndEffector extends SubsystemBase {
 
 	public Command CoralIntake() {
 		return StartMotor(() -> EndEffectorConstants.CORAL_INTAKE_SPEED)
-				.andThen(Commands.waitUntil(() -> coralBeamBreak.get()))
+				.andThen(Commands.waitUntil(() -> isHoldingCoral.get()))
 				.finallyDo(this::stopMotor);
 	}
 
 	public Command CoralOuttake() {
 		return StartMotor(() -> EndEffectorConstants.CORAL_OUTAKE_SPEED)
-				.andThen(Commands.waitUntil(() -> !coralBeamBreak.get()))
+				.andThen(Commands.waitUntil(() -> !isHoldingCoral.get()))
 				.andThen(Commands.waitSeconds(EndEffectorConstants.OUTTAKE_WAIT_TIME))
 				.finallyDo(this::stopMotor);
 	}
@@ -106,7 +106,7 @@ public class EndEffector extends SubsystemBase {
 				.andThen(Commands.waitSeconds(EndEffectorConstants.MOTOR_CURRENT_CHECK_DELAY))
 				// TODO: #135 Check also for speed = 0 (or some small number)
 				.andThen((Commands.waitUntil(() -> endEffectorMotor
-						.getOutputCurrent() >= EndEffectorConstants.AlGAE_INTAKE_CURRENT_SHUTOFF_THRESHOLD)))
+						.getOutputCurrent() >= EndEffectorConstants.AlGAE_INTAKE_CURRENT_SHUTOFF_THRESHOLD && endEffectorMotor.getEncoder().getVelocity() <= EndEffectorConstants.ALGAE_INTAKE_MINIMUM_SHUTOFF_SPEED)))
 				.finallyDo(this::stopMotor);
 	}
 

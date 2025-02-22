@@ -35,6 +35,7 @@ public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
 	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
 	private final Dashboard dashboard = new Dashboard(drivetrain, this);
+	private final EndEffector endEffector = new EndEffector();
 
 	// Replace with CommandPS4Controller or CommandJoystick if needed
 	@NotLogged
@@ -57,9 +58,6 @@ public class RobotContainer {
 	private final Command driveFieldOrientedDirectAngle = drivetrain.driveFieldOrientedCommand(DrivetrainControls.driveDirectAngle(drivetrain, driverController));
 	private final Command driveFieldOrientedAnglularVelocity = drivetrain.driveFieldOrientedCommand(DrivetrainControls.driveAngularVelocity(drivetrain, driverController));
 	private final Command driveFieldOrientedDirectAngleSim = drivetrain.driveFieldOrientedCommand(DrivetrainControls.driveDirectAngleSim(drivetrain, driverController));
-
-	// TODO: Move this up to where drivetrain is created so all the subsystems are together
-	private final EndEffector endEffector = new EndEffector();
 
 	/** The container for the robot. Contains subsystems, OI devices, and commands. */
 	public RobotContainer() {
@@ -151,11 +149,11 @@ public class RobotContainer {
 		operatorController.x()
 				.and(isAlgaeModeTrigger)
 				.onTrue(StubbedCommands.Elevator.StowAlgae()
-						.alongWith(endEffector.StopMotor()));
+						.alongWith(endEffector.StopIntakeMotor()));
 		operatorController.x()
 				.and(isCoralModeTrigger)
 				.onTrue(StubbedCommands.Elevator.StowCoral()
-						.alongWith(endEffector.StopMotor()));
+						.alongWith(endEffector.StopIntakeMotor()));
 		operatorController.y()
 				.or(operatorController.leftBumper())
 				.and(isAlgaeModeTrigger)
