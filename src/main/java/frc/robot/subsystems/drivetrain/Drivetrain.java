@@ -127,6 +127,10 @@ public class Drivetrain extends SubsystemBase {
 		return swerveDrive;
 	}
 
+	public Vision getVision() {
+		return vision;
+	}
+
 	/**
 	 * Get the {@link SwerveController} in the swerve drive.
 	 *

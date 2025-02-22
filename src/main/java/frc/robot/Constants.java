@@ -23,6 +23,8 @@ import com.pathplanner.lib.config.PIDConstants;
 
 import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.util.PoseUtil;
+import io.github.roboblazers7617.limelight.LimelightSettings.ImuMode;
+import io.github.roboblazers7617.limelight.PoseEstimator.PoseEstimators;
 import swervelib.math.Matter;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -272,11 +274,22 @@ public final class Constants {
 		 * Enable vision odometry updates.
 		 */
 		public static final boolean ENABLE_VISION = true;
-		// public static final List<Double> TAGS_TO_TRACK = IntStream.range(1, 23).asDoubleStream().boxed().toList();
 		/**
 		 * Use MegaTag2 for pose estimation.
 		 */
-		public static final boolean ENABLE_MEGATAG2 = true;
+		public static final PoseEstimators POSE_ESTIMATOR_TYPE = PoseEstimators.BLUE_MEGATAG2;
+		/**
+		 * The frequency of processed vision frames while disabled.
+		 */
+		public static final int DISABLED_UPDATE_FREQUENCY = 60;
+		/**
+		 * The {@link ImuMode} to use while disabled.
+		 */
+		public static final ImuMode DISABLED_IMU_MODE = ImuMode.SyncInternalImu;
+		/**
+		 * The {@link ImuMode} to use while enabled.
+		 */
+		public static final ImuMode ENABLED_IMU_MODE = ImuMode.ExternalAssistInternalIMU;
 	}
 
 	/**
