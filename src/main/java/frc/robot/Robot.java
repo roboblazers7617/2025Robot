@@ -32,6 +32,7 @@ public class Robot extends TimedRobot {
 	private final RobotContainer robotContainer;
 
 	// @Logged
+	// TODO: #139 Investigate how to get PDH logging working
 	// private final PowerDistribution pdh = new PowerDistribution();
 
 	/**
