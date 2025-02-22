@@ -271,12 +271,12 @@ public final class Constants {
 		 * Ramp gear ratio
 		 */
 		// TODO: set proper gear ratio
-		public static final double RAMP_MOTOR_GEAR_RATIO = (1.0 / 1.0);
+		public static final double RAMP_MOTOR_GEAR_RATIO = (15.0 / 1.0);
 		/**
 		 * Ramp CAN_ID
 		 */
 		// TODO: set ramp CAN_ID once assigned
-		public static final int RAMP_MOTOR_CAN_ID = 8;
+		public static final int RAMP_MOTOR_CAN_ID = 61;
 		/**
 		 * Ramp SparkMax current limit
 		 */
@@ -288,7 +288,7 @@ public final class Constants {
 				.p(0)
 				.i(0)
 				.d(0);
-		public static final int RAMP_MOTOR_CURRENT_LIMIT = 40;
+		public static final int RAMP_MOTOR_CURRENT_LIMIT = 20;
 		/*
 		 * I Belive we used this to make the numbers apear correctly in the dirvers station?
 		 * may be a usesless holdover from arm code test though
@@ -297,8 +297,9 @@ public final class Constants {
 		/**
 		 * Ramp Stow Position
 		 */
-		//TODO: Update with final value
+		// TODO: Update with final value
 		public static final double RAMP_STOW_POSITION = 20;
+	}
 
 	/**
 	 * Constants that describe the physical layout of the field.
