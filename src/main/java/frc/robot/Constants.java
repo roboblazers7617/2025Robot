@@ -15,7 +15,6 @@ import static edu.wpi.first.units.Units.Pounds;
 
 import java.io.File;
 import java.util.List;
-import java.util.stream.IntStream;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -369,10 +368,10 @@ public final class Constants {
 		 */
 		public static final double MIN_POSITION = 0;
 		/**
-		 * Minimum safe position while the wrist is lowered, in meters.
+		 * This is the maximum position for the elevator to be considered lowered, in meters.
 		 */
 		// TODO: (Brandon) Update with accurate number
-		public static final double SAFE_MIN_POSITION = 0.2;
+		public static final double MAX_LOWERED_POSITION = 0.2;
 		/**
 		 * Conversion factor from rotation to meters. 3.81cm diameter spool, 16:1 gear ratio
 		 */
@@ -469,7 +468,15 @@ public final class Constants {
 		 */
 		public static final double SAFE_MIN_POSITION = 10;
 
+		/**
+		 * Maximum safe position while the elevator is raised (so it doesn't collide with the metal thing on top), in degrees.
+		 */
 		public static final double SAFE_MAX_POSITION = 80;
+
+		/**
+		 * Maximum position that the wrist can be while holding an algae (to make sure it doesn't hit the elevator), in degrees.
+		 */
+		public static final double MAX_ALGAE_POSITION = 45;
 		/**
 		 * Conversion factor from rotation to meters.
 		 */

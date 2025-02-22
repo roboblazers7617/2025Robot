@@ -139,10 +139,13 @@ public class Elevator extends SubsystemBase {
 		double safeElevatorTarget = elevatorTarget;
 
 		// ensure elevator target is not too low if the wrist is low
-		if (wristEncoder.getPosition() < WristConstants.SAFE_MIN_POSITION && safeElevatorTarget < ElevatorConstants.SAFE_MIN_POSITION) {
-			safeElevatorTarget = ElevatorConstants.SAFE_MIN_POSITION;
+		if (wristEncoder.getPosition() < WristConstants.SAFE_MIN_POSITION && safeElevatorTarget < ElevatorConstants.MAX_LOWERED_POSITION) {
+			safeElevatorTarget = ElevatorConstants.MAX_LOWERED_POSITION;
 		}
 		// ensure the elevator target is not too high if wrist is high (wrist collides with metal connecter thing on top of the robot)
+		if (wristEncoder.getPosition() > WristConstants.SAFE_MAX_POSITION && safeElevatorTarget > ElevatorConstants.MAX_LOWERED_POSITION) {
+			safeElevatorTarget = ElevatorConstants.MAX_LOWERED_POSITION;
+		}
 
 		double elevatorFeedForwardValue = elevatorFeedforward.calculate(elevatorRelativeEncoder.getVelocity()); // this is technically supposed to be the velocity setpoint
 		leaderElevatorMotor.getClosedLoopController().setReference(safeElevatorTarget, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0, elevatorFeedForwardValue, ArbFFUnits.kVoltage);
@@ -154,13 +157,19 @@ public class Elevator extends SubsystemBase {
 		double safeWristTarget = wristTarget;
 
 		// ensure wrist target is not too low if the elevator is low
-		if (elevatorRelativeEncoder.getPosition() < ElevatorConstants.SAFE_MIN_POSITION && safeWristTarget < WristConstants.SAFE_MIN_POSITION) {
+		if (elevatorRelativeEncoder.getPosition() < ElevatorConstants.MAX_LOWERED_POSITION && safeWristTarget < WristConstants.SAFE_MIN_POSITION) {
 			safeWristTarget = WristConstants.SAFE_MIN_POSITION;
 		}
 
 		// ensure wrist target is not too high if the elevator is high
+		if (elevatorRelativeEncoder.getPosition() > ElevatorConstants.MAX_LOWERED_POSITION && safeWristTarget > WristConstants.SAFE_MAX_POSITION) {
+			safeWristTarget = WristConstants.SAFE_MAX_POSITION;
+		}
 
 		// ensure wrist target is not too high (a different too high, a smaller one) if it is holding algae
+		if (safeWristTarget > WristConstants.MAX_ALGAE_POSITION) {
+			safeWristTarget = WristConstants.MAX_ALGAE_POSITION;
+		}
 
 		double wristFeedForwardValue = wristFeedforward.calculate(Math.toRadians(elevatorRelativeEncoder.getPosition()), Math.toRadians(elevatorRelativeEncoder.getVelocity()));
 		wristMotor.getClosedLoopController().setReference(safeWristTarget, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0, wristFeedForwardValue, ArbFFUnits.kVoltage);
