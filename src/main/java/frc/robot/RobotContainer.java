@@ -10,6 +10,7 @@ import frc.robot.Constants.FieldConstants;
 import frc.robot.util.Util;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.drivetrain.DrivetrainControls;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.epilogue.Logged;
@@ -31,6 +32,7 @@ public class RobotContainer {
 	private SendableChooser<Command> autoChooser = new SendableChooser<>();
 	// The robot's subsystems and commands are defined here...
 	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
+	private final DrivetrainControls drivetrainControls = drivetrain.getControls();
 	private final Dashboard dashboard = new Dashboard(drivetrain, this);
 
 	// Replace with CommandPS4Controller or CommandJoystick if needed
@@ -67,13 +69,13 @@ public class RobotContainer {
 		// Set the default drivetrain command (used for the driver controller)
 		if (RobotBase.isSimulation()) {
 			// Heading control
-			drivetrain.setDefaultCommand(drivetrain.driveFieldOrientedDirectAngleSimControllerCommand(driverController));
+			drivetrain.setDefaultCommand(drivetrainControls.driveFieldOrientedDirectAngleSimCommand(driverController));
 		} else {
 			// Heading control
-			drivetrain.setDefaultCommand(drivetrain.driveFieldOrientedDirectAngleControllerCommand(driverController));
+			drivetrain.setDefaultCommand(drivetrainControls.driveFieldOrientedDirectAngleCommand(driverController));
 			// Angular velocity control
 			driverController.leftBumper()
-					.whileTrue(drivetrain.driveFieldOrientedAngularVelocityControllerCommand(driverController));
+					.whileTrue(drivetrainControls.driveFieldOrientedAngularVelocityCommand(driverController));
 		}
 		// TODO: (Max) This lets the driver move to the closest reef tag but how do they make it go to the
 		// left or right reef branch of that tag? What if they are on the right side of the tag but
