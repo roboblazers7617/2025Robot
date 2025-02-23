@@ -127,14 +127,10 @@ public class Drivetrain extends SubsystemBase {
 	 * Gets the swerve drive object.
 	 *
 	 * @return
-	 *         {@link SwerveDrive}
+	 *         {@link #swerveDrive}
 	 */
 	public SwerveDrive getSwerveDrive() {
 		return swerveDrive;
-	}
-
-	public Vision getVision() {
-		return vision;
 	}
 
 	/**
@@ -177,11 +173,20 @@ public class Drivetrain extends SubsystemBase {
 	 * Gets the drivetrain controls object.
 	 *
 	 * @return
-	 *         {@link DrivetrainControls}
-	 * @see #controls
+	 *         {@link #controls}
 	 */
 	public DrivetrainControls getControls() {
 		return controls;
+	}
+
+	/**
+	 * Gets the vision object.
+	 *
+	 * @return
+	 *         {@link #vision}
+	 */
+	public Vision getVision() {
+		return vision;
 	}
 
 	/**
