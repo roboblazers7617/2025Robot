@@ -118,9 +118,9 @@ public class RobotContainer {
 					.whileTrue(drivetrainControls.driveFieldOrientedAngularVelocityCommand(driverController));
 		}
 
-		driverController.a().whileTrue(StubbedCommands.Drivetrain.DriverSlowMode());
-		driverController.b().whileTrue(StubbedCommands.Drivetrain.DriverFastMode());
-		driverController.x().whileTrue(StubbedCommands.Drivetrain.LockWheels());
+		driverController.a().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_SLOW));
+		driverController.b().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_FAST));
+		driverController.x().whileTrue(drivetrain.lockCommand());
 		driverController.y().onTrue(StubbedCommands.Climber.StowRamp());
 
 		driverController.povDown().whileTrue(StubbedCommands.Climber.ClimberDown());
