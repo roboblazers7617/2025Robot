@@ -38,6 +38,7 @@ public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
 	@NotLogged
 	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
+	@NotLogged
 	private final DrivetrainControls drivetrainControls = drivetrain.getControls();
 	@NotLogged
 	private final Dashboard dashboard = new Dashboard(drivetrain, this);
