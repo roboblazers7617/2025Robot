@@ -137,7 +137,7 @@ public class DrivetrainControls {
 	}
 
 	/**
-	 * {@link #driveFieldOrientedScaledCommand(Supplier)} that uses {@link #driveAngularVelocity(Drivetrain, CommandXboxController)}. Calls {@link Drivetrain#resetLastAngleScalar()} on end to prevent snapback.
+	 * {@link #driveFieldOrientedScaledCommand(Supplier)} that uses {@link #driveAngularVelocity(CommandXboxController)}. Calls {@link Drivetrain#resetLastAngleScalar()} on end to prevent snapback.
 	 *
 	 * @param controller
 	 *            Controller to use.
@@ -150,7 +150,7 @@ public class DrivetrainControls {
 	}
 
 	/**
-	 * {@link #driveFieldOrientedScaledCommand(Supplier)} that uses {@link DrivetrainControls#driveDirectAngle(Drivetrain, CommandXboxController)}.
+	 * {@link #driveFieldOrientedScaledCommand(Supplier)} that uses {@link DrivetrainControls#driveDirectAngle(CommandXboxController)}.
 	 *
 	 * @param controller
 	 *            Controller to use.
@@ -162,7 +162,7 @@ public class DrivetrainControls {
 	}
 
 	/**
-	 * {@link #driveFieldOrientedScaledCommand(Supplier)} that uses {@link DrivetrainControls#driveDirectAngleSim(Drivetrain, CommandXboxController)}.
+	 * {@link #driveFieldOrientedScaledCommand(Supplier)} that uses {@link DrivetrainControls#driveDirectAngleSim(CommandXboxController)}.
 	 *
 	 * @param controller
 	 *            Controller to use.
