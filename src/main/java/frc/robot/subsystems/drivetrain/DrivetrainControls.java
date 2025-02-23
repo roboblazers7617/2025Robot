@@ -103,7 +103,7 @@ public class DrivetrainControls {
 		return SwerveInputStream.of(drivetrain.getSwerveDrive(), () -> (-1 * controller.getLeftY()), () -> (-1 * controller.getLeftX()))
 				.withControllerRotationAxis(() -> (-1 * controller.getRightX()))
 				.deadband(OperatorConstants.DEADBAND)
-				.scaleTranslation(DrivetrainConstants.TRANSLATION_SCALE)
+				.scaleTranslation(DrivetrainConstants.TRANSLATION_SCALE_NORMAL)
 				.allianceRelativeControl(true);
 	}
 
