@@ -60,7 +60,7 @@ public class DrivetrainControls {
 	 * @return
 	 *         Command to run.
 	 */
-	public Command setControllerSpeedMultiplierCommand(Supplier<Double> speedMultiplier) {
+	public Command setSpeedMultiplierCommand(Supplier<Double> speedMultiplier) {
 		return Commands.run(() -> setSpeedMultiplier(speedMultiplier.get()))
 				.finallyDo(this::resetSpeedMultiplier);
 	}
