@@ -46,10 +46,10 @@ public class DrivetrainControls {
 	}
 
 	/**
-	 * Sets the controller speed multiplier back to {@link DrivetrainConstants#TRANSLATION_SCALE}.
+	 * Sets the controller speed multiplier back to {@link DrivetrainConstants#TRANSLATION_SCALE_NORMAL}.
 	 */
 	public void resetSpeedMultiplier() {
-		speedMultiplier = DrivetrainConstants.TRANSLATION_SCALE;
+		speedMultiplier = DrivetrainConstants.TRANSLATION_SCALE_NORMAL;
 	}
 
 	/**
@@ -146,7 +146,7 @@ public class DrivetrainControls {
 	 */
 	public Command driveFieldOrientedAngularVelocityCommand(CommandXboxController controller) {
 		return driveFieldOrientedScaledCommand(driveAngularVelocity(controller))
-				.finallyDo(drivetrain::resetLastAngleScalarByAlliance);
+				.finallyDo(drivetrain::resetLastAngleScalar);
 	}
 
 	/**
