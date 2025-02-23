@@ -21,7 +21,7 @@ public class SparkMaxLogger extends ClassSpecificLogger<SparkMax> {
 			backend.log("Percentage", motor.get());
 			try {
 				// if it doesn't have an encoder it will throw an error
-				// TODO: (Brandon) Shouldn't this be getEncoder?
+				// TODO: #102 (Brandon) Shouldn't this be getEncoder?
 				backend.log("Relative encoder position", motor.getAlternateEncoder().getPosition());
 				backend.log("Relative encoder velocity", motor.getAlternateEncoder().getVelocity());
 			} catch (Exception e) {}
