@@ -152,7 +152,7 @@ public class RobotContainer {
 		// Acts to cancel the currently running command, such as intaking or outaking
 
 		operatorController.a()
-				.onTrue(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector())));
+				.onTrue(endEffector.StopIntakeMotor());
 		operatorController.b()
 				.or(operatorController.leftTrigger())
 				.and(isAlgaeModeTrigger)
