@@ -70,7 +70,7 @@ public class RobotContainer {
 		VersionConstants.publishNetworkTables(NetworkTableInstance.getDefault().getTable("/Metadata"));
 
 		// Configure the trigger bindings
-		configureDriverControls();
+		// configureDriverControls();
 		configureOperatorControls();
 		// Configure the Limelight mode switching
 		new Trigger(DriverStation::isEnabled).onTrue(drivetrain.getVision().onEnableCommand());
