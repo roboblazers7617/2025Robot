@@ -196,6 +196,11 @@ public class Elevator extends SubsystemBase {
 				double targetWristSpeed = MathUtil.clamp(wristSpeed.getAsDouble() * WristConstants.MAX_VELOCITY, -WristConstants.MAX_VELOCITY, WristConstants.MAX_VELOCITY);
 				setWristPosition(wristTarget + (targetWristSpeed / 50)); // divide the speed by 50 because their are 50 loops per second
 			}
+
+			@Override
+			public boolean isFinished() {
+				return false;
+			}
 		};
 		command.addRequirements(this);
 		return command;
@@ -210,11 +215,20 @@ public class Elevator extends SubsystemBase {
 	 *         {@link Command} to run.
 	 */
 	public Command SetPosition(Constants.ArmPosition position) {
-		Command command = new InstantCommand(() -> {
-			setElevatorPosition(position.ELEVATOR_POSITION);
-			setWristPosition(position.WRIST_POSITION);
-		});
+		Command command = new Command() {
+			@Override
+			public void initialize() {
+				setElevatorPosition(position.ELEVATOR_POSITION);
+				setWristPosition(position.WRIST_POSITION);
+			}
+
+			@Override
+			public boolean isFinished() {
+				return isAtTarget();
+			}
+		};
 		command.addRequirements(this);
+
 		return command;
 	}
 
@@ -238,5 +252,11 @@ public class Elevator extends SubsystemBase {
 	private void setWristPosition(double position) {
 		MathUtil.clamp(position, WristConstants.MIN_POSITION, WristConstants.MAX_POSITION);
 		wristTarget = position;
+	}
+
+	private boolean isAtTarget() {
+		boolean elevatorAtTarget = Math.abs(elevatorRelativeEncoder.getPosition() - elevatorTarget) < ElevatorConstants.TOLERANCE;
+		boolean wristAtTarget = Math.abs(wristEncoder.getPosition() - wristTarget) < WristConstants.TOLERANCE;
+		return elevatorAtTarget && wristAtTarget;
 	}
 }

@@ -415,6 +415,10 @@ public final class Constants {
 		 * Current limit in amps.
 		 */
 		public static final int CURRENT_LIMIT = 20;
+		/**
+		 * Tolerance for the target to be considered reached in meters.
+		 */
+		public static final double TOLERANCE = .02;
 	}
 
 	/**
@@ -520,6 +524,11 @@ public final class Constants {
 		 * Current limit in amps.
 		 */
 		public static final int CURRENT_LIMIT = 20;
+
+		/**
+		 * Tolerance for the target to be considered reached in degrees.
+		 */
+		public static final double TOLERANCE = 5;
 	}
 
 	public enum ArmPosition {
