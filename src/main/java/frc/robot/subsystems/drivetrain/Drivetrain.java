@@ -179,6 +179,7 @@ public class Drivetrain extends SubsystemBase {
 	 */
 	public void resetOdometry(Pose2d initialHolonomicPose) {
 		swerveDrive.resetOdometry(initialHolonomicPose);
+		// TODO: Should the last angle scalar be set here?
 	}
 
 	/**
@@ -376,64 +377,20 @@ public class Drivetrain extends SubsystemBase {
 		swerveDrive.drive(translation, rotation, fieldRelative, false); // Open loop is disabled since it shouldn't be used most of the time.
 	}
 
-	// TODO: #115 (Max) Please simplify this code. There are 12 functions/commands related to resetting the
-	// lastAngleScalar.
-	/**
-	 * Sets the angle that heading control will return to if no angle is inputed.
-	 *
-	 * @param angle
-	 *            Angle to set in radians.
-	 * @see SwerveController#lastAngleScalar
-	 * @implNote
-	 *           Running this on the Red alliance will cause the angle to be flipped 180 degrees. Call {@link #setLastAngleScalarByAlliance(Rotation2d)} instead if that is not the desired behavior.
-	 */
-	// TODO: #114 (Max) Shouldn't this be private to ensure that the wrong function isn't used? Should always use ByAlliance version
-	public void setLastAngleScalar(double angle) {
-		swerveDrive.swerveController.lastAngleScalar = angle;
-	}
-
-	/**
-	 * Sets the angle that heading control will return to if no angle is inputed.
-	 *
-	 * @param rotation
-	 *            Angle to set.
-	 * @see SwerveController#lastAngleScalar
-	 * @implNote
-	 *           Running this on the Red alliance will cause the angle to be flipped 180 degrees. Call {@link #setLastAngleScalarByAlliance(Rotation2d)} instead if that is not the desired behavior.
-	 */
-	// TODO: (Max) Shouldn't this be private to ensure that the wrong function isn't used? Should always use ByAlliance version
-	public void setLastAngleScalar(Rotation2d rotation) {
-		swerveDrive.swerveController.lastAngleScalar = rotation.getRadians();
-	}
-
-	/**
-	 * Sets the angle that heading control will return to if no angle is inputed.
-	 *
-	 * @param rotation
-	 *            Angle to set. Rotated by 180 degrees.
-	 * @see SwerveController#lastAngleScalar
-	 * @implNote
-	 *           Running this on the Blue alliance will cause the angle to be flipped 180 degrees. Call {@link #setLastAngleScalarByAlliance(Rotation2d)} instead if that is not the desired behavior.
-	 */
-	// TODO: (Max) Shouldn't this be private to ensure that the wrong function isn't used? Should always use ByAlliance version
-	// TODO: #116 (Max) Have you tested this works?
-	public void setLastAngleScalarInverted(Rotation2d rotation) {
-		swerveDrive.swerveController.lastAngleScalar = rotation.rotateBy(Rotation2d.k180deg).getRadians();
-	}
-
 	/**
 	 * Sets the angle that heading control will turn to if no angle is inputed. Inverted based on alliance color.
 	 *
 	 * @param rotation
 	 *            Angle to set.
-	 * @see #setLastAngleScalar(Rotation2d)
-	 * @see #setLastAngleScalarInverted(Rotation2d)
+	 * @see SwerveController#lastAngleScalar
 	 */
-	public void setLastAngleScalarByAlliance(Rotation2d rotation) {
+	public void setLastAngleScalar(Rotation2d rotation) {
 		if (Util.isRedAlliance()) {
-			setLastAngleScalarInverted(rotation);
+			// Inverted
+			swerveDrive.swerveController.lastAngleScalar = rotation.rotateBy(Rotation2d.k180deg).getRadians();
 		} else {
-			setLastAngleScalar(rotation);
+			// Regular
+			swerveDrive.swerveController.lastAngleScalar = rotation.getRadians();
 		}
 	}
 
@@ -443,10 +400,9 @@ public class Drivetrain extends SubsystemBase {
 	 * @param rotation
 	 *            Angle to set.
 	 * @see #setLastAngleScalar(Rotation2d)
-	 * @see #setLastAngleScalarInverted(Rotation2d)
 	 */
-	public void setLastAngleScalarByAlliance(Supplier<Rotation2d> rotation) {
-		setLastAngleScalarByAlliance(rotation.get());
+	public void setLastAngleScalar(Supplier<Rotation2d> rotation) {
+		setLastAngleScalar(rotation.get());
 	}
 
 	/**
@@ -456,69 +412,19 @@ public class Drivetrain extends SubsystemBase {
 	 *            Angle to set.
 	 * @return
 	 *         {@link Command} to run.
-	 * @see #setLastAngleScalarByAlliance(Rotation2d)
+	 * @see #setLastAngleScalar(Supplier)
 	 */
-	public Command setLastAngleScalarByAllianceCommand(Supplier<Rotation2d> rotation) {
-		return Commands.runOnce(() -> setLastAngleScalarByAlliance(rotation));
-	}
-
-	/**
-	 * The method to reset what the heading control will turn to if no angle is inputed. Used to prevent angle snapback.
-	 *
-	 * @see #setLastAngleScalar(Rotation2d)
-	 * @implNote
-	 *           Running this on the Red alliance will cause the robot to flip 180 degrees. Call {@link #resetLastAngleScalarByAlliance()} instead if that is not the desired behavior.
-	 */
-	public void resetLastAngleScalar() {
-		setLastAngleScalar(getHeading());
-	}
-
-	/**
-	 * The command to reset what the heading control will turn to if no angle is inputed. Used to prevent angle snapback.
-	 *
-	 * @return
-	 *         {@link Command} to run.
-	 * @see #resetLastAngleScalar()
-	 */
-	public Command resetLastAngleScalarCommand() {
-		return Commands.runOnce(() -> resetLastAngleScalar(), this);
-	}
-
-	/**
-	 * Inverted method to reset what the heading control will turn to if no angle is inputed. Used to prevent angle snapback.
-	 *
-	 * @see #resetLastAngleScalar()
-	 * @see #setLastAngleScalarInverted(Rotation2d)
-	 * @implNote
-	 *           Running this on the Blue alliance will cause the robot to flip 180 degrees. Call {@link #resetLastAngleScalarByAlliance()} instead if that is not the desired behavior.
-	 */
-	public void resetLastAngleScalarInverted() {
-		setLastAngleScalarInverted(getHeading());
-	}
-
-	/**
-	 * Inverted command to reset what the heading control will turn to if no angle is inputed. Used to prevent angle snapback.
-	 *
-	 * @return
-	 *         {@link Command} to run.
-	 * @see #resetLastAngleScalarInverted()
-	 */
-	public Command resetLastAngleScalarInvertedCommand() {
-		return Commands.runOnce(() -> resetLastAngleScalarInverted(), this);
+	public Command setLastAngleScalarCommand(Supplier<Rotation2d> rotation) {
+		return Commands.runOnce(() -> setLastAngleScalar(rotation), this);
 	}
 
 	/**
 	 * Method to reset what the heading control will turn to if no angle is inputed. Inverted based on alliance color. Used to prevent angle snapback.
 	 *
-	 * @see #resetLastAngleScalar()
-	 * @see #resetLastAngleScalarInverted()
+	 * @see #setLastAngleScalar(Rotation2d)
 	 */
-	public void resetLastAngleScalarByAlliance() {
-		if (Util.isRedAlliance()) {
-			resetLastAngleScalarInverted();
-		} else {
-			resetLastAngleScalar();
-		}
+	public void resetLastAngleScalar() {
+		setLastAngleScalar(getHeading());
 	}
 
 	/**
@@ -526,11 +432,10 @@ public class Drivetrain extends SubsystemBase {
 	 *
 	 * @return
 	 *         {@link Command} to run.
-	 * @see #resetLastAngleScalarCommand()
-	 * @see #resetLastAngleScalarInvertedCommand()
+	 * @see #resetLastAngleScalar()
 	 */
-	public Command resetLastAngleScalarByAllianceCommand() {
-		return Commands.either(resetLastAngleScalarInvertedCommand(), resetLastAngleScalarCommand(), () -> Util.isRedAlliance());
+	public Command resetLastAngleScalarCommand() {
+		return Commands.runOnce(() -> resetLastAngleScalar(), this);
 	}
 
 	/**
@@ -549,8 +454,8 @@ public class Drivetrain extends SubsystemBase {
 		// Since AutoBuilder is configured, we can use it to build pathfinding commands
 		return Commands.defer(() -> AutoBuilder.pathfindToPose(pose.get(), constraints, MetersPerSecond.of(0) // Goal end velocity in meters/sec
 		), new HashSet<Subsystem>(Set.of(this)))
-				.andThen(setLastAngleScalarByAllianceCommand(() -> pose.get().getRotation()))
-				.handleInterrupt(this::resetLastAngleScalarByAlliance);
+				.andThen(setLastAngleScalarCommand(() -> pose.get().getRotation()))
+				.handleInterrupt(this::resetLastAngleScalar);
 	}
 
 	/**
@@ -722,7 +627,7 @@ public class Drivetrain extends SubsystemBase {
 	 */
 	public Command driveFieldOrientedAngularVelocityControllerCommand(CommandXboxController controller) {
 		return driveFieldOrientedCommand(DrivetrainControls.driveAngularVelocity(this, controller))
-				.finallyDo(this::resetLastAngleScalarByAlliance);
+				.finallyDo(this::resetLastAngleScalar);
 	}
 
 	/**
