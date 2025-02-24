@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.IntakeRamp;
 
 import frc.robot.Constants.RampConstants;
 import java.util.function.Supplier;
