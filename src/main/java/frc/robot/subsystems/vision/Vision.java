@@ -1,5 +1,7 @@
 package frc.robot.subsystems.vision;
 
+import java.util.List;
+
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -49,7 +51,12 @@ public class Vision {
 		frontPoseEstimator = frontLimelight.makePoseEstimator(VisionConstants.POSE_ESTIMATOR_TYPE);
 		backPoseEstimator = backLimelight.makePoseEstimator(VisionConstants.POSE_ESTIMATOR_TYPE);
 
-		backLimelight.settings.withImuMode(VisionConstants.DISABLED_IMU_MODE).withProcessedFrameFrequency(VisionConstants.DISABLED_UPDATE_FREQUENCY).save();
+		backLimelight.settings.withImuMode(VisionConstants.DISABLED_IMU_MODE)
+				.withProcessedFrameFrequency(VisionConstants.DISABLED_UPDATE_FREQUENCY)
+				.withArilTagIdFilter(List.of(6., 7., 8., 9., 10., 11., 17., 18., 19., 20., 21., 22.))
+				.save();
+		frontLimelight.settings.withArilTagIdFilter(List.of(6., 7., 8., 9., 10., 11., 17., 18., 19., 20., 21., 22.))
+				.save();
 	}
 
 	public Command onEnableCommand() {
