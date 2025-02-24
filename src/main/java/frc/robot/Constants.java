@@ -349,7 +349,7 @@ public final class Constants {
 		 * DIO pin for the beam break.
 		 */
 		// TODO: update to reflect final pin number once finalized.
-		public static final int BEAM_BREAK_DIO = 1;
+		public static final int BEAM_BREAK_DIO = 0;
 		/**
 		 * Intake motor speed for coral. (to be changed and edited later)
 		 */
@@ -365,11 +365,11 @@ public final class Constants {
 		/**
 		 * Outtake motor speed for algae. (to be changed and edited later)
 		 */
-		public static final double ALGAE_OUTAKE_SPEED = -0.5;
+		public static final double ALGAE_OUTAKE_SPEED = -0.2;
 		/**
 		 * Time (in seconds) that the motors run after beam break detects no coral after using the outtake command
 		 */
-		public static final double OUTTAKE_WAIT_TIME = 0.3;
+		public static final double OUTTAKE_WAIT_TIME = 0.2;
 		/**
 		 * Time (in seconds) that the motors run after algae outake is called to eject algae.
 		 */
