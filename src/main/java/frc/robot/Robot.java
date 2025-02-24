@@ -32,6 +32,7 @@ public class Robot extends TimedRobot {
 	private final RobotContainer robotContainer;
 
 	// @Logged
+	// TODO: #139 Investigate how to get PDH logging working
 	// private final PowerDistribution pdh = new PowerDistribution();
 
 	/**
@@ -82,6 +83,8 @@ public class Robot extends TimedRobot {
 	/** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
 	@Override
 	public void autonomousInit() {
+		robotContainer.autoInit();
+
 		autonomousCommand = robotContainer.getAutonomousCommand();
 
 		// schedule the autonomous command (example)
