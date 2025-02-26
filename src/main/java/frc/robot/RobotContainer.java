@@ -10,6 +10,7 @@ import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.util.Elastic;
 import frc.robot.Constants.OperatorConstants.GamepieceMode;
 import frc.robot.commands.StubbedCommands;
+import frc.robot.subsystems.IntakeRamp.Ramp;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -30,15 +31,16 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 @Logged
 public class RobotContainer {
+	private final Ramp ramp = new Ramp();
 	/*
 	 * The sendable chooser for the autonomous command. This is added in the setAutoChooser method which is run when autobuilder is created after an alliance is selected.
 	 */
 	private SendableChooser<Command> autoChooser;
 	// The robot's subsystems and commands are defined here...
-	@NotLogged
-	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
-	@NotLogged
-	private final Dashboard dashboard = new Dashboard(drivetrain, this);
+	// @NotLogged
+	// private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
+	// @NotLogged
+	// private final Dashboard dashboard = new Dashboard(drivetrain, this);
 
 	// Replace with CommandPS4Controller or CommandJoystick if needed
 	@NotLogged
@@ -65,11 +67,11 @@ public class RobotContainer {
 		VersionConstants.publishNetworkTables(NetworkTableInstance.getDefault().getTable("/Metadata"));
 
 		// Configure the trigger bindings
-		configureDriverControls();
+		// configureDriverControls();
 		configureOperatorControls();
 		// Configure the Limelight mode switching
-		new Trigger(DriverStation::isEnabled).onTrue(drivetrain.getVision().onEnableCommand());
-		new Trigger(DriverStation::isDisabled).onTrue(drivetrain.getVision().onDisableCommand());
+		// new Trigger(DriverStation::isEnabled).onTrue(drivetrain.getVision().onEnableCommand());
+		// new Trigger(DriverStation::isDisabled).onTrue(drivetrain.getVision().onDisableCommand());
 		// By default interact with Coral
 		gamepieceMode = GamepieceMode.CORAL_MODE;
 	}
@@ -87,8 +89,7 @@ public class RobotContainer {
 	 */
 	public void teleopInit() {
 		// Reset the last angle so the robot doesn't try to spin.
-		drivetrain.resetLastAngleScalar();
-
+		// drivetrain.resetLastAngleScalar();
 
 		// Set the Elastic tab
 		Elastic.selectTab(DashboardConstants.TELEOP_TAB_NAME);
@@ -99,43 +100,40 @@ public class RobotContainer {
 		else {
 			gamepieceMode = GamepieceMode.CORAL_MODE;
 		}
-
 	}
 
 	/**
 	 * Configures {@link Triggers} to bind Commands to the Driver Controller buttons.
 	 */
-	private void configureDriverControls() {
-		// Set the default drivetrain command (used for the driver controller)
-		if (RobotBase.isSimulation()) {
-			// Heading control
-			drivetrain.setDefaultCommand(drivetrain.driveFieldOrientedDirectAngleSimControllerCommand(driverController));
-		} else {
-			// Heading control
-			drivetrain.setDefaultCommand(drivetrain.driveFieldOrientedDirectAngleControllerCommand(driverController));
-			// Angular velocity control
-			driverController.leftBumper()
-					.whileTrue(drivetrain.driveFieldOrientedAngularVelocityControllerCommand(driverController));
-		}
-
-		driverController.a().whileTrue(StubbedCommands.Drivetrain.DriverSlowMode());
-		driverController.b().whileTrue(StubbedCommands.Drivetrain.DriverFastMode());
-		driverController.x().whileTrue(StubbedCommands.Drivetrain.LockWheels());
-		driverController.y().onTrue(StubbedCommands.Climber.StowRamp());
-
-		driverController.povDown().whileTrue(StubbedCommands.Climber.ClimberDown());
-		driverController.povLeft().whileTrue(StubbedCommands.Climber.RampUp());
-		driverController.povRight().whileTrue(StubbedCommands.Climber.RampDown());
-		driverController.povUp().whileTrue(StubbedCommands.Climber.AutoClimb());
-
-		// TODO: #137 Put actual commands to align to reef
-		driverController.rightBumper().whileTrue(StubbedCommands.Drivetrain.AlignMiddleOfTag());
-		driverController.leftTrigger().whileTrue(StubbedCommands.Drivetrain.AlignLeftOfTag());
-		driverController.rightTrigger().whileTrue(StubbedCommands.Drivetrain.AlignRightOfTag());
-
-		driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
-		driverController.back().onTrue(StubbedCommands.Drivetrain.DisableVision());
-	}
+	/*
+	 * private void configureDriverControls() {
+	 * // Set the default drivetrain command (used for the driver controller)
+	 * if (RobotBase.isSimulation()) {
+	 * // Heading control
+	 * drivetrain.setDefaultCommand(drivetrain.driveFieldOrientedDirectAngleSimControllerCommand(driverController));
+	 * } else {
+	 * // Heading control
+	 * drivetrain.setDefaultCommand(drivetrain.driveFieldOrientedDirectAngleControllerCommand(driverController));
+	 * // Angular velocity control
+	 * driverController.leftBumper()
+	 * .whileTrue(drivetrain.driveFieldOrientedAngularVelocityControllerCommand(driverController));
+	 * }
+	 * driverController.a().whileTrue(StubbedCommands.Drivetrain.DriverSlowMode());
+	 * driverController.b().whileTrue(StubbedCommands.Drivetrain.DriverFastMode());
+	 * driverController.x().whileTrue(StubbedCommands.Drivetrain.LockWheels());
+	 * driverController.y().onTrue(StubbedCommands.Climber.StowRamp());
+	 * driverController.povDown().whileTrue(StubbedCommands.Climber.ClimberDown());
+	 * driverController.povLeft().whileTrue(StubbedCommands.Climber.RampUp());
+	 * driverController.povRight().whileTrue(StubbedCommands.Climber.RampDown());
+	 * driverController.povUp().whileTrue(StubbedCommands.Climber.AutoClimb());
+	 * // TODO: #137 Put actual commands to align to reef
+	 * driverController.rightBumper().whileTrue(StubbedCommands.Drivetrain.AlignMiddleOfTag());
+	 * driverController.leftTrigger().whileTrue(StubbedCommands.Drivetrain.AlignLeftOfTag());
+	 * driverController.rightTrigger().whileTrue(StubbedCommands.Drivetrain.AlignRightOfTag());
+	 * driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
+	 * driverController.back().onTrue(StubbedCommands.Drivetrain.DisableVision());
+	 * }
+	 */
 
 	/**
 	 * Configures {@link Triggers} to bind Commands to the Operator Controller buttons.
@@ -149,7 +147,8 @@ public class RobotContainer {
 		// Acts to cancel the currently running command, such as intaking or outaking
 		// TODO: #138 Cancel on EndEffector or all mechanism commands?
 		operatorController.a()
-				.onTrue(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector())));
+				// .onTrue(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector())));
+				.onTrue(ramp.RampRetract());
 		operatorController.b()
 				.or(operatorController.leftTrigger())
 				.and(isAlgaeModeTrigger)
@@ -229,7 +228,7 @@ public class RobotContainer {
 			return Commands.runOnce(() -> System.out.println("Auto builder not made! Is the alliance set?"));
 		}
 		return autoChooser.getSelected()
-				.finallyDo(drivetrain::resetLastAngleScalar);
+		/* .finallyDo(drivetrain::resetLastAngleScalar) */;
 	}
 
 	/**
