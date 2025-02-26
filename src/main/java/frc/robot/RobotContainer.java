@@ -94,7 +94,6 @@ public class RobotContainer {
 		// Reset the last angle so the robot doesn't try to spin.
 		drivetrain.resetLastAngleScalar();
 
-
 		// Set the Elastic tab
 		Elastic.selectTab(DashboardConstants.TELEOP_TAB_NAME);
 		if (StubbedCommands.EndEffector.isHoldingAlage()) {
@@ -104,7 +103,6 @@ public class RobotContainer {
 		else {
 			gamepieceMode = GamepieceMode.CORAL_MODE;
 		}
-
 	}
 
 	/**
@@ -159,20 +157,20 @@ public class RobotContainer {
 				.or(operatorController.leftTrigger())
 				.and(isAlgaeModeTrigger)
 				.onTrue(StubbedCommands.EndEffector.IntakeAlgae()
-						.andThen(elevator.SetPosition(ArmPosition.STOW_ALGAE)));
+						.andThen(elevator.SetPositionCommand(ArmPosition.STOW_ALGAE)));
 		operatorController.b()
 				.or(operatorController.leftTrigger())
 				.and(isCoralModeTrigger)
-				.onTrue(elevator.SetPosition(ArmPosition.INTAKE_CORAL_CORAL_STATION)
+				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_CORAL_CORAL_STATION)
 						.andThen(StubbedCommands.EndEffector.IntakeCoral())
-						.andThen(elevator.SetPosition(ArmPosition.STOW_CORAL)));
+						.andThen(elevator.SetPositionCommand(ArmPosition.STOW_CORAL)));
 		operatorController.x()
 				.and(isAlgaeModeTrigger)
-				.onTrue(elevator.SetPosition(ArmPosition.STOW_ALGAE)
+				.onTrue(elevator.SetPositionCommand(ArmPosition.STOW_ALGAE)
 						.alongWith(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector()))));
 		operatorController.x()
 				.and(isCoralModeTrigger)
-				.onTrue(elevator.SetPosition(ArmPosition.STOW_CORAL)
+				.onTrue(elevator.SetPositionCommand(ArmPosition.STOW_CORAL)
 						.alongWith(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector()))));
 		operatorController.y()
 				.or(operatorController.leftBumper())
@@ -185,27 +183,27 @@ public class RobotContainer {
 
 		operatorController.povDown()
 				.and(isAlgaeModeTrigger)
-				.onTrue(elevator.SetPosition(ArmPosition.INTAKE_ALGAE_LEVEL_2));
+				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_ALGAE_LEVEL_2));
 		operatorController.povDown()
 				.and(isCoralModeTrigger)
-				.onTrue(elevator.SetPosition(ArmPosition.OUTTAKE_CORAL_LEVEL_1));
+				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_1));
 		operatorController.povLeft()
 				.or(operatorController.povRight())
 				.and(isAlgaeModeTrigger)
-				.onTrue(elevator.SetPosition(ArmPosition.OUTTAKE_ALGAE_PROCESSOR));
+				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_ALGAE_PROCESSOR));
 		operatorController.povLeft()
 				.and(isCoralModeTrigger)
-				.onTrue(elevator.SetPosition(ArmPosition.OUTTAKE_CORAL_LEVEL_2));
+				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_2));
 		operatorController.povRight()
 				.and(isCoralModeTrigger)
-				.onTrue(elevator.SetPosition(ArmPosition.OUTTAKE_CORAL_LEVEL_3));
+				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_3));
 		// POV Right Algae mode is handeled above with POV Left
 		operatorController.povUp()
 				.and(isAlgaeModeTrigger)
-				.onTrue(elevator.SetPosition(ArmPosition.INTAKE_ALGAE_LEVEL_3));
+				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_ALGAE_LEVEL_3));
 		operatorController.povUp()
 				.and(isCoralModeTrigger)
-				.onTrue(elevator.SetPosition(ArmPosition.OUTTAKE_CORAL_LEVEL_4));
+				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4));
 
 		// Left Bumper is on an or with the Y button above
 		operatorController.rightBumper().onTrue(setGamepieceModeCommand(GamepieceMode.ALGAE_MODE));

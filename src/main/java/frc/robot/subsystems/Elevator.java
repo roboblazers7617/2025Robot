@@ -214,7 +214,7 @@ public class Elevator extends SubsystemBase {
 	 * @return
 	 *         {@link Command} to run.
 	 */
-	public Command SetPosition(Constants.ArmPosition position) {
+	public Command SetPositionCommand(Constants.ArmPosition position) {
 		Command command = new Command() {
 			@Override
 			public void initialize() {
@@ -254,6 +254,9 @@ public class Elevator extends SubsystemBase {
 		wristTarget = position;
 	}
 
+	/**
+	 * Check if the elevator and wrist are within the tolerance to their target positions. This is used to determine if the {@link #SetPositionCommand(Constants.ArmPosition)} command is finished.
+	 */
 	private boolean isAtTarget() {
 		boolean elevatorAtTarget = Math.abs(elevatorRelativeEncoder.getPosition() - elevatorTarget) < ElevatorConstants.TOLERANCE;
 		boolean wristAtTarget = Math.abs(wristEncoder.getPosition() - wristTarget) < WristConstants.TOLERANCE;

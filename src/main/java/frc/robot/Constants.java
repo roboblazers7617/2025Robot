@@ -533,6 +533,11 @@ public final class Constants {
 		public static final double TOLERANCE = 5;
 	}
 
+	/**
+	 * Constants with the arm and elevator positions for various positions.
+	 * <p>
+	 * Wrist position is in degrees, elevator position is in meters.
+	 */
 	public enum ArmPosition {
 		//
 		INTAKE_CORAL_CORAL_STATION(1.5, 0),
