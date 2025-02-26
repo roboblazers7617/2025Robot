@@ -60,9 +60,6 @@ public class RobotContainer {
 	private GamepieceMode gamepieceMode;
 	private final Trigger isAlgaeModeTrigger = new Trigger(() -> (gamepieceMode == GamepieceMode.ALGAE_MODE));
 	private final Trigger isCoralModeTrigger = new Trigger(() -> (gamepieceMode == GamepieceMode.CORAL_MODE));
-	private final Command driveFieldOrientedDirectAngle = drivetrain.driveFieldOrientedCommand(DrivetrainControls.driveDirectAngle(drivetrain, driverController));
-	private final Command driveFieldOrientedAnglularVelocity = drivetrain.driveFieldOrientedCommand(DrivetrainControls.driveAngularVelocity(drivetrain, driverController));
-	private final Command driveFieldOrientedDirectAngleSim = drivetrain.driveFieldOrientedCommand(DrivetrainControls.driveDirectAngleSim(drivetrain, driverController));
 
 	/** The container for the robot. Contains subsystems, OI devices, and commands. */
 	public RobotContainer() {
@@ -70,7 +67,7 @@ public class RobotContainer {
 		VersionConstants.publishNetworkTables(NetworkTableInstance.getDefault().getTable("/Metadata"));
 
 		// Configure the trigger bindings
-		// configureDriverControls();
+		configureDriverControls();
 		configureOperatorControls();
 		// Configure the Limelight mode switching
 		new Trigger(DriverStation::isEnabled).onTrue(drivetrain.getVision().onEnableCommand());
@@ -120,22 +117,18 @@ public class RobotContainer {
 			driverController.leftBumper()
 					.whileTrue(drivetrain.driveFieldOrientedAngularVelocityControllerCommand(driverController));
 		}
-
 		driverController.a().whileTrue(StubbedCommands.Drivetrain.DriverSlowMode());
 		driverController.b().whileTrue(StubbedCommands.Drivetrain.DriverFastMode());
 		driverController.x().whileTrue(StubbedCommands.Drivetrain.LockWheels());
 		driverController.y().onTrue(StubbedCommands.Climber.StowRamp());
-
 		driverController.povDown().whileTrue(StubbedCommands.Climber.ClimberDown());
 		driverController.povLeft().whileTrue(StubbedCommands.Climber.RampUp());
 		driverController.povRight().whileTrue(StubbedCommands.Climber.RampDown());
 		driverController.povUp().whileTrue(StubbedCommands.Climber.AutoClimb());
-
 		// TODO: #137 Put actual commands to align to reef
 		driverController.rightBumper().whileTrue(StubbedCommands.Drivetrain.AlignMiddleOfTag());
 		driverController.leftTrigger().whileTrue(StubbedCommands.Drivetrain.AlignLeftOfTag());
 		driverController.rightTrigger().whileTrue(StubbedCommands.Drivetrain.AlignRightOfTag());
-
 		driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
 		driverController.back().onTrue(StubbedCommands.Drivetrain.DisableVision());
 	}
@@ -145,10 +138,9 @@ public class RobotContainer {
 	 */
 	private void configureOperatorControls() {
 		// Set the default elevator command where it moves manually
-		/*
-		 * StubbedCommands.Elevator elevator = (new StubbedCommands()).new Elevator();
-		 * elevator.setDefaultCommand(elevator.MoveElevatorAndWristManual(() -> (-1 * operatorController.getLeftX()), () -> (-1 * operatorController.getLeftY())));
-		 */
+
+		StubbedCommands.Elevator elevator = (new StubbedCommands()).new Elevator();
+		elevator.setDefaultCommand(elevator.MoveElevatorAndWristManual(() -> (-1 * operatorController.getLeftX()), () -> (-1 * operatorController.getLeftY())));
 		// Acts to cancel the currently running command, such as intaking or outaking
 
 		operatorController.a()
@@ -156,7 +148,7 @@ public class RobotContainer {
 		operatorController.b()
 				.or(operatorController.leftTrigger())
 				.and(isAlgaeModeTrigger)
-				.onTrue(endEffector.AlgaeOuttake()
+				.onTrue(endEffector.AlgaeIntake()
 						.andThen(StubbedCommands.Elevator.StowAlgae()));
 		operatorController.b()
 				.or(operatorController.leftTrigger())

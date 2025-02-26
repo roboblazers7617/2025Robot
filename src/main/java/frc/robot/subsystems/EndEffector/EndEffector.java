@@ -32,16 +32,17 @@ public class EndEffector extends SubsystemBase {
 	private final SparkMax endEffectorMotor = new SparkMax(EndEffectorConstants.CAN_ID_END_EFFECTOR, MotorType.kBrushless);
 	/**
 	 * Beam break outputs
-	 * True = is holding coral
-	 * False = is not holding coral
+	 * True = is NOT holding coral
+	 * False = is holding coral
 	 */
 	// TODO: #134 Rename to follow coding standards / ease reading code
-	private final DigitalInput isHoldingCoral = new DigitalInput(EndEffectorConstants.BEAM_BREAK_DIO);
+	private final DigitalInput isNotHoldingCoral = new DigitalInput(EndEffectorConstants.BEAM_BREAK_DIO);
 
 	public EndEffector() {
 		SparkBaseConfig motorConfig = new SparkMaxConfig()
 				.smartCurrentLimit(EndEffectorConstants.MAX_CURRENT_LIMIT)
 				.idleMode(IdleMode.kBrake)
+				.inverted(true)
 				.apply(EndEffectorConstants.CLOSED_LOOP_CONFIG);
 		motorConfig.encoder.positionConversionFactor(EndEffectorConstants.POSITION_CONVERSION_FACTOR);
 
@@ -90,13 +91,13 @@ public class EndEffector extends SubsystemBase {
 
 	public Command CoralIntake() {
 		return StartMotor(() -> EndEffectorConstants.CORAL_INTAKE_SPEED)
-				.andThen(Commands.waitUntil(() -> isHoldingCoral.get()))
+				.andThen(Commands.waitUntil(() -> !isNotHoldingCoral.get()))
 				.finallyDo(this::stopMotor);
 	}
 
 	public Command CoralOuttake() {
 		return StartMotor(() -> EndEffectorConstants.CORAL_OUTAKE_SPEED)
-				.andThen(Commands.waitUntil(() -> !isHoldingCoral.get()))
+				.andThen(Commands.waitUntil(() -> isNotHoldingCoral.get()))
 				.andThen(Commands.waitSeconds(EndEffectorConstants.OUTTAKE_WAIT_TIME))
 				.finallyDo(this::stopMotor);
 	}

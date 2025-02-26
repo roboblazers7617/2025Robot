@@ -353,19 +353,19 @@ public final class Constants {
 		/**
 		 * Intake motor speed for coral. (to be changed and edited later)
 		 */
-		public static final double CORAL_INTAKE_SPEED = 0.2;
+		public static final double CORAL_INTAKE_SPEED = 0.7;
 		/**
 		 * Outtake motor speed for coral. (to be changed and edited later)
 		 */
-		public static final double CORAL_OUTAKE_SPEED = -0.2;
+		public static final double CORAL_OUTAKE_SPEED = 0.2;
 		/**
 		 * Intake motor speed for algae. (to be changed and edited later)
 		 */
-		public static final double ALGAE_INTAKE_SPEED = 0.2;
+		public static final double ALGAE_INTAKE_SPEED = -0.2;
 		/**
 		 * Outtake motor speed for algae. (to be changed and edited later)
 		 */
-		public static final double ALGAE_OUTAKE_SPEED = -0.2;
+		public static final double ALGAE_OUTAKE_SPEED = 0.5;
 		/**
 		 * Time (in seconds) that the motors run after beam break detects no coral after using the outtake command
 		 */
@@ -382,11 +382,11 @@ public final class Constants {
 		/**
 		 * limit to the current before it shuts off the motor for the Algae Intake system. also needs to be adjusted.
 		 */
-		public static final double AlGAE_INTAKE_CURRENT_SHUTOFF_THRESHOLD = 15.0;
+		public static final double AlGAE_INTAKE_CURRENT_SHUTOFF_THRESHOLD = 25.0;
 		/**
 		 * Alternate method to shutof algae intake method using a minimum motor speed limit.
 		 */
-		public static final double ALGAE_INTAKE_MINIMUM_SHUTOFF_SPEED = 0.05;
+		public static final double ALGAE_INTAKE_MINIMUM_SHUTOFF_SPEED = -0.05;
 	}
 
 	/**
