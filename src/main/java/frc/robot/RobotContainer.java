@@ -138,9 +138,10 @@ public class RobotContainer {
 	 */
 	private void configureOperatorControls() {
 		// Set the default elevator command where it moves manually
-
-		StubbedCommands.Elevator elevator = (new StubbedCommands()).new Elevator();
-		elevator.setDefaultCommand(elevator.MoveElevatorAndWristManual(() -> (-1 * operatorController.getLeftX()), () -> (-1 * operatorController.getLeftY())));
+		/*
+		 * StubbedCommands.Elevator elevator = (new StubbedCommands()).new Elevator();
+		 * elevator.setDefaultCommand(elevator.MoveElevatorAndWristManual(() -> (-1 * operatorController.getLeftX()), () -> (-1 * operatorController.getLeftY())));
+		 */
 		// Acts to cancel the currently running command, such as intaking or outaking
 
 		operatorController.a()
