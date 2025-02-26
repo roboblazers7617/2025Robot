@@ -7,6 +7,9 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.DashboardConstants;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.subsystems.drivetrain.DrivetrainControls;
+import frc.robot.subsystems.EndEffector.EndEffector;
+import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.Elastic;
 import frc.robot.Constants.OperatorConstants.GamepieceMode;
 import frc.robot.commands.StubbedCommands;
@@ -35,10 +38,9 @@ public class RobotContainer {
 	 */
 	private SendableChooser<Command> autoChooser;
 	// The robot's subsystems and commands are defined here...
-	@NotLogged
 	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
-	@NotLogged
 	private final Dashboard dashboard = new Dashboard(drivetrain, this);
+	private final EndEffector endEffector = new EndEffector();
 
 	// Replace with CommandPS4Controller or CommandJoystick if needed
 	@NotLogged
@@ -89,7 +91,6 @@ public class RobotContainer {
 		// Reset the last angle so the robot doesn't try to spin.
 		drivetrain.resetLastAngleScalar();
 
-
 		// Set the Elastic tab
 		Elastic.selectTab(DashboardConstants.TELEOP_TAB_NAME);
 		if (StubbedCommands.EndEffector.isHoldingAlage()) {
@@ -99,7 +100,6 @@ public class RobotContainer {
 		else {
 			gamepieceMode = GamepieceMode.CORAL_MODE;
 		}
-
 	}
 
 	/**
@@ -117,22 +117,18 @@ public class RobotContainer {
 			driverController.leftBumper()
 					.whileTrue(drivetrain.driveFieldOrientedAngularVelocityControllerCommand(driverController));
 		}
-
 		driverController.a().whileTrue(StubbedCommands.Drivetrain.DriverSlowMode());
 		driverController.b().whileTrue(StubbedCommands.Drivetrain.DriverFastMode());
 		driverController.x().whileTrue(StubbedCommands.Drivetrain.LockWheels());
 		driverController.y().onTrue(StubbedCommands.Climber.StowRamp());
-
 		driverController.povDown().whileTrue(StubbedCommands.Climber.ClimberDown());
 		driverController.povLeft().whileTrue(StubbedCommands.Climber.RampUp());
 		driverController.povRight().whileTrue(StubbedCommands.Climber.RampDown());
 		driverController.povUp().whileTrue(StubbedCommands.Climber.AutoClimb());
-
 		// TODO: #137 Put actual commands to align to reef
 		driverController.rightBumper().whileTrue(StubbedCommands.Drivetrain.AlignMiddleOfTag());
 		driverController.leftTrigger().whileTrue(StubbedCommands.Drivetrain.AlignLeftOfTag());
 		driverController.rightTrigger().whileTrue(StubbedCommands.Drivetrain.AlignRightOfTag());
-
 		driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
 		driverController.back().onTrue(StubbedCommands.Drivetrain.DisableVision());
 	}
@@ -147,36 +143,36 @@ public class RobotContainer {
 		 * elevator.setDefaultCommand(elevator.MoveElevatorAndWristManual(() -> (-1 * operatorController.getLeftX()), () -> (-1 * operatorController.getLeftY())));
 		 */
 		// Acts to cancel the currently running command, such as intaking or outaking
-		// TODO: #138 Cancel on EndEffector or all mechanism commands?
+
 		operatorController.a()
-				.onTrue(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector())));
+				.onTrue(endEffector.StopIntakeMotor());
 		operatorController.b()
 				.or(operatorController.leftTrigger())
 				.and(isAlgaeModeTrigger)
-				.onTrue(StubbedCommands.EndEffector.IntakeAlgae()
+				.onTrue(endEffector.AlgaeIntake()
 						.andThen(StubbedCommands.Elevator.StowAlgae()));
 		operatorController.b()
 				.or(operatorController.leftTrigger())
 				.and(isCoralModeTrigger)
 				.onTrue(StubbedCommands.Elevator.MoveIntakeCoral()
-						.andThen(StubbedCommands.EndEffector.IntakeCoral())
+						.andThen(endEffector.CoralIntake())
 						.andThen(StubbedCommands.Elevator.StowCoral()));
 		operatorController.x()
 				.and(isAlgaeModeTrigger)
 				.onTrue(StubbedCommands.Elevator.StowAlgae()
-						.alongWith(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector()))));
+						.alongWith(endEffector.StopIntakeMotor()));
 		operatorController.x()
 				.and(isCoralModeTrigger)
 				.onTrue(StubbedCommands.Elevator.StowCoral()
-						.alongWith(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector()))));
+						.alongWith(endEffector.StopIntakeMotor()));
 		operatorController.y()
 				.or(operatorController.leftBumper())
 				.and(isAlgaeModeTrigger)
-				.onTrue(StubbedCommands.EndEffector.OutakeAlgae());
+				.onTrue(endEffector.AlgaeOuttake());
 		operatorController.y()
 				.or(operatorController.leftBumper())
 				.and(isCoralModeTrigger)
-				.onTrue(StubbedCommands.EndEffector.OutakeCoral());
+				.onTrue(endEffector.CoralOuttake());
 
 		operatorController.povDown()
 				.and(isAlgaeModeTrigger)
