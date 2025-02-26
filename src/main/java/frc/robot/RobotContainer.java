@@ -42,7 +42,6 @@ public class RobotContainer {
 	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
 	@NotLogged
 	private final Dashboard dashboard = new Dashboard(drivetrain, this);
-	@NotLogged
 	private final Elevator elevator = new Elevator();
 
 	// Replace with CommandPS4Controller or CommandJoystick if needed
