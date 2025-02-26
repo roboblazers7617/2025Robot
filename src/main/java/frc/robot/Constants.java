@@ -233,7 +233,9 @@ public final class Constants {
 
 	/**
 	 * Constants used to configure logging.
+	 * <p>
 	 * During a competition debug mode should be false to reduce network and CPU usage. All data will still be logged it just won't be accessible until after the match.
+	 * <p>
 	 * During testing debug mode should be true to allow for real-time data viewing.
 	 */
 	public static class LoggingConstants {
