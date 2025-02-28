@@ -331,9 +331,6 @@ public final class Constants {
 		// TODO: set ramp CAN_ID once assigned
 		public static final int RAMP_MOTOR_CAN_ID = 32;
 		/**
-		 * Ramp SparkMax current limit
-		 */
-		/**
 		 * PID config for the motor controller.
 		 */
 		// TODO: PID values block to be updated with actual values
