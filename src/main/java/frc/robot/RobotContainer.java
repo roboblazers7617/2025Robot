@@ -89,7 +89,6 @@ public class RobotContainer {
 		// Reset the last angle so the robot doesn't try to spin.
 		drivetrain.resetLastAngleScalar();
 
-
 		// Set the Elastic tab
 		Elastic.selectTab(DashboardConstants.TELEOP_TAB_NAME);
 		if (StubbedCommands.EndEffector.isHoldingAlage()) {
@@ -99,7 +98,6 @@ public class RobotContainer {
 		else {
 			gamepieceMode = GamepieceMode.CORAL_MODE;
 		}
-
 	}
 
 	/**
@@ -133,7 +131,7 @@ public class RobotContainer {
 		driverController.leftTrigger().whileTrue(StubbedCommands.Drivetrain.AlignLeftOfTag());
 		driverController.rightTrigger().whileTrue(StubbedCommands.Drivetrain.AlignRightOfTag());
 
-		driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
+		driverController.start().onTrue(drivetrain.zeroGyroWithAllianceCommand());
 		driverController.back().onTrue(StubbedCommands.Drivetrain.DisableVision());
 	}
 
