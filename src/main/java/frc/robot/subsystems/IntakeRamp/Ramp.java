@@ -54,9 +54,7 @@ public class Ramp extends SubsystemBase {
 
 	/**
 	 * Starts the Ramp motor.
-	 *
-	 * @param position
-	 *            set position [0,360]
+	 * 
 	 * @return
 	 *         Command to run.
 	 */
