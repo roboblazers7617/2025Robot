@@ -8,6 +8,7 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
@@ -29,6 +30,7 @@ public class Ramp extends SubsystemBase {
 	private final SparkMax rampMotor = new SparkMax(RampConstants.RAMP_MOTOR_CAN_ID, MotorType.kBrushless);
 	private final SparkClosedLoopController rampController = rampMotor.getClosedLoopController();
 	private double encoderVal;
+	private final RelativeEncoder rampEncoder = rampMotor.getEncoder();
 
 	public Ramp() {
 		SparkBaseConfig motorConfig = new SparkMaxConfig()
@@ -38,7 +40,7 @@ public class Ramp extends SubsystemBase {
 				.apply(RampConstants.CLOSED_LOOP_CONFIG);
 		motorConfig.encoder.positionConversionFactor(RampConstants.POSITION_CONVERSION_FACTOR);
 		rampMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-		encoderVal = rampMotor.getEncoder().getPosition();
+		encoderVal = rampEncoder.getPosition();
 	}
 
 	private void MoveToPosition(Double position) {
@@ -47,7 +49,7 @@ public class Ramp extends SubsystemBase {
 	}
 
 	public void periodic() {
-		encoderVal = rampMotor.getEncoder().getPosition();
+		encoderVal = rampEncoder.getPosition();
 	}
 
 	/**

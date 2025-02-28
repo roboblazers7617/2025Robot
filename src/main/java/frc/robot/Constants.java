@@ -324,7 +324,7 @@ public final class Constants {
 		 * Ramp gear ratio
 		 */
 		// TODO: set proper gear ratio
-		public static final double RAMP_MOTOR_GEAR_RATIO = (1.0 / 15.0);
+		public static final double RAMP_MOTOR_GEAR_RATIO = (1.0 / 60.0);
 		/**
 		 * Ramp CAN_ID
 		 */
@@ -338,7 +338,7 @@ public final class Constants {
 		 */
 		// TODO: PID values block to be updated with actual values
 		public static final ClosedLoopConfig CLOSED_LOOP_CONFIG = new ClosedLoopConfig()
-				.p(12)
+				.p(0.02)
 				.i(0)
 				.d(0);
 		public static final double FEED_FORWARD = 0.1;
@@ -352,7 +352,7 @@ public final class Constants {
 		 * Ramp Stow Position
 		 */
 		// TODO: Update with final value
-		public static final double RAMP_STOW_POSITION = 45.0;
+		public static final double RAMP_STOW_POSITION = 75.0;
 	}
 
 	/**
