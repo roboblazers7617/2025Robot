@@ -341,7 +341,9 @@ public final class Constants {
 				.p(0.02)
 				.i(0)
 				.d(0);
-		public static final double FEED_FORWARD = 0.1;
+		/**
+		 * Ramp motor's current limit
+		 */
 		public static final int RAMP_MOTOR_CURRENT_LIMIT = 20;
 		/*
 		 * I Belive we used this to make the numbers apear correctly in the dirvers station?
