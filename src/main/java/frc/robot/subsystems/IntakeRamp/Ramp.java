@@ -21,17 +21,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-@Logged
 /**
- * Creates a new Ramp.
- * Subsystem for the robot's Ramp functionality
+ * Subsystem for the robot's Ramp functionality.
  */
+@Logged
 public class Ramp extends SubsystemBase {
 	private final SparkMax rampMotor = new SparkMax(RampConstants.RAMP_MOTOR_CAN_ID, MotorType.kBrushless);
 	private final SparkClosedLoopController rampController = rampMotor.getClosedLoopController();
 	private double encoderVal;
 	private final RelativeEncoder rampEncoder = rampMotor.getEncoder();
 
+	/**
+	 * Creates a new Ramp.
+	 */
 	public Ramp() {
 		SparkBaseConfig motorConfig = new SparkMaxConfig()
 				.idleMode(IdleMode.kCoast)
@@ -45,7 +47,6 @@ public class Ramp extends SubsystemBase {
 
 	private void MoveToPosition(Double position) {
 		rampController.setReference(position, ControlType.kPosition);
-		// , ClosedLoopSlot.kSlot0, RampConstants.FEED_FORWARD, ArbFFUnits.kPercentOut);
 	}
 
 	public void periodic() {
@@ -54,7 +55,7 @@ public class Ramp extends SubsystemBase {
 
 	/**
 	 * Starts the Ramp motor.
-	 * 
+	 *
 	 * @return
 	 *         Command to run.
 	 */
