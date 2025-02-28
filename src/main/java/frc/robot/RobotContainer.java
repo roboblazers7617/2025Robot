@@ -37,9 +37,9 @@ public class RobotContainer {
 	 */
 	private SendableChooser<Command> autoChooser;
 	// The robot's subsystems and commands are defined here...
-	// @NotLogged
+	@NotLogged
 	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
-	// @NotLogged
+	@NotLogged
 	private final Dashboard dashboard = new Dashboard(drivetrain, this);
 
 	// Replace with CommandPS4Controller or CommandJoystick if needed
@@ -67,7 +67,7 @@ public class RobotContainer {
 		VersionConstants.publishNetworkTables(NetworkTableInstance.getDefault().getTable("/Metadata"));
 
 		// Configure the trigger bindings
-		// configureDriverControls();
+		configureDriverControls();
 		configureOperatorControls();
 		// Configure the Limelight mode switching
 		new Trigger(DriverStation::isEnabled).onTrue(drivetrain.getVision().onEnableCommand());
@@ -138,9 +138,10 @@ public class RobotContainer {
 	 */
 	private void configureOperatorControls() {
 		// Set the default elevator command where it moves manually
-		/*StubbedCommands.Elevator elevator = (new StubbedCommands()).new Elevator();
-		elevator.setDefaultCommand(elevator.MoveElevatorAndWristManual(() -> (-1 * operatorController.getLeftX()), () -> (-1 * operatorController.getLeftY())));
-		*/
+		/*
+		 * StubbedCommands.Elevator elevator = (new StubbedCommands()).new Elevator();
+		 * elevator.setDefaultCommand(elevator.MoveElevatorAndWristManual(() -> (-1 * operatorController.getLeftX()), () -> (-1 * operatorController.getLeftY())));
+		 */
 		// Acts to cancel the currently running command, such as intaking or outaking
 		// TODO: #138 Cancel on EndEffector or all mechanism commands?
 		operatorController.a()
@@ -224,7 +225,7 @@ public class RobotContainer {
 			return Commands.runOnce(() -> System.out.println("Auto builder not made! Is the alliance set?"));
 		}
 		return autoChooser.getSelected()
-		/* .finallyDo(drivetrain::resetLastAngleScalar) */;
+				.finallyDo(drivetrain::resetLastAngleScalar);
 	}
 
 	/**

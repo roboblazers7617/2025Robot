@@ -317,7 +317,7 @@ public final class Constants {
 	}
 
 	/**
-	 * Constants for the Rampmotor
+	 * Constants for the Ramp Motor
 	 */
 	public static class RampConstants {
 		/**
