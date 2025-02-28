@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import com.pathplanner.lib.config.PIDConstants;
+import com.revrobotics.spark.config.ClosedLoopConfig;
 
 import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.util.PoseUtil;
@@ -313,6 +314,44 @@ public final class Constants {
 		 */
 		// TODO: (Sam) Please update with correct values
 		public static final int RAMP_PIVOT_PORT = 2;
+	}
+
+	/**
+	 * Constants for the Ramp Motor
+	 */
+	public static class RampConstants {
+		/**
+		 * Ramp gear ratio
+		 */
+		// TODO: set proper gear ratio
+		public static final double RAMP_MOTOR_GEAR_RATIO = (1.0 / 60.0);
+		/**
+		 * Ramp CAN_ID
+		 */
+		// TODO: set ramp CAN_ID once assigned
+		public static final int RAMP_MOTOR_CAN_ID = 32;
+		/**
+		 * PID config for the motor controller.
+		 */
+		// TODO: PID values block to be updated with actual values
+		public static final ClosedLoopConfig CLOSED_LOOP_CONFIG = new ClosedLoopConfig()
+				.p(0.02)
+				.i(0)
+				.d(0);
+		/**
+		 * Ramp motor's current limit
+		 */
+		public static final int RAMP_MOTOR_CURRENT_LIMIT = 20;
+		/*
+		 * I Belive we used this to make the numbers apear correctly in the dirvers station?
+		 * may be a usesless holdover from arm code test though
+		 */
+		public static final double POSITION_CONVERSION_FACTOR = RAMP_MOTOR_GEAR_RATIO * 360.0;
+		/**
+		 * Ramp Stow Position
+		 */
+		// TODO: Update with final value
+		public static final double RAMP_STOW_POSITION = 75.0;
 	}
 
 	/**
