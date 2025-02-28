@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -19,14 +20,14 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
-@Logged
 /**
- * Creates a new EndEffector.
  * Subsystem for the robot's End Effector functionality
  */
+@Logged
 public class EndEffector extends SubsystemBase {
 	private double speed;
 	private final SparkMax endEffectorMotor = new SparkMax(EndEffectorConstants.CAN_ID_END_EFFECTOR, MotorType.kBrushless);
@@ -37,7 +38,11 @@ public class EndEffector extends SubsystemBase {
 	 */
 	// TODO: #134 Rename to follow coding standards / ease reading code
 	private final DigitalInput isNotHoldingCoral = new DigitalInput(EndEffectorConstants.BEAM_BREAK_DIO);
+	private final RelativeEncoder endEffectEncoder = endEffectorMotor.getEncoder();
 
+	/**
+	 * Creates a new EndEffector.
+	 */
 	public EndEffector() {
 		SparkBaseConfig motorConfig = new SparkMaxConfig()
 				.smartCurrentLimit(EndEffectorConstants.MAX_CURRENT_LIMIT)
@@ -51,13 +56,22 @@ public class EndEffector extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		speed = endEffectorMotor.getEncoder().getVelocity();
+		speed = endEffectEncoder.getVelocity();
 	}
 
+	/**
+	 * Sets motor speed to zero.
+	 */
 	private void stopMotor() {
 		endEffectorMotor.set(0);
 	}
 
+	/**
+	 * Will start the motor with the inputed speed.
+	 *
+	 * @param speed
+	 *            Speed to set [-1,1].
+	 */
 	private void startMotor(Double speed) {
 		endEffectorMotor.set(speed);
 	}
@@ -70,7 +84,7 @@ public class EndEffector extends SubsystemBase {
 	 * @return
 	 *         Command to run.
 	 */
-	public Command StartMotor(Supplier<Double> speed) {
+	public Command StartMotorCommand(Supplier<Double> speed) {
 		return this.runOnce(() -> {
 			startMotor(speed.get());
 		});
@@ -89,20 +103,20 @@ public class EndEffector extends SubsystemBase {
 	}
 
 	public Command CoralIntake() {
-		return StartMotor(() -> EndEffectorConstants.CORAL_INTAKE_SPEED)
+		return StartMotorCommand(() -> EndEffectorConstants.CORAL_INTAKE_SPEED)
 				.andThen(Commands.waitUntil(() -> !isNotHoldingCoral.get()))
 				.finallyDo(this::stopMotor);
 	}
 
 	public Command CoralOuttake() {
-		return StartMotor(() -> EndEffectorConstants.CORAL_OUTAKE_SPEED)
+		return StartMotorCommand(() -> EndEffectorConstants.CORAL_OUTAKE_SPEED)
 				.andThen(Commands.waitUntil(() -> isNotHoldingCoral.get()))
 				.andThen(Commands.waitSeconds(EndEffectorConstants.OUTTAKE_WAIT_TIME))
 				.finallyDo(this::stopMotor);
 	}
 
 	public Command AlgaeIntake() {
-		return StartMotor(() -> EndEffectorConstants.ALGAE_INTAKE_SPEED)
+		return StartMotorCommand(() -> EndEffectorConstants.ALGAE_INTAKE_SPEED)
 				.andThen(Commands.waitSeconds(EndEffectorConstants.MOTOR_CURRENT_CHECK_DELAY))
 				.andThen((Commands.waitUntil(() -> endEffectorMotor
 						.getOutputCurrent() >= EndEffectorConstants.AlGAE_INTAKE_CURRENT_SHUTOFF_THRESHOLD && endEffectorMotor.getEncoder().getVelocity() <= EndEffectorConstants.ALGAE_INTAKE_MINIMUM_SHUTOFF_SPEED)))
@@ -110,7 +124,7 @@ public class EndEffector extends SubsystemBase {
 	}
 
 	public Command AlgaeOuttake() {
-		return StartMotor(() -> EndEffectorConstants.ALGAE_OUTAKE_SPEED)
+		return StartMotorCommand(() -> EndEffectorConstants.ALGAE_OUTAKE_SPEED)
 				.andThen(Commands.waitSeconds(EndEffectorConstants.ALGAE_OUTTAKE_RUN_TIME))
 				.finallyDo(this::stopMotor);
 	}

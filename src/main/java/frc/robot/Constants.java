@@ -388,10 +388,7 @@ public final class Constants {
 	}
 
 	/**
-	 * Constants that
-	 * describe the
-	 * physical layout
-	 * of the field.
+	 * Constants that describe the physical layout of the field.
 	 */
 
 	public static class FieldConstants {

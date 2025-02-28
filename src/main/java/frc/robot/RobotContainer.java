@@ -42,15 +42,15 @@ public class RobotContainer {
 	private final EndEffector endEffector = new EndEffector();
 
 	// Replace with CommandPS4Controller or CommandJoystick if needed
-	@NotLogged
 	/**
 	 * The Controller used by the Driver of the robot, primarily controlling the drivetrain.
 	 */
-	private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
 	@NotLogged
+	private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
 	/**
 	 * The Controller used by the Operator of the robot, primarily controlling the superstructure.
 	 */
+	@NotLogged
 	private final CommandXboxController operatorController = new CommandXboxController(OperatorConstants.OPERATOR_CONTROLLER_PORT);
 
 	/**
