@@ -417,7 +417,7 @@ public final class Constants {
 		/**
 		 * Current limit in amps.
 		 */
-		public static final int CURRENT_LIMIT = 20;
+		public static final int CURRENT_LIMIT = 40;
 		/**
 		 * Tolerance for the target to be considered reached in meters.
 		 */
@@ -490,17 +490,16 @@ public final class Constants {
 		/**
 		 * Maximum position in degrees.
 		 */
-		// TODO: (Brandon) Update with accurate number
-		public static final double MAX_POSITION = 90;
+		public static final double MAX_POSITION = 115.0;
 		/**
 		 * Minimum position in degrees.
 		 */
-		// TODO: (Brandon) Update with accurate number
-		public static final double MIN_POSITION = 0;
+
+		public static final double MIN_POSITION = -80.0;
 		/**
 		 * Minimum safe position while the elevator is lowered, in degrees.
 		 */
-		public static final double SAFE_MIN_POSITION = 10;
+		public static final double SAFE_MIN_POSITION = -50.0;
 
 		/**
 		 * Maximum safe position while the elevator is raised (so it doesn't collide with the metal thing on top), in degrees.
@@ -510,23 +509,27 @@ public final class Constants {
 		/**
 		 * Maximum position that the wrist can be while holding an algae (to make sure it doesn't hit the elevator), in degrees.
 		 */
-		public static final double MAX_ALGAE_POSITION = 45;
+		public static final double MAX_ALGAE_POSITION_WITH_ELEVATOR = 15.0;
 		/**
-		 * Conversion factor from rotation to meters.
+		 * Maximum position that the wrist can be while holding an algae if the elevator is fully extended, in degrees.
 		 */
-		public static final double POSITION_CONVERSION_FACTOR = (10.0 / 58.0) * (18.0 / 58.0); // TODO: check
+		public static final double MAX_ALGAE_POSITION_WITHOUT_ELEVATOR = 65.0;
 		/**
-		 * Conversion factor from rotation to meters per second.
+		 * Conversion factor from rotation to degrees.
+		 */
+		public static final double POSITION_CONVERSION_FACTOR = 1.0 / ((10.0 / 58.0) * (18.0 / 58.0) * (30.0 / 12.0)); // first two conversions are gear boxes, third one is chain
+		/**
+		 * Conversion factor from rotation to degrees per second.
 		 */
 		public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 60.0;
 		/**
-		 * Zero offset, in degrees.
+		 * Zero offset, in rotations, because reasons.
 		 */
-		public static final double ZERO_OFFSET = 0;
+		public static final double ZERO_OFFSET = 0.65;
 		/**
 		 * Current limit in amps.
 		 */
-		public static final int CURRENT_LIMIT = 20;
+		public static final int CURRENT_LIMIT = 40;
 
 		/**
 		 * Tolerance for the target to be considered reached in degrees.

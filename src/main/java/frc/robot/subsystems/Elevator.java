@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase;
@@ -68,6 +69,8 @@ public class Elevator extends SubsystemBase {
 
 	private final RelativeEncoder wristEncoder;
 
+	private final AbsoluteEncoder wristAbsoluteEncoder;
+
 	/**
 	 * The wrist target in degrees, This is within the outer bounds of the wrist but the danger zone at the bottom has not been accounted for.
 	 */
@@ -109,12 +112,22 @@ public class Elevator extends SubsystemBase {
 		SparkMaxConfig wristConfig = new SparkMaxConfig();
 		wristConfig.idleMode(IdleMode.kCoast);
 		wristConfig.smartCurrentLimit(WristConstants.CURRENT_LIMIT);
+		wristConfig.inverted(true);
+
+		wristConfig.absoluteEncoder
+				.positionConversionFactor(360.0)
+				.velocityConversionFactor(360 * 60)
+				.zeroOffset(WristConstants.ZERO_OFFSET)
+				.inverted(true)
+				.zeroCentered(true);
+		wristAbsoluteEncoder = wristMotor.getAbsoluteEncoder();
+
 		wristConfig.encoder
 				.positionConversionFactor(WristConstants.POSITION_CONVERSION_FACTOR)
 				.velocityConversionFactor(WristConstants.VELOCITY_CONVERSION_FACTOR);
 		// .zeroOffset(WristConstants.ZERO_OFFSET);
 		wristEncoder = wristMotor.getEncoder();
-		wristEncoder.setPosition(WristConstants.ZERO_OFFSET);
+		wristEncoder.setPosition(wristAbsoluteEncoder.getPosition());
 
 		wristConfig.closedLoop
 				.p(WristConstants.KP)
@@ -169,8 +182,8 @@ public class Elevator extends SubsystemBase {
 		}
 
 		// ensure wrist target is not too high (a different too high, a smaller one) if it is holding algae
-		if (safeWristTarget > WristConstants.MAX_ALGAE_POSITION) {
-			safeWristTarget = WristConstants.MAX_ALGAE_POSITION;
+		if (safeWristTarget > WristConstants.MAX_ALGAE_POSITION_WITH_ELEVATOR) {
+			safeWristTarget = WristConstants.MAX_ALGAE_POSITION_WITH_ELEVATOR;
 		}
 
 		double wristFeedForwardValue = wristFeedforward.calculate(Math.toRadians(elevatorRelativeEncoder.getPosition()), Math.toRadians(elevatorRelativeEncoder.getVelocity()));
