@@ -346,7 +346,7 @@ public final class Constants {
 		/**
 		 * Elevator kP.
 		 */
-		public static final double KP = 0.1;
+		public static final double KP = 0.0;
 		/**
 		 * Elevator kI.
 		 */
@@ -444,7 +444,7 @@ public final class Constants {
 		/**
 		 * Wrist kP.
 		 */
-		public static final double KP = 0.1;
+		public static final double KP = 0.0;
 		/**
 		 * Wrist kI.
 		 */
@@ -513,11 +513,11 @@ public final class Constants {
 		/**
 		 * Conversion factor from rotation to meters.
 		 */
-		public static final double POSITION_CONVERSION_FACTOR = 1 / ((10.0 / 58) * (18 / 58)); // TODO: check
+		public static final double POSITION_CONVERSION_FACTOR = (10.0 / 58.0) * (18.0 / 58.0); // TODO: check
 		/**
 		 * Conversion factor from rotation to meters per second.
 		 */
-		public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 60;
+		public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 60.0;
 		/**
 		 * Zero offset, in degrees.
 		 */

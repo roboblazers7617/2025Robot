@@ -79,7 +79,7 @@ public class Elevator extends SubsystemBase {
 	public Elevator() {
 		SparkMaxConfig baseElevatorConfig = new SparkMaxConfig();
 
-		baseElevatorConfig.idleMode(IdleMode.kBrake);
+		baseElevatorConfig.idleMode(IdleMode.kCoast);
 		baseElevatorConfig.smartCurrentLimit(ElevatorConstants.CURRENT_LIMIT);
 		// ramp rate?
 
@@ -107,7 +107,7 @@ public class Elevator extends SubsystemBase {
 		followerElevatorMotor.configure(followerElevatorMotorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
 		SparkMaxConfig wristConfig = new SparkMaxConfig();
-		wristConfig.idleMode(IdleMode.kBrake);
+		wristConfig.idleMode(IdleMode.kCoast);
 		wristConfig.smartCurrentLimit(WristConstants.CURRENT_LIMIT);
 		wristConfig.encoder
 				.positionConversionFactor(WristConstants.POSITION_CONVERSION_FACTOR)
