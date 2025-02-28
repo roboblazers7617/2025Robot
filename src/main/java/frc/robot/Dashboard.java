@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -15,17 +15,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotContainer;
 import frc.robot.commands.RunOnceDeferred;
 import frc.robot.commands.drivetrain.LockWheelsCommand;
+import frc.robot.subsystems.Auto;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 
 /**
  * A class that sets up the driverstation dashboard for the robot.
  */
-// TODO: (Brandon) Why is the Dashboard a Subsystem?
-public class Dashboard extends SubsystemBase {
+
+public class Dashboard {
 	final Drivetrain drivetrain;
 	final RobotContainer robotContainer;
 	final SendableChooser<DriverStation.Alliance> alliancePicker;
@@ -42,7 +41,7 @@ public class Dashboard extends SubsystemBase {
 		alliancePicker.addOption("Blue", DriverStation.Alliance.Blue);
 		alliancePicker.addOption("Red", DriverStation.Alliance.Red);
 
-		// TODO: (Brandon) What happens if you change the color multiple times? Does this work or crash?
+		// TODO: #103 (Brandon) What happens if you change the color multiple times? Does this work or crash?
 		alliancePicker.onChange((alliance) -> {
 			new RunOnceDeferred(() -> {
 				configureAutoBuilder(alliance);
@@ -90,11 +89,5 @@ public class Dashboard extends SubsystemBase {
 			drivetrain.resetOdometry(pose.getSelected());
 			drivetrain.resetLastAngleScalar();
 		}).ignoringDisable(true);
-	}
-
-	@Override
-	public void periodic() {
-		// This method will be called once per scheduler run
-		// System.out.println(alliancePicker.getSelected());
 	}
 }
