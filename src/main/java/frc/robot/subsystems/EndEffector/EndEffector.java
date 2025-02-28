@@ -51,7 +51,6 @@ public class EndEffector extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		// This method will be called once per scheduler run
 		speed = endEffectorMotor.getEncoder().getVelocity();
 	}
 
@@ -105,7 +104,6 @@ public class EndEffector extends SubsystemBase {
 	public Command AlgaeIntake() {
 		return StartMotor(() -> EndEffectorConstants.ALGAE_INTAKE_SPEED)
 				.andThen(Commands.waitSeconds(EndEffectorConstants.MOTOR_CURRENT_CHECK_DELAY))
-				// TODO: #135 Check also for speed = 0 (or some small number)
 				.andThen((Commands.waitUntil(() -> endEffectorMotor
 						.getOutputCurrent() >= EndEffectorConstants.AlGAE_INTAKE_CURRENT_SHUTOFF_THRESHOLD && endEffectorMotor.getEncoder().getVelocity() <= EndEffectorConstants.ALGAE_INTAKE_MINIMUM_SHUTOFF_SPEED)))
 				.finallyDo(this::stopMotor);

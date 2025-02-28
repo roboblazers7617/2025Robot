@@ -334,7 +334,6 @@ public final class Constants {
 		public static final int CAN_ID_END_EFFECTOR = 41;
 		/*
 		 * I Belive we used this to make the numbers apear correctly in the dirvers station?
-		 * may be a usesless holdover from arm code test though
 		 */
 		public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO_END_EFFECTOR_MOTOR * 360.0;
 		/**
@@ -348,7 +347,6 @@ public final class Constants {
 		/**
 		 * DIO pin for the beam break.
 		 */
-		// TODO: update to reflect final pin number once finalized.
 		public static final int BEAM_BREAK_DIO = 0;
 		/**
 		 * Intake motor speed for coral. (to be changed and edited later)
