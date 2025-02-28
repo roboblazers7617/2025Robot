@@ -10,6 +10,7 @@ import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.util.Elastic;
 import frc.robot.Constants.OperatorConstants.GamepieceMode;
 import frc.robot.commands.StubbedCommands;
+import frc.robot.subsystems.IntakeRamp.Ramp;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -30,7 +31,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 @Logged
 public class RobotContainer {
-	/*
+	/**
 	 * The sendable chooser for the autonomous command. This is added in the setAutoChooser method which is run when autobuilder is created after an alliance is selected.
 	 */
 	private SendableChooser<Command> autoChooser;
@@ -39,17 +40,18 @@ public class RobotContainer {
 	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
 	@NotLogged
 	private final Dashboard dashboard = new Dashboard(drivetrain, this);
+	private final Ramp ramp = new Ramp();
 
 	// Replace with CommandPS4Controller or CommandJoystick if needed
-	@NotLogged
 	/**
 	 * The Controller used by the Driver of the robot, primarily controlling the drivetrain.
 	 */
-	private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
 	@NotLogged
+	private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
 	/**
 	 * The Controller used by the Operator of the robot, primarily controlling the superstructure.
 	 */
+	@NotLogged
 	private final CommandXboxController operatorController = new CommandXboxController(OperatorConstants.OPERATOR_CONTROLLER_PORT);
 
 	/**
@@ -115,17 +117,14 @@ public class RobotContainer {
 			driverController.leftBumper()
 					.whileTrue(drivetrain.driveFieldOrientedAngularVelocityControllerCommand(driverController));
 		}
-
 		driverController.a().whileTrue(StubbedCommands.Drivetrain.DriverSlowMode());
 		driverController.b().whileTrue(StubbedCommands.Drivetrain.DriverFastMode());
 		driverController.x().whileTrue(StubbedCommands.Drivetrain.LockWheels());
 		driverController.y().onTrue(StubbedCommands.Climber.StowRamp());
-
 		driverController.povDown().whileTrue(StubbedCommands.Climber.ClimberDown());
 		driverController.povLeft().whileTrue(StubbedCommands.Climber.RampUp());
 		driverController.povRight().whileTrue(StubbedCommands.Climber.RampDown());
 		driverController.povUp().whileTrue(StubbedCommands.Climber.AutoClimb());
-
 		// TODO: #137 Put actual commands to align to reef
 		driverController.rightBumper().whileTrue(StubbedCommands.Drivetrain.AlignMiddleOfTag());
 		driverController.leftTrigger().whileTrue(StubbedCommands.Drivetrain.AlignLeftOfTag());
