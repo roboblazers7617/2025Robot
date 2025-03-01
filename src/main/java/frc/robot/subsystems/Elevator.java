@@ -11,6 +11,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -152,8 +153,8 @@ public class Elevator extends SubsystemBase {
 				.p(WristConstants.KP)
 				.i(WristConstants.KI)
 				.d(WristConstants.KD)
-				.outputRange(WristConstants.KMIN_OUTPUT, WristConstants.KMAX_OUTPUT);
-		// .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
+				.outputRange(WristConstants.KMIN_OUTPUT, WristConstants.KMAX_OUTPUT)
+				.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
 
 		// wristConfig.closedLoop.maxMotion
 		// .maxVelocity(WristConstants.MAX_VELOCITY)
@@ -181,8 +182,9 @@ public class Elevator extends SubsystemBase {
 			safeElevatorTarget = ElevatorConstants.MAX_LOWERED_POSITION;
 		}
 
-		double elevatorFeedForwardValue = elevatorFeedforward.calculate(elevatorRelativeEncoder.getVelocity()); // this is technically supposed to be the velocity setpoint
 		currentElevatorSetpoint = elevatorProfile.calculate(0.02, currentElevatorSetpoint, new TrapezoidProfile.State(safeElevatorTarget, 0));
+		double elevatorFeedForwardValue = elevatorFeedforward.calculate(currentElevatorSetpoint.velocity); // this is technically supposed to be the velocity setpoint
+
 		leaderElevatorMotor.getClosedLoopController().setReference(currentElevatorSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0, elevatorFeedForwardValue, ArbFFUnits.kVoltage);
 
 		//
@@ -206,8 +208,9 @@ public class Elevator extends SubsystemBase {
 			safeWristTarget = WristConstants.MAX_ALGAE_POSITION_WITH_ELEVATOR;
 		}
 
-		double wristFeedForwardValue = wristFeedforward.calculate(Math.toRadians(elevatorRelativeEncoder.getPosition()), Math.toRadians(elevatorRelativeEncoder.getVelocity()));
 		currentWristSetpoint = wristProfile.calculate(0.02, currentWristSetpoint, new TrapezoidProfile.State(safeWristTarget, 0));
+		double wristFeedForwardValue = wristFeedforward.calculate(Math.toRadians(currentWristSetpoint.position), Math.toRadians(currentWristSetpoint.velocity));
+
 		wristMotor.getClosedLoopController().setReference(currentWristSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0, wristFeedForwardValue, ArbFFUnits.kVoltage);
 	}
 
