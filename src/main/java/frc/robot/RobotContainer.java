@@ -158,7 +158,7 @@ public class RobotContainer {
 		operatorController.b()
 				.or(operatorController.leftTrigger())
 				.and(isAlgaeModeTrigger)
-				.onTrue(StubbedCommands.EndEffector.IntakeAlgae()
+				.onTrue(endEffector.AlgaeIntake()
 						.andThen(elevator.SetPositionCommand(ArmPosition.STOW_ALGAE)));
 		operatorController.b()
 				.or(operatorController.leftTrigger())
