@@ -308,16 +308,10 @@ public final class Constants {
 		 */
 		// TODO: (Sam) Please update with correct values
 		public static final int LEFT_CLIMBER_PORT = 1;
-
-		/**
-		 * Port for the ramp pivot motor.
-		 */
-		// TODO: (Sam) Please update with correct values
-		public static final int RAMP_PIVOT_PORT = 2;
 	}
 
 	/**
-	 * Constants used to configure the {@link frc.robot.subsystems.EndEffector.EndEffector End Effector}.
+	 * Constants used to configure the {@link frc.robot.subsystems.endEffector.EndEffector End Effector}.
 	 */
 	public static class EndEffectorConstants {
 		/**
@@ -388,16 +382,16 @@ public final class Constants {
 	}
 
 	/**
-	 * Constants used to configure the {@link frc.robot.subsystems.IntakeRamp.Ramp Ramp}.
+	 * Constants for the Ramp Motor
 	 */
 	public static class RampConstants {
 		/**
-		 * Ramp gear ratio.
+		 * Ramp gear ratio
 		 */
 		// TODO: set proper gear ratio
 		public static final double RAMP_MOTOR_GEAR_RATIO = (1.0 / 60.0);
 		/**
-		 * Ramp CAN ID.
+		 * Ramp CAN_ID
 		 */
 		// TODO: set ramp CAN_ID once assigned
 		public static final int RAMP_MOTOR_CAN_ID = 32;
@@ -410,16 +404,16 @@ public final class Constants {
 				.i(0)
 				.d(0);
 		/**
-		 * Ramp motor's current limit.
+		 * Ramp motor's current limit
 		 */
 		public static final int RAMP_MOTOR_CURRENT_LIMIT = 20;
 		/*
 		 * I Belive we used this to make the numbers apear correctly in the dirvers station?
-		 * May be a usesless holdover from arm code test though.
+		 * may be a usesless holdover from arm code test though
 		 */
 		public static final double POSITION_CONVERSION_FACTOR = RAMP_MOTOR_GEAR_RATIO * 360.0;
 		/**
-		 * Ramp Stow Position.
+		 * Ramp Stow Position
 		 */
 		// TODO: Update with final value
 		public static final double RAMP_STOW_POSITION = 75.0;
