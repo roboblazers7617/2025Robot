@@ -22,6 +22,8 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -52,6 +54,13 @@ public class Elevator extends SubsystemBase {
 
 	private final RelativeEncoder elevatorRelativeEncoder;
 
+	private final TrapezoidProfile elevatorProfile = new TrapezoidProfile(new Constraints(ElevatorConstants.MAX_VELOCITY, ElevatorConstants.MAX_ACCELERATION));
+
+	/**
+	 * This is the current trapezoid profile setpoint for the elevator. It is not the final target, that is in the {@link #elevatorTarget} variable.
+	 */
+	private TrapezoidProfile.State currentElevatorSetpoint = new TrapezoidProfile.State();
+
 	/**
 	 * The elevator target in meters, This is within the outer bounds of the elevator but the danger zone at the bottom has not been accounted for.
 	 */
@@ -67,9 +76,20 @@ public class Elevator extends SubsystemBase {
 	 */
 	private final SparkMax wristMotor = new SparkMax(WristConstants.MOTOR_ID, MotorType.kBrushless);
 
+	/**
+	 * @deprecated use absolute encoder
+	 */
+	@Deprecated
 	private final RelativeEncoder wristEncoder;
 
 	private final AbsoluteEncoder wristAbsoluteEncoder;
+
+	private final TrapezoidProfile wristProfile = new TrapezoidProfile(new Constraints(WristConstants.MAX_VELOCITY, WristConstants.MAX_ACCELERATION));
+
+	/**
+	 * This is the current trapezoid profile setpoint for the wrist. It is not the final target, that is in the {@link #wristTarget} variable.
+	 */
+	private TrapezoidProfile.State currentWristSetpoint = new TrapezoidProfile.State();
 
 	/**
 	 * The wrist target in degrees, This is within the outer bounds of the wrist but the danger zone at the bottom has not been accounted for.
@@ -100,9 +120,9 @@ public class Elevator extends SubsystemBase {
 				.outputRange(ElevatorConstants.KMIN_OUTPUT, ElevatorConstants.KMAX_OUTPUT);
 		// .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
-		baseElevatorConfig.closedLoop.maxMotion
-				.maxVelocity(ElevatorConstants.MAX_VELOCITY)
-				.maxAcceleration(ElevatorConstants.MAX_ACCELERATION);
+		// baseElevatorConfig.closedLoop.maxMotion
+		// .maxVelocity(ElevatorConstants.MAX_VELOCITY)
+		// .maxAcceleration(ElevatorConstants.MAX_ACCELERATION);
 
 		leaderElevatorMotor.configure(baseElevatorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
@@ -125,7 +145,6 @@ public class Elevator extends SubsystemBase {
 		wristConfig.encoder
 				.positionConversionFactor(WristConstants.POSITION_CONVERSION_FACTOR)
 				.velocityConversionFactor(WristConstants.VELOCITY_CONVERSION_FACTOR);
-		// .zeroOffset(WristConstants.ZERO_OFFSET);
 		wristEncoder = wristMotor.getEncoder();
 		wristEncoder.setPosition(wristAbsoluteEncoder.getPosition());
 
@@ -136,9 +155,9 @@ public class Elevator extends SubsystemBase {
 				.outputRange(WristConstants.KMIN_OUTPUT, WristConstants.KMAX_OUTPUT);
 		// .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
 
-		wristConfig.closedLoop.maxMotion
-				.maxVelocity(WristConstants.MAX_VELOCITY)
-				.maxAcceleration(WristConstants.MAX_ACCELERATION);
+		// wristConfig.closedLoop.maxMotion
+		// .maxVelocity(WristConstants.MAX_VELOCITY)
+		// .maxAcceleration(WristConstants.MAX_ACCELERATION);
 
 		wristMotor.configure(wristConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 	}
@@ -163,7 +182,8 @@ public class Elevator extends SubsystemBase {
 		}
 
 		double elevatorFeedForwardValue = elevatorFeedforward.calculate(elevatorRelativeEncoder.getVelocity()); // this is technically supposed to be the velocity setpoint
-		leaderElevatorMotor.getClosedLoopController().setReference(safeElevatorTarget, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0, elevatorFeedForwardValue, ArbFFUnits.kVoltage);
+		currentElevatorSetpoint = elevatorProfile.calculate(0.02, currentElevatorSetpoint, new TrapezoidProfile.State(safeElevatorTarget, 0));
+		leaderElevatorMotor.getClosedLoopController().setReference(currentElevatorSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0, elevatorFeedForwardValue, ArbFFUnits.kVoltage);
 
 		//
 		//
@@ -187,7 +207,8 @@ public class Elevator extends SubsystemBase {
 		}
 
 		double wristFeedForwardValue = wristFeedforward.calculate(Math.toRadians(elevatorRelativeEncoder.getPosition()), Math.toRadians(elevatorRelativeEncoder.getVelocity()));
-		wristMotor.getClosedLoopController().setReference(safeWristTarget, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0, wristFeedForwardValue, ArbFFUnits.kVoltage);
+		currentWristSetpoint = wristProfile.calculate(0.02, currentWristSetpoint, new TrapezoidProfile.State(safeWristTarget, 0));
+		wristMotor.getClosedLoopController().setReference(currentWristSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0, wristFeedForwardValue, ArbFFUnits.kVoltage);
 	}
 
 	/**
