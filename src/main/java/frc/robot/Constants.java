@@ -336,11 +336,13 @@ public final class Constants {
 		 * I Belive we used this to make the numbers apear correctly in the dirvers station?
 		 */
 		public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO_END_EFFECTOR_MOTOR * 360.0;
+
 		/**
 		 * PID config for the motor controller.
 		 */
 		// TODO: PID values block to be updated with actual values
 		public static final ClosedLoopConfig CLOSED_LOOP_CONFIG = new ClosedLoopConfig()
+
 				.p(0)
 				.i(0)
 				.d(0);
@@ -388,9 +390,45 @@ public final class Constants {
 	}
 
 	/**
-	 * Constants used to configure the ramp.
+	 * Constants for
+	 * the Ramp Motor
 	 */
-	public static class RampConstants {}
+
+	public static class RampConstants {
+		/**
+		 * Ramp gear ratio
+		 */
+		// TODO: set proper gear ratio
+		public static final double RAMP_MOTOR_GEAR_RATIO = (1.0 / 60.0);
+		/**
+		 * Ramp CAN_ID
+		 */
+		// TODO: set ramp CAN_ID once assigned
+		public static final int RAMP_MOTOR_CAN_ID = 32;
+		/**
+		 * PID config for the motor controller.
+		 */
+		// TODO: PID values block to be updated with actual values
+		public static final ClosedLoopConfig CLOSED_LOOP_CONFIG = new ClosedLoopConfig()
+
+				.p(0.02)
+				.i(0)
+				.d(0);
+		/**
+		 * Ramp motor's current limit
+		 */
+		public static final int RAMP_MOTOR_CURRENT_LIMIT = 20;
+		/*
+		 * I Belive we used this to make the numbers apear correctly in the dirvers station?
+		 * may be a usesless holdover from arm code test though
+		 */
+		public static final double POSITION_CONVERSION_FACTOR = RAMP_MOTOR_GEAR_RATIO * 360.0;
+		/**
+		 * Ramp Stow Position
+		 */
+		// TODO: Update with final value
+		public static final double RAMP_STOW_POSITION = 75.0;
+	}
 
 	/**
 	 * Constants that describe the physical layout of the field.

@@ -13,6 +13,8 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.Elastic;
 import frc.robot.Constants.OperatorConstants.GamepieceMode;
 import frc.robot.commands.StubbedCommands;
+import frc.robot.subsystems.IntakeRamp.Ramp;
+import frc.robot.subsystems.drivetrain.Drivetrain;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -32,7 +34,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 @Logged
 public class RobotContainer {
-	/*
+	/**
 	 * The sendable chooser for the autonomous command. This is added in the setAutoChooser method which is run when autobuilder is created after an alliance is selected.
 	 */
 	private SendableChooser<Command> autoChooser;
@@ -40,8 +42,8 @@ public class RobotContainer {
 	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
 	private final Dashboard dashboard = new Dashboard(drivetrain, this);
 	private final EndEffector endEffector = new EndEffector();
+	private final Ramp ramp = new Ramp();
 
-	// Replace with CommandPS4Controller or CommandJoystick if needed
 	/**
 	 * The Controller used by the Driver of the robot, primarily controlling the drivetrain.
 	 */
