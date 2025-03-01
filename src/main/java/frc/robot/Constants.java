@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import com.pathplanner.lib.config.PIDConstants;
+import com.revrobotics.spark.config.ClosedLoopConfig;
 
 import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.util.PoseUtil;
@@ -313,6 +314,115 @@ public final class Constants {
 		 */
 		// TODO: (Sam) Please update with correct values
 		public static final int RAMP_PIVOT_PORT = 2;
+	}
+
+	/**
+	 * Constants used to configure the {@link frc.robot.subsystems.EndEffector.EndEffector End Effector}.
+	 */
+	public static class EndEffectorConstants {
+		/**
+		 * End Effector's motor gear ratio.
+		 */
+		public static final double GEAR_RATIO_END_EFFECTOR_MOTOR = (2.5 / 1.0);
+		/**
+		 * Neo's current limit.
+		 */
+		public static final int MAX_CURRENT_LIMIT = 40;
+		/**
+		 * End Effector's Spark Max CAN ID.
+		 */
+		public static final int CAN_ID_END_EFFECTOR = 41;
+		/*
+		 * I Belive we used this to make the numbers apear correctly in the dirvers station?
+		 */
+		public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO_END_EFFECTOR_MOTOR * 360.0;
+		/**
+		 * PID config for the motor controller.
+		 */
+		// TODO: PID values block to be updated with actual values
+		public static final ClosedLoopConfig CLOSED_LOOP_CONFIG = new ClosedLoopConfig()
+				.p(0)
+				.i(0)
+				.d(0);
+		/**
+		 * DIO pin for the beam break.
+		 */
+		public static final int BEAM_BREAK_DIO = 0;
+		/**
+		 * Intake motor speed for coral. (to be changed and edited later)
+		 */
+		public static final double CORAL_INTAKE_SPEED = 0.7;
+		/**
+		 * Outtake motor speed for coral. (to be changed and edited later)
+		 */
+		public static final double CORAL_OUTAKE_SPEED = 0.2;
+		/**
+		 * Intake motor speed for algae. (to be changed and edited later)
+		 */
+		public static final double ALGAE_INTAKE_SPEED = -0.2;
+		/**
+		 * Outtake motor speed for algae. (to be changed and edited later)
+		 */
+		public static final double ALGAE_OUTAKE_SPEED = 0.5;
+		/**
+		 * Time (in seconds) that the motors run after beam break detects no coral after using the outtake command
+		 */
+		public static final double OUTTAKE_WAIT_TIME = 0.2;
+		/**
+		 * Time (in seconds) that the motors run after algae outake is called to eject algae.
+		 */
+		public static final double ALGAE_OUTTAKE_RUN_TIME = 0.3;
+		/**
+		 * Time (in seconds) determines how long the break period is before the Current spike can be detected.
+		 * This allows it to not shutoff with the initial motor startup spike. (this will need to be adjusted)
+		 */
+		public static final double MOTOR_CURRENT_CHECK_DELAY = 0.1;
+		/**
+		 * Limit to the current before it shuts off the motor for the Algae Intake system. (also needs to be adjusted)
+		 */
+		public static final double AlGAE_INTAKE_CURRENT_SHUTOFF_THRESHOLD = 25.0;
+		/**
+		 * Alternate method to shutof algae intake method using a minimum motor speed limit.
+		 */
+		public static final double ALGAE_INTAKE_MINIMUM_SHUTOFF_SPEED = -0.05;
+	}
+
+	/**
+	 * Constants used to configure the {@link frc.robot.subsystems.IntakeRamp.Ramp Ramp}.
+	 */
+	public static class RampConstants {
+		/**
+		 * Ramp gear ratio.
+		 */
+		// TODO: set proper gear ratio
+		public static final double RAMP_MOTOR_GEAR_RATIO = (1.0 / 60.0);
+		/**
+		 * Ramp CAN ID.
+		 */
+		// TODO: set ramp CAN_ID once assigned
+		public static final int RAMP_MOTOR_CAN_ID = 32;
+		/**
+		 * PID config for the motor controller.
+		 */
+		// TODO: PID values block to be updated with actual values
+		public static final ClosedLoopConfig CLOSED_LOOP_CONFIG = new ClosedLoopConfig()
+				.p(0.02)
+				.i(0)
+				.d(0);
+		/**
+		 * Ramp motor's current limit.
+		 */
+		public static final int RAMP_MOTOR_CURRENT_LIMIT = 20;
+		/*
+		 * I Belive we used this to make the numbers apear correctly in the dirvers station?
+		 * May be a usesless holdover from arm code test though.
+		 */
+		public static final double POSITION_CONVERSION_FACTOR = RAMP_MOTOR_GEAR_RATIO * 360.0;
+		/**
+		 * Ramp Stow Position.
+		 */
+		// TODO: Update with final value
+		public static final double RAMP_STOW_POSITION = 75.0;
 	}
 
 	/**
