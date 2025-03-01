@@ -8,6 +8,8 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.DashboardConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.LoggingConstants;
+import frc.robot.subsystems.EndEffector.EndEffector;
+import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.Elastic;
 import frc.robot.Constants.OperatorConstants.GamepieceMode;
 import frc.robot.Constants.ArmPosition;
@@ -15,7 +17,6 @@ import frc.robot.commands.StubbedCommands;
 
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.IntakeRamp.Ramp;
-import frc.robot.subsystems.drivetrain.Drivetrain;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -44,10 +45,10 @@ public class RobotContainer {
 	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
 	@NotLogged
 	private final Dashboard dashboard = new Dashboard(drivetrain, this);
+	private final EndEffector endEffector = new EndEffector();
 	private final Elevator elevator = new Elevator();
 	private final Ramp ramp = new Ramp();
 
-	// Replace with CommandPS4Controller or CommandJoystick if needed
 	/**
 	 * The Controller used by the Driver of the robot, primarily controlling the drivetrain.
 	 */
@@ -153,7 +154,7 @@ public class RobotContainer {
 		// elevator.setDefaultCommand(elevator.SetPositionCommand(ArmPosition.CLIMB));
 		// TODO: #138 Cancel on EndEffector or all mechanism commands?
 		operatorController.a()
-				.onTrue(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector())));
+				.onTrue(endEffector.StopIntakeMotor());
 		operatorController.b()
 				.or(operatorController.leftTrigger())
 				.and(isAlgaeModeTrigger)
@@ -163,24 +164,24 @@ public class RobotContainer {
 				.or(operatorController.leftTrigger())
 				.and(isCoralModeTrigger)
 				.whileTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_CORAL_CORAL_STATION)
-						.andThen(StubbedCommands.EndEffector.IntakeCoral()));
+						.andThen(endEffector.CoralIntake()));
 		// .andThen(elevator.SetPositionCommand(ArmPosition.STOW_CORAL)));
 		operatorController.x()
 				.and(isAlgaeModeTrigger)
 				.onTrue(elevator.SetPositionCommand(ArmPosition.STOW_ALGAE)
-						.alongWith(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector()))));
+						.alongWith(endEffector.StopIntakeMotor()));
 		operatorController.x()
 				.and(isCoralModeTrigger)
 				.onTrue(elevator.SetPositionCommand(ArmPosition.STOW_CORAL)
-						.alongWith(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector()))));
+						.alongWith(endEffector.StopIntakeMotor()));
 		operatorController.y()
 				.or(operatorController.leftBumper())
 				.and(isAlgaeModeTrigger)
-				.onTrue(StubbedCommands.EndEffector.OutakeAlgae());
+				.onTrue(endEffector.AlgaeOuttake());
 		operatorController.y()
 				.or(operatorController.leftBumper())
 				.and(isCoralModeTrigger)
-				.onTrue(StubbedCommands.EndEffector.OutakeCoral());
+				.onTrue(endEffector.CoralOuttake());
 
 		operatorController.povDown()
 				.and(isAlgaeModeTrigger)
