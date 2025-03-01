@@ -95,7 +95,7 @@ public class Elevator extends SubsystemBase {
 	/**
 	 * The wrist target in degrees, This is within the outer bounds of the wrist but the danger zone at the bottom has not been accounted for.
 	 */
-	private double wristTarget = 0;
+	private double wristTarget;
 
 	/**
 	 * Creates a new Elevator.
@@ -131,7 +131,7 @@ public class Elevator extends SubsystemBase {
 		followerElevatorMotor.configure(followerElevatorMotorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
 		SparkMaxConfig wristConfig = new SparkMaxConfig();
-		wristConfig.idleMode(IdleMode.kCoast);
+		wristConfig.idleMode(IdleMode.kBrake);
 		wristConfig.smartCurrentLimit(WristConstants.CURRENT_LIMIT);
 		wristConfig.inverted(true);
 
@@ -142,6 +142,8 @@ public class Elevator extends SubsystemBase {
 				.inverted(true)
 				.zeroCentered(true);
 		wristAbsoluteEncoder = wristMotor.getAbsoluteEncoder();
+
+		setWristPosition(wristAbsoluteEncoder.getPosition());
 
 		wristConfig.encoder
 				.positionConversionFactor(WristConstants.POSITION_CONVERSION_FACTOR)
@@ -257,13 +259,18 @@ public class Elevator extends SubsystemBase {
 		Command command = new Command() {
 			@Override
 			public void initialize() {
-				setElevatorPosition(position.ELEVATOR_POSITION);
+				// setElevatorPosition(position.ELEVATOR_POSITION);
 				setWristPosition(position.WRIST_POSITION);
 			}
 
 			@Override
 			public boolean isFinished() {
 				return isAtTarget();
+			}
+
+			@Override
+			public void end(boolean interrupted) {
+				System.out.println("done. interrupted: " + interrupted);
 			}
 		};
 		command.addRequirements(this);
@@ -297,8 +304,8 @@ public class Elevator extends SubsystemBase {
 	 * Check if the elevator and wrist are within the tolerance to their target positions. This is used to determine if the {@link #SetPositionCommand(Constants.ArmPosition)} command is finished.
 	 */
 	private boolean isAtTarget() {
-		boolean elevatorAtTarget = Math.abs(elevatorRelativeEncoder.getPosition() - elevatorTarget) < ElevatorConstants.TOLERANCE;
-		boolean wristAtTarget = Math.abs(wristEncoder.getPosition() - wristTarget) < WristConstants.TOLERANCE;
-		return elevatorAtTarget && wristAtTarget;
+		// boolean elevatorAtTarget = Math.abs(elevatorRelativeEncoder.getPosition() - elevatorTarget) < ElevatorConstants.TOLERANCE;
+		boolean wristAtTarget = Math.abs(wristAbsoluteEncoder.getPosition() - wristTarget) < WristConstants.TOLERANCE;
+		return /* elevatorAtTarget && */ wristAtTarget;
 	}
 }

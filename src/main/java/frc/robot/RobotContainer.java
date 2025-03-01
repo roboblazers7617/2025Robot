@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.DashboardConstants;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.LoggingConstants;
 import frc.robot.util.Elastic;
 import frc.robot.Constants.OperatorConstants.GamepieceMode;
 import frc.robot.Constants.ArmPosition;
@@ -96,7 +97,9 @@ public class RobotContainer {
 		drivetrain.resetLastAngleScalar();
 
 		// Set the Elastic tab
-		Elastic.selectTab(DashboardConstants.TELEOP_TAB_NAME);
+		if (!LoggingConstants.DEBUG_MODE) {
+			Elastic.selectTab(DashboardConstants.TELEOP_TAB_NAME);
+		}
 		if (StubbedCommands.EndEffector.isHoldingAlage()) {
 			gamepieceMode = GamepieceMode.ALGAE_MODE;
 		}
@@ -147,6 +150,7 @@ public class RobotContainer {
 		 * elevator.setDefaultCommand(elevator.MoveElevatorAndWristManual(() -> (-1 * operatorController.getLeftX()), () -> (-1 * operatorController.getLeftY())));
 		 */
 		// Acts to cancel the currently running command, such as intaking or outaking
+		// elevator.setDefaultCommand(elevator.SetPositionCommand(ArmPosition.CLIMB));
 		// TODO: #138 Cancel on EndEffector or all mechanism commands?
 		operatorController.a()
 				.onTrue(Commands.runOnce((() -> {}), (new StubbedCommands().new EndEffector())));
@@ -158,9 +162,9 @@ public class RobotContainer {
 		operatorController.b()
 				.or(operatorController.leftTrigger())
 				.and(isCoralModeTrigger)
-				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_CORAL_CORAL_STATION)
-						.andThen(StubbedCommands.EndEffector.IntakeCoral())
-						.andThen(elevator.SetPositionCommand(ArmPosition.STOW_CORAL)));
+				.whileTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_CORAL_CORAL_STATION)
+						.andThen(StubbedCommands.EndEffector.IntakeCoral()));
+		// .andThen(elevator.SetPositionCommand(ArmPosition.STOW_CORAL)));
 		operatorController.x()
 				.and(isAlgaeModeTrigger)
 				.onTrue(elevator.SetPositionCommand(ArmPosition.STOW_ALGAE)

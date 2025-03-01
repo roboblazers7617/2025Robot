@@ -363,7 +363,7 @@ public final class Constants {
 		/**
 		 * Elevator kG.
 		 */
-		public static final double KG = 0;
+		public static final double KG = 0.0;
 		/**
 		 * Elevator kV.
 		 */
@@ -445,7 +445,7 @@ public final class Constants {
 		/**
 		 * Wrist kP.
 		 */
-		public static final double KP = 0.0;
+		public static final double KP = 0.007; // 0.006
 		/**
 		 * Wrist kI.
 		 */
@@ -458,11 +458,11 @@ public final class Constants {
 		/**
 		 * Wrist kS.
 		 */
-		public static final double KS = 0;
+		public static final double KS = 0.1;// 0.1
 		/**
 		 * Wrist kG.
 		 */
-		public static final double KG = 0;
+		public static final double KG = 0.2;
 		/**
 		 * Wrist kV.
 		 */
@@ -480,12 +480,12 @@ public final class Constants {
 		 * Maximum velocity in degrees/s.
 		 */
 		// TODO: (Brandon) Update with accurate number
-		public static final double MAX_VELOCITY = 1;
+		public static final double MAX_VELOCITY = 0.5;
 		/**
 		 * Maximum acceleration in degrees/s^2.
 		 */
 		// TODO: (Brandon) Update with accurate number
-		public static final double MAX_ACCELERATION = 1;
+		public static final double MAX_ACCELERATION = 0.5;
 
 		/**
 		 * Maximum position in degrees.
@@ -495,7 +495,7 @@ public final class Constants {
 		 * Minimum position in degrees.
 		 */
 
-		public static final double MIN_POSITION = -80.0;
+		public static final double MIN_POSITION = -70.0;
 		/**
 		 * Minimum safe position while the elevator is lowered, in degrees.
 		 */
@@ -544,19 +544,19 @@ public final class Constants {
 	 */
 	public enum ArmPosition {
 		//
-		INTAKE_CORAL_CORAL_STATION(1.5, 0),
+		INTAKE_CORAL_CORAL_STATION(WristConstants.MAX_POSITION, 0),
 		//
 		INTAKE_ALGAE_LEVEL_2(1, 0),
 		//
 		INTAKE_ALGAE_LEVEL_3(2, 0),
 		//
-		OUTTAKE_CORAL_LEVEL_1(0, 0),
+		OUTTAKE_CORAL_LEVEL_1(92, 0), // dummy value
 		//
-		OUTTAKE_CORAL_LEVEL_2(0, 0),
+		OUTTAKE_CORAL_LEVEL_2(92, 0), // dummy value
 		//
-		OUTTAKE_CORAL_LEVEL_3(0, 0),
+		OUTTAKE_CORAL_LEVEL_3(92, 0), // dummy value
 		//
-		OUTTAKE_CORAL_LEVEL_4(0, 0),
+		OUTTAKE_CORAL_LEVEL_4(92, 0), // dummy value
 		//
 		OUTTAKE_ALGAE_PROCESSOR(0, 0),
 		//
@@ -566,7 +566,7 @@ public final class Constants {
 		//
 		STOW_CORAL(0, 0),
 		//
-		CLIMB(0, 0);
+		CLIMB(-10, 0);
 
 		/**
 		 * The elevator position in meters.
