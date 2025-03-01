@@ -388,6 +388,11 @@ public final class Constants {
 	}
 
 	/**
+	 * Constants used to configure the ramp.
+	 */
+	public static class RampConstants {}
+
+	/**
 	 * Constants that describe the physical layout of the field.
 	 */
 
