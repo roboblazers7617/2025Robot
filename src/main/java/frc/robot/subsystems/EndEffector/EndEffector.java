@@ -20,7 +20,6 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
@@ -29,16 +28,19 @@ import edu.wpi.first.wpilibj2.command.Commands;
  */
 @Logged
 public class EndEffector extends SubsystemBase {
-	private double speed;
+	@Logged
 	private final SparkMax endEffectorMotor = new SparkMax(EndEffectorConstants.CAN_ID_END_EFFECTOR, MotorType.kBrushless);
+	@Logged
+	private final RelativeEncoder endEffectEncoder = endEffectorMotor.getEncoder();
+
 	/**
 	 * Beam break outputs
 	 * True = is NOT holding coral
 	 * False = is holding coral
 	 */
 	// TODO: #134 Rename to follow coding standards / ease reading code
+	@Logged
 	private final DigitalInput isNotHoldingCoral = new DigitalInput(EndEffectorConstants.BEAM_BREAK_DIO);
-	private final RelativeEncoder endEffectEncoder = endEffectorMotor.getEncoder();
 
 	/**
 	 * Creates a new EndEffector.
@@ -52,11 +54,6 @@ public class EndEffector extends SubsystemBase {
 		motorConfig.encoder.positionConversionFactor(EndEffectorConstants.POSITION_CONVERSION_FACTOR);
 
 		endEffectorMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-	}
-
-	@Override
-	public void periodic() {
-		speed = endEffectEncoder.getVelocity();
 	}
 
 	/**

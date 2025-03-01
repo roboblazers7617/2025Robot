@@ -7,14 +7,12 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.DashboardConstants;
 import frc.robot.Constants.DrivetrainConstants;
-import frc.robot.subsystems.drivetrain.DrivetrainControls;
 import frc.robot.subsystems.EndEffector.EndEffector;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.Elastic;
 import frc.robot.Constants.OperatorConstants.GamepieceMode;
 import frc.robot.commands.StubbedCommands;
 import frc.robot.subsystems.IntakeRamp.Ramp;
-import frc.robot.subsystems.drivetrain.Drivetrain;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -39,7 +37,9 @@ public class RobotContainer {
 	 */
 	private SendableChooser<Command> autoChooser;
 	// The robot's subsystems and commands are defined here...
+	@NotLogged
 	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
+	@NotLogged
 	private final Dashboard dashboard = new Dashboard(drivetrain, this);
 	private final EndEffector endEffector = new EndEffector();
 	private final Ramp ramp = new Ramp();
