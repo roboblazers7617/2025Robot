@@ -20,6 +20,7 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
@@ -30,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.WristConstants;
+import frc.robot.RobotContainer;
 
 @Logged
 /**
@@ -38,6 +40,8 @@ import frc.robot.Constants.WristConstants;
  * Elevator and wrist safety features are in the {@link #periodic()} method.
  */
 public class Elevator extends SubsystemBase {
+	@NotLogged
+	private final RobotContainer robotContainer;
 	/**
 	 * The FeedForward used for the elevator.
 	 */
@@ -90,7 +94,7 @@ public class Elevator extends SubsystemBase {
 	/**
 	 * This is the current trapezoid profile setpoint for the wrist. It is not the final target, that is in the {@link #wristTarget} variable.
 	 */
-	private TrapezoidProfile.State currentWristSetpoint = new TrapezoidProfile.State();
+	private TrapezoidProfile.State currentWristSetpoint;
 
 	/**
 	 * The wrist target in degrees, This is within the outer bounds of the wrist but the danger zone at the bottom has not been accounted for.
@@ -100,7 +104,9 @@ public class Elevator extends SubsystemBase {
 	/**
 	 * Creates a new Elevator.
 	 */
-	public Elevator() {
+	public Elevator(RobotContainer robotContainer) {
+		this.robotContainer = robotContainer;
+
 		SparkMaxConfig baseElevatorConfig = new SparkMaxConfig();
 
 		baseElevatorConfig.idleMode(IdleMode.kCoast);
@@ -144,6 +150,7 @@ public class Elevator extends SubsystemBase {
 		wristAbsoluteEncoder = wristMotor.getAbsoluteEncoder();
 
 		setWristPosition(wristAbsoluteEncoder.getPosition());
+		currentWristSetpoint = new TrapezoidProfile.State(wristTarget, 0);
 
 		wristConfig.encoder
 				.positionConversionFactor(WristConstants.POSITION_CONVERSION_FACTOR)
@@ -206,11 +213,13 @@ public class Elevator extends SubsystemBase {
 		}
 
 		// ensure wrist target is not too high (a different too high, a smaller one) if it is holding algae
-		if (safeWristTarget > WristConstants.MAX_ALGAE_POSITION_WITH_ELEVATOR) {
+		if (safeWristTarget > WristConstants.MAX_ALGAE_POSITION_WITH_ELEVATOR && robotContainer.isHoldingAlgae()) {
 			safeWristTarget = WristConstants.MAX_ALGAE_POSITION_WITH_ELEVATOR;
 		}
 
 		currentWristSetpoint = wristProfile.calculate(0.02, currentWristSetpoint, new TrapezoidProfile.State(safeWristTarget, 0));
+		System.out.println("safe wrist target: " + safeWristTarget);
+		System.out.println("current wrist setpoint: " + currentWristSetpoint.position);
 		double wristFeedForwardValue = wristFeedforward.calculate(Math.toRadians(currentWristSetpoint.position), Math.toRadians(currentWristSetpoint.velocity));
 
 		wristMotor.getClosedLoopController().setReference(currentWristSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0, wristFeedForwardValue, ArbFFUnits.kVoltage);
@@ -276,6 +285,13 @@ public class Elevator extends SubsystemBase {
 		command.addRequirements(this);
 
 		return command;
+	}
+
+	public void elevatorInit() {
+		setWristPosition(wristAbsoluteEncoder.getPosition());
+		currentWristSetpoint = new TrapezoidProfile.State(wristAbsoluteEncoder.getPosition(), 0);
+		setElevatorPosition(elevatorRelativeEncoder.getPosition());
+		currentElevatorSetpoint = new TrapezoidProfile.State(elevatorRelativeEncoder.getPosition(), 0);
 	}
 
 	/**

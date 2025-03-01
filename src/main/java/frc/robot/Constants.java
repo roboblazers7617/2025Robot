@@ -480,26 +480,26 @@ public final class Constants {
 		 * Maximum velocity in degrees/s.
 		 */
 		// TODO: (Brandon) Update with accurate number
-		public static final double MAX_VELOCITY = 0.5;
+		public static final double MAX_VELOCITY = 200.0;
 		/**
 		 * Maximum acceleration in degrees/s^2.
 		 */
 		// TODO: (Brandon) Update with accurate number
-		public static final double MAX_ACCELERATION = 0.5;
+		public static final double MAX_ACCELERATION = 200.0;
 
 		/**
 		 * Maximum position in degrees.
 		 */
 		public static final double MAX_POSITION = 115.0;
 		/**
-		 * Minimum position in degrees.
+		 * Minimum position when the elevator is not lowered, (determined by MAX_LOWERED_POSITION) in degrees.
 		 */
 
-		public static final double MIN_POSITION = -70.0;
+		public static final double MIN_POSITION = -80.0;
 		/**
 		 * Minimum safe position while the elevator is lowered, in degrees.
 		 */
-		public static final double SAFE_MIN_POSITION = -50.0;
+		public static final double SAFE_MIN_POSITION = -70.0;
 
 		/**
 		 * Maximum safe position while the elevator is raised (so it doesn't collide with the metal thing on top), in degrees.
@@ -550,11 +550,11 @@ public final class Constants {
 		//
 		INTAKE_ALGAE_LEVEL_3(2, 0),
 		//
-		OUTTAKE_CORAL_LEVEL_1(92, 0), // dummy value
+		OUTTAKE_CORAL_LEVEL_1(-45, 0), // dummy value
 		//
-		OUTTAKE_CORAL_LEVEL_2(92, 0), // dummy value
+		OUTTAKE_CORAL_LEVEL_2(0, 0), // dummy value
 		//
-		OUTTAKE_CORAL_LEVEL_3(92, 0), // dummy value
+		OUTTAKE_CORAL_LEVEL_3(45, 0), // dummy value
 		//
 		OUTTAKE_CORAL_LEVEL_4(92, 0), // dummy value
 		//
@@ -618,7 +618,7 @@ public final class Constants {
 		/**
 		 * Intake motor speed for coral. (to be changed and edited later)
 		 */
-		public static final double CORAL_INTAKE_SPEED = 0.7;
+		public static final double CORAL_INTAKE_SPEED = 0.5; // was 0.7
 		/**
 		 * Outtake motor speed for coral. (to be changed and edited later)
 		 */

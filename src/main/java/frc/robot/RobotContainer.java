@@ -46,7 +46,7 @@ public class RobotContainer {
 	@NotLogged
 	private final Dashboard dashboard = new Dashboard(drivetrain, this);
 	private final EndEffector endEffector = new EndEffector();
-	private final Elevator elevator = new Elevator();
+	private final Elevator elevator = new Elevator(this);
 	private final Ramp ramp = new Ramp();
 
 	/**
@@ -88,6 +88,8 @@ public class RobotContainer {
 	public void autoInit() {
 		// Set the Elastic tab
 		Elastic.selectTab(DashboardConstants.AUTO_TAB_NAME);
+
+		elevator.elevatorInit();
 	}
 
 	/**
@@ -108,6 +110,8 @@ public class RobotContainer {
 		else {
 			gamepieceMode = GamepieceMode.CORAL_MODE;
 		}
+
+		elevator.elevatorInit();
 	}
 
 	/**
@@ -221,6 +225,14 @@ public class RobotContainer {
 		return Commands.runOnce(() -> {
 			gamepieceMode = mode;
 		});
+	}
+
+	public boolean isHoldingAlgae() {
+		return endEffector.isHoldingAlage();
+	}
+
+	public boolean isHoldingCoral() {
+		return endEffector.isHoldingCoral();
 	}
 
 	/**
