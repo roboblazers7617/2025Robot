@@ -26,6 +26,7 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -57,14 +58,17 @@ public class Elevator extends SubsystemBase {
 
 	// private final SparkAbsoluteEncoder elevatorAbsoluteEncoder;
 
-	private final RelativeEncoder elevatorRelativeEncoder;
+	private final RelativeEncoder leaderElevatorRelativeEncoder;
+
+	@Logged
+	private final RelativeEncoder followerElevatorRelativeEncoder;
 
 	private final TrapezoidProfile elevatorProfile = new TrapezoidProfile(new Constraints(ElevatorConstants.MAX_VELOCITY, ElevatorConstants.MAX_ACCELERATION));
 
 	/**
 	 * This is the current trapezoid profile setpoint for the elevator. It is not the final target, that is in the {@link #elevatorTarget} variable.
 	 */
-	private TrapezoidProfile.State currentElevatorSetpoint = new TrapezoidProfile.State();
+	private TrapezoidProfile.State currentElevatorSetpoint;
 
 	/**
 	 * The elevator target in meters, This is within the outer bounds of the elevator but the danger zone at the bottom has not been accounted for.
@@ -109,16 +113,18 @@ public class Elevator extends SubsystemBase {
 
 		SparkMaxConfig baseElevatorConfig = new SparkMaxConfig();
 
-		baseElevatorConfig.idleMode(IdleMode.kCoast);
+		baseElevatorConfig.idleMode(IdleMode.kBrake);
 		baseElevatorConfig.smartCurrentLimit(ElevatorConstants.CURRENT_LIMIT);
+		baseElevatorConfig.inverted(true);
 		// ramp rate?
 
 		baseElevatorConfig.encoder
 				.positionConversionFactor(ElevatorConstants.POSITION_CONVERSION_FACTOR)
 				.velocityConversionFactor(ElevatorConstants.VELOCITY_CONVERSION_FACTOR);
-		// elevatorAbsoluteEncoder = leaderElevatorMotor.getAbsoluteEncoder();
-		elevatorRelativeEncoder = leaderElevatorMotor.getEncoder();
-		elevatorRelativeEncoder.setPosition(ElevatorConstants.ZERO_OFFSET);
+
+		leaderElevatorRelativeEncoder = leaderElevatorMotor.getEncoder();
+		followerElevatorRelativeEncoder = followerElevatorMotor.getEncoder();
+		currentElevatorSetpoint = new TrapezoidProfile.State(leaderElevatorRelativeEncoder.getPosition(), 0);
 
 		baseElevatorConfig.closedLoop
 				.p(ElevatorConstants.KP)
@@ -133,7 +139,9 @@ public class Elevator extends SubsystemBase {
 
 		leaderElevatorMotor.configure(baseElevatorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
-		SparkBaseConfig followerElevatorMotorConfig = new SparkMaxConfig().apply(baseElevatorConfig).follow(leaderElevatorMotor);
+		SparkBaseConfig followerElevatorMotorConfig = new SparkMaxConfig()
+				.apply(baseElevatorConfig)
+				.follow(leaderElevatorMotor, true);
 		followerElevatorMotor.configure(followerElevatorMotorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
 		SparkMaxConfig wristConfig = new SparkMaxConfig();
@@ -170,6 +178,8 @@ public class Elevator extends SubsystemBase {
 		// .maxAcceleration(WristConstants.MAX_ACCELERATION);
 
 		wristMotor.configure(wristConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+
+		SmartDashboard.putData("Toggle Elevator Brake Mode", toggleBrakeModesCommand());
 	}
 
 	/**
@@ -185,13 +195,18 @@ public class Elevator extends SubsystemBase {
 		// ensure elevator target is not too low if the wrist is low
 		if (wristEncoder.getPosition() < WristConstants.SAFE_MIN_POSITION && safeElevatorTarget < ElevatorConstants.MAX_LOWERED_POSITION) {
 			safeElevatorTarget = ElevatorConstants.MAX_LOWERED_POSITION;
+			System.out.println("elevator block 1 ");
 		}
 		// ensure the elevator target is not too high if wrist is high (wrist collides with metal connecter thing on top of the robot)
 		if (wristEncoder.getPosition() > WristConstants.SAFE_MAX_POSITION && safeElevatorTarget > ElevatorConstants.MAX_LOWERED_POSITION) {
 			safeElevatorTarget = ElevatorConstants.MAX_LOWERED_POSITION;
+			System.out.println("elevator block 2 ");
 		}
 
+		System.out.println("Safe elevator target: " + safeElevatorTarget);
+
 		currentElevatorSetpoint = elevatorProfile.calculate(0.02, currentElevatorSetpoint, new TrapezoidProfile.State(safeElevatorTarget, 0));
+		System.out.println("elevator PID setpoint: " + currentElevatorSetpoint.position);
 		double elevatorFeedForwardValue = elevatorFeedforward.calculate(currentElevatorSetpoint.velocity); // this is technically supposed to be the velocity setpoint
 
 		leaderElevatorMotor.getClosedLoopController().setReference(currentElevatorSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0, elevatorFeedForwardValue, ArbFFUnits.kVoltage);
@@ -203,13 +218,15 @@ public class Elevator extends SubsystemBase {
 		double safeWristTarget = wristTarget;
 
 		// ensure wrist target is not too low if the elevator is low
-		if (elevatorRelativeEncoder.getPosition() < ElevatorConstants.MAX_LOWERED_POSITION && safeWristTarget < WristConstants.SAFE_MIN_POSITION) {
+		if (leaderElevatorRelativeEncoder.getPosition() < ElevatorConstants.MAX_LOWERED_POSITION && safeWristTarget < WristConstants.SAFE_MIN_POSITION) {
 			safeWristTarget = WristConstants.SAFE_MIN_POSITION;
+			System.out.println("wrist block 1 ");
 		}
 
 		// ensure wrist target is not too high if the elevator is high
-		if (elevatorRelativeEncoder.getPosition() > ElevatorConstants.MAX_LOWERED_POSITION && safeWristTarget > WristConstants.SAFE_MAX_POSITION) {
+		if (leaderElevatorRelativeEncoder.getPosition() > ElevatorConstants.MAX_LOWERED_POSITION && safeWristTarget > WristConstants.SAFE_MAX_POSITION) {
 			safeWristTarget = WristConstants.SAFE_MAX_POSITION;
+			System.out.println("wrist block 2 ");
 		}
 
 		// ensure wrist target is not too high (a different too high, a smaller one) if it is holding algae
@@ -218,8 +235,8 @@ public class Elevator extends SubsystemBase {
 		}
 
 		currentWristSetpoint = wristProfile.calculate(0.02, currentWristSetpoint, new TrapezoidProfile.State(safeWristTarget, 0));
-		System.out.println("safe wrist target: " + safeWristTarget);
-		System.out.println("current wrist setpoint: " + currentWristSetpoint.position);
+		// System.out.println("safe wrist target: " + safeWristTarget);
+		// System.out.println("current wrist setpoint: " + currentWristSetpoint.position);
 		double wristFeedForwardValue = wristFeedforward.calculate(Math.toRadians(currentWristSetpoint.position), Math.toRadians(currentWristSetpoint.velocity));
 
 		wristMotor.getClosedLoopController().setReference(currentWristSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0, wristFeedForwardValue, ArbFFUnits.kVoltage);
@@ -268,7 +285,7 @@ public class Elevator extends SubsystemBase {
 		Command command = new Command() {
 			@Override
 			public void initialize() {
-				// setElevatorPosition(position.ELEVATOR_POSITION);
+				setElevatorPosition(position.ELEVATOR_POSITION);
 				setWristPosition(position.WRIST_POSITION);
 			}
 
@@ -290,8 +307,8 @@ public class Elevator extends SubsystemBase {
 	public void elevatorInit() {
 		setWristPosition(wristAbsoluteEncoder.getPosition());
 		currentWristSetpoint = new TrapezoidProfile.State(wristAbsoluteEncoder.getPosition(), 0);
-		setElevatorPosition(elevatorRelativeEncoder.getPosition());
-		currentElevatorSetpoint = new TrapezoidProfile.State(elevatorRelativeEncoder.getPosition(), 0);
+		setElevatorPosition(leaderElevatorRelativeEncoder.getPosition());
+		currentElevatorSetpoint = new TrapezoidProfile.State(leaderElevatorRelativeEncoder.getPosition(), 0);
 	}
 
 	/**
@@ -320,8 +337,35 @@ public class Elevator extends SubsystemBase {
 	 * Check if the elevator and wrist are within the tolerance to their target positions. This is used to determine if the {@link #SetPositionCommand(Constants.ArmPosition)} command is finished.
 	 */
 	private boolean isAtTarget() {
-		// boolean elevatorAtTarget = Math.abs(elevatorRelativeEncoder.getPosition() - elevatorTarget) < ElevatorConstants.TOLERANCE;
+		boolean elevatorAtTarget = Math.abs(leaderElevatorRelativeEncoder.getPosition() - elevatorTarget) < ElevatorConstants.TOLERANCE;
 		boolean wristAtTarget = Math.abs(wristAbsoluteEncoder.getPosition() - wristTarget) < WristConstants.TOLERANCE;
-		return /* elevatorAtTarget && */ wristAtTarget;
+		return elevatorAtTarget && wristAtTarget;
+	}
+
+	/**
+	 * Toggles brake mode on the elevator and wrist motors.
+	 * 
+	 * @return
+	 *         Command to run.
+	 */
+	private Command toggleBrakeModesCommand() {
+		return this.runOnce(() -> {
+			SparkBaseConfig newElevatorConfig = new SparkMaxConfig();
+			if (leaderElevatorMotor.configAccessor.getIdleMode() == IdleMode.kBrake) {
+				newElevatorConfig.idleMode(IdleMode.kCoast);
+			} else {
+				newElevatorConfig.idleMode(IdleMode.kBrake);
+			}
+			leaderElevatorMotor.configure(newElevatorConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
+			followerElevatorMotor.configure(newElevatorConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
+
+			SparkBaseConfig newWristConfig = new SparkMaxConfig();
+			if (wristMotor.configAccessor.getIdleMode() == IdleMode.kBrake) {
+				newWristConfig.idleMode(IdleMode.kCoast);
+			} else {
+				newWristConfig.idleMode(IdleMode.kBrake);
+			}
+			wristMotor.configure(newWristConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
+		}).ignoringDisable(true);
 	}
 }

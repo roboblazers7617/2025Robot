@@ -359,11 +359,11 @@ public final class Constants {
 		/**
 		 * Elevator kS.
 		 */
-		public static final double KS = 0;
+		public static final double KS = 2.0;
 		/**
 		 * Elevator kG.
 		 */
-		public static final double KG = 0.0;
+		public static final double KG = 0.13;
 		/**
 		 * Elevator kV.
 		 */
@@ -401,11 +401,11 @@ public final class Constants {
 		 * This is the maximum position for the elevator to be considered lowered, in meters.
 		 */
 		// TODO: (Brandon) Update with accurate number
-		public static final double MAX_LOWERED_POSITION = 0.2;
+		public static final double MAX_LOWERED_POSITION = .2;
 		/**
 		 * Conversion factor from rotation to meters. 3.81cm diameter spool, 16:1 gear ratio
 		 */
-		public static final double POSITION_CONVERSION_FACTOR = 3.81 / 100 / 16; // TODO: check
+		public static final double POSITION_CONVERSION_FACTOR = (1 / .2845) / 200;
 		/**
 		 * Conversion factor from rotation to meters per second.
 		 */
@@ -504,7 +504,7 @@ public final class Constants {
 		/**
 		 * Maximum safe position while the elevator is raised (so it doesn't collide with the metal thing on top), in degrees.
 		 */
-		public static final double SAFE_MAX_POSITION = 80;
+		public static final double SAFE_MAX_POSITION = 90.0;
 
 		/**
 		 * Maximum position that the wrist can be while holding an algae (to make sure it doesn't hit the elevator), in degrees.
@@ -550,7 +550,7 @@ public final class Constants {
 		//
 		INTAKE_ALGAE_LEVEL_3(2, 0),
 		//
-		OUTTAKE_CORAL_LEVEL_1(-45, 0), // dummy value
+		OUTTAKE_CORAL_LEVEL_1(-45, 1), // dummy value
 		//
 		OUTTAKE_CORAL_LEVEL_2(0, 0), // dummy value
 		//
@@ -566,7 +566,7 @@ public final class Constants {
 		//
 		STOW_CORAL(0, 0),
 		//
-		CLIMB(-10, 0);
+		CLIMB(-45, 1);
 
 		/**
 		 * The elevator position in meters.

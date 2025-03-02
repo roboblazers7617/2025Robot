@@ -155,7 +155,7 @@ public class RobotContainer {
 		 * elevator.setDefaultCommand(elevator.MoveElevatorAndWristManual(() -> (-1 * operatorController.getLeftX()), () -> (-1 * operatorController.getLeftY())));
 		 */
 		// Acts to cancel the currently running command, such as intaking or outaking
-		// elevator.setDefaultCommand(elevator.SetPositionCommand(ArmPosition.CLIMB));
+		elevator.setDefaultCommand(elevator.SetPositionCommand(ArmPosition.CLIMB));
 		// TODO: #138 Cancel on EndEffector or all mechanism commands?
 		operatorController.a()
 				.onTrue(endEffector.StopIntakeMotor());
