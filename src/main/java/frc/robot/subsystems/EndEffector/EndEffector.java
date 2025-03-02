@@ -7,6 +7,7 @@ package frc.robot.subsystems.EndEffector;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.EndEffectorConstants;
 
+import java.util.concurrent.BlockingDeque;
 import java.util.function.Supplier;
 
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -30,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 @Logged
 public class EndEffector extends SubsystemBase {
 	private double speed;
+	public boolean isHoldingAlgae = false;
 	private final SparkMax endEffectorMotor = new SparkMax(EndEffectorConstants.CAN_ID_END_EFFECTOR, MotorType.kBrushless);
 	/**
 	 * Beam break outputs
@@ -76,6 +78,10 @@ public class EndEffector extends SubsystemBase {
 		endEffectorMotor.set(speed);
 	}
 
+	public void setHoldingAlgae(boolean holdingAlgae) {
+		isHoldingAlgae = holdingAlgae;
+	}
+
 	/**
 	 * Starts the intake motor.
 	 *
@@ -102,6 +108,18 @@ public class EndEffector extends SubsystemBase {
 		});
 	}
 
+	/**
+	 * Toggles Boolean isHoldingAlgae.
+	 *
+	 * @param holdingAlgae
+	 * @return
+	 */
+	public Command setHoldingAlgaeCommand(Supplier<Boolean> holdingAlgae) {
+		return this.runOnce(() -> {
+			setHoldingAlgae(holdingAlgae.get());
+		});
+	}
+
 	public Command CoralIntake() {
 		return StartMotorCommand(() -> EndEffectorConstants.CORAL_INTAKE_SPEED)
 				.andThen(Commands.waitUntil(() -> !isNotHoldingCoral.get()))
@@ -120,12 +138,14 @@ public class EndEffector extends SubsystemBase {
 				.andThen(Commands.waitSeconds(EndEffectorConstants.MOTOR_CURRENT_CHECK_DELAY))
 				.andThen((Commands.waitUntil(() -> endEffectorMotor
 						.getOutputCurrent() >= EndEffectorConstants.AlGAE_INTAKE_CURRENT_SHUTOFF_THRESHOLD && endEffectorMotor.getEncoder().getVelocity() <= EndEffectorConstants.ALGAE_INTAKE_MINIMUM_SHUTOFF_SPEED)))
+				.andThen(setHoldingAlgaeCommand(() -> true))
 				.finallyDo(this::stopMotor);
 	}
 
 	public Command AlgaeOuttake() {
 		return StartMotorCommand(() -> EndEffectorConstants.ALGAE_OUTAKE_SPEED)
 				.andThen(Commands.waitSeconds(EndEffectorConstants.ALGAE_OUTTAKE_RUN_TIME))
+				.andThen(setHoldingAlgaeCommand(() -> false))
 				.finallyDo(this::stopMotor);
 	}
 }
