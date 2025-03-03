@@ -54,7 +54,7 @@ public class RobotContainer {
 	 */
 	@NotLogged
 	private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
-	/*
+	/**
 	 * The Controller used by the Operator of the robot, primarily controlling the superstructure.
 	 */
 	@NotLogged
