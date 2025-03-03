@@ -345,10 +345,6 @@ public final class Constants {
 				.i(0)
 				.d(0);
 		/**
-		 * DIO pin for the beam break.
-		 */
-		public static final int BEAM_BREAK_DIO = 0;
-		/**
 		 * Intake motor speed for coral. (to be changed and edited later)
 		 */
 		public static final double CORAL_INTAKE_SPEED = 0.7;
@@ -385,6 +381,16 @@ public final class Constants {
 		 * Alternate method to shutof algae intake method using a minimum motor speed limit.
 		 */
 		public static final double ALGAE_INTAKE_MINIMUM_SHUTOFF_SPEED = -0.05;
+		// Beam Break constants
+		/**
+		 * DIO pin for the beam break.
+		 */
+		public static final int BEAM_BREAK_DIO = 0;
+		// Limit Switch constants
+		/**
+		 * DIO pin for limit switch.
+		 */
+		public static final int LIMIT_SWITCH_DIO = 2;
 	}
 
 	/**
