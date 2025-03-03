@@ -72,7 +72,7 @@ public class HapticCommand extends Command {
 
 	@Override
 	public void initialize() {
-		timer.start();
+		timer.restart();
 		controller.setRumble(type, strength);
 	}
 
