@@ -15,7 +15,6 @@ import frc.robot.subsystems.IntakeRamp.Ramp;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
@@ -54,11 +53,7 @@ public class RobotContainer {
 	 */
 	@NotLogged
 	private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
-	/**
-	 * Driver controller GenericHID object. Used for rumble.
-	 */
-	private final XboxController driverControllerHID = driverController.getHID();
-  /*
+	/*
 	 * The Controller used by the Operator of the robot, primarily controlling the superstructure.
 	 */
 	@NotLogged
@@ -142,10 +137,10 @@ public class RobotContainer {
 		driverController.rightTrigger().whileTrue(StubbedCommands.Drivetrain.AlignRightOfTag());
 		driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
 		driverController.back().onTrue(StubbedCommands.Drivetrain.DisableVision());
-    
-    // Haptics test
+
+		// Haptics test
 		driverController.y()
-				.onTrue(new HapticCommand(driverControllerHID, RumbleType.kBothRumble, 1, Seconds.of(5)));
+				.onTrue(new HapticCommand(driverController, RumbleType.kBothRumble, 1, Seconds.of(5)));
 	}
 
 	/**

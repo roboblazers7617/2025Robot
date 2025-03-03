@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 
 /**
  * Triggers controller rumble for a specified amount of time.
@@ -67,6 +68,22 @@ public class HapticCommand extends Command {
 	 */
 	public HapticCommand(GenericHID controller, RumbleType type, double strength, Time duration) {
 		this(controller, type, strength, duration.in(Seconds));
+	}
+
+	/**
+	 * Creates a Command that triggers controller rumble for a specified amount of time.
+	 *
+	 * @param controller
+	 *            Controller to rumble.
+	 * @param type
+	 *            Rumble type to set.
+	 * @param strength
+	 *            Rumble strength [0-1];
+	 * @param duration
+	 *            Rumble duration.
+	 */
+	public HapticCommand(CommandGenericHID controller, RumbleType type, double strength, Time duration) {
+		this(controller.getHID(), type, strength, duration.in(Seconds));
 	}
 
 	@Override
