@@ -27,7 +27,7 @@ public class HapticCommand extends Command {
 	 */
 	private final RumbleType type;
 	/**
-	 * Rumble strength [0-1];
+	 * Rumble strength [0-1].
 	 */
 	private final double strength;
 	/**
@@ -43,7 +43,7 @@ public class HapticCommand extends Command {
 	 * @param type
 	 *            Rumble type to set.
 	 * @param strength
-	 *            Rumble strength [0-1];
+	 *            Rumble strength [0-1].
 	 * @param duration
 	 *            Rumble duration.
 	 */
@@ -62,7 +62,7 @@ public class HapticCommand extends Command {
 	 * @param type
 	 *            Rumble type to set.
 	 * @param strength
-	 *            Rumble strength [0-1];
+	 *            Rumble strength [0-1].
 	 * @param duration
 	 *            Rumble duration.
 	 */
