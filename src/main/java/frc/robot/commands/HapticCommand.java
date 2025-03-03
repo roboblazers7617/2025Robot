@@ -31,9 +31,9 @@ public class HapticCommand extends Command {
 	 */
 	private final double strength;
 	/**
-	 * Duration to rumble for in seconds.
+	 * Duration to rumble for.
 	 */
-	private final double duration;
+	private final Time duration;
 
 	/**
 	 * Creates a Command that triggers controller rumble for a specified amount of time.
@@ -45,9 +45,9 @@ public class HapticCommand extends Command {
 	 * @param strength
 	 *            Rumble strength [0-1];
 	 * @param duration
-	 *            Rumble duration in seconds.
+	 *            Rumble duration.
 	 */
-	public HapticCommand(GenericHID controller, RumbleType type, double strength, double duration) {
+	public HapticCommand(GenericHID controller, RumbleType type, double strength, Time duration) {
 		this.controller = controller;
 		this.type = type;
 		this.strength = strength;
@@ -66,24 +66,8 @@ public class HapticCommand extends Command {
 	 * @param duration
 	 *            Rumble duration.
 	 */
-	public HapticCommand(GenericHID controller, RumbleType type, double strength, Time duration) {
-		this(controller, type, strength, duration.in(Seconds));
-	}
-
-	/**
-	 * Creates a Command that triggers controller rumble for a specified amount of time.
-	 *
-	 * @param controller
-	 *            Controller to rumble.
-	 * @param type
-	 *            Rumble type to set.
-	 * @param strength
-	 *            Rumble strength [0-1];
-	 * @param duration
-	 *            Rumble duration.
-	 */
 	public HapticCommand(CommandGenericHID controller, RumbleType type, double strength, Time duration) {
-		this(controller.getHID(), type, strength, duration.in(Seconds));
+		this(controller.getHID(), type, strength, duration);
 	}
 
 	@Override
@@ -100,7 +84,7 @@ public class HapticCommand extends Command {
 
 	@Override
 	public boolean isFinished() {
-		return timer.hasElapsed(duration);
+		return timer.hasElapsed(duration.in(Seconds));
 	}
 
 	@Override
