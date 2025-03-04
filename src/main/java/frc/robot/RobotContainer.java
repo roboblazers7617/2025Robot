@@ -16,8 +16,13 @@ import frc.robot.subsystems.IntakeRamp.Ramp;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+
+import static edu.wpi.first.units.Units.Meters;
+
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -118,6 +123,10 @@ public class RobotContainer {
 			driverController.leftBumper()
 					.whileTrue(drivetrain.driveFieldOrientedAngularVelocityControllerCommand(driverController));
 		}
+		// Aim at pose test
+		driverController.a()
+				.whileTrue(drivetrain.driveFieldOrientedAimAtPoseControllerCommand(driverController, () -> new Pose2d(Meters.of(1), Meters.of(5), Rotation2d.kZero)));
+
 		driverController.a().whileTrue(StubbedCommands.Drivetrain.DriverSlowMode());
 		driverController.b().whileTrue(StubbedCommands.Drivetrain.DriverFastMode());
 		driverController.x().whileTrue(StubbedCommands.Drivetrain.LockWheels());

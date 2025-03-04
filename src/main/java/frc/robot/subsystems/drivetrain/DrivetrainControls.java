@@ -1,5 +1,8 @@
 package frc.robot.subsystems.drivetrain;
 
+import java.util.function.Supplier;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.OperatorConstants;
@@ -28,7 +31,7 @@ public final class DrivetrainControls {
 	}
 
 	/**
-	 * Clones the angular velocity input stream and converts it to a fieldRelative input stream.
+	 * A copy of {@link #driveAngularVelocity(Drivetrain, CommandXboxController)} that uses heading control.
 	 *
 	 * @param drivetrain
 	 *            the drivetrain to control
@@ -44,7 +47,25 @@ public final class DrivetrainControls {
 	}
 
 	/**
-	 * A copy of {@link driveDirectAngle} that pulls rotation from controller axis 2 for use in simulation.
+	 * A copy of {@link #driveAngularVelocity(Drivetrain, CommandXboxController)} that uses aim control.
+	 *
+	 * @param drivetrain
+	 *            the drivetrain to control
+	 * @param controller
+	 *            the controller to read from
+	 * @param pose
+	 *            the pose to aim at
+	 * @return
+	 *         SwerveInputStream with data from the controller
+	 */
+	public static SwerveInputStream driveAim(Drivetrain drivetrain, CommandXboxController controller, Supplier<Pose2d> pose) {
+		return driveAngularVelocity(drivetrain, controller)
+				.aim(pose.get())
+				.aimWhile(true);
+	}
+
+	/**
+	 * A copy of {@link #driveAngularVelocity(Drivetrain, CommandXboxController)} that pulls rotation from controller axis 2 for use in simulation.
 	 *
 	 * @param drivetrain
 	 *            the drivetrain to control
