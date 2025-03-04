@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.climber;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -26,9 +26,6 @@ public class Climber extends SubsystemBase {
 	private final SparkMax leftClimber = new SparkMax(Constants.ClimberConstants.LEFT_CLIMBER_PORT, MotorType.kBrushless);
 	private final RelativeEncoder leftClimberEncoder;
 
-	private final SparkMax rampPivot = new SparkMax(Constants.ClimberConstants.RAMP_PIVOT_PORT, MotorType.kBrushless);
-	private final RelativeEncoder rampPivotEncoder;
-
 	/** Creates a new Climber. */
 	public Climber() {
 		SparkBaseConfig motorConfig = new SparkMaxConfig()
@@ -41,15 +38,11 @@ public class Climber extends SubsystemBase {
 		rightClimberEncoder = rightClimber.getEncoder();
 		leftClimberEncoder.setPosition(0.0);
 		rightClimberEncoder.setPosition(0.0);
-
-		rampPivot.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-		rampPivotEncoder = rampPivot.getEncoder();
 	}
 
 	/**
 	 * sets the speeds of the climb motors
-	 * 
+	 *
 	 * @param leftSpeed
 	 *            The speed to set. Value should be between -1.0 and 1.0.
 	 * @param rightSpeed
@@ -63,7 +56,7 @@ public class Climber extends SubsystemBase {
 
 	/**
 	 * Get the velocity of the right climb motor.
-	 * 
+	 *
 	 * @return Number the RPM of the motor
 	 */
 	public double getSpeedRight() {
@@ -72,25 +65,17 @@ public class Climber extends SubsystemBase {
 
 	/**
 	 * Get the velocity of the left climb motor.
-	 * 
+	 *
 	 * @return Number the RPM of the motor
 	 */
 	public double getSpeedLeft() {
 		return leftClimberEncoder.getVelocity();
 	}
 
-	/**
-	 * Get the velocity of the ramp pivot motor.
-	 * 
-	 * @return Number the RPM of the motor
-	 */
-	public double getSpeedRampPivot() {
-		return rampPivotEncoder.getVelocity();
-	}
 
 	/**
 	 * Set the velocity of the left climb motor.
-	 * 
+	 *
 	 * @param leftSpeed
 	 *            The speed to set. Value should be between -1.0 and 1.0.
 	 */
@@ -100,22 +85,12 @@ public class Climber extends SubsystemBase {
 
 	/**
 	 * Set the velocity of the right climb motor.
-	 * 
+	 *
 	 * @param rightSpeed
 	 *            The speed to set. Value should be between -1.0 and 1.0.
 	 */
 	public void setSpeedRight(double rightSpeed) {
 		rightClimber.set(rightSpeed);
-	}
-
-	/**
-	 * Set the velocity of the ramp pivot motor.
-	 * 
-	 * @param rampPivotSpeed
-	 *            The speed to set. Value should be between -1.0 and 1.0.
-	 */
-	public void setSpeedRampPivot(double rampPivotSpeed) {
-		rampPivot.set(rampPivotSpeed);
 	}
 
 	/**
@@ -129,7 +104,7 @@ public class Climber extends SubsystemBase {
 
 	/**
 	 * Get the position of the left climb motor. This returns the native units of 'rotations'
-	 * 
+	 *
 	 * @return Number of rotations of the motor
 	 */
 	public double getPositionLeftMotor() {
