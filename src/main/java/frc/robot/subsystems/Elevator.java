@@ -50,11 +50,11 @@ public class Elevator extends SubsystemBase {
 	/**
 	 * The right elevator motor.
 	 */
-	private final SparkMax leaderElevatorMotor = new SparkMax(ElevatorConstants.RIGHT_MOTOR_ID, MotorType.kBrushless);
+	private final SparkMax leaderElevatorMotor = new SparkMax(ElevatorConstants.LEFT_MOTOR_ID, MotorType.kBrushless);
 	/**
 	 * The left elevator motor.
 	 */
-	private final SparkMax followerElevatorMotor = new SparkMax(ElevatorConstants.LEFT_MOTOR_ID, MotorType.kBrushless);
+	private final SparkMax followerElevatorMotor = new SparkMax(ElevatorConstants.RIGHT_MOTOR_ID, MotorType.kBrushless);
 
 	// private final SparkAbsoluteEncoder elevatorAbsoluteEncoder;
 
@@ -115,7 +115,7 @@ public class Elevator extends SubsystemBase {
 
 		baseElevatorConfig.idleMode(IdleMode.kBrake);
 		baseElevatorConfig.smartCurrentLimit(ElevatorConstants.CURRENT_LIMIT);
-		baseElevatorConfig.inverted(true);
+		baseElevatorConfig.inverted(false);
 		// ramp rate?
 
 		baseElevatorConfig.encoder
@@ -195,18 +195,19 @@ public class Elevator extends SubsystemBase {
 		// ensure elevator target is not too low if the wrist is low
 		if (wristEncoder.getPosition() < WristConstants.SAFE_MIN_POSITION && safeElevatorTarget < ElevatorConstants.MAX_LOWERED_POSITION) {
 			safeElevatorTarget = ElevatorConstants.MAX_LOWERED_POSITION;
-			System.out.println("elevator block 1 ");
+			// System.out.println("elevator block 1 ");
 		}
 		// ensure the elevator target is not too high if wrist is high (wrist collides with metal connecter thing on top of the robot)
 		if (wristEncoder.getPosition() > WristConstants.SAFE_MAX_POSITION && safeElevatorTarget > ElevatorConstants.MAX_LOWERED_POSITION) {
 			safeElevatorTarget = ElevatorConstants.MAX_LOWERED_POSITION;
-			System.out.println("elevator block 2 ");
+			// System.out.println("elevator block 2 ");
 		}
 
-		System.out.println("Safe elevator target: " + safeElevatorTarget);
-
 		currentElevatorSetpoint = elevatorProfile.calculate(0.02, currentElevatorSetpoint, new TrapezoidProfile.State(safeElevatorTarget, 0));
-		System.out.println("elevator PID setpoint: " + currentElevatorSetpoint.position);
+		if (Math.abs(currentElevatorSetpoint.position - safeElevatorTarget) < 0.01) {
+			// System.out.println("At target");
+		}
+
 		double elevatorFeedForwardValue = elevatorFeedforward.calculate(currentElevatorSetpoint.velocity); // this is technically supposed to be the velocity setpoint
 
 		leaderElevatorMotor.getClosedLoopController().setReference(currentElevatorSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0, elevatorFeedForwardValue, ArbFFUnits.kVoltage);
@@ -220,13 +221,13 @@ public class Elevator extends SubsystemBase {
 		// ensure wrist target is not too low if the elevator is low
 		if (leaderElevatorRelativeEncoder.getPosition() < ElevatorConstants.MAX_LOWERED_POSITION && safeWristTarget < WristConstants.SAFE_MIN_POSITION) {
 			safeWristTarget = WristConstants.SAFE_MIN_POSITION;
-			System.out.println("wrist block 1 ");
+			// System.out.println("wrist block 1 ");
 		}
 
 		// ensure wrist target is not too high if the elevator is high
 		if (leaderElevatorRelativeEncoder.getPosition() > ElevatorConstants.MAX_LOWERED_POSITION && safeWristTarget > WristConstants.SAFE_MAX_POSITION) {
 			safeWristTarget = WristConstants.SAFE_MAX_POSITION;
-			System.out.println("wrist block 2 ");
+			// System.out.println("wrist block 2 ");
 		}
 
 		// ensure wrist target is not too high (a different too high, a smaller one) if it is holding algae
@@ -258,10 +259,20 @@ public class Elevator extends SubsystemBase {
 			public void execute() {
 				double targetElevatorSpeed = MathUtil.clamp(elevatorSpeed.getAsDouble() * ElevatorConstants.MAX_VELOCITY, -ElevatorConstants.MAX_VELOCITY, ElevatorConstants.MAX_VELOCITY);
 
-				setElevatorPosition(elevatorTarget + (targetElevatorSpeed / 50)); // divide the speed by 50 because their are 50 loops per second
+				if (targetElevatorSpeed != 0) {
+					setElevatorPosition(elevatorTarget + (targetElevatorSpeed / 50)); // divide the speed by 50 because their are 50 loops per second
+				} else {
+					setElevatorPosition(leaderElevatorRelativeEncoder.getPosition());
+					currentElevatorSetpoint = new TrapezoidProfile.State(leaderElevatorRelativeEncoder.getPosition(), 0);
+				}
 
 				double targetWristSpeed = MathUtil.clamp(wristSpeed.getAsDouble() * WristConstants.MAX_VELOCITY, -WristConstants.MAX_VELOCITY, WristConstants.MAX_VELOCITY);
-				setWristPosition(wristTarget + (targetWristSpeed / 50)); // divide the speed by 50 because their are 50 loops per second
+				if (targetWristSpeed != 0) {
+					setWristPosition(wristTarget + (targetWristSpeed / 50)); // divide the speed by 50 because their are 50 loops per second
+				} else {
+					setWristPosition(wristAbsoluteEncoder.getPosition());
+					currentWristSetpoint = new TrapezoidProfile.State(wristAbsoluteEncoder.getPosition(), 0);
+				}
 			}
 
 			@Override
@@ -318,8 +329,8 @@ public class Elevator extends SubsystemBase {
 	 *            The position in meters.
 	 */
 	private void setElevatorPosition(double position) {
-		MathUtil.clamp(position, ElevatorConstants.MIN_POSITION, ElevatorConstants.MAX_POSITION);
-		elevatorTarget = position;
+		elevatorTarget = MathUtil.clamp(position, ElevatorConstants.MIN_POSITION, ElevatorConstants.MAX_POSITION);
+		;
 	}
 
 	/**
@@ -329,8 +340,7 @@ public class Elevator extends SubsystemBase {
 	 *            The position in degrees.
 	 */
 	private void setWristPosition(double position) {
-		MathUtil.clamp(position, WristConstants.MIN_POSITION, WristConstants.MAX_POSITION);
-		wristTarget = position;
+		wristTarget = MathUtil.clamp(position, WristConstants.MIN_POSITION, WristConstants.MAX_POSITION);
 	}
 
 	/**

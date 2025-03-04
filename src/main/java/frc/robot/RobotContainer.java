@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -155,7 +156,7 @@ public class RobotContainer {
 		 * elevator.setDefaultCommand(elevator.MoveElevatorAndWristManual(() -> (-1 * operatorController.getLeftX()), () -> (-1 * operatorController.getLeftY())));
 		 */
 		// Acts to cancel the currently running command, such as intaking or outaking
-		elevator.setDefaultCommand(elevator.SetPositionCommand(ArmPosition.CLIMB));
+		// elevator.setDefaultCommand(elevator.setSpeedsCommand(() -> MathUtil.applyDeadband(-1.0 * operatorController.getLeftY(), OperatorConstants.DEADBAND), () -> MathUtil.applyDeadband(-1.0 * operatorController.getRightY(), OperatorConstants.DEADBAND)));
 		// TODO: #138 Cancel on EndEffector or all mechanism commands?
 		operatorController.a()
 				.onTrue(endEffector.StopIntakeMotor());
@@ -167,7 +168,7 @@ public class RobotContainer {
 		operatorController.b()
 				.or(operatorController.leftTrigger())
 				.and(isCoralModeTrigger)
-				.whileTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_CORAL_CORAL_STATION)
+				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_CORAL_CORAL_STATION)
 						.andThen(endEffector.CoralIntake()));
 		// .andThen(elevator.SetPositionCommand(ArmPosition.STOW_CORAL)));
 		operatorController.x()

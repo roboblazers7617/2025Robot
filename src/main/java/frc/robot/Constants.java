@@ -317,16 +317,16 @@ public final class Constants {
 		/**
 		 * CAN ID for the right elevator motor.
 		 */
-		public static final int RIGHT_MOTOR_ID = 21;
+		public static final int RIGHT_MOTOR_ID = 22;
 		/**
 		 * CAN ID for the left elevator motor.
 		 */
-		public static final int LEFT_MOTOR_ID = 22;
+		public static final int LEFT_MOTOR_ID = 52; // 21
 
 		/**
 		 * Elevator kP.
 		 */
-		public static final double KP = 0.0;
+		public static final double KP = 1;
 		/**
 		 * Elevator kI.
 		 */
@@ -338,44 +338,44 @@ public final class Constants {
 		/**
 		 * Elevator kS.
 		 */
-		public static final double KS = 2.0;
+		public static final double KS = 0.35;
 		/**
 		 * Elevator kG.
 		 */
-		public static final double KG = 0.13;
+		public static final double KG = 0.14; // 0.14
 		/**
 		 * Elevator kV.
 		 */
-		public static final double KV = 0; // Leave as zero Max motion will take care of this
+		public static final double KV = 7.3; // Leave as zero Max motion will take care of this
 
 		/**
 		 * Elevator kMinOutput as a percentage.
 		 */
-		public static final double KMIN_OUTPUT = -.3;
+		public static final double KMIN_OUTPUT = -1.0;
 		/**
 		 * Elevator kMaxOutput as a percentage.
 		 */
-		public static final double KMAX_OUTPUT = .3;
+		public static final double KMAX_OUTPUT = 1.0;
 		/**
 		 * Maximum velocity in m/s.
 		 */
 		// TODO: (Brandon) Update with accurate number. Is the elevator really going to travel 3 feet in one second? Use reca.lc
-		public static final double MAX_VELOCITY = 1;
+		public static final double MAX_VELOCITY = 2;
 		/**
 		 * Maximum acceleration in m/s^2.
 		 */
 		// TODO: (Brandon) Update with accurate number Use reca.lc
-		public static final double MAX_ACCELERATION = 1;
+		public static final double MAX_ACCELERATION = 2;
 
 		/**
 		 * Maximum position in meters.
 		 */
 		// TODO: (Brandon) Update with accurate number
-		public static final double MAX_POSITION = 1;
+		public static final double MAX_POSITION = 1.44;
 		/**
 		 * Minimum position in meters.
 		 */
-		public static final double MIN_POSITION = 0;
+		public static final double MIN_POSITION = 0.01;
 		/**
 		 * This is the maximum position for the elevator to be considered lowered, in meters.
 		 */
@@ -483,7 +483,7 @@ public final class Constants {
 		/**
 		 * Maximum safe position while the elevator is raised (so it doesn't collide with the metal thing on top), in degrees.
 		 */
-		public static final double SAFE_MAX_POSITION = 90.0;
+		public static final double SAFE_MAX_POSITION = 100.0;
 
 		/**
 		 * Maximum position that the wrist can be while holding an algae (to make sure it doesn't hit the elevator), in degrees.
@@ -523,7 +523,7 @@ public final class Constants {
 	 */
 	public enum ArmPosition {
 		//
-		INTAKE_CORAL_CORAL_STATION(WristConstants.MAX_POSITION, 0),
+		INTAKE_CORAL_CORAL_STATION(WristConstants.MAX_POSITION, ElevatorConstants.MIN_POSITION),
 		//
 		INTAKE_ALGAE_LEVEL_2(1, 0),
 		//
@@ -531,9 +531,9 @@ public final class Constants {
 		//
 		OUTTAKE_CORAL_LEVEL_1(-45, 1), // dummy value
 		//
-		OUTTAKE_CORAL_LEVEL_2(0, 0), // dummy value
+		OUTTAKE_CORAL_LEVEL_2(95, 0.27),
 		//
-		OUTTAKE_CORAL_LEVEL_3(45, 0), // dummy value
+		OUTTAKE_CORAL_LEVEL_3(95, 0.66),
 		//
 		OUTTAKE_CORAL_LEVEL_4(92, 0), // dummy value
 		//
@@ -543,7 +543,7 @@ public final class Constants {
 		//
 		STOW_ALGAE(0, 0),
 		//
-		STOW_CORAL(0, 0),
+		STOW_CORAL(95, ElevatorConstants.MIN_POSITION),
 		//
 		CLIMB(-45, 1);
 
