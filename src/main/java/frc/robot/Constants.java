@@ -6,12 +6,9 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.DegreesPerSecondPerSecond;
 import static edu.wpi.first.units.Units.FeetPerSecond;
-import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.Kilograms;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
-import static edu.wpi.first.units.Units.Pounds;
 
 import java.io.File;
 import java.util.List;
@@ -25,7 +22,6 @@ import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.util.PoseUtil;
 import io.github.roboblazers7617.limelight.LimelightSettings.ImuMode;
 import io.github.roboblazers7617.limelight.PoseEstimator.PoseEstimators;
-import swervelib.math.Matter;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -35,7 +31,6 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.LinearAcceleration;
 
@@ -48,22 +43,6 @@ import edu.wpi.first.units.measure.LinearAcceleration;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-	/**
-	 * Constants that contain physical information about the robot.
-	 */
-	public static class PhysicalConstants {
-		/**
-		 * Mass of the robot in kilograms.
-		 */
-		// TODO: #140 (Max) Need to update with actual weight of robot
-		public static final double ROBOT_MASS = Pounds.of(100).in(Kilograms);
-		/**
-		 * Matter representing the robot chassis.
-		 */
-		// TODO: #141 Need to udpate with actual COG
-		public static final Matter CHASSIS = new Matter(new Translation3d(0, 0, Inches.of(8).in(Meters)), ROBOT_MASS);
-	}
-
 	/**
 	 * Constants used by the {@link frc.robot.subsystems.drivetrain.Drivetrain}.
 	 */
