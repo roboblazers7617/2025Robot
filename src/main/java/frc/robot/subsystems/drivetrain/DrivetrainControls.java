@@ -90,8 +90,7 @@ public class DrivetrainControls {
 	 */
 	private SwerveInputStream driveGeneric(CommandXboxController controller) {
 		return SwerveInputStream.of(drivetrain.getSwerveDrive(), () -> (-1 * controller.getLeftY()), () -> (-1 * controller.getLeftX()))
-				.deadband(OperatorConstants.DEADBAND)
-				.scaleTranslation(DrivetrainConstants.TRANSLATION_SCALE_NORMAL);
+				.deadband(OperatorConstants.DEADBAND);
 	}
 
 	/**
