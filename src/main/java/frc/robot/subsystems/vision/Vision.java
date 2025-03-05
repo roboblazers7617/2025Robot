@@ -6,9 +6,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.VisionConstants;
 import swervelib.SwerveDrive;
 import io.github.roboblazers7617.limelight.Limelight;
-import io.github.roboblazers7617.limelight.LimelightSettings;
 import io.github.roboblazers7617.limelight.PoseEstimator;
-import io.github.roboblazers7617.limelight.LimelightSettings.ImuMode;
 import io.github.roboblazers7617.limelight.PoseEstimate;
 
 /**
@@ -28,11 +26,11 @@ public class Vision {
 	 */
 	private final Limelight backLimelight;
 	/**
-	 * {@link PoseEstimator} for the {@link Limelight} on the front of the robot.
+	 * {@link PoseEstimator} for the {@link #frontLimelight}.
 	 */
 	private final PoseEstimator frontPoseEstimator;
 	/**
-	 * {@link PoseEstimator} for the {@link Limelight} on the front of the robot.
+	 * {@link PoseEstimator} for the {@link #backLimelight}.
 	 */
 	private final PoseEstimator backPoseEstimator;
 
@@ -49,18 +47,36 @@ public class Vision {
 		frontPoseEstimator = frontLimelight.makePoseEstimator(VisionConstants.POSE_ESTIMATOR_TYPE);
 		backPoseEstimator = backLimelight.makePoseEstimator(VisionConstants.POSE_ESTIMATOR_TYPE);
 
-		backLimelight.settings.withImuMode(VisionConstants.DISABLED_IMU_MODE).withProcessedFrameFrequency(VisionConstants.DISABLED_UPDATE_FREQUENCY).save();
+		backLimelight.settings.withImuMode(VisionConstants.DISABLED_IMU_MODE)
+				.withProcessedFrameFrequency(VisionConstants.DISABLED_UPDATE_FREQUENCY)
+				.save();
 	}
 
+	/**
+	 * Command that sets up settings for the Limelights used while the robot is enabled.
+	 *
+	 * @return
+	 *         Command to run.
+	 */
 	public Command onEnableCommand() {
 		return Commands.runOnce(() -> {
-			backLimelight.settings.withImuMode(VisionConstants.ENABLED_IMU_MODE).withProcessedFrameFrequency(0).save();
+			backLimelight.settings.withImuMode(VisionConstants.ENABLED_IMU_MODE)
+					.withProcessedFrameFrequency(0)
+					.save();
 		}).ignoringDisable(true);
 	}
 
+	/**
+	 * Command that sets up settings for the Limelights used while the robot is disabled.
+	 *
+	 * @return
+	 *         Command to run.
+	 */
 	public Command onDisableCommand() {
 		return Commands.runOnce(() -> {
-			backLimelight.settings.withImuMode(VisionConstants.DISABLED_IMU_MODE).withProcessedFrameFrequency(VisionConstants.DISABLED_UPDATE_FREQUENCY).save();
+			backLimelight.settings.withImuMode(VisionConstants.DISABLED_IMU_MODE)
+					.withProcessedFrameFrequency(VisionConstants.DISABLED_UPDATE_FREQUENCY)
+					.save();
 		}).ignoringDisable(true);
 	}
 

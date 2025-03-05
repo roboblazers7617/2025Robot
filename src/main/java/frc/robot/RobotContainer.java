@@ -9,6 +9,7 @@ import frc.robot.Constants.DashboardConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.subsystems.EndEffector.EndEffector;
 import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.Elastic;
 import frc.robot.Constants.OperatorConstants.GamepieceMode;
 import frc.robot.commands.StubbedCommands;
@@ -39,6 +40,8 @@ public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
 	@NotLogged
 	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
+	@NotLogged
+	private final Vision vision = drivetrain.getVision();
 	@NotLogged
 	private final Dashboard dashboard = new Dashboard(drivetrain, this);
 	private final EndEffector endEffector = new EndEffector();
@@ -71,8 +74,8 @@ public class RobotContainer {
 		configureDriverControls();
 		configureOperatorControls();
 		// Configure the Limelight mode switching
-		new Trigger(DriverStation::isEnabled).onTrue(drivetrain.getVision().onEnableCommand());
-		new Trigger(DriverStation::isDisabled).onTrue(drivetrain.getVision().onDisableCommand());
+		new Trigger(DriverStation::isEnabled).onTrue(vision.onEnableCommand());
+		new Trigger(DriverStation::isDisabled).onTrue(vision.onDisableCommand());
 		// By default interact with Coral
 		gamepieceMode = GamepieceMode.CORAL_MODE;
 	}
