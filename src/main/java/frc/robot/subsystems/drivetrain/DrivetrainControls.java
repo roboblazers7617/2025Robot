@@ -70,24 +70,13 @@ public class DrivetrainControls {
 	 *
 	 * @param velocity
 	 *            Velocity according to the field.
-	 * @see swervelib.SwerveDrive#driveFieldOriented(ChassisSpeeds)
-	 */
-	private void driveFieldOrientedScaled(ChassisSpeeds velocity) {
-		drivetrain.driveFieldOriented(velocity.times(speedMultiplier));
-	}
-
-	/**
-	 * Drive the robot given a chassis field oriented velocity, scaled with the {@link #speedMultiplier}.
-	 *
-	 * @param velocity
-	 *            Velocity according to the field.
 	 * @return
 	 *         Command to run
-	 * @see swervelib.SwerveDrive#driveFieldOriented(ChassisSpeeds)
+	 * @see Drivetrain#driveFieldOriented(ChassisSpeeds)
 	 */
 	private Command driveFieldOrientedScaledCommand(Supplier<ChassisSpeeds> velocity) {
 		return drivetrain.run(() -> {
-			driveFieldOrientedScaled(velocity.get());
+			drivetrain.driveFieldOriented(velocity.get().times(speedMultiplier));
 		});
 	}
 
