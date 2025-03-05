@@ -326,7 +326,7 @@ public final class Constants {
 		/**
 		 * Elevator kP.
 		 */
-		public static final double KP = 1;
+		public static final double KP = .8; // 0.8
 		/**
 		 * Elevator kI.
 		 */
@@ -334,7 +334,7 @@ public final class Constants {
 		/**
 		 * Elevator kD.
 		 */
-		public static final double KD = 0.0;
+		public static final double KD = 1.0;
 		/**
 		 * Elevator kS.
 		 */
@@ -342,11 +342,11 @@ public final class Constants {
 		/**
 		 * Elevator kG.
 		 */
-		public static final double KG = 0.14; // 0.14
+		public static final double KG = 0.25; // 0.14
 		/**
 		 * Elevator kV.
 		 */
-		public static final double KV = 7.3; // Leave as zero Max motion will take care of this
+		public static final double KV = 6.5;// 6.9
 
 		/**
 		 * Elevator kMinOutput as a percentage.
