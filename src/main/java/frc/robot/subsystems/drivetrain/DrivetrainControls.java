@@ -66,17 +66,18 @@ public class DrivetrainControls {
 	}
 
 	/**
-	 * Drive the robot given a chassis field oriented velocity, scaled with the {@link #speedMultiplier}.
+	 * Drive the robot given a SwerveInputStream, scaled with the {@link #speedMultiplier}.
 	 *
-	 * @param velocity
-	 *            Velocity according to the field.
+	 * @param inputStream
+	 *            The {@link SwerveInputStream} to read from.
 	 * @return
-	 *         Command to run
+	 *         Command to run.
 	 * @see Drivetrain#driveFieldOriented(ChassisSpeeds)
 	 */
-	private Command driveFieldOrientedScaledCommand(Supplier<ChassisSpeeds> velocity) {
+	private Command driveInputStreamScaledCommand(SwerveInputStream inputStream) {
 		return drivetrain.run(() -> {
-			drivetrain.driveFieldOriented(velocity.get().times(speedMultiplier));
+			inputStream.scaleTranslation(speedMultiplier);
+			drivetrain.driveFieldOriented(inputStream.get());
 		});
 	}
 
@@ -86,7 +87,7 @@ public class DrivetrainControls {
 	 * @param controller
 	 *            The controller to read from.
 	 * @return
-	 *         SwerveInputStream with data from the controller
+	 *         SwerveInputStream with data from the controller.
 	 */
 	private SwerveInputStream driveGeneric(CommandXboxController controller) {
 		return SwerveInputStream.of(drivetrain.getSwerveDrive(), () -> (-1 * controller.getLeftY()), () -> (-1 * controller.getLeftX()))
@@ -99,7 +100,7 @@ public class DrivetrainControls {
 	 * @param controller
 	 *            The controller to read from.
 	 * @return
-	 *         SwerveInputStream with data from the controller
+	 *         SwerveInputStream with data from the controller.
 	 */
 	public SwerveInputStream driveAngularVelocity(CommandXboxController controller) {
 		return driveGeneric(controller)
@@ -113,7 +114,7 @@ public class DrivetrainControls {
 	 * @param controller
 	 *            The controller to read from.
 	 * @return
-	 *         SwerveInputStream with data from the controller
+	 *         SwerveInputStream with data from the controller.
 	 */
 	public SwerveInputStream driveDirectAngle(CommandXboxController controller) {
 		return driveGeneric(controller)
@@ -127,7 +128,7 @@ public class DrivetrainControls {
 	 * @param controller
 	 *            The controller to read from.
 	 * @return
-	 *         SwerveInputStream with data from the controller
+	 *         SwerveInputStream with data from the controller.
 	 */
 	public SwerveInputStream driveDirectAngleSim(CommandXboxController controller) {
 		return driveGeneric(controller)
@@ -137,7 +138,7 @@ public class DrivetrainControls {
 	}
 
 	/**
-	 * {@link #driveFieldOrientedScaledCommand(Supplier)} that uses {@link #driveAngularVelocity(CommandXboxController)}. Calls {@link Drivetrain#resetLastAngleScalar()} on end to prevent snapback.
+	 * {@link #driveInputStreamScaledCommand(Supplier)} that uses {@link #driveAngularVelocity(CommandXboxController)}. Calls {@link Drivetrain#resetLastAngleScalar()} on end to prevent snapback.
 	 *
 	 * @param controller
 	 *            Controller to use.
@@ -145,12 +146,12 @@ public class DrivetrainControls {
 	 *         Command to run.
 	 */
 	public Command driveFieldOrientedAngularVelocityCommand(CommandXboxController controller) {
-		return driveFieldOrientedScaledCommand(driveAngularVelocity(controller))
+		return driveInputStreamScaledCommand(driveAngularVelocity(controller))
 				.finallyDo(drivetrain::resetLastAngleScalar);
 	}
 
 	/**
-	 * {@link #driveFieldOrientedScaledCommand(Supplier)} that uses {@link DrivetrainControls#driveDirectAngle(CommandXboxController)}.
+	 * {@link #driveInputStreamScaledCommand(Supplier)} that uses {@link DrivetrainControls#driveDirectAngle(CommandXboxController)}.
 	 *
 	 * @param controller
 	 *            Controller to use.
@@ -158,11 +159,11 @@ public class DrivetrainControls {
 	 *         Command to run.
 	 */
 	public Command driveFieldOrientedDirectAngleCommand(CommandXboxController controller) {
-		return driveFieldOrientedScaledCommand(driveDirectAngle(controller));
+		return driveInputStreamScaledCommand(driveDirectAngle(controller));
 	}
 
 	/**
-	 * {@link #driveFieldOrientedScaledCommand(Supplier)} that uses {@link DrivetrainControls#driveDirectAngleSim(CommandXboxController)}.
+	 * {@link #driveInputStreamScaledCommand(Supplier)} that uses {@link DrivetrainControls#driveDirectAngleSim(CommandXboxController)}.
 	 *
 	 * @param controller
 	 *            Controller to use.
@@ -170,6 +171,6 @@ public class DrivetrainControls {
 	 *         Command to run.
 	 */
 	public Command driveFieldOrientedDirectAngleSimCommand(CommandXboxController controller) {
-		return driveFieldOrientedScaledCommand(driveDirectAngleSim(controller));
+		return driveInputStreamScaledCommand(driveDirectAngleSim(controller));
 	}
 }
