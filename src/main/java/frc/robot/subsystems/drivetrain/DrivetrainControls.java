@@ -92,51 +92,6 @@ public class DrivetrainControls {
 	}
 
 	/**
-	 * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
-	 *
-	 * @param controller
-	 *            The controller to read from.
-	 * @return
-	 *         SwerveInputStream with data from the controller
-	 */
-	public SwerveInputStream driveAngularVelocity(CommandXboxController controller) {
-		return SwerveInputStream.of(drivetrain.getSwerveDrive(), () -> (-1 * controller.getLeftY()), () -> (-1 * controller.getLeftX()))
-				.withControllerRotationAxis(() -> (-1 * controller.getRightX()))
-				.deadband(OperatorConstants.DEADBAND)
-				.scaleTranslation(DrivetrainConstants.TRANSLATION_SCALE_NORMAL)
-				.allianceRelativeControl(true);
-	}
-
-	/**
-	 * A copy of {@link #driveAngularVelocity(CommandXboxController)} that uses heading control.
-	 *
-	 * @param controller
-	 *            The controller to read from.
-	 * @return
-	 *         SwerveInputStream with data from the controller
-	 */
-	public SwerveInputStream driveDirectAngle(CommandXboxController controller) {
-		return driveAngularVelocity(controller)
-				.withControllerHeadingAxis(() -> (-1 * controller.getRightX()), () -> (-1 * controller.getRightY()))
-				.headingWhile(true);
-	}
-
-	/**
-	 * A copy of {@link #driveAngularVelocity(CommandXboxController)} that pulls rotation from controller axis 2 for use in simulation.
-	 *
-	 * @param controller
-	 *            The controller to read from.
-	 * @return
-	 *         SwerveInputStream with data from the controller
-	 */
-	public SwerveInputStream driveDirectAngleSim(CommandXboxController controller) {
-		return driveAngularVelocity(controller)
-				.withControllerRotationAxis(() -> controller.getRawAxis(2))
-				.withControllerHeadingAxis(() -> Math.sin(controller.getRawAxis(2) * Math.PI) * (Math.PI * 2), () -> Math.cos(controller.getRawAxis(2) * Math.PI) * (Math.PI * 2))
-				.headingWhile(true);
-	}
-
-	/**
 	 * {@link #driveFieldOrientedScaledCommand(Supplier)} that uses {@link #driveAngularVelocity(CommandXboxController)}. Calls {@link Drivetrain#resetLastAngleScalar()} on end to prevent snapback.
 	 *
 	 * @param controller
@@ -171,5 +126,62 @@ public class DrivetrainControls {
 	 */
 	public Command driveFieldOrientedDirectAngleSimCommand(CommandXboxController controller) {
 		return driveFieldOrientedScaledCommand(driveDirectAngleSim(controller));
+	}
+
+	/**
+	 * Converts driver input into a SwerveInputStream with default settings.
+	 *
+	 * @param controller
+	 *            The controller to read from.
+	 * @return
+	 *         SwerveInputStream with data from the controller
+	 */
+	public SwerveInputStream driveGeneric(CommandXboxController controller) {
+		return SwerveInputStream.of(drivetrain.getSwerveDrive(), () -> (-1 * controller.getLeftY()), () -> (-1 * controller.getLeftX()))
+				.deadband(OperatorConstants.DEADBAND)
+				.scaleTranslation(DrivetrainConstants.TRANSLATION_SCALE_NORMAL);
+	}
+
+	/**
+	 * A copy of {@link #driveGeneric(CommandXboxController)} that uses angular velocity control for turning.
+	 *
+	 * @param controller
+	 *            The controller to read from.
+	 * @return
+	 *         SwerveInputStream with data from the controller
+	 */
+	public SwerveInputStream driveAngularVelocity(CommandXboxController controller) {
+		return driveGeneric(controller)
+				.withControllerRotationAxis(() -> (-1 * controller.getRightX()))
+				.allianceRelativeControl(true);
+	}
+
+	/**
+	 * A copy of {@link #driveGeneric(CommandXboxController)} that uses heading control for turning.
+	 *
+	 * @param controller
+	 *            The controller to read from.
+	 * @return
+	 *         SwerveInputStream with data from the controller
+	 */
+	public SwerveInputStream driveDirectAngle(CommandXboxController controller) {
+		return driveGeneric(controller)
+				.withControllerHeadingAxis(() -> (-1 * controller.getRightX()), () -> (-1 * controller.getRightY()))
+				.headingWhile(true);
+	}
+
+	/**
+	 * A copy of {@link #driveGeneric(CommandXboxController)} that pulls rotation from controller axis 2 for use in simulation.
+	 *
+	 * @param controller
+	 *            The controller to read from.
+	 * @return
+	 *         SwerveInputStream with data from the controller
+	 */
+	public SwerveInputStream driveDirectAngleSim(CommandXboxController controller) {
+		return driveGeneric(controller)
+				.withControllerRotationAxis(() -> controller.getRawAxis(2))
+				.withControllerHeadingAxis(() -> Math.sin(controller.getRawAxis(2) * Math.PI) * (Math.PI * 2), () -> Math.cos(controller.getRawAxis(2) * Math.PI) * (Math.PI * 2))
+				.headingWhile(true);
 	}
 }
