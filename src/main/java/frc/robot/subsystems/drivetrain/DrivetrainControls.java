@@ -18,7 +18,7 @@ public class DrivetrainControls {
 	 */
 	private final Drivetrain drivetrain;
 	/**
-	 * Speed multiplier used for scaling controller inputs.
+	 * Speed multiplier used for scaling controller inputs (0, 1].
 	 */
 	private double speedMultiplier;
 
@@ -39,7 +39,7 @@ public class DrivetrainControls {
 	 * Sets the controller speed multiplier.
 	 *
 	 * @param speedMultiplier
-	 *            Multiplier to set.
+	 *            Multiplier to set (0, 1].
 	 */
 	public void setSpeedMultiplier(double speedMultiplier) {
 		this.speedMultiplier = speedMultiplier;
@@ -56,7 +56,7 @@ public class DrivetrainControls {
 	 * Sets the controller speed multiplier. Resets the multiplier when canceled.
 	 *
 	 * @param speedMultiplier
-	 *            Multiplier to set.
+	 *            Multiplier to set (0, 1].
 	 * @return
 	 *         Command to run.
 	 */
