@@ -211,7 +211,13 @@ public final class Constants {
 		public static final PIDConstants ROTATION_PID_CONSTANTS = new PIDConstants(5.0, 0.0, 0.0);
 	}
 
-	// TODO: #98 (Brandon) Add documentation here on what settings should be during comp versus testing
+	/**
+	 * Constants used to configure logging.
+	 * <p>
+	 * During a competition debug mode should be false to reduce network and CPU usage. All data will still be logged it just won't be accessible until after the match.
+	 * <p>
+	 * During testing debug mode should be true to allow for real-time data viewing.
+	 */
 	public static class LoggingConstants {
 		/**
 		 * Send logging data to NetworkTables. Data is written to storage when set to false.
@@ -294,6 +300,268 @@ public final class Constants {
 		public static final int RAMP_PIVOT_PORT = 2;
 	}
 
+	// wrist is 3:1
+	/**
+	 * Constants used to configure the elevator.
+	 */
+	public static class ElevatorConstants {
+		/*
+		 * A bunch of stuff about the elevator
+		 * Neos: 2
+		 * ratio: 16:1
+		 * current limit: 40 amp
+		 * position conversion factor:
+		 * mass: Mass - (2 * 6lbs constant force spring)
+		 * spool diamaeter: 3.8cm
+		 */
+		/**
+		 * CAN ID for the right elevator motor.
+		 */
+		public static final int RIGHT_MOTOR_ID = 22;
+		/**
+		 * CAN ID for the left elevator motor.
+		 */
+		public static final int LEFT_MOTOR_ID = 52; // 21
+
+		/**
+		 * Elevator kP.
+		 */
+		public static final double KP = .8; // 0.8
+		/**
+		 * Elevator kI.
+		 */
+		public static final double KI = 0.0;
+		/**
+		 * Elevator kD.
+		 */
+		public static final double KD = 1.0;
+		/**
+		 * Elevator kS.
+		 */
+		public static final double KS = 0.35;
+		/**
+		 * Elevator kG.
+		 */
+		public static final double KG = 0.25; // 0.14
+		/**
+		 * Elevator kV.
+		 */
+		public static final double KV = 6.5;// 6.9
+
+		/**
+		 * Elevator kMinOutput as a percentage.
+		 */
+		public static final double KMIN_OUTPUT = -1.0;
+		/**
+		 * Elevator kMaxOutput as a percentage.
+		 */
+		public static final double KMAX_OUTPUT = 1.0;
+		/**
+		 * Maximum velocity in m/s.
+		 */
+		// TODO: (Brandon) Update with accurate number. Is the elevator really going to travel 3 feet in one second? Use reca.lc
+		public static final double MAX_VELOCITY = 2;
+		/**
+		 * Maximum acceleration in m/s^2.
+		 */
+		// TODO: (Brandon) Update with accurate number Use reca.lc
+		public static final double MAX_ACCELERATION = 2;
+
+		/**
+		 * Maximum position in meters.
+		 */
+		// TODO: (Brandon) Update with accurate number
+		public static final double MAX_POSITION = 1.44;
+		/**
+		 * Minimum position in meters.
+		 */
+		public static final double MIN_POSITION = 0.01;
+		/**
+		 * This is the maximum position for the elevator to be considered lowered, in meters.
+		 */
+		// TODO: (Brandon) Update with accurate number
+		public static final double MAX_LOWERED_POSITION = .2;
+		/**
+		 * Conversion factor from rotation to meters. 3.81cm diameter spool, 16:1 gear ratio
+		 */
+		public static final double POSITION_CONVERSION_FACTOR = (1 / .2845) / 200;
+		/**
+		 * Conversion factor from rotation to meters per second.
+		 */
+		public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 60;
+		/**
+		 * Zero offset, meters.
+		 */
+		public static final double ZERO_OFFSET = 0;
+		/**
+		 * Current limit in amps.
+		 */
+		public static final int CURRENT_LIMIT = 40;
+		/**
+		 * Tolerance for the target to be considered reached in meters.
+		 */
+		public static final double TOLERANCE = .02;
+	}
+
+	/**
+	 * Constants used to configure the wrist.
+	 */
+	public static class WristConstants {
+		/*
+		 * A bunch of stuff about the wrist
+		 * Neos: 1
+		 * ratio: 10:58 then 18:58
+		 * current limit: 40 amp
+		 * center of mass distance:
+		 * position conversion factor: 1/(10/58 * 18/58)
+		 * mass: 16lbs
+		 */
+		/**
+		 * CAN Motor ID for the wrist.
+		 */
+		public static final int MOTOR_ID = 31;
+
+		/**
+		 * Wrist kP.
+		 */
+		public static final double KP = 0.01; // 0.006
+		/**
+		 * Wrist kI.
+		 */
+		public static final double KI = 0.0;
+		/**
+		 * Wrist kD.
+		 */
+		public static final double KD = 0.0;
+
+		/**
+		 * Wrist kS.
+		 */
+		public static final double KS = 0.1;// 0.1
+		/**
+		 * Wrist kG.
+		 */
+		public static final double KG = 0.3;
+		/**
+		 * Wrist kV.
+		 */
+		public static final double KV = 0; // Leave as zero, Max motion will take care of this
+
+		/**
+		 * Wrist kMinOutput.
+		 */
+		public static final double KMIN_OUTPUT = -.3;
+		/**
+		 * Wrist kMaxOutput.
+		 */
+		public static final double KMAX_OUTPUT = .3;
+		/**
+		 * Maximum velocity in degrees/s.
+		 */
+		// TODO: (Brandon) Update with accurate number
+		public static final double MAX_VELOCITY = 200.0;
+		/**
+		 * Maximum acceleration in degrees/s^2.
+		 */
+		// TODO: (Brandon) Update with accurate number
+		public static final double MAX_ACCELERATION = 200.0;
+
+		/**
+		 * Maximum position in degrees.
+		 */
+		public static final double MAX_POSITION = 145.0;
+		/**
+		 * Minimum position when the elevator is not lowered, (determined by MAX_LOWERED_POSITION) in degrees.
+		 */
+
+		public static final double MIN_POSITION = -50.0;
+		/**
+		 * Minimum safe position while the elevator is lowered, in degrees.
+		 */
+		public static final double SAFE_MIN_POSITION = -40.0;
+
+		/**
+		 * Maximum safe position while the elevator is raised (so it doesn't collide with the metal thing on top), in degrees.
+		 */
+		public static final double SAFE_MAX_POSITION = 130.0;
+
+		/**
+		 * Maximum position that the wrist can be while holding an algae (to make sure it doesn't hit the elevator), in degrees.
+		 */
+		public static final double MAX_ALGAE_POSITION_WITH_ELEVATOR = 45.0;
+		/**
+		 * Maximum position that the wrist can be while holding an algae if the elevator is fully extended, in degrees.
+		 */
+		public static final double MAX_ALGAE_POSITION_WITHOUT_ELEVATOR = 95.0;
+		/**
+		 * Conversion factor from rotation to degrees.
+		 */
+		public static final double POSITION_CONVERSION_FACTOR = 1.0 / ((10.0 / 58.0) * (18.0 / 58.0) * (30.0 / 12.0)); // first two conversions are gear boxes, third one is chain
+		/**
+		 * Conversion factor from rotation to degrees per second.
+		 */
+		public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 60.0;
+		/**
+		 * Zero offset, in rotations, because reasons.
+		 */
+		public static final double ZERO_OFFSET = 0.73;
+		/**
+		 * Current limit in amps.
+		 */
+		public static final int CURRENT_LIMIT = 40;
+
+		/**
+		 * Tolerance for the target to be considered reached in degrees.
+		 */
+		public static final double TOLERANCE = 5;
+	}
+
+	/**
+	 * Constants with the arm and elevator positions for various positions.
+	 * <p>
+	 * Wrist position is in degrees, elevator position is in meters.
+	 */
+	public enum ArmPosition {
+		//
+		INTAKE_CORAL_CORAL_STATION(WristConstants.MAX_POSITION, ElevatorConstants.MIN_POSITION),
+		//
+		INTAKE_ALGAE_LEVEL_2(1, 0),
+		//
+		INTAKE_ALGAE_LEVEL_3(2, 0),
+		//
+		OUTTAKE_CORAL_LEVEL_1(-45, 1), // dummy value
+		//
+		OUTTAKE_CORAL_LEVEL_2(125, 0.27),
+		//
+		OUTTAKE_CORAL_LEVEL_3(125, 0.66),
+		//
+		OUTTAKE_CORAL_LEVEL_4(92, 0), // dummy value
+		//
+		OUTTAKE_ALGAE_PROCESSOR(0, 0),
+		//
+		OUTTAKE_ALGAE_NET(0, 0),
+		//
+		STOW_ALGAE(0, 0),
+		//
+		STOW_CORAL(125, ElevatorConstants.MIN_POSITION),
+		//
+		CLIMB(-45, 1);
+
+		/**
+		 * The elevator position in meters.
+		 */
+		public final double ELEVATOR_POSITION;
+		/**
+		 * The wrist position in degrees.
+		 */
+		public final double WRIST_POSITION;
+
+		ArmPosition(double WRIST_POSITION, double ELEVATOR_POSITION) {
+			this.WRIST_POSITION = WRIST_POSITION;
+			this.ELEVATOR_POSITION = ELEVATOR_POSITION;
+		}
+	}
+
 	/**
 	 * Constants used to configure the {@link frc.robot.subsystems.EndEffector.EndEffector End Effector}.
 	 */
@@ -329,7 +597,7 @@ public final class Constants {
 		/**
 		 * Intake motor speed for coral. (to be changed and edited later)
 		 */
-		public static final double CORAL_INTAKE_SPEED = 0.7;
+		public static final double CORAL_INTAKE_SPEED = 0.5; // was 0.7
 		/**
 		 * Outtake motor speed for coral. (to be changed and edited later)
 		 */
