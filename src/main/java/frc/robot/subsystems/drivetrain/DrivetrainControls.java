@@ -138,7 +138,7 @@ public class DrivetrainControls {
 	}
 
 	/**
-	 * {@link #driveInputStreamScaledCommand(Supplier)} that uses {@link #driveAngularVelocity(CommandXboxController)}. Calls {@link Drivetrain#resetLastAngleScalar()} on end to prevent snapback.
+	 * {@link #driveInputStreamScaledCommand(SwerveInputStream)} that uses {@link #driveAngularVelocity(CommandXboxController)}. Calls {@link Drivetrain#resetLastAngleScalar()} on end to prevent snapback.
 	 *
 	 * @param controller
 	 *            Controller to use.
@@ -151,7 +151,7 @@ public class DrivetrainControls {
 	}
 
 	/**
-	 * {@link #driveInputStreamScaledCommand(Supplier)} that uses {@link DrivetrainControls#driveDirectAngle(CommandXboxController)}.
+	 * {@link #driveInputStreamScaledCommand(SwerveInputStream)} that uses {@link DrivetrainControls#driveDirectAngle(CommandXboxController)}.
 	 *
 	 * @param controller
 	 *            Controller to use.
@@ -163,7 +163,7 @@ public class DrivetrainControls {
 	}
 
 	/**
-	 * {@link #driveInputStreamScaledCommand(Supplier)} that uses {@link DrivetrainControls#driveDirectAngleSim(CommandXboxController)}.
+	 * {@link #driveInputStreamScaledCommand(SwerveInputStream)} that uses {@link DrivetrainControls#driveDirectAngleSim(CommandXboxController)}.
 	 *
 	 * @param controller
 	 *            Controller to use.
