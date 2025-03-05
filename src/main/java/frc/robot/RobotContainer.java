@@ -12,6 +12,8 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.Elastic;
 import frc.robot.Constants.OperatorConstants.GamepieceMode;
 import frc.robot.commands.StubbedCommands;
+import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.drivetrain.DrivetrainControls;
 import frc.robot.subsystems.IntakeRamp.Ramp;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -39,6 +41,8 @@ public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
 	@NotLogged
 	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
+	@NotLogged
+	private final DrivetrainControls drivetrainControls = drivetrain.getControls();
 	@NotLogged
 	private final Dashboard dashboard = new Dashboard(drivetrain, this);
 	private final EndEffector endEffector = new EndEffector();
@@ -110,17 +114,19 @@ public class RobotContainer {
 		// Set the default drivetrain command (used for the driver controller)
 		if (RobotBase.isSimulation()) {
 			// Heading control
-			drivetrain.setDefaultCommand(drivetrain.driveFieldOrientedDirectAngleSimControllerCommand(driverController));
+			drivetrain.setDefaultCommand(drivetrainControls.driveFieldOrientedDirectAngleSimCommand(driverController));
 		} else {
 			// Heading control
-			drivetrain.setDefaultCommand(drivetrain.driveFieldOrientedDirectAngleControllerCommand(driverController));
+			drivetrain.setDefaultCommand(drivetrainControls.driveFieldOrientedDirectAngleCommand(driverController));
 			// Angular velocity control
 			driverController.leftBumper()
-					.whileTrue(drivetrain.driveFieldOrientedAngularVelocityControllerCommand(driverController));
+					.whileTrue(drivetrainControls.driveFieldOrientedAngularVelocityCommand(driverController));
 		}
-		driverController.a().whileTrue(StubbedCommands.Drivetrain.DriverSlowMode());
-		driverController.b().whileTrue(StubbedCommands.Drivetrain.DriverFastMode());
-		driverController.x().whileTrue(StubbedCommands.Drivetrain.LockWheels());
+
+		driverController.a().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_SLOW));
+		driverController.b().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_FAST));
+		driverController.x().whileTrue(drivetrain.lockCommand());
+
 		driverController.y().onTrue(StubbedCommands.Climber.StowRamp());
 		driverController.povDown().whileTrue(StubbedCommands.Climber.ClimberDown());
 		driverController.povLeft().whileTrue(StubbedCommands.Climber.RampUp());

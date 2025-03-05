@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.VisionConstants;
@@ -62,6 +61,10 @@ public class Drivetrain extends SubsystemBase {
 	 */
 	private final SwerveDrive swerveDrive;
 	/**
+	 * Controls object.
+	 */
+	private final DrivetrainControls controls;
+	/**
 	 * Vision object.
 	 */
 	private final Vision vision;
@@ -98,6 +101,9 @@ public class Drivetrain extends SubsystemBase {
 		// TODO: #112 (Max/Lukas) If we disable vision updates, do we need to restart this thread to ensure odometry is udpated?
 		swerveDrive.stopOdometryThread();
 
+		// Set up controls
+		controls = new DrivetrainControls(this);
+
 		// Set up vision
 		vision = new Vision(swerveDrive);
 	}
@@ -121,14 +127,10 @@ public class Drivetrain extends SubsystemBase {
 	 * Gets the swerve drive object.
 	 *
 	 * @return
-	 *         {@link SwerveDrive}
+	 *         {@link #swerveDrive}
 	 */
 	public SwerveDrive getSwerveDrive() {
 		return swerveDrive;
-	}
-
-	public Vision getVision() {
-		return vision;
 	}
 
 	/**
@@ -165,6 +167,26 @@ public class Drivetrain extends SubsystemBase {
 	 */
 	public SwerveDriveKinematics getKinematics() {
 		return swerveDrive.kinematics;
+	}
+
+	/**
+	 * Gets the drivetrain controls object.
+	 *
+	 * @return
+	 *         {@link #controls}
+	 */
+	public DrivetrainControls getControls() {
+		return controls;
+	}
+
+	/**
+	 * Gets the vision object.
+	 *
+	 * @return
+	 *         {@link #vision}
+	 */
+	public Vision getVision() {
+		return vision;
 	}
 
 	/**
@@ -594,8 +616,7 @@ public class Drivetrain extends SubsystemBase {
 	 *
 	 * @param velocity
 	 *            Velocity according to the field.
-	 * @see
-	 *      SwerveDrive#driveFieldOriented(ChassisSpeeds)
+	 * @see SwerveDrive#driveFieldOriented(ChassisSpeeds)
 	 */
 	public void driveFieldOriented(ChassisSpeeds velocity) {
 		swerveDrive.driveFieldOriented(velocity);
@@ -608,50 +629,12 @@ public class Drivetrain extends SubsystemBase {
 	 *            Velocity according to the field.
 	 * @return
 	 *         Command to run
-	 * @see
-	 *      SwerveDrive#driveFieldOriented(ChassisSpeeds)
+	 * @see SwerveDrive#driveFieldOriented(ChassisSpeeds)
 	 */
 	public Command driveFieldOrientedCommand(Supplier<ChassisSpeeds> velocity) {
 		return run(() -> {
-			swerveDrive.driveFieldOriented(velocity.get());
+			driveFieldOriented(velocity.get());
 		});
-	}
-
-	/**
-	 * {@link #driveFieldOrientedCommand(Supplier)} that uses {@link DrivetrainControls#driveAngularVelocity(Drivetrain, CommandXboxController)}. Calls {@link #resetLastAngleScalar()} on end to prevent snapback.
-	 *
-	 * @param controller
-	 *            Controller to use.
-	 * @return
-	 *         Command to run.
-	 */
-	public Command driveFieldOrientedAngularVelocityControllerCommand(CommandXboxController controller) {
-		return driveFieldOrientedCommand(DrivetrainControls.driveAngularVelocity(this, controller))
-				.finallyDo(this::resetLastAngleScalar);
-	}
-
-	/**
-	 * {@link #driveFieldOrientedCommand(Supplier)} that uses {@link DrivetrainControls#driveDirectAngle(Drivetrain, CommandXboxController)}.
-	 *
-	 * @param controller
-	 *            Controller to use.
-	 * @return
-	 *         Command to run.
-	 */
-	public Command driveFieldOrientedDirectAngleControllerCommand(CommandXboxController controller) {
-		return driveFieldOrientedCommand(DrivetrainControls.driveDirectAngle(this, controller));
-	}
-
-	/**
-	 * {@link #driveFieldOrientedCommand(Supplier)} that uses {@link DrivetrainControls#driveDirectAngleSim(Drivetrain, CommandXboxController)}.
-	 *
-	 * @param controller
-	 *            Controller to use.
-	 * @return
-	 *         Command to run.
-	 */
-	public Command driveFieldOrientedDirectAngleSimControllerCommand(CommandXboxController controller) {
-		return driveFieldOrientedCommand(DrivetrainControls.driveDirectAngleSim(this, controller));
 	}
 
 	/**
