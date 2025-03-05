@@ -424,7 +424,7 @@ public final class Constants {
 		/**
 		 * Wrist kP.
 		 */
-		public static final double KP = 0.007; // 0.006
+		public static final double KP = 0.01; // 0.006
 		/**
 		 * Wrist kI.
 		 */
@@ -441,7 +441,7 @@ public final class Constants {
 		/**
 		 * Wrist kG.
 		 */
-		public static final double KG = 0.2;
+		public static final double KG = 0.3;
 		/**
 		 * Wrist kV.
 		 */
@@ -469,30 +469,30 @@ public final class Constants {
 		/**
 		 * Maximum position in degrees.
 		 */
-		public static final double MAX_POSITION = 115.0;
+		public static final double MAX_POSITION = 145.0;
 		/**
 		 * Minimum position when the elevator is not lowered, (determined by MAX_LOWERED_POSITION) in degrees.
 		 */
 
-		public static final double MIN_POSITION = -80.0;
+		public static final double MIN_POSITION = -50.0;
 		/**
 		 * Minimum safe position while the elevator is lowered, in degrees.
 		 */
-		public static final double SAFE_MIN_POSITION = -70.0;
+		public static final double SAFE_MIN_POSITION = -40.0;
 
 		/**
 		 * Maximum safe position while the elevator is raised (so it doesn't collide with the metal thing on top), in degrees.
 		 */
-		public static final double SAFE_MAX_POSITION = 100.0;
+		public static final double SAFE_MAX_POSITION = 130.0;
 
 		/**
 		 * Maximum position that the wrist can be while holding an algae (to make sure it doesn't hit the elevator), in degrees.
 		 */
-		public static final double MAX_ALGAE_POSITION_WITH_ELEVATOR = 15.0;
+		public static final double MAX_ALGAE_POSITION_WITH_ELEVATOR = 45.0;
 		/**
 		 * Maximum position that the wrist can be while holding an algae if the elevator is fully extended, in degrees.
 		 */
-		public static final double MAX_ALGAE_POSITION_WITHOUT_ELEVATOR = 65.0;
+		public static final double MAX_ALGAE_POSITION_WITHOUT_ELEVATOR = 95.0;
 		/**
 		 * Conversion factor from rotation to degrees.
 		 */
@@ -504,7 +504,7 @@ public final class Constants {
 		/**
 		 * Zero offset, in rotations, because reasons.
 		 */
-		public static final double ZERO_OFFSET = 0.65;
+		public static final double ZERO_OFFSET = 0.73;
 		/**
 		 * Current limit in amps.
 		 */
@@ -531,9 +531,9 @@ public final class Constants {
 		//
 		OUTTAKE_CORAL_LEVEL_1(-45, 1), // dummy value
 		//
-		OUTTAKE_CORAL_LEVEL_2(95, 0.27),
+		OUTTAKE_CORAL_LEVEL_2(125, 0.27),
 		//
-		OUTTAKE_CORAL_LEVEL_3(95, 0.66),
+		OUTTAKE_CORAL_LEVEL_3(125, 0.66),
 		//
 		OUTTAKE_CORAL_LEVEL_4(92, 0), // dummy value
 		//
@@ -543,7 +543,7 @@ public final class Constants {
 		//
 		STOW_ALGAE(0, 0),
 		//
-		STOW_CORAL(95, ElevatorConstants.MIN_POSITION),
+		STOW_CORAL(125, ElevatorConstants.MIN_POSITION),
 		//
 		CLIMB(-45, 1);
 

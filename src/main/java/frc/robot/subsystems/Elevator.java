@@ -255,23 +255,30 @@ public class Elevator extends SubsystemBase {
 	 */
 	public Command setSpeedsCommand(DoubleSupplier elevatorSpeed, DoubleSupplier wristSpeed) {
 		Command command = new Command() {
+			private boolean isElevatorJoystickCentered = false;
+			private boolean isWristJoystickCentered = false;
+
 			@Override
 			public void execute() {
 				double targetElevatorSpeed = MathUtil.clamp(elevatorSpeed.getAsDouble() * ElevatorConstants.MAX_VELOCITY, -ElevatorConstants.MAX_VELOCITY, ElevatorConstants.MAX_VELOCITY);
 
 				if (targetElevatorSpeed != 0) {
 					setElevatorPosition(elevatorTarget + (targetElevatorSpeed / 50)); // divide the speed by 50 because their are 50 loops per second
-				} else {
+					isElevatorJoystickCentered = false;
+				} else if (!isElevatorJoystickCentered) {
 					setElevatorPosition(leaderElevatorRelativeEncoder.getPosition());
 					currentElevatorSetpoint = new TrapezoidProfile.State(leaderElevatorRelativeEncoder.getPosition(), 0);
+					isElevatorJoystickCentered = true;
 				}
 
 				double targetWristSpeed = MathUtil.clamp(wristSpeed.getAsDouble() * WristConstants.MAX_VELOCITY, -WristConstants.MAX_VELOCITY, WristConstants.MAX_VELOCITY);
 				if (targetWristSpeed != 0) {
 					setWristPosition(wristTarget + (targetWristSpeed / 50)); // divide the speed by 50 because their are 50 loops per second
-				} else {
+					isWristJoystickCentered = false;
+				} else if (!isWristJoystickCentered) {
 					setWristPosition(wristAbsoluteEncoder.getPosition());
 					currentWristSetpoint = new TrapezoidProfile.State(wristAbsoluteEncoder.getPosition(), 0);
+					isWristJoystickCentered = true;
 				}
 			}
 
