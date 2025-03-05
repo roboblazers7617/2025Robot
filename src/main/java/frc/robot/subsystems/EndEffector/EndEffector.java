@@ -39,7 +39,7 @@ public class EndEffector extends SubsystemBase {
 	 */
 	// TODO: #134 Rename to follow coding standards / ease reading code
 	private final DigitalInput isNotHoldingCoral = new DigitalInput(EndEffectorConstants.BEAM_BREAK_DIO);
-	private final DigitalInput isHoldingAlgae = new DigitalInput(EndEffectorConstants.LIMIT_SWITCH_DIO);
+	private final DigitalInput isHoldingAlgaeInput = new DigitalInput(EndEffectorConstants.LIMIT_SWITCH_DIO);
 	private final RelativeEncoder endEffectEncoder = endEffectorMotor.getEncoder();
 
 	/**
@@ -62,7 +62,7 @@ public class EndEffector extends SubsystemBase {
 	}
 
 	public boolean isHoldingAlgae() {
-		return isHoldingAlgae.get();
+		return isHoldingAlgaeInput.get();
 	}
 
 	public boolean isHoldingCoral() {
