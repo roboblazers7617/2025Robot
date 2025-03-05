@@ -92,43 +92,6 @@ public class DrivetrainControls {
 	}
 
 	/**
-	 * {@link #driveFieldOrientedScaledCommand(Supplier)} that uses {@link #driveAngularVelocity(CommandXboxController)}. Calls {@link Drivetrain#resetLastAngleScalar()} on end to prevent snapback.
-	 *
-	 * @param controller
-	 *            Controller to use.
-	 * @return
-	 *         Command to run.
-	 */
-	public Command driveFieldOrientedAngularVelocityCommand(CommandXboxController controller) {
-		return driveFieldOrientedScaledCommand(driveAngularVelocity(controller))
-				.finallyDo(drivetrain::resetLastAngleScalar);
-	}
-
-	/**
-	 * {@link #driveFieldOrientedScaledCommand(Supplier)} that uses {@link DrivetrainControls#driveDirectAngle(CommandXboxController)}.
-	 *
-	 * @param controller
-	 *            Controller to use.
-	 * @return
-	 *         Command to run.
-	 */
-	public Command driveFieldOrientedDirectAngleCommand(CommandXboxController controller) {
-		return driveFieldOrientedScaledCommand(driveDirectAngle(controller));
-	}
-
-	/**
-	 * {@link #driveFieldOrientedScaledCommand(Supplier)} that uses {@link DrivetrainControls#driveDirectAngleSim(CommandXboxController)}.
-	 *
-	 * @param controller
-	 *            Controller to use.
-	 * @return
-	 *         Command to run.
-	 */
-	public Command driveFieldOrientedDirectAngleSimCommand(CommandXboxController controller) {
-		return driveFieldOrientedScaledCommand(driveDirectAngleSim(controller));
-	}
-
-	/**
 	 * Converts driver input into a SwerveInputStream with default settings.
 	 *
 	 * @param controller
@@ -136,7 +99,7 @@ public class DrivetrainControls {
 	 * @return
 	 *         SwerveInputStream with data from the controller
 	 */
-	public SwerveInputStream driveGeneric(CommandXboxController controller) {
+	private SwerveInputStream driveGeneric(CommandXboxController controller) {
 		return SwerveInputStream.of(drivetrain.getSwerveDrive(), () -> (-1 * controller.getLeftY()), () -> (-1 * controller.getLeftX()))
 				.deadband(OperatorConstants.DEADBAND)
 				.scaleTranslation(DrivetrainConstants.TRANSLATION_SCALE_NORMAL);
@@ -183,5 +146,42 @@ public class DrivetrainControls {
 				.withControllerRotationAxis(() -> controller.getRawAxis(2))
 				.withControllerHeadingAxis(() -> Math.sin(controller.getRawAxis(2) * Math.PI) * (Math.PI * 2), () -> Math.cos(controller.getRawAxis(2) * Math.PI) * (Math.PI * 2))
 				.headingWhile(true);
+	}
+
+	/**
+	 * {@link #driveFieldOrientedScaledCommand(Supplier)} that uses {@link #driveAngularVelocity(CommandXboxController)}. Calls {@link Drivetrain#resetLastAngleScalar()} on end to prevent snapback.
+	 *
+	 * @param controller
+	 *            Controller to use.
+	 * @return
+	 *         Command to run.
+	 */
+	public Command driveFieldOrientedAngularVelocityCommand(CommandXboxController controller) {
+		return driveFieldOrientedScaledCommand(driveAngularVelocity(controller))
+				.finallyDo(drivetrain::resetLastAngleScalar);
+	}
+
+	/**
+	 * {@link #driveFieldOrientedScaledCommand(Supplier)} that uses {@link DrivetrainControls#driveDirectAngle(CommandXboxController)}.
+	 *
+	 * @param controller
+	 *            Controller to use.
+	 * @return
+	 *         Command to run.
+	 */
+	public Command driveFieldOrientedDirectAngleCommand(CommandXboxController controller) {
+		return driveFieldOrientedScaledCommand(driveDirectAngle(controller));
+	}
+
+	/**
+	 * {@link #driveFieldOrientedScaledCommand(Supplier)} that uses {@link DrivetrainControls#driveDirectAngleSim(CommandXboxController)}.
+	 *
+	 * @param controller
+	 *            Controller to use.
+	 * @return
+	 *         Command to run.
+	 */
+	public Command driveFieldOrientedDirectAngleSimCommand(CommandXboxController controller) {
+		return driveFieldOrientedScaledCommand(driveDirectAngleSim(controller));
 	}
 }
