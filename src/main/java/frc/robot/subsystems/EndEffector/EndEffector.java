@@ -28,15 +28,22 @@ import edu.wpi.first.wpilibj2.command.Commands;
  */
 @Logged
 public class EndEffector extends SubsystemBase {
+	/**
+	 * The motor used to drive the EndEffector.
+	 */
 	@Logged
 	private final SparkMax endEffectorMotor = new SparkMax(EndEffectorConstants.CAN_ID_END_EFFECTOR, MotorType.kBrushless);
+	/**
+	 * The {@link #endEffectorMotor} encoder.
+	 */
 	@Logged
 	private final RelativeEncoder endEffectEncoder = endEffectorMotor.getEncoder();
 
 	/**
-	 * Beam break outputs
-	 * True = is NOT holding coral
-	 * False = is holding coral
+	 * Beam break outputs.
+	 *
+	 * @apiNote
+	 *          True if NOT holding coral, false if holding coral.
 	 */
 	// TODO: #134 Rename to follow coding standards / ease reading code
 	@Logged
@@ -64,10 +71,10 @@ public class EndEffector extends SubsystemBase {
 	}
 
 	/**
-	 * Will start the motor with the inputed speed.
+	 * Starts the motor with the given speed.
 	 *
 	 * @param speed
-	 *            Speed to set [-1,1].
+	 *            Speed to set [-1, 1].
 	 */
 	private void startMotor(Double speed) {
 		endEffectorMotor.set(speed);
@@ -77,7 +84,7 @@ public class EndEffector extends SubsystemBase {
 	 * Starts the intake motor.
 	 *
 	 * @param speed
-	 *            Speed to set [-1,1].
+	 *            Speed to set [-1, 1].
 	 * @return
 	 *         Command to run.
 	 */
@@ -99,12 +106,24 @@ public class EndEffector extends SubsystemBase {
 		});
 	}
 
+	/**
+	 * Intakes a coral.
+	 *
+	 * @return
+	 *         Command to run.
+	 */
 	public Command CoralIntake() {
 		return StartMotorCommand(() -> EndEffectorConstants.CORAL_INTAKE_SPEED)
 				.andThen(Commands.waitUntil(() -> !isNotHoldingCoral.get()))
 				.finallyDo(this::stopMotor);
 	}
 
+	/**
+	 * Outtakes a coral.
+	 *
+	 * @return
+	 *         Command to run.
+	 */
 	public Command CoralOuttake() {
 		return StartMotorCommand(() -> EndEffectorConstants.CORAL_OUTAKE_SPEED)
 				.andThen(Commands.waitUntil(() -> isNotHoldingCoral.get()))
@@ -112,6 +131,12 @@ public class EndEffector extends SubsystemBase {
 				.finallyDo(this::stopMotor);
 	}
 
+	/**
+	 * Intakes an algae.
+	 *
+	 * @return
+	 *         Command to run.
+	 */
 	public Command AlgaeIntake() {
 		return StartMotorCommand(() -> EndEffectorConstants.ALGAE_INTAKE_SPEED)
 				.andThen(Commands.waitSeconds(EndEffectorConstants.MOTOR_CURRENT_CHECK_DELAY))
@@ -120,16 +145,34 @@ public class EndEffector extends SubsystemBase {
 				.finallyDo(this::stopMotor);
 	}
 
+	/**
+	 * Outtakes an alagae.
+	 *
+	 * @return
+	 *         Command to run.
+	 */
 	public Command AlgaeOuttake() {
 		return StartMotorCommand(() -> EndEffectorConstants.ALGAE_OUTAKE_SPEED)
 				.andThen(Commands.waitSeconds(EndEffectorConstants.ALGAE_OUTTAKE_RUN_TIME))
 				.finallyDo(this::stopMotor);
 	}
 
+	/**
+	 * Is the EndEffector holding algae?
+	 *
+	 * @return
+	 *         True if holding algae, false if not.
+	 */
 	public boolean isHoldingAlage() {
 		return false;
 	}
 
+	/**
+	 * Is the EndEffector holding coral?
+	 *
+	 * @return
+	 *         True if holding coral, false if not.
+	 */
 	public boolean isHoldingCoral() {
 		return !isNotHoldingCoral.get();
 	}

@@ -23,15 +23,36 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 /**
  * A class that sets up the driverstation dashboard for the robot.
  */
-
 public class Dashboard {
+	/**
+	 * The {@link Drivetrain} to use.
+	 */
 	final Drivetrain drivetrain;
+	/**
+	 * The {@link RobotContainer} to use.
+	 */
 	final RobotContainer robotContainer;
+	/**
+	 * The {@link SendableChooser} used to pick the alliance color for auto.
+	 */
 	final SendableChooser<DriverStation.Alliance> alliancePicker;
+	/**
+	 * The {@link SendableChooser} used to pick the pose to reset odometry to.
+	 */
 	final SendableChooser<Pose2d> pose;
+	/**
+	 * The {@link SendableChooser} used to pick the autonomous command.
+	 */
 	SendableChooser<Command> auto;
 
-	/** Creates a new Dashboard. */
+	/**
+	 * Creates a new Dashboard.
+	 *
+	 * @param drivetrain
+	 *            The {@link Drivetrain} to use.
+	 * @param robotContainer
+	 *            The {@link RobotContainer} to use.
+	 */
 	public Dashboard(Drivetrain drivetrain, RobotContainer robotContainer) {
 		this.drivetrain = drivetrain;
 		this.robotContainer = robotContainer;
@@ -84,6 +105,12 @@ public class Dashboard {
 		robotContainer.setAutoChooser(auto);
 	}
 
+	/**
+	 * Sets the Drivetrain pose to the pose selected through the {@link #pose} chooser.
+	 *
+	 * @return
+	 *         Command to run.
+	 */
 	private Command resetPose() {
 		return new InstantCommand(() -> {
 			drivetrain.resetOdometry(pose.getSelected());
