@@ -249,6 +249,8 @@ public class Drivetrain extends SubsystemBase {
 	/**
 	 * Resets the gyro angle to zero and resets odometry to the same position, but facing toward 0.
 	 *
+	 * @return
+	 *         Command to run.
 	 * @see #zeroGyro()
 	 */
 	public Command zeroGyroCommand() {

@@ -522,29 +522,53 @@ public final class Constants {
 	 * Wrist position is in degrees, elevator position is in meters.
 	 */
 	public enum ArmPosition {
-		//
+		/**
+		 * Position used to intake coral from the coral station.
+		 */
 		INTAKE_CORAL_CORAL_STATION(WristConstants.MAX_POSITION, ElevatorConstants.MIN_POSITION),
-		//
+		/**
+		 * Position used to intake algae from L2.
+		 */
 		INTAKE_ALGAE_LEVEL_2(1, 0),
-		//
+		/**
+		 * Position used to intake algae from L3.
+		 */
 		INTAKE_ALGAE_LEVEL_3(2, 0),
-		//
+		/**
+		 * Position used to outtake coral to L1.
+		 */
 		OUTTAKE_CORAL_LEVEL_1(-45, 1), // dummy value
-		//
+		/**
+		 * Position used to outtake coral to L2.
+		 */
 		OUTTAKE_CORAL_LEVEL_2(125, 0.27),
-		//
+		/**
+		 * Position used to outtake coral to L3.
+		 */
 		OUTTAKE_CORAL_LEVEL_3(125, 0.66),
-		//
+		/**
+		 * Position used to outtake coral to L4.
+		 */
 		OUTTAKE_CORAL_LEVEL_4(92, 0), // dummy value
-		//
+		/**
+		 * Position used to outtake algae to the processor.
+		 */
 		OUTTAKE_ALGAE_PROCESSOR(0, 0),
-		//
+		/**
+		 * Position used to outtake algae to the net.
+		 */
 		OUTTAKE_ALGAE_NET(0, 0),
-		//
+		/**
+		 * Stow position while holding algae.
+		 */
 		STOW_ALGAE(0, 0),
-		//
+		/**
+		 * Stow position while holding coral.
+		 */
 		STOW_CORAL(125, ElevatorConstants.MIN_POSITION),
-		//
+		/**
+		 * Position while climbing.
+		 */
 		CLIMB(-45, 1);
 
 		/**
@@ -556,6 +580,14 @@ public final class Constants {
 		 */
 		public final double WRIST_POSITION;
 
+		/**
+		 * Creates a new ArmPosition entry.
+		 *
+		 * @param WRIST_POSITION
+		 *            The wrist position in degrees.
+		 * @param ELEVATOR_POSITION
+		 *            The elevator position in meters.
+		 */
 		ArmPosition(double WRIST_POSITION, double ELEVATOR_POSITION) {
 			this.WRIST_POSITION = WRIST_POSITION;
 			this.ELEVATOR_POSITION = ELEVATOR_POSITION;
@@ -578,7 +610,7 @@ public final class Constants {
 		 * End Effector's Spark Max CAN ID.
 		 */
 		public static final int CAN_ID_END_EFFECTOR = 41;
-		/*
+		/**
 		 * I Belive we used this to make the numbers apear correctly in the dirvers station?
 		 */
 		public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO_END_EFFECTOR_MOTOR * 360.0;
@@ -643,7 +675,7 @@ public final class Constants {
 		// TODO: set proper gear ratio
 		public static final double RAMP_MOTOR_GEAR_RATIO = (1.0 / 60.0);
 		/**
-		 * Ramp CAN ID.
+		 * Ramp motor CAN ID.
 		 */
 		// TODO: set ramp CAN_ID once assigned
 		public static final int RAMP_MOTOR_CAN_ID = 32;
@@ -659,7 +691,7 @@ public final class Constants {
 		 * Ramp motor's current limit.
 		 */
 		public static final int RAMP_MOTOR_CURRENT_LIMIT = 20;
-		/*
+		/**
 		 * I Belive we used this to make the numbers apear correctly in the dirvers station?
 		 * May be a usesless holdover from arm code test though.
 		 */

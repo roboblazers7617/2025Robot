@@ -34,13 +34,16 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.WristConstants;
 import frc.robot.RobotContainer;
 
-@Logged
 /**
  * Subsystem to control the elevator and wrist.
  * <p>
  * Elevator and wrist safety features are in the {@link #periodic()} method.
  */
+@Logged
 public class Elevator extends SubsystemBase {
+	/**
+	 * The RobotContainer used to get the EndEffector state.
+	 */
 	@NotLogged
 	private final RobotContainer robotContainer;
 	/**
@@ -58,11 +61,20 @@ public class Elevator extends SubsystemBase {
 
 	// private final SparkAbsoluteEncoder elevatorAbsoluteEncoder;
 
+	/**
+	 * The {@link #leaderElevatorMotor}'s encoder.
+	 */
 	private final RelativeEncoder leaderElevatorRelativeEncoder;
 
+	/**
+	 * The {@link #followerElevatorMotor}'s encoder.
+	 */
 	@Logged
 	private final RelativeEncoder followerElevatorRelativeEncoder;
 
+	/**
+	 * The motion profile used for elevator movement.
+	 */
 	private final TrapezoidProfile elevatorProfile = new TrapezoidProfile(new Constraints(ElevatorConstants.MAX_VELOCITY, ElevatorConstants.MAX_ACCELERATION));
 
 	/**
@@ -86,13 +98,20 @@ public class Elevator extends SubsystemBase {
 	private final SparkMax wristMotor = new SparkMax(WristConstants.MOTOR_ID, MotorType.kBrushless);
 
 	/**
-	 * @deprecated use absolute encoder
+	 * @deprecated
+	 *             Use absolute encoder.
 	 */
 	@Deprecated
 	private final RelativeEncoder wristEncoder;
 
+	/**
+	 * The absolute encoder attached to the wrist.
+	 */
 	private final AbsoluteEncoder wristAbsoluteEncoder;
 
+	/**
+	 * The motion profile used for wrist movement.
+	 */
 	private final TrapezoidProfile wristProfile = new TrapezoidProfile(new Constraints(WristConstants.MAX_VELOCITY, WristConstants.MAX_ACCELERATION));
 
 	/**
@@ -107,6 +126,9 @@ public class Elevator extends SubsystemBase {
 
 	/**
 	 * Creates a new Elevator.
+	 *
+	 * @param robotContainer
+	 *            The {@link RobotContainer} to use for querying the {@link frc.robot.subsystems.EndEffector.EndEffector} state.
 	 */
 	public Elevator(RobotContainer robotContainer) {
 		this.robotContainer = robotContainer;
@@ -245,7 +267,7 @@ public class Elevator extends SubsystemBase {
 
 	/**
 	 * A command to set the speeds of the elevator and wrist.
-	 * 
+	 *
 	 * @param elevatorSpeed
 	 *            The speed of the elevator as a percentage of max speed. [-1, 1]
 	 * @param wristSpeed
@@ -293,7 +315,7 @@ public class Elevator extends SubsystemBase {
 
 	/**
 	 * A command to set the elevator and wrist to a position.
-	 * 
+	 *
 	 * @param position
 	 *            The Constants.ArmPosition to set the elevator and wrist to.
 	 * @return
@@ -322,6 +344,9 @@ public class Elevator extends SubsystemBase {
 		return command;
 	}
 
+	/**
+	 * Initializes the elevator. Should be called on enable.
+	 */
 	public void elevatorInit() {
 		setWristPosition(wristAbsoluteEncoder.getPosition());
 		currentWristSetpoint = new TrapezoidProfile.State(wristAbsoluteEncoder.getPosition(), 0);
@@ -337,7 +362,6 @@ public class Elevator extends SubsystemBase {
 	 */
 	private void setElevatorPosition(double position) {
 		elevatorTarget = MathUtil.clamp(position, ElevatorConstants.MIN_POSITION, ElevatorConstants.MAX_POSITION);
-		;
 	}
 
 	/**
@@ -361,7 +385,7 @@ public class Elevator extends SubsystemBase {
 
 	/**
 	 * Toggles brake mode on the elevator and wrist motors.
-	 * 
+	 *
 	 * @return
 	 *         Command to run.
 	 */

@@ -18,6 +18,11 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 public class Auto {
 	/**
 	 * Setup AutoBuilder for PathPlanner.
+	 *
+	 * @param drivetrain
+	 *            The {@link Drivetrain} for PathPlanner to control.
+	 * @param alliance
+	 *            The alliance to build paths for.
 	 */
 	public static void setupPathPlanner(Drivetrain drivetrain, DriverStation.Alliance alliance) {
 		// Load the RobotConfig from the GUI settings. You should probably

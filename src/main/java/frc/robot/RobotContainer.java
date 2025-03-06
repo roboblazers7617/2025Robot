@@ -62,13 +62,21 @@ public class RobotContainer {
 	private final CommandXboxController operatorController = new CommandXboxController(OperatorConstants.OPERATOR_CONTROLLER_PORT);
 
 	/**
-	 * Used to store what the currently select game piece to interact with is.
+	 * Used to store what the currently selected game piece to interact with is.
 	 */
 	private GamepieceMode gamepieceMode;
+	/**
+	 * Is the {@link #gamepieceMode} set to algae?
+	 */
 	private final Trigger isAlgaeModeTrigger = new Trigger(() -> (gamepieceMode == GamepieceMode.ALGAE_MODE));
+	/**
+	 * Is the {@link #gamepieceMode} set to coral?
+	 */
 	private final Trigger isCoralModeTrigger = new Trigger(() -> (gamepieceMode == GamepieceMode.CORAL_MODE));
 
-	/** The container for the robot. Contains subsystems, OI devices, and commands. */
+	/**
+	 * The container for the robot. Contains subsystems, OI devices, and commands.
+	 */
 	public RobotContainer() {
 		// Publish version metadata
 		VersionConstants.publishNetworkTables(NetworkTableInstance.getDefault().getTable("/Metadata"));
@@ -116,7 +124,7 @@ public class RobotContainer {
 	}
 
 	/**
-	 * Configures {@link Triggers} to bind Commands to the Driver Controller buttons.
+	 * Configures {@link Trigger Triggers} to bind Commands to the Driver Controller buttons.
 	 */
 	private void configureDriverControls() {
 		// Set the default drivetrain command (used for the driver controller)
@@ -147,7 +155,7 @@ public class RobotContainer {
 	}
 
 	/**
-	 * Configures {@link Triggers} to bind Commands to the Operator Controller buttons.
+	 * Configures {@link Trigger Triggers} to bind Commands to the Operator Controller buttons.
 	 */
 	private void configureOperatorControls() {
 		// Set the default elevator command where it moves manually
@@ -218,20 +226,48 @@ public class RobotContainer {
 		operatorController.rightTrigger().onTrue(setGamepieceModeCommand(GamepieceMode.CORAL_MODE));
 	}
 
+	/**
+	 * Gets the current {@link #gamepieceMode}.
+	 *
+	 * @return
+	 *         The current {@link #gamepieceMode}.
+	 */
 	public GamepieceMode getGamepieceMode() {
 		return gamepieceMode;
 	}
 
+	/**
+	 * Command to set the {@link #gamepieceMode}.
+	 *
+	 * @param mode
+	 *            The mode to set.
+	 * @return
+	 *         Command to run.
+	 */
 	private Command setGamepieceModeCommand(GamepieceMode mode) {
 		return Commands.runOnce(() -> {
 			gamepieceMode = mode;
 		});
 	}
 
+	/**
+	 * Is the {@link #endEffector} holding algae?
+	 *
+	 * @return
+	 *         True if the {@link #endEffector} is holding algae, false if not.
+	 * @see EndEffector#isHoldingAlage()
+	 */
 	public boolean isHoldingAlgae() {
 		return endEffector.isHoldingAlage();
 	}
 
+	/**
+	 * Is the {@link #endEffector} holding coral?
+	 *
+	 * @return
+	 *         True if the {@link #endEffector} is holding coral, false if not.
+	 * @see EndEffector#isHoldingCoral()
+	 */
 	public boolean isHoldingCoral() {
 		return endEffector.isHoldingCoral();
 	}
@@ -239,7 +275,8 @@ public class RobotContainer {
 	/**
 	 * Use this to pass the autonomous command to the main {@link Robot} class.
 	 *
-	 * @return the command to run in autonomous
+	 * @return
+	 *         The command to run in autonomous.
 	 */
 	public Command getAutonomousCommand() {
 		// resetLastAngleScalar stops the robot from trying to turn back to its original angle after the auto ends
@@ -251,10 +288,10 @@ public class RobotContainer {
 	}
 
 	/**
-	 * Set the auto chooser
+	 * Set the {@link #autoChooser}.
 	 *
 	 * @param auto
-	 *            a sendable chooser with Commands for the autos
+	 *            A sendable chooser with Commands for the autos.
 	 */
 	public void setAutoChooser(SendableChooser<Command> auto) {
 		autoChooser = auto;
