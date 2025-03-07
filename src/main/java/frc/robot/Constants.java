@@ -375,12 +375,12 @@ public final class Constants {
 		/**
 		 * Minimum position in meters.
 		 */
-		public static final double MIN_POSITION = 0.01;
+		public static final double MIN_POSITION = 0.0;
 		/**
 		 * This is the maximum position for the elevator to be considered lowered, in meters.
 		 */
 		// TODO: (Brandon) Update with accurate number
-		public static final double MAX_LOWERED_POSITION = .2;
+		public static final double MAX_LOWERED_POSITION = .13;
 		/**
 		 * Conversion factor from rotation to meters. 3.81cm diameter spool, 16:1 gear ratio
 		 */
@@ -525,25 +525,27 @@ public final class Constants {
 		//
 		INTAKE_CORAL_CORAL_STATION(WristConstants.MAX_POSITION, ElevatorConstants.MIN_POSITION),
 		//
-		INTAKE_ALGAE_LEVEL_2(1, 0),
+		INTAKE_ALGAE_LEVEL_2(-23, .44),
 		//
-		INTAKE_ALGAE_LEVEL_3(2, 0),
+		INTAKE_ALGAE_LEVEL_3(-23, .854),
 		//
 		OUTTAKE_CORAL_LEVEL_1(-45, 1), // dummy value
 		//
-		OUTTAKE_CORAL_LEVEL_2(125, 0.27),
+		OUTTAKE_CORAL_LEVEL_2(125, 0.18),
 		//
-		OUTTAKE_CORAL_LEVEL_3(125, 0.66),
+		OUTTAKE_CORAL_LEVEL_3(125, 0.58),
 		//
-		OUTTAKE_CORAL_LEVEL_4(92, 0), // dummy value
+		OUTTAKE_CORAL_LEVEL_4(87.9, 1.25),
 		//
-		OUTTAKE_ALGAE_PROCESSOR(0, 0),
+		OUTTAKE_CORAL_LEVEL_4_HIGH(87.9, 1.4),
+		//
+		OUTTAKE_ALGAE_PROCESSOR(-57, .14),
 		//
 		OUTTAKE_ALGAE_NET(0, 0),
-		//
+		/** elevator at bottom, wrist open so we don't crush the algae into the robot */
 		STOW_ALGAE(0, 0),
-		//
-		STOW_CORAL(125, ElevatorConstants.MIN_POSITION),
+		/** wrist up and elevator down */
+		STOW(125, ElevatorConstants.MIN_POSITION),
 		//
 		CLIMB(-45, 1);
 
@@ -605,11 +607,11 @@ public final class Constants {
 		/**
 		 * Intake motor speed for algae. (to be changed and edited later)
 		 */
-		public static final double ALGAE_INTAKE_SPEED = -0.2;
+		public static final double ALGAE_INTAKE_SPEED = -0.5;
 		/**
 		 * Outtake motor speed for algae. (to be changed and edited later)
 		 */
-		public static final double ALGAE_OUTAKE_SPEED = 0.5;
+		public static final double ALGAE_OUTAKE_SPEED = 1;
 		/**
 		 * Time (in seconds) that the motors run after beam break detects no coral after using the outtake command
 		 */

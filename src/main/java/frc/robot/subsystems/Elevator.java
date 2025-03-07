@@ -85,12 +85,6 @@ public class Elevator extends SubsystemBase {
 	 */
 	private final SparkMax wristMotor = new SparkMax(WristConstants.MOTOR_ID, MotorType.kBrushless);
 
-	/**
-	 * @deprecated use absolute encoder
-	 */
-	@Deprecated
-	private final RelativeEncoder wristEncoder;
-
 	private final AbsoluteEncoder wristAbsoluteEncoder;
 
 	private final TrapezoidProfile wristProfile = new TrapezoidProfile(new Constraints(WristConstants.MAX_VELOCITY, WristConstants.MAX_ACCELERATION));
@@ -163,8 +157,8 @@ public class Elevator extends SubsystemBase {
 		wristConfig.encoder
 				.positionConversionFactor(WristConstants.POSITION_CONVERSION_FACTOR)
 				.velocityConversionFactor(WristConstants.VELOCITY_CONVERSION_FACTOR);
-		wristEncoder = wristMotor.getEncoder();
-		wristEncoder.setPosition(wristAbsoluteEncoder.getPosition());
+		// wristEncoder = wristMotor.getEncoder();
+		// wristEncoder.setPosition(wristAbsoluteEncoder.getPosition());
 
 		wristConfig.closedLoop
 				.p(WristConstants.KP)
@@ -193,12 +187,12 @@ public class Elevator extends SubsystemBase {
 		double safeElevatorTarget = elevatorTarget;
 
 		// ensure elevator target is not too low if the wrist is low
-		if (wristEncoder.getPosition() < WristConstants.SAFE_MIN_POSITION && safeElevatorTarget < ElevatorConstants.MAX_LOWERED_POSITION) {
+		if (wristAbsoluteEncoder.getPosition() < WristConstants.SAFE_MIN_POSITION && safeElevatorTarget < ElevatorConstants.MAX_LOWERED_POSITION) {
 			safeElevatorTarget = ElevatorConstants.MAX_LOWERED_POSITION;
 			// System.out.println("elevator block 1 ");
 		}
 		// ensure the elevator target is not too high if wrist is high (wrist collides with metal connecter thing on top of the robot)
-		if (wristEncoder.getPosition() > WristConstants.SAFE_MAX_POSITION && safeElevatorTarget > ElevatorConstants.MAX_LOWERED_POSITION) {
+		if (wristAbsoluteEncoder.getPosition() > WristConstants.SAFE_MAX_POSITION && safeElevatorTarget > ElevatorConstants.MAX_LOWERED_POSITION) {
 			safeElevatorTarget = ElevatorConstants.MAX_LOWERED_POSITION;
 			// System.out.println("elevator block 2 ");
 		}
@@ -320,6 +314,10 @@ public class Elevator extends SubsystemBase {
 		command.addRequirements(this);
 
 		return command;
+	}
+
+	public double getElevatorTarget() {
+		return elevatorTarget;
 	}
 
 	public void elevatorInit() {
