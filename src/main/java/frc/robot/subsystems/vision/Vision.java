@@ -49,18 +49,18 @@ public class Vision {
 		frontPoseEstimator = frontLimelight.makePoseEstimator(VisionConstants.POSE_ESTIMATOR_TYPE);
 		backPoseEstimator = backLimelight.makePoseEstimator(VisionConstants.POSE_ESTIMATOR_TYPE);
 
-		backLimelight.settings.withImuMode(VisionConstants.DISABLED_IMU_MODE).withProcessedFrameFrequency(VisionConstants.DISABLED_UPDATE_FREQUENCY).save();
+		frontLimelight.settings.withImuMode(VisionConstants.DISABLED_IMU_MODE).withProcessedFrameFrequency(VisionConstants.DISABLED_UPDATE_FREQUENCY).save();
 	}
 
 	public Command onEnableCommand() {
 		return Commands.runOnce(() -> {
-			backLimelight.settings.withImuMode(VisionConstants.ENABLED_IMU_MODE).withProcessedFrameFrequency(0).save();
+			frontLimelight.settings.withImuMode(VisionConstants.ENABLED_IMU_MODE).withProcessedFrameFrequency(0).save();
 		}).ignoringDisable(true);
 	}
 
 	public Command onDisableCommand() {
 		return Commands.runOnce(() -> {
-			backLimelight.settings.withImuMode(VisionConstants.DISABLED_IMU_MODE).withProcessedFrameFrequency(VisionConstants.DISABLED_UPDATE_FREQUENCY).save();
+			frontLimelight.settings.withImuMode(VisionConstants.DISABLED_IMU_MODE).withProcessedFrameFrequency(VisionConstants.DISABLED_UPDATE_FREQUENCY).save();
 		}).ignoringDisable(true);
 	}
 
