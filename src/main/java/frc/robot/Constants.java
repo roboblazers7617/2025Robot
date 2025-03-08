@@ -347,7 +347,11 @@ public final class Constants {
 		/**
 		 * Intake motor speed for coral. (to be changed and edited later)
 		 */
-		public static final double CORAL_INTAKE_SPEED = 0.7;
+		public static final double CORAL_MAIN_INTAKE_SPEED = 0.7;
+		/**
+		 * Intake motor speed for coral after hitting main beam break. (to be changed and edited later)
+		 */
+		public static final double CORAL_SECONDARY_INTAKE_SPEED = 0.3;
 		/**
 		 * Outtake motor speed for coral. (to be changed and edited later)
 		 */
@@ -383,14 +387,18 @@ public final class Constants {
 		public static final double ALGAE_INTAKE_MINIMUM_SHUTOFF_SPEED = -0.05;
 		// Beam Break constants
 		/**
-		 * DIO pin for the beam break.
+		 * DIO pin for the main beam break.
 		 */
-		public static final int BEAM_BREAK_DIO = 0;
+		public static final int MAIN_BEAM_BREAK_DIO = 0;
+		/**
+		 * DIO pin for the secondary beam break.
+		 */
+		public static final int SECONDARY_BEAM_BREAK_DIO = 1;
 		// Limit Switch constants
 		/**
 		 * DIO pin for limit switch.
 		 */
-		public static final int LIMIT_SWITCH_DIO = 2;
+		public static final int LIMIT_SWITCH_DIO = 4;
 	}
 
 	/**
