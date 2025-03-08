@@ -599,11 +599,11 @@ public final class Constants {
 		/**
 		 * Intake motor speed for coral after hitting main beam break. (to be changed and edited later)
 		 */
-		public static final double CORAL_SECONDARY_INTAKE_SPEED = 0.3;
+		public static final double CORAL_SECONDARY_INTAKE_SPEED = 0.05;
 		/**
 		 * Outtake motor speed for coral. (to be changed and edited later)
 		 */
-		public static final double CORAL_OUTAKE_SPEED = 1.0;
+		public static final double CORAL_OUTAKE_SPEED = 0.5;
 		/**
 		 * Intake motor speed for algae. (to be changed and edited later)
 		 */
@@ -611,7 +611,7 @@ public final class Constants {
 		/**
 		 * Outtake motor speed for algae. (to be changed and edited later)
 		 */
-		public static final double ALGAE_OUTAKE_SPEED = 1;
+		public static final double ALGAE_OUTAKE_SPEED = 1.0;
 		/**
 		 * Time (in seconds) that the motors run after beam break detects no coral after using the outtake command
 		 */

@@ -74,7 +74,7 @@ public class EndEffector extends SubsystemBase {
 	}
 
 	public boolean isHoldingAlgae() {
-		return isHoldingAlgaeInput.get();
+		return !isHoldingAlgaeInput.get();
 	}
 
 	public boolean isHoldingCoral() {
@@ -141,13 +141,13 @@ public class EndEffector extends SubsystemBase {
 
 	public Command AlgaeIntake() {
 		return StartMotorCommand(() -> EndEffectorConstants.ALGAE_INTAKE_SPEED)
-				.andThen(Commands.waitUntil(() -> isHoldingAlgaeInput.get()))
+				.andThen(Commands.waitUntil(() -> !isHoldingAlgaeInput.get()))
 				.finallyDo(this::stopMotor);
 	}
 
 	public Command AlgaeOuttake() {
 		return StartMotorCommand(() -> EndEffectorConstants.ALGAE_OUTAKE_SPEED)
-				.andThen(Commands.waitUntil(() -> !isHoldingAlgaeInput.get()))
+				.andThen(Commands.waitUntil(() -> isHoldingAlgaeInput.get()))
 				.andThen(Commands.waitSeconds(EndEffectorConstants.ALGAE_OUTTAKE_RUN_TIME))
 				.finallyDo(this::stopMotor);
 	}
