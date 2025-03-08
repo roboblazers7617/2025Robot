@@ -74,7 +74,7 @@ public final class Constants {
 		/**
 		 * Translation axis scaling. Changes the overall maximum speed of the drivetrain in slow mode.
 		 */
-		public static final double TRANSLATION_SCALE_SLOW = 0.6;
+		public static final double TRANSLATION_SCALE_SLOW = 0.3;
 		/**
 		 * Starting pose.
 		 */
