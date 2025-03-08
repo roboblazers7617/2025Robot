@@ -21,7 +21,6 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
@@ -30,8 +29,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
  */
 @Logged
 public class EndEffector extends SubsystemBase {
-	private double speed;
+	@Logged
 	private final SparkMax endEffectorMotor = new SparkMax(EndEffectorConstants.CAN_ID_END_EFFECTOR, MotorType.kBrushless);
+	@Logged
+	private final RelativeEncoder endEffectEncoder = endEffectorMotor.getEncoder();
+
 	/**
 	 * Beam break outputs
 	 * True = is NOT holding coral
@@ -140,4 +142,5 @@ public class EndEffector extends SubsystemBase {
 				.andThen(Commands.waitSeconds(EndEffectorConstants.ALGAE_OUTTAKE_RUN_TIME))
 				.finallyDo(this::stopMotor);
 	}
+
 }
