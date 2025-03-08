@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
  */
 @Logged
 public class EndEffector extends SubsystemBase {
+	private double speed;
 	@Logged
 	private final SparkMax endEffectorMotor = new SparkMax(EndEffectorConstants.CAN_ID_END_EFFECTOR, MotorType.kBrushless);
 	@Logged
@@ -43,7 +44,6 @@ public class EndEffector extends SubsystemBase {
 	private final DigitalInput isNotHoldingCoral = new DigitalInput(EndEffectorConstants.MAIN_BEAM_BREAK_DIO);
 	private final DigitalInput isNotHoldingCoralAdjust = new DigitalInput(EndEffectorConstants.SECONDARY_BEAM_BREAK_DIO);
 	private final DigitalInput isHoldingAlgaeInput = new DigitalInput(EndEffectorConstants.LIMIT_SWITCH_DIO);
-	private final RelativeEncoder endEffectEncoder = endEffectorMotor.getEncoder();
 
 	/**
 	 * Creates a new EndEffector.
@@ -142,5 +142,4 @@ public class EndEffector extends SubsystemBase {
 				.andThen(Commands.waitSeconds(EndEffectorConstants.ALGAE_OUTTAKE_RUN_TIME))
 				.finallyDo(this::stopMotor);
 	}
-
 }
