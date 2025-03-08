@@ -603,7 +603,7 @@ public final class Constants {
 		/**
 		 * Outtake motor speed for coral. (to be changed and edited later)
 		 */
-		public static final double CORAL_OUTAKE_SPEED = 0.2;
+		public static final double CORAL_OUTAKE_SPEED = 1.0;
 		/**
 		 * Intake motor speed for algae. (to be changed and edited later)
 		 */
