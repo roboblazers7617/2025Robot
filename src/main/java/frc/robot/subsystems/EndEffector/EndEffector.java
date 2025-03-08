@@ -5,6 +5,7 @@
 package frc.robot.subsystems.EndEffector;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.EndEffectorConstants;
 
 import java.util.concurrent.BlockingDeque;
@@ -20,6 +21,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -34,7 +36,8 @@ public class EndEffector extends SubsystemBase {
 	private final SparkMax endEffectorMotor = new SparkMax(EndEffectorConstants.CAN_ID_END_EFFECTOR, MotorType.kBrushless);
 	@Logged
 	private final RelativeEncoder endEffectEncoder = endEffectorMotor.getEncoder();
-
+	@NotLogged
+	private final RobotContainer robotContainer;
 	/**
 	 * Beam break outputs
 	 * True = is NOT holding coral
@@ -42,13 +45,19 @@ public class EndEffector extends SubsystemBase {
 	 */
 	// TODO: #134 Rename to follow coding standards / ease reading code
 	private final DigitalInput isNotHoldingCoral = new DigitalInput(EndEffectorConstants.MAIN_BEAM_BREAK_DIO);
-	private final DigitalInput isNotHoldingCoralAdjust = new DigitalInput(EndEffectorConstants.SECONDARY_BEAM_BREAK_DIO);
+	/**
+	 * Beam break outputs
+	 * True = is NOT holding coral
+	 * False = is holding coral
+	 */
+	private final DigitalInput isNotHoldingCoralAdjuster = new DigitalInput(EndEffectorConstants.SECONDARY_BEAM_BREAK_DIO);
 	private final DigitalInput isHoldingAlgaeInput = new DigitalInput(EndEffectorConstants.LIMIT_SWITCH_DIO);
 
 	/**
 	 * Creates a new EndEffector.
 	 */
-	public EndEffector() {
+	public EndEffector(RobotContainer robotContainer) {
+		this.robotContainer = robotContainer;
 		SparkBaseConfig motorConfig = new SparkMaxConfig()
 				.smartCurrentLimit(EndEffectorConstants.MAX_CURRENT_LIMIT)
 				.idleMode(IdleMode.kBrake)
@@ -119,13 +128,13 @@ public class EndEffector extends SubsystemBase {
 		return StartMotorCommand(() -> EndEffectorConstants.CORAL_MAIN_INTAKE_SPEED)
 				.andThen(Commands.waitUntil(() -> !isNotHoldingCoral.get()))
 				.andThen(StartMotorCommand(() -> EndEffectorConstants.CORAL_SECONDARY_INTAKE_SPEED))
-				.andThen(Commands.waitUntil(() -> !isNotHoldingCoralAdjust.get()))
+				.andThen(Commands.waitUntil(() -> !isNotHoldingCoralAdjuster.get()))
 				.finallyDo(this::stopMotor);
 	}
 
 	public Command CoralOuttake() {
 		return StartMotorCommand(() -> EndEffectorConstants.CORAL_OUTAKE_SPEED)
-				.andThen(Commands.waitUntil(() -> isNotHoldingCoralAdjust.get()))
+				.andThen(Commands.waitUntil(() -> isNotHoldingCoralAdjuster.get()))
 				// .andThen(Commands.waitSeconds(EndEffectorConstants.OUTTAKE_WAIT_TIME))
 				.finallyDo(this::stopMotor);
 	}
