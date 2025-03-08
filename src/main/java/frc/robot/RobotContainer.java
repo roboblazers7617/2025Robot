@@ -8,7 +8,6 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.DashboardConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.subsystems.EndEffector.EndEffector;
-import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.Elastic;
 import frc.robot.Constants.OperatorConstants.GamepieceMode;
 import frc.robot.commands.StubbedCommands;
@@ -42,7 +41,7 @@ public class RobotContainer {
 	@NotLogged
 	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
 	@NotLogged
-	private final DrivetrainControls drivetrainControls = drivetrain.getControls();
+	private final DrivetrainControls drivetrainControls = new DrivetrainControls(drivetrain);
 	@NotLogged
 	private final Dashboard dashboard = new Dashboard(drivetrain, this);
 	private final EndEffector endEffector = new EndEffector();

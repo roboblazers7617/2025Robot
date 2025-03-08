@@ -61,10 +61,6 @@ public class Drivetrain extends SubsystemBase {
 	 */
 	private final SwerveDrive swerveDrive;
 	/**
-	 * Controls object.
-	 */
-	private final DrivetrainControls controls;
-	/**
 	 * Vision object.
 	 */
 	private final Vision vision;
@@ -100,9 +96,6 @@ public class Drivetrain extends SubsystemBase {
 		// Stop the odometry thread if we are using vision that way we can synchronize updates better.
 		// TODO: #112 (Max/Lukas) If we disable vision updates, do we need to restart this thread to ensure odometry is udpated?
 		swerveDrive.stopOdometryThread();
-
-		// Set up controls
-		controls = new DrivetrainControls(this);
 
 		// Set up vision
 		vision = new Vision(swerveDrive);
@@ -167,16 +160,6 @@ public class Drivetrain extends SubsystemBase {
 	 */
 	public SwerveDriveKinematics getKinematics() {
 		return swerveDrive.kinematics;
-	}
-
-	/**
-	 * Gets the drivetrain controls object.
-	 *
-	 * @return
-	 *         {@link #controls}
-	 */
-	public DrivetrainControls getControls() {
-		return controls;
 	}
 
 	/**
