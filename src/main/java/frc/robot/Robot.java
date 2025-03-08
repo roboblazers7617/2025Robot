@@ -33,9 +33,8 @@ public class Robot extends TimedRobot {
 	 */
 	private final RobotContainer robotContainer;
 
-	// @Logged
-	// TODO: #139 Investigate how to get PDH logging working
-	// private final PowerDistribution pdh = new PowerDistribution();
+	@Logged
+	private final PowerDistribution pdh = new PowerDistribution();
 
 	/**
 	 * This function is run when the robot is first started up and should be used for any

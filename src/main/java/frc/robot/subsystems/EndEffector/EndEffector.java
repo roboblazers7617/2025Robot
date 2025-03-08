@@ -125,4 +125,12 @@ public class EndEffector extends SubsystemBase {
 				.andThen(Commands.waitSeconds(EndEffectorConstants.ALGAE_OUTTAKE_RUN_TIME))
 				.finallyDo(this::stopMotor);
 	}
+
+	public boolean isHoldingAlage() {
+		return false;
+	}
+
+	public boolean isHoldingCoral() {
+		return !isNotHoldingCoral.get();
+	}
 }
