@@ -146,7 +146,8 @@ public class RobotContainer {
 		driverController.rightBumper().whileTrue(StubbedCommands.Drivetrain.AlignMiddleOfTag());
 		driverController.leftTrigger().whileTrue(StubbedCommands.Drivetrain.AlignLeftOfTag());
 		driverController.rightTrigger().whileTrue(StubbedCommands.Drivetrain.AlignRightOfTag());
-		driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
+
+		driverController.start().onTrue(drivetrain.zeroGyroWithAllianceCommand());
 		driverController.back().onTrue(StubbedCommands.Drivetrain.DisableVision());
 	}
 
