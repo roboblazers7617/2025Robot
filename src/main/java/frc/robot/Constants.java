@@ -685,7 +685,6 @@ public final class Constants {
 		/**
 		 * Constants relating to the reef.
 		 */
-		// TODO: #101 (Max) This will work for moving to score a coral. How do you move to remove an algae?
 		public static class Reef {
 			/**
 			 * AprilTag IDs for the reef on the blue alliance.
@@ -809,6 +808,71 @@ public final class Constants {
 				ALGAE_SCORING_POSE_BLUE = pose2d.transformBy(SCORING_OFFSET);
 				ALGAE_SCORING_POSE_RED = PoseUtil.flipPose(ALGAE_SCORING_POSE_BLUE);
 			}
+		}
+	}
+
+	/**
+	 * Poses that the robot can score from.
+	 */
+	public static class ScoringPoses {
+		// TODO: Add poses for pathfinding to the coral station and the cages
+		/**
+		 * Poses from which the robot can score coral on the left side on the blue alliance.
+		 */
+		public static final List<Pose2d> CORAL_SCORING_POSES_BLUE_LEFT = new ArrayList<Pose2d>();
+		/**
+		 * Poses from which the robot can score coral on the right side on the blue alliance.
+		 */
+		public static final List<Pose2d> CORAL_SCORING_POSES_BLUE_RIGHT = new ArrayList<Pose2d>();
+		/**
+		 * Poses from which the robot can score coral on the left side on the red alliance.
+		 */
+		public static final List<Pose2d> CORAL_SCORING_POSES_RED_LEFT = new ArrayList<Pose2d>();
+		/**
+		 * Poses from which the robot can score coral on the right side on the red alliance.
+		 */
+		public static final List<Pose2d> CORAL_SCORING_POSES_RED_RIGHT = new ArrayList<Pose2d>();
+		/**
+		 * Poses from which the robot can score algae on the blue alliance.
+		 */
+		public static final List<Pose2d> ALGAE_SCORING_POSES_BLUE = new ArrayList<Pose2d>();
+		/**
+		 * Poses from which the robot can score algae on the red alliance.
+		 */
+		public static final List<Pose2d> ALGAE_SCORING_POSES_RED = new ArrayList<Pose2d>();
+
+		static {
+			// Compile CORAL_SCORING_POSES_BLUE_LEFT poses
+			FieldConstants.Reef.CORAL_SCORING_POSES_BLUE_LEFT.forEach((pose) -> {
+				CORAL_SCORING_POSES_BLUE_LEFT.add(pose);
+			});
+
+			// Compile CORAL_SCORING_POSES_BLUE_RIGHT poses
+			FieldConstants.Reef.CORAL_SCORING_POSES_BLUE_RIGHT.forEach((pose) -> {
+				CORAL_SCORING_POSES_BLUE_RIGHT.add(pose);
+			});
+
+			// Compile CORAL_SCORING_POSES_RED_LEFT poses
+			FieldConstants.Reef.CORAL_SCORING_POSES_RED_LEFT.forEach((pose) -> {
+				CORAL_SCORING_POSES_RED_LEFT.add(pose);
+			});
+
+			// Compile CORAL_SCORING_POSES_RED_RIGHT poses
+			FieldConstants.Reef.CORAL_SCORING_POSES_RED_RIGHT.forEach((pose) -> {
+				CORAL_SCORING_POSES_RED_RIGHT.add(pose);
+			});
+
+			// Compile ALGAE_SCORING_POSES_BLUE poses
+			FieldConstants.Reef.ALGAE_SCORING_POSES_BLUE.forEach((pose) -> {
+				ALGAE_SCORING_POSES_BLUE.add(pose);
+			});
+			ALGAE_SCORING_POSES_BLUE.add(FieldConstants.Processor.ALGAE_SCORING_POSE_BLUE);
+
+			// Compile ALGAE_SCORING_POSES_RED poses
+			FieldConstants.Reef.ALGAE_SCORING_POSES_RED.forEach((pose) -> {
+				ALGAE_SCORING_POSES_RED.add(pose);
+			});
+			ALGAE_SCORING_POSES_RED.add(FieldConstants.Processor.ALGAE_SCORING_POSE_RED);
 		}
 	}
 }
