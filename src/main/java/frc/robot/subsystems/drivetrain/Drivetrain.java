@@ -71,7 +71,7 @@ public class Drivetrain extends SubsystemBase {
 	 * @apiNote
 	 *          This is a bit different than {@link VisionConstants#ENABLE_VISION}, in that it doesn't affect the odometry. When {@link VisionConstants#ENABLE_VISION} is true, odometry updates are handled in {@link #periodic()}, even if this is set to false, while when {@link VisionConstants#ENABLE_VISION} is set to false, Drivetrain instead relies on YAGSL's odometry thread to update odometry.
 	 */
-	private boolean enableVisionUpdates;
+	private boolean enableVisionUpdates = true;
 
 	/**
 	 * Initialize {@link SwerveDrive} with the directory provided.
