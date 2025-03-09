@@ -3,81 +3,207 @@ package frc.robot.subsystems.drivetrain;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.OperatorConstants;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import swervelib.SwerveInputStream;
 
 /**
- * Class that contains utility functions for controlling the {@link Drivetrain} with HID controllers.
+ * Class that handles controlling the {@link Drivetrain} with HID controllers.
  */
-public final class DrivetrainControls {
+public class DrivetrainControls {
 	/**
-	 * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
+	 * The Drivetrain to control.
+	 */
+	private final Drivetrain drivetrain;
+	/**
+	 * Speed multiplier used for scaling controller inputs (0, 1].
+	 */
+	private double speedMultiplier;
+
+	/**
+	 * Creates a new DrivetrainControls.
 	 *
 	 * @param drivetrain
-	 *            the drivetrain to control
-	 * @param controller
-	 *            the controller to read from
-	 * @return
-	 *         SwerveInputStream with data from the controller
+	 *            The Drivetrain to control.
 	 */
-	public static SwerveInputStream driveAngularVelocity(Drivetrain drivetrain, CommandXboxController controller) {
+	public DrivetrainControls(Drivetrain drivetrain) {
+		this.drivetrain = drivetrain;
+
+		// Set things to their default states
+		resetSpeedMultiplier();
+	}
+
+	/**
+	 * Sets the controller speed multiplier.
+	 *
+	 * @param speedMultiplier
+	 *            Multiplier to set (0, 1].
+	 */
+	public void setSpeedMultiplier(double speedMultiplier) {
+		this.speedMultiplier = speedMultiplier;
+	}
+
+	/**
+	 * Sets the controller speed multiplier back to {@link DrivetrainConstants#TRANSLATION_SCALE_NORMAL}.
+	 */
+	public void resetSpeedMultiplier() {
+		setSpeedMultiplier(DrivetrainConstants.TRANSLATION_SCALE_NORMAL);
+	}
+
+	/**
+	 * Sets the controller speed multiplier. Resets the multiplier when canceled.
+	 *
+	 * @param speedMultiplier
+	 *            Multiplier to set (0, 1].
+	 * @return
+	 *         Command to run.
+	 */
+	public Command setSpeedMultiplierCommand(Supplier<Double> speedMultiplier) {
+		return Commands.run(() -> setSpeedMultiplier(speedMultiplier.get()))
+				.finallyDo(this::resetSpeedMultiplier);
+	}
+
+	/**
+	 * Drive the robot given a SwerveInputStream, scaled with the {@link #speedMultiplier}.
+	 *
+	 * @param inputStream
+	 *            The {@link SwerveInputStream} to read from.
+	 * @return
+	 *         Command to run.
+	 * @see Drivetrain#driveFieldOriented(ChassisSpeeds)
+	 */
+	private Command driveInputStreamScaledCommand(SwerveInputStream inputStream) {
+		return drivetrain.run(() -> {
+			inputStream.scaleTranslation(speedMultiplier);
+			drivetrain.driveFieldOriented(inputStream.get());
+		});
+	}
+
+	/**
+	 * Converts driver input into a SwerveInputStream with default settings.
+	 *
+	 * @param controller
+	 *            The controller to read from.
+	 * @return
+	 *         SwerveInputStream with data from the controller.
+	 */
+	private SwerveInputStream driveGeneric(CommandXboxController controller) {
 		return SwerveInputStream.of(drivetrain.getSwerveDrive(), () -> (-1 * controller.getLeftY()), () -> (-1 * controller.getLeftX()))
+				.deadband(OperatorConstants.DEADBAND);
+	}
+
+	/**
+	 * A copy of {@link #driveGeneric(CommandXboxController)} that uses angular velocity control for turning.
+	 *
+	 * @param controller
+	 *            The controller to read from.
+	 * @return
+	 *         SwerveInputStream with data from the controller.
+	 */
+	public SwerveInputStream driveAngularVelocity(CommandXboxController controller) {
+		return driveGeneric(controller)
 				.withControllerRotationAxis(() -> (-1 * controller.getRightX()))
-				.deadband(OperatorConstants.DEADBAND)
-				.scaleTranslation(DrivetrainConstants.TRANSLATION_SCALE_NORMAL)
 				.allianceRelativeControl(true);
 	}
 
 	/**
-	 * A copy of {@link #driveAngularVelocity(Drivetrain, CommandXboxController)} that uses heading control.
+	 * A copy of {@link #driveGeneric(CommandXboxController)} that uses heading control for turning.
 	 *
-	 * @param drivetrain
-	 *            the drivetrain to control
 	 * @param controller
-	 *            the controller to read from
+	 *            The controller to read from.
 	 * @return
-	 *         SwerveInputStream with data from the controller
+	 *         SwerveInputStream with data from the controller.
 	 */
-	public static SwerveInputStream driveDirectAngle(Drivetrain drivetrain, CommandXboxController controller) {
-		return driveAngularVelocity(drivetrain, controller)
+	public SwerveInputStream driveDirectAngle(CommandXboxController controller) {
+		return driveGeneric(controller)
 				.withControllerHeadingAxis(() -> (-1 * controller.getRightX()), () -> (-1 * controller.getRightY()))
 				.headingWhile(true);
 	}
 
 	/**
-	 * A copy of {@link #driveAngularVelocity(Drivetrain, CommandXboxController)} that uses aim control.
+	 * A copy of {@link #driveGeneric(CommandXboxController)} that pulls rotation from controller axis 2 for use in simulation.
 	 *
-	 * @param drivetrain
-	 *            the drivetrain to control
 	 * @param controller
-	 *            the controller to read from
-	 * @param pose
-	 *            the pose to aim at
+	 *            The controller to read from.
 	 * @return
-	 *         SwerveInputStream with data from the controller
+	 *         SwerveInputStream with data from the controller.
 	 */
-	public static SwerveInputStream driveAim(Drivetrain drivetrain, CommandXboxController controller, Supplier<Pose2d> pose) {
-		return driveAngularVelocity(drivetrain, controller)
+	public SwerveInputStream driveDirectAngleSim(CommandXboxController controller) {
+		return driveGeneric(controller)
+				.withControllerRotationAxis(() -> controller.getRawAxis(2))
+				.withControllerHeadingAxis(() -> Math.sin(controller.getRawAxis(2) * Math.PI) * (Math.PI * 2), () -> Math.cos(controller.getRawAxis(2) * Math.PI) * (Math.PI * 2))
+				.headingWhile(true);
+	}
+
+	/**
+	 * A copy of {@link #driveGeneric(CommandXboxController)} that uses aim control.
+	 *
+	 * @param controller
+	 *            The controller to read from.
+	 * @param pose
+	 *            The pose to aim at.
+	 * @return
+	 *         SwerveInputStream with data from the controller.
+	 */
+	public SwerveInputStream driveAim(CommandXboxController controller, Supplier<Pose2d> pose) {
+		return driveGeneric(controller)
 				.aim(pose.get())
 				.aimWhile(true);
 	}
 
 	/**
-	 * A copy of {@link #driveAngularVelocity(Drivetrain, CommandXboxController)} that pulls rotation from controller axis 2 for use in simulation.
+	 * {@link #driveInputStreamScaledCommand(SwerveInputStream)} that uses {@link #driveAngularVelocity(CommandXboxController)}. Calls {@link Drivetrain#resetLastAngleScalar()} on end to prevent snapback.
 	 *
-	 * @param drivetrain
-	 *            the drivetrain to control
 	 * @param controller
-	 *            the controller to read from
+	 *            Controller to use.
 	 * @return
-	 *         SwerveInputStream with data from the controller
+	 *         Command to run.
 	 */
-	public static SwerveInputStream driveDirectAngleSim(Drivetrain drivetrain, CommandXboxController controller) {
-		return driveAngularVelocity(drivetrain, controller)
-				.withControllerRotationAxis(() -> controller.getRawAxis(2))
-				.withControllerHeadingAxis(() -> Math.sin(controller.getRawAxis(2) * Math.PI) * (Math.PI * 2), () -> Math.cos(controller.getRawAxis(2) * Math.PI) * (Math.PI * 2))
-				.headingWhile(true);
+	public Command driveFieldOrientedAngularVelocityCommand(CommandXboxController controller) {
+		return driveInputStreamScaledCommand(driveAngularVelocity(controller))
+				.finallyDo(drivetrain::resetLastAngleScalar);
+	}
+
+	/**
+	 * {@link #driveInputStreamScaledCommand(SwerveInputStream)} that uses {@link DrivetrainControls#driveDirectAngle(CommandXboxController)}.
+	 *
+	 * @param controller
+	 *            Controller to use.
+	 * @return
+	 *         Command to run.
+	 */
+	public Command driveFieldOrientedDirectAngleCommand(CommandXboxController controller) {
+		return driveInputStreamScaledCommand(driveDirectAngle(controller));
+	}
+
+	/**
+	 * {@link #driveInputStreamScaledCommand(SwerveInputStream)} that uses {@link DrivetrainControls#driveDirectAngleSim(CommandXboxController)}.
+	 *
+	 * @param controller
+	 *            Controller to use.
+	 * @return
+	 *         Command to run.
+	 */
+	public Command driveFieldOrientedDirectAngleSimCommand(CommandXboxController controller) {
+		return driveInputStreamScaledCommand(driveDirectAngleSim(controller));
+	}
+
+	/**
+	 * {@link #driveInputStreamScaledCommand(SwerveInputStream)} that uses {@link DrivetrainControls#driveAim(CommandXboxController, Supplier)}.
+	 *
+	 * @param controller
+	 *            Controller to use.
+	 * @param pose
+	 *            Pose to aim at.
+	 * @return
+	 *         Command to run.
+	 */
+	public Command driveFieldOrientedAimAtPoseCommand(CommandXboxController controller, Supplier<Pose2d> pose) {
+		return driveInputStreamScaledCommand(driveAim(controller, pose))
+				.finallyDo(drivetrain::resetLastAngleScalar);
 	}
 }

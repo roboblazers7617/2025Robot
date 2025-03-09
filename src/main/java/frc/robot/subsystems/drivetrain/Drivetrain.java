@@ -121,14 +121,10 @@ public class Drivetrain extends SubsystemBase {
 	 * Gets the swerve drive object.
 	 *
 	 * @return
-	 *         {@link SwerveDrive}
+	 *         {@link #swerveDrive}
 	 */
 	public SwerveDrive getSwerveDrive() {
 		return swerveDrive;
-	}
-
-	public Vision getVision() {
-		return vision;
 	}
 
 	/**
@@ -165,6 +161,16 @@ public class Drivetrain extends SubsystemBase {
 	 */
 	public SwerveDriveKinematics getKinematics() {
 		return swerveDrive.kinematics;
+	}
+
+	/**
+	 * Gets the vision object.
+	 *
+	 * @return
+	 *         {@link #vision}
+	 */
+	public Vision getVision() {
+		return vision;
 	}
 
 	/**
@@ -594,8 +600,7 @@ public class Drivetrain extends SubsystemBase {
 	 *
 	 * @param velocity
 	 *            Velocity according to the field.
-	 * @see
-	 *      SwerveDrive#driveFieldOriented(ChassisSpeeds)
+	 * @see SwerveDrive#driveFieldOriented(ChassisSpeeds)
 	 */
 	public void driveFieldOriented(ChassisSpeeds velocity) {
 		swerveDrive.driveFieldOriented(velocity);
@@ -608,65 +613,12 @@ public class Drivetrain extends SubsystemBase {
 	 *            Velocity according to the field.
 	 * @return
 	 *         Command to run
-	 * @see
-	 *      SwerveDrive#driveFieldOriented(ChassisSpeeds)
+	 * @see SwerveDrive#driveFieldOriented(ChassisSpeeds)
 	 */
 	public Command driveFieldOrientedCommand(Supplier<ChassisSpeeds> velocity) {
 		return run(() -> {
-			swerveDrive.driveFieldOriented(velocity.get());
+			driveFieldOriented(velocity.get());
 		});
-	}
-
-	/**
-	 * {@link #driveFieldOrientedCommand(Supplier)} that uses {@link DrivetrainControls#driveAngularVelocity(Drivetrain, CommandXboxController)}. Calls {@link #resetLastAngleScalar()} on end to prevent snapback.
-	 *
-	 * @param controller
-	 *            Controller to use.
-	 * @return
-	 *         Command to run.
-	 */
-	public Command driveFieldOrientedAngularVelocityControllerCommand(CommandXboxController controller) {
-		return driveFieldOrientedCommand(DrivetrainControls.driveAngularVelocity(this, controller))
-				.finallyDo(this::resetLastAngleScalar);
-	}
-
-	/**
-	 * {@link #driveFieldOrientedCommand(Supplier)} that uses {@link DrivetrainControls#driveDirectAngle(Drivetrain, CommandXboxController)}.
-	 *
-	 * @param controller
-	 *            Controller to use.
-	 * @return
-	 *         Command to run.
-	 */
-	public Command driveFieldOrientedDirectAngleControllerCommand(CommandXboxController controller) {
-		return driveFieldOrientedCommand(DrivetrainControls.driveDirectAngle(this, controller));
-	}
-
-	/**
-	 * {@link #driveFieldOrientedCommand(Supplier)} that uses {@link DrivetrainControls#driveDirectAngleSim(Drivetrain, CommandXboxController)}.
-	 *
-	 * @param controller
-	 *            Controller to use.
-	 * @return
-	 *         Command to run.
-	 */
-	public Command driveFieldOrientedDirectAngleSimControllerCommand(CommandXboxController controller) {
-		return driveFieldOrientedCommand(DrivetrainControls.driveDirectAngleSim(this, controller));
-	}
-
-	/**
-	 * {@link #driveFieldOrientedCommand(Supplier)} that uses {@link DrivetrainControls#driveAim(Drivetrain, CommandXboxController, Supplier)}.
-	 *
-	 * @param controller
-	 *            Controller to use.
-	 * @param pose
-	 *            Pose to aim at.
-	 * @return
-	 *         Command to run.
-	 */
-	public Command driveFieldOrientedAimAtPoseControllerCommand(CommandXboxController controller, Supplier<Pose2d> pose) {
-		return driveFieldOrientedCommand(DrivetrainControls.driveAim(this, controller, pose))
-				.finallyDo(this::resetLastAngleScalar);
 	}
 
 	/**
