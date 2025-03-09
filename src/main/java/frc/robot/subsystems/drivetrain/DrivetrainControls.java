@@ -1,6 +1,8 @@
 package frc.robot.subsystems.drivetrain;
 
 import java.util.function.Supplier;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.OperatorConstants;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -138,6 +140,22 @@ public class DrivetrainControls {
 	}
 
 	/**
+	 * A copy of {@link #driveGeneric(CommandXboxController)} that uses aim control.
+	 *
+	 * @param controller
+	 *            The controller to read from.
+	 * @param pose
+	 *            The pose to aim at.
+	 * @return
+	 *         SwerveInputStream with data from the controller.
+	 */
+	public SwerveInputStream driveAim(CommandXboxController controller, Supplier<Pose2d> pose) {
+		return driveGeneric(controller)
+				.aim(pose.get())
+				.aimWhile(true);
+	}
+
+	/**
 	 * {@link #driveInputStreamScaledCommand(SwerveInputStream)} that uses {@link #driveAngularVelocity(CommandXboxController)}. Calls {@link Drivetrain#resetLastAngleScalar()} on end to prevent snapback.
 	 *
 	 * @param controller
@@ -172,5 +190,20 @@ public class DrivetrainControls {
 	 */
 	public Command driveFieldOrientedDirectAngleSimCommand(CommandXboxController controller) {
 		return driveInputStreamScaledCommand(driveDirectAngleSim(controller));
+	}
+
+	/**
+	 * {@link #driveInputStreamScaledCommand(SwerveInputStream)} that uses {@link DrivetrainControls#driveAim(CommandXboxController, Supplier)}.
+	 *
+	 * @param controller
+	 *            Controller to use.
+	 * @param pose
+	 *            Pose to aim at.
+	 * @return
+	 *         Command to run.
+	 */
+	public Command driveFieldOrientedAimAtPoseCommand(CommandXboxController controller, Supplier<Pose2d> pose) {
+		return driveInputStreamScaledCommand(driveAim(controller, pose))
+				.finallyDo(drivetrain::resetLastAngleScalar);
 	}
 }
