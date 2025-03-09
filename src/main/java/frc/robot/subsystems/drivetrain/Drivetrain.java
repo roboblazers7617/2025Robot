@@ -240,9 +240,9 @@ public class Drivetrain extends SubsystemBase {
 	/**
 	 * Resets the gyro angle to zero and resets odometry to the same position, but facing toward 0.
 	 *
+	 * @apiNote
+	 *          The resulting rotation will be flipped 180 degrees from what is expected for alliance-relative when run on the Red alliance.
 	 * @see SwerveDrive#zeroGyro()
-	 * @implNote
-	 *           The resulting rotation will be flipped 180 degrees from what is expected for alliance-relative when run on the Red alliance.
 	 */
 	public void zeroGyro() {
 		swerveDrive.zeroGyro();
@@ -251,9 +251,9 @@ public class Drivetrain extends SubsystemBase {
 	/**
 	 * Resets the gyro angle to zero and resets odometry to the same position, but facing toward 0.
 	 *
+	 * @apiNote
+	 *          The resulting rotation will be flipped 180 degrees from what is expected for alliance-relative when run on the Red alliance.
 	 * @see #zeroGyro()
-	 * @implNote
-	 *           The resulting rotation will be flipped 180 degrees from what is expected for alliance-relative when run on the Red alliance.
 	 */
 	public Command zeroGyroCommand() {
 		return Commands.runOnce(() -> zeroGyro(), this)
