@@ -41,6 +41,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.json.simple.parser.ParseException;
@@ -64,6 +65,13 @@ public class Drivetrain extends SubsystemBase {
 	 * Vision object.
 	 */
 	private final Vision vision;
+	/**
+	 * Enables vision updates. This has no effect if {@link VisionConstants#ENABLE_VISION} is set to false.
+	 *
+	 * @apiNote
+	 *          This is a bit different than {@link VisionConstants#ENABLE_VISION}, in that it doesn't affect the odometry. When {@link VisionConstants#ENABLE_VISION} is true, odometry updates are handled in {@link #periodic()}, even if this is set to false, while when {@link VisionConstants#ENABLE_VISION} is set to false, Drivetrain instead relies on YAGSL's odometry thread to update odometry.
+	 */
+	private boolean enableVisionUpdates;
 
 	/**
 	 * Initialize {@link SwerveDrive} with the directory provided.
@@ -93,9 +101,11 @@ public class Drivetrain extends SubsystemBase {
 		swerveDrive.setModuleEncoderAutoSynchronize(DrivetrainConstants.EncoderAutoSynchronization.ENABLED, DrivetrainConstants.EncoderAutoSynchronization.DEADBAND); // Enable if you want to resynchronize your absolute encoders and motor encoders periodically when they are not moving.
 		swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder and push the offsets onto it. Throws warning if not possible
 		swerveDrive.setMotorIdleMode(true);
-		// Stop the odometry thread if we are using vision that way we can synchronize updates better.
-		// TODO: #112 (Max/Lukas) If we disable vision updates, do we need to restart this thread to ensure odometry is udpated?
-		swerveDrive.stopOdometryThread();
+
+		if (VisionConstants.ENABLE_VISION) {
+			// Stop the odometry thread if we are using vision that way we can synchronize updates better.
+			swerveDrive.stopOdometryThread();
+		}
 
 		// Set up vision
 		vision = new Vision(swerveDrive);
@@ -103,13 +113,14 @@ public class Drivetrain extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		// When vision is enabled we must manually update odometry in SwerveDrive
-		// TODO: #106 (MAX/LUKAS) Last year we had a button the drivers could use to disable vision updates
-		// if vision was going wonky. It seems that wouldn't work this year as the odometry would no longer
-		// be updated?
 		if (VisionConstants.ENABLE_VISION) {
+			// When vision is enabled we must manually update odometry in SwerveDrive.
 			swerveDrive.updateOdometry();
-			vision.updatePoseEstimation();
+
+			// Add Vision data to pose estimation if vision updates are enabled.
+			if (enableVisionUpdates) {
+				vision.updatePoseEstimation();
+			}
 		}
 	}
 
@@ -170,6 +181,20 @@ public class Drivetrain extends SubsystemBase {
 	 */
 	public Vision getVision() {
 		return vision;
+	}
+
+	/**
+	 * Sets whether vision updates should be enabled or not.
+	 *
+	 * @param enabled
+	 *            Should vision updates be enabled?
+	 * @return
+	 *         Command to run.
+	 */
+	public Command setVisionEnabledCommand(BooleanSupplier enabled) {
+		return this.runOnce(() -> {
+			enableVisionUpdates = enabled.getAsBoolean();
+		});
 	}
 
 	/**
