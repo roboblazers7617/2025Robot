@@ -17,7 +17,6 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainControls;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.IntakeRamp.Ramp;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.epilogue.Logged;
@@ -27,6 +26,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -79,8 +79,9 @@ public class RobotContainer {
 		configureDriverControls();
 		configureOperatorControls();
 		// Configure the Limelight mode switching
-		new Trigger(DriverStation::isEnabled).onTrue(drivetrain.getVision().onEnableCommand());
-		new Trigger(DriverStation::isDisabled).onTrue(drivetrain.getVision().onDisableCommand());
+		RobotModeTriggers.disabled()
+				.onFalse(drivetrain.getVision().onEnableCommand())
+				.onTrue(drivetrain.getVision().onDisableCommand());
 		// By default interact with Coral
 		gamepieceMode = GamepieceMode.CORAL_MODE;
 	}
