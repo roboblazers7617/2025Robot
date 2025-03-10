@@ -79,8 +79,8 @@ public class RobotContainer {
 		configureDriverControls();
 		configureOperatorControls();
 		// Configure the Limelight mode switching
-		new Trigger(DriverStation::isEnabled).onTrue(drivetrain.getVision().onEnableCommand());
-		new Trigger(DriverStation::isDisabled).onTrue(drivetrain.getVision().onDisableCommand());
+		// new Trigger(DriverStation::isEnabled).onTrue(drivetrain.getVision().onEnableCommand());
+		// new Trigger(DriverStation::isDisabled).onTrue(drivetrain.getVision().onDisableCommand());
 		// By default interact with Coral
 		gamepieceMode = GamepieceMode.CORAL_MODE;
 	}
