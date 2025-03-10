@@ -702,7 +702,7 @@ public final class Constants {
 			/**
 			 * Offset from the AprilTag from which coral scoring should happen.
 			 */
-			public static final Transform2d CORAL_SCORING_OFFSET = new Transform2d(Meters.of(0.4), Meters.of(0.33 / 2), Rotation2d.k180deg);
+			public static final Transform2d CORAL_SCORING_OFFSET = new Transform2d(Meters.of(0.5), Meters.of(0.33 / 2), Rotation2d.k180deg);
 			/**
 			 * Offset from the AprilTag from which algae scoring should happen.
 			 */
