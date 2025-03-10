@@ -48,7 +48,7 @@ public class RobotContainer {
 	private final DrivetrainControls drivetrainControls = new DrivetrainControls(drivetrain);
 	@NotLogged
 	private final Dashboard dashboard = new Dashboard(drivetrain, this);
-	private final EndEffector endEffector = new EndEffector();
+	private final EndEffector endEffector = new EndEffector(this);
 	private final Elevator elevator = new Elevator(this);
 	private final Ramp ramp = new Ramp();
 
@@ -79,8 +79,8 @@ public class RobotContainer {
 		configureDriverControls();
 		configureOperatorControls();
 		// Configure the Limelight mode switching
-		new Trigger(DriverStation::isEnabled).onTrue(drivetrain.getVision().onEnableCommand());
-		new Trigger(DriverStation::isDisabled).onTrue(drivetrain.getVision().onDisableCommand());
+		// new Trigger(DriverStation::isEnabled).onTrue(drivetrain.getVision().onEnableCommand());
+		// new Trigger(DriverStation::isDisabled).onTrue(drivetrain.getVision().onDisableCommand());
 		// By default interact with Coral
 		gamepieceMode = GamepieceMode.CORAL_MODE;
 	}
@@ -235,7 +235,7 @@ public class RobotContainer {
 	}
 
 	public boolean isHoldingAlgae() {
-		return endEffector.isHoldingAlage();
+		return endEffector.isHoldingAlgae();
 	}
 
 	public boolean isHoldingCoral() {
