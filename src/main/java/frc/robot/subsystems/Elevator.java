@@ -239,7 +239,7 @@ public class Elevator extends SubsystemBase {
 
 	/**
 	 * A command to set the speeds of the elevator and wrist.
-	 * 
+	 *
 	 * @param elevatorSpeed
 	 *            The speed of the elevator as a percentage of max speed. [-1, 1]
 	 * @param wristSpeed
@@ -287,7 +287,7 @@ public class Elevator extends SubsystemBase {
 
 	/**
 	 * A command to set the elevator and wrist to a position.
-	 * 
+	 *
 	 * @param position
 	 *            The Constants.ArmPosition to set the elevator and wrist to.
 	 * @return
@@ -359,7 +359,7 @@ public class Elevator extends SubsystemBase {
 
 	/**
 	 * Toggles brake mode on the elevator and wrist motors.
-	 * 
+	 *
 	 * @return
 	 *         Command to run.
 	 */
