@@ -90,7 +90,9 @@ public class RobotContainer {
 	 */
 	public void autoInit() {
 		// Set the Elastic tab
-		Elastic.selectTab(DashboardConstants.AUTO_TAB_NAME);
+		if (!LoggingConstants.DEBUG_MODE) {
+			Elastic.selectTab(DashboardConstants.AUTO_TAB_NAME);
+		}
 
 		elevator.elevatorInit();
 	}
