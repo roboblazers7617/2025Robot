@@ -581,7 +581,7 @@ public final class Constants {
 		 */
 		public static final int CAN_ID_END_EFFECTOR = 41;
 		/*
-		 * I Belive we used this to make the numbers apear correctly in the dirvers station?
+		 * Used for making numbers apear correctly in software.
 		 */
 		public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO_END_EFFECTOR_MOTOR * 360.0;
 		/**
@@ -595,7 +595,7 @@ public final class Constants {
 		/**
 		 * Intake motor speed for coral. (to be changed and edited later)
 		 */
-		public static final double CORAL_MAIN_INTAKE_SPEED = 0.5; // was 0.7
+		public static final double CORAL_MAIN_INTAKE_SPEED = 0.5;
 		/**
 		 * Intake motor speed for coral after hitting main beam break. (to be changed and edited later)
 		 */
@@ -613,6 +613,10 @@ public final class Constants {
 		 */
 		public static final double ALGAE_OUTAKE_SPEED = 1.0;
 		/**
+		 * Speed that the motor will use to keep force on the Algae while it is being held.
+		 */
+		public static final double ALGAE_HOLD_SPEED = -0.1;
+		/**
 		 * Time (in seconds) that the motors run after beam break detects no coral after using the outtake command
 		 */
 		public static final double OUTTAKE_WAIT_TIME = 0.2;
@@ -620,19 +624,6 @@ public final class Constants {
 		 * Time (in seconds) that the motors run after algae outake is called to eject algae.
 		 */
 		public static final double ALGAE_OUTTAKE_RUN_TIME = 0.3;
-		/**
-		 * Time (in seconds) determines how long the break period is before the Current spike can be detected.
-		 * This allows it to not shutoff with the initial motor startup spike. (this will need to be adjusted)
-		 */
-		public static final double MOTOR_CURRENT_CHECK_DELAY = 0.1;
-		/**
-		 * Limit to the current before it shuts off the motor for the Algae Intake system. (also needs to be adjusted)
-		 */
-		public static final double AlGAE_INTAKE_CURRENT_SHUTOFF_THRESHOLD = 25.0;
-		/**
-		 * Alternate method to shutof algae intake method using a minimum motor speed limit.
-		 */
-		public static final double ALGAE_INTAKE_MINIMUM_SHUTOFF_SPEED = -0.05;
 		// Beam Break constants
 		/**
 		 * DIO pin for the main beam break.

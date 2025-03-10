@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
  */
 @Logged
 public class EndEffector extends SubsystemBase {
+	// Private variables
 	private double speed;
 	@Logged
 	private final SparkMax endEffectorMotor = new SparkMax(EndEffectorConstants.CAN_ID_END_EFFECTOR, MotorType.kBrushless);
@@ -38,12 +39,13 @@ public class EndEffector extends SubsystemBase {
 	private final RelativeEncoder endEffectEncoder = endEffectorMotor.getEncoder();
 	@NotLogged
 	private final RobotContainer robotContainer;
+
+	// Coral Inputs
 	/**
 	 * Beam break outputs
 	 * True = is NOT holding coral
 	 * False = is holding coral
 	 */
-	// TODO: #134 Rename to follow coding standards / ease reading code
 	private final DigitalInput isNotHoldingCoral = new DigitalInput(EndEffectorConstants.MAIN_BEAM_BREAK_DIO);
 	/**
 	 * Beam break outputs
@@ -51,7 +53,9 @@ public class EndEffector extends SubsystemBase {
 	 * False = is holding coral
 	 */
 	private final DigitalInput isNotHoldingCoralAdjuster = new DigitalInput(EndEffectorConstants.SECONDARY_BEAM_BREAK_DIO);
+	// Algae Inputs
 	private final DigitalInput isHoldingAlgaeInput = new DigitalInput(EndEffectorConstants.LIMIT_SWITCH_DIO);
+	private boolean algae = isHoldingAlgaeInput.get();
 
 	/**
 	 * Creates a new EndEffector.
@@ -64,13 +68,16 @@ public class EndEffector extends SubsystemBase {
 				.inverted(true)
 				.apply(EndEffectorConstants.CLOSED_LOOP_CONFIG);
 		motorConfig.encoder.positionConversionFactor(EndEffectorConstants.POSITION_CONVERSION_FACTOR);
-
 		endEffectorMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 	}
 
 	@Override
 	public void periodic() {
 		speed = endEffectEncoder.getVelocity();
+		// if (algae = true && speed <= -0.1 && speed >= -0.2) {
+		// StartMotorCommand(() -> EndEffectorConstants.ALGAE_HOLD_SPEED);
+		// System.out.println("uh dang");
+		// }
 	}
 
 	public boolean isHoldingAlgae() {
@@ -135,13 +142,14 @@ public class EndEffector extends SubsystemBase {
 	public Command CoralOuttake() {
 		return StartMotorCommand(() -> EndEffectorConstants.CORAL_OUTAKE_SPEED)
 				.andThen(Commands.waitUntil(() -> isNotHoldingCoralAdjuster.get()))
-				// .andThen(Commands.waitSeconds(EndEffectorConstants.OUTTAKE_WAIT_TIME))
 				.finallyDo(this::stopMotor);
 	}
 
 	public Command AlgaeIntake() {
 		return StartMotorCommand(() -> EndEffectorConstants.ALGAE_INTAKE_SPEED)
 				.andThen(Commands.waitUntil(() -> !isHoldingAlgaeInput.get()))
+				// .andThen(StartMotorCommand(() -> EndEffectorConstants.ALGAE_HOLD_SPEED))
+				// .andThen(Commands.waitSeconds(20))// temp to allow time to test
 				.finallyDo(this::stopMotor);
 	}
 
