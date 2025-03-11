@@ -898,55 +898,35 @@ public final class Constants {
 
 		static {
 			// Compile CORAL_SCORING_POSES_BLUE_LEFT poses
-			FieldConstants.Reef.CORAL_SCORING_POSES_BLUE_LEFT.forEach((pose) -> {
-				CORAL_SCORING_POSES_BLUE_LEFT.add(pose);
-			});
+			CORAL_SCORING_POSES_BLUE_LEFT.addAll(FieldConstants.Reef.CORAL_SCORING_POSES_BLUE_LEFT);
 
 			// Compile CORAL_SCORING_POSES_BLUE_RIGHT poses
-			FieldConstants.Reef.CORAL_SCORING_POSES_BLUE_RIGHT.forEach((pose) -> {
-				CORAL_SCORING_POSES_BLUE_RIGHT.add(pose);
-			});
+			CORAL_SCORING_POSES_BLUE_RIGHT.addAll(FieldConstants.Reef.CORAL_SCORING_POSES_BLUE_RIGHT);
 
 			// Compile CORAL_SCORING_POSES_RED_LEFT poses
-			FieldConstants.Reef.CORAL_SCORING_POSES_RED_LEFT.forEach((pose) -> {
-				CORAL_SCORING_POSES_RED_LEFT.add(pose);
-			});
+			CORAL_SCORING_POSES_RED_LEFT.addAll(FieldConstants.Reef.CORAL_SCORING_POSES_RED_LEFT);
 
 			// Compile CORAL_SCORING_POSES_RED_RIGHT poses
-			FieldConstants.Reef.CORAL_SCORING_POSES_RED_RIGHT.forEach((pose) -> {
-				CORAL_SCORING_POSES_RED_RIGHT.add(pose);
-			});
+			CORAL_SCORING_POSES_RED_RIGHT.addAll(FieldConstants.Reef.CORAL_SCORING_POSES_RED_RIGHT);
 
 			// Compile CORAL_SCORING_POSES_L4_BLUE_LEFT poses
-			FieldConstants.Reef.CORAL_SCORING_POSES_L4_BLUE_LEFT.forEach((pose) -> {
-				CORAL_SCORING_POSES_L4_BLUE_LEFT.add(pose);
-			});
+			CORAL_SCORING_POSES_L4_BLUE_LEFT.addAll(FieldConstants.Reef.CORAL_SCORING_POSES_L4_BLUE_LEFT);
 
 			// Compile CORAL_SCORING_POSES_L4_BLUE_RIGHT poses
-			FieldConstants.Reef.CORAL_SCORING_POSES_L4_BLUE_RIGHT.forEach((pose) -> {
-				CORAL_SCORING_POSES_L4_BLUE_RIGHT.add(pose);
-			});
+			CORAL_SCORING_POSES_L4_BLUE_RIGHT.addAll(FieldConstants.Reef.CORAL_SCORING_POSES_L4_BLUE_RIGHT);
 
 			// Compile CORAL_SCORING_POSES_L4_RED_LEFT poses
-			FieldConstants.Reef.CORAL_SCORING_POSES_L4_RED_LEFT.forEach((pose) -> {
-				CORAL_SCORING_POSES_L4_RED_LEFT.add(pose);
-			});
+			CORAL_SCORING_POSES_L4_RED_LEFT.addAll(FieldConstants.Reef.CORAL_SCORING_POSES_L4_RED_LEFT);
 
 			// Compile CORAL_SCORING_POSES_L4_RED_RIGHT poses
-			FieldConstants.Reef.CORAL_SCORING_POSES_L4_RED_RIGHT.forEach((pose) -> {
-				CORAL_SCORING_POSES_L4_RED_RIGHT.add(pose);
-			});
+			CORAL_SCORING_POSES_L4_RED_RIGHT.addAll(FieldConstants.Reef.CORAL_SCORING_POSES_L4_RED_RIGHT);
 
 			// Compile ALGAE_SCORING_POSES_BLUE poses
-			FieldConstants.Reef.ALGAE_SCORING_POSES_BLUE.forEach((pose) -> {
-				ALGAE_SCORING_POSES_BLUE.add(pose);
-			});
+			ALGAE_SCORING_POSES_BLUE.addAll(FieldConstants.Reef.ALGAE_SCORING_POSES_BLUE);
 			ALGAE_SCORING_POSES_BLUE.add(FieldConstants.Processor.ALGAE_SCORING_POSE_BLUE);
 
 			// Compile ALGAE_SCORING_POSES_RED poses
-			FieldConstants.Reef.ALGAE_SCORING_POSES_RED.forEach((pose) -> {
-				ALGAE_SCORING_POSES_RED.add(pose);
-			});
+			ALGAE_SCORING_POSES_RED.addAll(FieldConstants.Reef.ALGAE_SCORING_POSES_RED);
 			ALGAE_SCORING_POSES_RED.add(FieldConstants.Processor.ALGAE_SCORING_POSE_RED);
 		}
 	}
