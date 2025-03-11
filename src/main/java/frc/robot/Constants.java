@@ -326,7 +326,7 @@ public final class Constants {
 		/**
 		 * Elevator kP.
 		 */
-		public static final double KP = .8; // 0.8
+		public static final double KP = 1.2; // 0.8
 		/**
 		 * Elevator kI.
 		 */
@@ -539,11 +539,11 @@ public final class Constants {
 		//
 		OUTTAKE_CORAL_LEVEL_4_HIGH(87.9, 1.4),
 		//
-		OUTTAKE_ALGAE_PROCESSOR(-57, .14),
+		OUTTAKE_ALGAE_PROCESSOR(-57, .1),
 		//
 		OUTTAKE_ALGAE_NET(0, 0),
 		/** elevator at bottom, wrist open so we don't crush the algae into the robot */
-		STOW_ALGAE(0, 0),
+		STOW_ALGAE(48, 0),
 		/** wrist up and elevator down */
 		STOW(125, ElevatorConstants.MIN_POSITION),
 		//
