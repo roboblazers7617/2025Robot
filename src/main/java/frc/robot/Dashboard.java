@@ -59,6 +59,7 @@ public class Dashboard {
 		pose.addOption("center edge on red side", new Pose2d(17, 4, new Rotation2d(0)));
 
 		isCoralMode = NetworkTableInstance.getDefault().getTable("").getBooleanTopic("CoralMode").publish();
+		isCoralMode.set(true);
 		new Trigger(() -> robotContainer.getGamepieceMode() == GamepieceMode.CORAL_MODE).onChange(new InstantCommand(() -> isCoralMode.set(robotContainer.getGamepieceMode() == GamepieceMode.CORAL_MODE)));
 
 		// pose.onChange((pose) -> {
