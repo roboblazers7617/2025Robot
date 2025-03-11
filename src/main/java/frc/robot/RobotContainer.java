@@ -110,13 +110,13 @@ public class RobotContainer {
 		if (!LoggingConstants.DEBUG_MODE) {
 			Elastic.selectTab(DashboardConstants.TELEOP_TAB_NAME);
 		}
-		if (StubbedCommands.EndEffector.isHoldingAlage()) {
-			gamepieceMode = GamepieceMode.ALGAE_MODE;
-		}
+		// if (StubbedCommands.EndEffector.isHoldingAlage()) {
+		// gamepieceMode = GamepieceMode.ALGAE_MODE;
+		// }
 
-		else {
-			gamepieceMode = GamepieceMode.CORAL_MODE;
-		}
+		// else {
+		// gamepieceMode = GamepieceMode.CORAL_MODE;
+		// }
 
 		elevator.elevatorInit();
 	}
@@ -141,7 +141,7 @@ public class RobotContainer {
 		driverController.b().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_FAST));
 		driverController.x().whileTrue(drivetrain.lockCommand());
 
-		driverController.y().onTrue(StubbedCommands.Climber.StowRamp());
+		driverController.y().onTrue(elevator.SetPositionCommand(ArmPosition.STOW).andThen(ramp.RampRetract()));
 		driverController.povDown().whileTrue(StubbedCommands.Climber.ClimberDown());
 		driverController.povLeft().whileTrue(StubbedCommands.Climber.RampUp());
 		driverController.povRight().whileTrue(StubbedCommands.Climber.RampDown());
@@ -187,11 +187,11 @@ public class RobotContainer {
 						.andThen(endEffector.CoralIntake())
 						.andThen(elevator.SetPositionCommand(ArmPosition.STOW)));
 		operatorController.x()
-				.and(() -> isHoldingAlgae())
+				.and(() -> gamepieceMode == GamepieceMode.ALGAE_MODE) // temp
 				.onTrue(elevator.SetPositionCommand(ArmPosition.STOW_ALGAE)
 						.alongWith(endEffector.StopIntakeMotor()));
 		operatorController.x()
-				.and(() -> !isHoldingAlgae())
+				.and(() -> gamepieceMode == GamepieceMode.CORAL_MODE) // temp
 				.onTrue(elevator.SetPositionCommand(ArmPosition.STOW)
 						.alongWith(endEffector.StopIntakeMotor()));
 		operatorController.y()
@@ -224,9 +224,9 @@ public class RobotContainer {
 		operatorController.povUp()
 				.and(isAlgaeModeTrigger)
 				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_ALGAE_LEVEL_3));
-		operatorController.povUp()
-				.and(isCoralModeTrigger)
-				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4));
+		// operatorController.povUp()
+		// .and(isCoralModeTrigger)
+		// .onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4));
 
 		// Left Bumper is on an or with the Y button above
 		operatorController.rightBumper().onTrue(setGamepieceModeCommand(GamepieceMode.ALGAE_MODE));
