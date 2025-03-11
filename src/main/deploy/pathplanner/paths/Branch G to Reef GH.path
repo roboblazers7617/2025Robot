@@ -11,8 +11,24 @@
         "x": 5.845564474097767,
         "y": 4.1215915376955685
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": "Branch G"
+    },
+    {
+      "anchor": {
+        "x": 6.5,
+        "y": 4.0
+      },
+      "prevControl": {
+        "x": 6.485467685544101,
+        "y": 4.2495772662654865
+      },
+      "nextControl": {
+        "x": 6.514532314455899,
+        "y": 3.750422733734511
+      },
+      "isLocked": false,
+      "linkedName": null
     },
     {
       "anchor": {
@@ -24,14 +40,21 @@
         "y": 3.7323464096844665
       },
       "nextControl": null,
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": "Reef GH"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Intake Algae L2",
+      "waypointRelativePos": 0.4165807423857864,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 2.0,
     "maxAcceleration": 3.0,
