@@ -17,11 +17,15 @@ import frc.robot.Constants.ArmPosition;
 import frc.robot.commands.StubbedCommands;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainControls;
+import frc.robot.subsystems.Auto;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.IntakeRamp.Ramp;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.MathUtil;
@@ -117,6 +121,13 @@ public class RobotContainer {
 		// else {
 		// gamepieceMode = GamepieceMode.CORAL_MODE;
 		// }
+
+		// Configure AutoBuilder if not already configured
+		if (!AutoBuilder.isConfigured()) {
+			System.err.println("AutoBuilder not configured before starting Teleop! Configuring AutoBuilder with data from the FMS.");
+			Auto.setupPathPlanner(drivetrain, DriverStation.getAlliance()
+					.orElse(DriverStation.Alliance.Blue));
+		}
 
 		elevator.elevatorInit();
 	}
