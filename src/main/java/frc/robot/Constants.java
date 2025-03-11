@@ -769,28 +769,28 @@ public final class Constants {
 					// Regular side
 					CORAL_SCORING_POSES_BLUE_RIGHT.add(pose2d.transformBy(CORAL_SCORING_OFFSET));
 					// Flipped side
-					CORAL_SCORING_POSES_BLUE_LEFT.add(pose2d.transformBy(new Transform2d(CORAL_SCORING_OFFSET.getMeasureX(), CORAL_SCORING_OFFSET.getMeasureY().times(-1), CORAL_SCORING_OFFSET.getRotation())));
+					CORAL_SCORING_POSES_BLUE_LEFT.add(pose2d.transformBy(PoseUtil.flipTransformY(CORAL_SCORING_OFFSET)));
 
 					// Regular side (L4)
 					CORAL_SCORING_POSES_L4_BLUE_RIGHT.add(pose2d.transformBy(CORAL_SCORING_OFFSET_L4));
 					// Flipped side (L4)
-					CORAL_SCORING_POSES_L4_BLUE_LEFT.add(pose2d.transformBy(new Transform2d(CORAL_SCORING_OFFSET_L4.getMeasureX(), CORAL_SCORING_OFFSET_L4.getMeasureY().times(-1), CORAL_SCORING_OFFSET_L4.getRotation())));
+					CORAL_SCORING_POSES_L4_BLUE_LEFT.add(pose2d.transformBy(PoseUtil.flipTransformY(CORAL_SCORING_OFFSET_L4)));
 				});
 
 				// Generate lists of coral scoring poses for the other alliance.
 				CORAL_SCORING_POSES_BLUE_LEFT.forEach((pose) -> {
-					CORAL_SCORING_POSES_RED_LEFT.add(PoseUtil.flipPose(pose));
+					CORAL_SCORING_POSES_RED_LEFT.add(PoseUtil.flipPoseAlliance(pose));
 				});
 				CORAL_SCORING_POSES_BLUE_RIGHT.forEach((pose) -> {
-					CORAL_SCORING_POSES_RED_RIGHT.add(PoseUtil.flipPose(pose));
+					CORAL_SCORING_POSES_RED_RIGHT.add(PoseUtil.flipPoseAlliance(pose));
 				});
 
 				// Generate lists of coral scoring poses for L4 for the other alliance.
 				CORAL_SCORING_POSES_L4_BLUE_LEFT.forEach((pose) -> {
-					CORAL_SCORING_POSES_L4_RED_LEFT.add(PoseUtil.flipPose(pose));
+					CORAL_SCORING_POSES_L4_RED_LEFT.add(PoseUtil.flipPoseAlliance(pose));
 				});
 				CORAL_SCORING_POSES_L4_BLUE_RIGHT.forEach((pose) -> {
-					CORAL_SCORING_POSES_L4_RED_RIGHT.add(PoseUtil.flipPose(pose));
+					CORAL_SCORING_POSES_L4_RED_RIGHT.add(PoseUtil.flipPoseAlliance(pose));
 				});
 
 				// Generate a list of algae scoring poses.
@@ -801,7 +801,7 @@ public final class Constants {
 
 				// Generate a list of algae scoring poses for the other alliance.
 				ALGAE_SCORING_POSES_BLUE.forEach((pose) -> {
-					ALGAE_SCORING_POSES_RED.add(PoseUtil.flipPose(pose));
+					ALGAE_SCORING_POSES_RED.add(PoseUtil.flipPoseAlliance(pose));
 				});
 			}
 		}
@@ -845,7 +845,7 @@ public final class Constants {
 				Pose2d pose2d = TAG_POSE.toPose2d();
 
 				ALGAE_SCORING_POSE_BLUE = pose2d.transformBy(SCORING_OFFSET);
-				ALGAE_SCORING_POSE_RED = PoseUtil.flipPose(ALGAE_SCORING_POSE_BLUE);
+				ALGAE_SCORING_POSE_RED = PoseUtil.flipPoseAlliance(ALGAE_SCORING_POSE_BLUE);
 			}
 		}
 	}
