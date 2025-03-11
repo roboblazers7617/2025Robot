@@ -151,12 +151,19 @@ public class RobotContainer {
 		driverController.leftTrigger()
 				.and(isAlgaeModeTrigger)
 				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.ALGAE_SCORING_POSES_RED), drivetrain.driveToNearestPoseCommand(ScoringPoses.ALGAE_SCORING_POSES_BLUE), () -> Util.isRedAlliance()));
+
 		driverController.leftTrigger()
 				.and(isCoralModeTrigger)
 				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_RED_LEFT), drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_BLUE_LEFT), () -> Util.isRedAlliance()));
 		driverController.rightTrigger()
 				.and(isCoralModeTrigger)
 				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_RED_RIGHT), drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_BLUE_RIGHT), () -> Util.isRedAlliance()));
+		driverController.leftBumper()
+				.and(isCoralModeTrigger)
+				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_L4_RED_LEFT), drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_L4_BLUE_LEFT), () -> Util.isRedAlliance()));
+		driverController.rightBumper()
+				.and(isCoralModeTrigger)
+				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_L4_RED_RIGHT), drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_L4_BLUE_RIGHT), () -> Util.isRedAlliance()));
 
 		driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
 		driverController.back().onTrue(StubbedCommands.Drivetrain.DisableVision());
