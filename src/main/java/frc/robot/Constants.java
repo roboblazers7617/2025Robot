@@ -282,22 +282,13 @@ public final class Constants {
 	 */
 	public static class ClimberConstants {
 		/**
-		 * Port for the right climber motor.
+		 * Port for the climber motor.
 		 */
 		// TODO: make sure these get set
 		// TODO: (Sam) Please update with correct values
-		public static final int RIGHT_CLIMBER_PORT = 0;
-		/**
-		 * Port for the left climber motor.
-		 */
-		// TODO: (Sam) Please update with correct values
-		public static final int LEFT_CLIMBER_PORT = 1;
-
-		/**
-		 * Port for the ramp pivot motor.
-		 */
-		// TODO: (Sam) Please update with correct values
-		public static final int RAMP_PIVOT_PORT = 2;
+		public static final int CLIMBER_MOTOR_CAN_ID = 0;
+		public static final double CLIMBER_GEAR_RATIO = 0;
+		public static final int SERVO_PWM_PORT = 0;
 	}
 
 	// wrist is 3:1
