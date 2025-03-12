@@ -159,7 +159,7 @@ public class RobotContainer {
 				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_RED_RIGHT), drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_BLUE_RIGHT), () -> Util.isRedAlliance()));
 
 		driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
-		driverController.back().onTrue(StubbedCommands.Drivetrain.DisableVision());
+		driverController.back().onTrue(drivetrain.setVisionEnabledCommand(() -> false));
 	}
 
 	/**
