@@ -252,9 +252,7 @@ public class RobotContainer {
 		return endEffector.isHoldingCoral();
 	}
 
-	/
-
- *
+	/*
 	 * @return the command to run in autonomous
 	 */
 	public Command getAutonomousCommand() {
