@@ -316,8 +316,22 @@ public class Elevator extends SubsystemBase {
 		return command;
 	}
 
+	/**
+	 * Get the elevator target in meters, this is before the current safety checks.
+	 * 
+	 * @return The target position of the elevator in meters.
+	 */
 	public double getElevatorTarget() {
 		return elevatorTarget;
+	}
+
+	/**
+	 * Get the position of the elevator in meters. To get the target position use {@link #getElevatorTarget()}.
+	 * 
+	 * @return The position of the elevator in meters.
+	 */
+	public double getElevatorPosition() {
+		return leaderElevatorRelativeEncoder.getPosition();
 	}
 
 	public void elevatorInit() {
