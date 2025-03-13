@@ -145,6 +145,19 @@ public class EndEffector extends SubsystemBase {
 				.finallyDo(this::stopMotor);
 	}
 
+	public Command CoralBackup() {
+		return StartMotorCommand(() -> EndEffectorConstants.CORAL_BACKUP_SPEED)
+				.andThen(Commands.waitUntil(() -> isNotHoldingCoralAdjuster.get()))
+				.finallyDo(this::stopMotor);
+	}
+
+	// this may be unnececary but might as well have this here
+	public Command CoralReset() {
+		return StartMotorCommand(() -> EndEffectorConstants.CORAL_RESET_SPEED)
+				.andThen(Commands.waitUntil(() -> !isNotHoldingCoralAdjuster.get()))
+				.finallyDo(this::stopMotor);
+	}
+
 	public Command AlgaeIntake() {
 		return StartMotorCommand(() -> EndEffectorConstants.ALGAE_INTAKE_SPEED)
 				.andThen(Commands.waitUntil(() -> !isHoldingAlgaeInput.get()))

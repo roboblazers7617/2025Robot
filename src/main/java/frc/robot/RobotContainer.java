@@ -181,7 +181,7 @@ public class RobotContainer {
 		operatorController.x()
 				.and(() -> !isHoldingAlgae())
 				.onTrue(elevator.SetPositionCommand(ArmPosition.STOW)
-						.alongWith(endEffector.StopIntakeMotor()));
+						.alongWith(endEffector.StopIntakeMotor()));/* .alongWith(endEffector.CoralReset())); */
 		operatorController.y()
 				.or(operatorController.leftBumper())
 				.and(isAlgaeModeTrigger)
@@ -214,7 +214,7 @@ public class RobotContainer {
 				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_ALGAE_LEVEL_3));
 		operatorController.povUp()
 				.and(isCoralModeTrigger)
-				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4));
+				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4).alongWith(endEffector.CoralBackup()));
 
 		// Left Bumper is on an or with the Y button above
 		operatorController.rightBumper().onTrue(setGamepieceModeCommand(GamepieceMode.ALGAE_MODE));
