@@ -23,7 +23,6 @@ import frc.robot.Constants;
 import frc.robot.Constants.ClimberConstants;
 
 @Logged
-
 public class Climber extends SubsystemBase {
 	private final SparkMax climberMotor = new SparkMax(ClimberConstants.CLIMBER_MOTOR_CAN_ID, MotorType.kBrushless);
 	private final RelativeEncoder climberEncoder;

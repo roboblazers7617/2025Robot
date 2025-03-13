@@ -150,11 +150,9 @@ public class RobotContainer {
 		driverController.a().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_SLOW));
 		driverController.b().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_FAST));
 		driverController.x().whileTrue(drivetrain.lockCommand());
-
 		driverController.y().onTrue(elevator.SetPositionCommand(ArmPosition.STOW).andThen(ramp.RampRetract()));
+
 		driverController.povUp().whileTrue(climber.RaiseClimber());
-		driverController.povLeft().whileTrue(StubbedCommands.Climber.RampUp());
-		driverController.povRight().whileTrue(StubbedCommands.Climber.RampDown());
 		driverController.povDown().whileTrue(climber.LowerClimber());
 
 		// Scoring pose pathfinding

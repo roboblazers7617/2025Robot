@@ -289,6 +289,12 @@ public final class Constants {
 		public static final int CLIMBER_MOTOR_CAN_ID = 0;
 		public static final double CLIMBER_GEAR_RATIO = 0;
 		public static final int SERVO_PWM_PORT = 0;
+		public static final double SERVO_ENABLED_ANGLE = 0;
+		public static final double SERVO_DISABLED_ANGLE = 0;
+		public static final double RAISE_CLIMBER_SPEED = 0;
+		public static final double CLIMBER_RAISED_POSITION = 0;
+		public static final double LOWER_CLIMBER_SPEED = 0;
+		public static final double CLIMBER_LOWERED_POSITION = 0;
 	}
 
 	// wrist is 3:1
