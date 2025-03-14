@@ -7,7 +7,6 @@ package frc.robot;
 import static edu.wpi.first.units.Units.DegreesPerSecondPerSecond;
 import static edu.wpi.first.units.Units.FeetPerSecond;
 import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.Kilograms;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
@@ -25,7 +24,6 @@ import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.util.PoseUtil;
 import io.github.roboblazers7617.limelight.LimelightSettings.ImuMode;
 import io.github.roboblazers7617.limelight.PoseEstimator.PoseEstimators;
-import swervelib.math.Matter;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -58,11 +56,15 @@ public final class Constants {
 		 */
 		// TODO: Need to update with actual weight of robot
 		public static final Mass ROBOT_MASS = Pounds.of(115);
+		// TODO: Need to udpate with actual COGs
 		/**
-		 * Matter representing the robot chassis.
+		 * The robot's COG with the elevator in the minimum position.
 		 */
-		// TODO: Need to udpate with actual COG
-		public static final Matter CHASSIS = new Matter(new Translation3d(0, 0, Inches.of(8).in(Meters)), ROBOT_MASS.in(Kilograms));
+		public static final Translation3d COG_ELEVATOR_DOWN = new Translation3d(0, 0, Inches.of(8).in(Meters));
+		/**
+		 * The robot's COG with the elevator in the {@link ElevatorConstants#MAX_POSITION maximum position}.
+		 */
+		public static final Translation3d COG_ELEVATOR_UP = new Translation3d(0, 0, Inches.of(15).in(Meters));
 	}
 
 	/**

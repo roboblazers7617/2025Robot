@@ -5,12 +5,15 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.PhysicalConstants;
 import frc.robot.Constants.ScoringPoses;
 import frc.robot.Constants.DashboardConstants;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.LoggingConstants;
 import frc.robot.subsystems.EndEffector.EndEffector;
 import frc.robot.util.Util;
+import swervelib.math.Matter;
 import frc.robot.util.Elastic;
 import frc.robot.Constants.OperatorConstants.GamepieceMode;
 import frc.robot.Constants.ArmPosition;
@@ -19,12 +22,15 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainControls;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.IntakeRamp.Ramp;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+
+import static edu.wpi.first.units.Units.Kilograms;
+
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -45,7 +51,7 @@ public class RobotContainer {
 	private SendableChooser<Command> autoChooser;
 	// The robot's subsystems and commands are defined here...
 	@NotLogged
-	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
+	private final Drivetrain drivetrain = new Drivetrain(this, DrivetrainConstants.CONFIG_DIR);
 	@NotLogged
 	private final DrivetrainControls drivetrainControls = new DrivetrainControls(drivetrain);
 	@NotLogged
@@ -253,14 +259,15 @@ public class RobotContainer {
 	}
 
 	/**
-	 * Get the position of the {@link #elevator} in meters.
+	 * Gets a {@link Matter} representing the robot chassis with a center of mass based on the
+	 * position of the {@link #elevator}.
 	 *
 	 * @return
-	 *         The position of the {@link #elevator} in meters.
-	 * @see Elevator#getElevatorPosition()
+	 *         {@link Matter} representing the robot chassis.
 	 */
-	public double getElevatorPosition() {
-		return elevator.getElevatorPosition();
+	public Matter getChassis() {
+		Translation3d cog = PhysicalConstants.COG_ELEVATOR_DOWN.interpolate(PhysicalConstants.COG_ELEVATOR_UP, elevator.getElevatorPosition() / ElevatorConstants.MAX_POSITION);
+		return new Matter(cog, PhysicalConstants.ROBOT_MASS.in(Kilograms));
 	}
 
 	/**

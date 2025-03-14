@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.vision.Vision;
@@ -60,6 +61,10 @@ import swervelib.telemetry.SwerveDriveTelemetry;
  */
 public class Drivetrain extends SubsystemBase {
 	/**
+	 * The robot's {@link RobotContainer}. Used to query the state of other subsystems.
+	 */
+	private final RobotContainer robotContainer;
+	/**
 	 * Swerve drive object.
 	 */
 	private final SwerveDrive swerveDrive;
@@ -71,10 +76,14 @@ public class Drivetrain extends SubsystemBase {
 	/**
 	 * Initialize {@link SwerveDrive} with the directory provided.
 	 *
+	 * @param robotContainer
+	 *            The robot's {@link RobotContainer}.
 	 * @param directory
 	 *            Directory of swerve drive config files.
 	 */
-	public Drivetrain(File directory) {
+	public Drivetrain(RobotContainer robotContainer, File directory) {
+		this.robotContainer = robotContainer;
+
 		// Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
 		if (LoggingConstants.DEBUG_MODE) {
 			SwerveDriveTelemetry.verbosity = DrivetrainConstants.TELEMETRY_VERBOSITY_DEBUG;
@@ -373,7 +382,7 @@ public class Drivetrain extends SubsystemBase {
 	 */
 	public void drive(Translation2d translation, double rotation, boolean fieldRelative) {
 		// Limit velocity to prevent tippy
-		translation = SwerveMath.limitVelocity(translation, swerveDrive.getFieldVelocity(), swerveDrive.getPose(), DrivetrainConstants.VELOCITY_LOOP_TIME, PhysicalConstants.ROBOT_MASS.in(Kilograms), List.of(PhysicalConstants.CHASSIS), swerveDrive.swerveDriveConfiguration);
+		translation = SwerveMath.limitVelocity(translation, swerveDrive.getFieldVelocity(), swerveDrive.getPose(), DrivetrainConstants.VELOCITY_LOOP_TIME, PhysicalConstants.ROBOT_MASS.in(Kilograms), List.of(robotContainer.getChassis()), swerveDrive.swerveDriveConfiguration);
 
 		swerveDrive.drive(translation, rotation, fieldRelative, false); // Open loop is disabled since it shouldn't be used most of the time.
 	}
