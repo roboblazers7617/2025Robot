@@ -5,6 +5,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.DegreesPerSecondPerSecond;
+import static edu.wpi.first.units.Units.Feet;
 import static edu.wpi.first.units.Units.FeetPerSecond;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -700,10 +701,16 @@ public final class Constants {
 			 * AprilTag poses for the reef on the blue alliance.
 			 */
 			public static final List<Pose3d> TAG_POSES = new ArrayList<Pose3d>();
+
 			/**
-			 * A list of poses that defines where the physical reef is.
+			 * Offset from the AprilTag where the corner of the physical reef is.
 			 */
-			public static final List<Pose2d> REEF_EDGE_POSES = new ArrayList<Pose2d>();
+			public static final Transform2d CORNER_OFFSET = new Transform2d(Feet.of(37.04 / 2), Meters.zero(), Rotation2d.kZero);
+			/**
+			 * A list of poses that defines where the corners of the physical reef is.
+			 */
+			public static final List<Pose2d> CORNER_POSES = new ArrayList<Pose2d>();
+
 			/**
 			 * Offset from the AprilTag from which coral scoring should happen.
 			 */
@@ -736,8 +743,9 @@ public final class Constants {
 			 * Poses from which the robot can score algae on the red alliance.
 			 */
 			public static final List<Pose2d> ALGAE_SCORING_POSES_RED = new ArrayList<Pose2d>();
+
 			/**
-			 * The minimum distance away from the {@link #REEF_EDGE_POSES reef zone} at which it is
+			 * The minimum distance away from the {@link #CORNER_POSES reef zone} at which it is
 			 * safe to move the elevator.
 			 */
 			public static final Distance SAFE_ELEVATOR_DISTANCE = Meters.of(0.5);
@@ -780,18 +788,11 @@ public final class Constants {
 					ALGAE_SCORING_POSES_RED.add(PoseUtil.flipPose(pose));
 				});
 
-				// Generate the reef zone pose list.
-				CORAL_SCORING_POSES_BLUE_LEFT.forEach((pose) -> {
-					REEF_EDGE_POSES.add(pose);
-				});
-				CORAL_SCORING_POSES_BLUE_RIGHT.forEach((pose) -> {
-					REEF_EDGE_POSES.add(pose);
-				});
-				CORAL_SCORING_POSES_RED_LEFT.forEach((pose) -> {
-					REEF_EDGE_POSES.add(pose);
-				});
-				CORAL_SCORING_POSES_RED_RIGHT.forEach((pose) -> {
-					REEF_EDGE_POSES.add(pose);
+				// Generate a list of corner poses.
+				TAG_POSES.forEach((pose) -> {
+					Pose2d poseTransformed = pose.toPose2d().transformBy(CORNER_OFFSET);
+					CORNER_POSES.add(poseTransformed);
+					CORNER_POSES.add(PoseUtil.flipPose(poseTransformed));
 				});
 			}
 		}

@@ -264,7 +264,7 @@ public class RobotContainer {
 	 * @return
 	 *         True if the robot is too close to the reef.
 	 * @see FieldConstants.Reef#SAFE_ELEVATOR_DISTANCE
-	 * @see FieldConstants.Reef#REEF_EDGE_POSES
+	 * @see FieldConstants.Reef#CORNER_POSES
 	 */
 	public boolean closeToReef() {
 		// Get the position of the robot
@@ -272,7 +272,7 @@ public class RobotContainer {
 		Translation2d robotTranslation = robotPose.getTranslation();
 
 		// Find the nearest reef edge position
-		Translation2d tagTranslation = robotPose.nearest(FieldConstants.Reef.REEF_EDGE_POSES).getTranslation();
+		Translation2d tagTranslation = robotPose.nearest(FieldConstants.Reef.CORNER_POSES).getTranslation();
 
 		// Find the distance from the reef
 		double distance = tagTranslation.getDistance(robotTranslation);
