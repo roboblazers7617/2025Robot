@@ -8,6 +8,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ScoringPoses;
 import frc.robot.Constants.DashboardConstants;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.LoggingConstants;
 import frc.robot.subsystems.EndEffector.EndEffector;
 import frc.robot.util.Util;
@@ -22,9 +23,14 @@ import frc.robot.subsystems.IntakeRamp.Ramp;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+
+import static edu.wpi.first.units.Units.Meters;
+
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -250,6 +256,29 @@ public class RobotContainer {
 
 	public boolean isHoldingCoral() {
 		return endEffector.isHoldingCoral();
+	}
+
+	/**
+	 * Check if the robot is close to the reef. This will disable elevator and wrist movement.
+	 *
+	 * @return
+	 *         True if the robot is too close to the reef.
+	 * @see FieldConstants.Reef#SAFE_ELEVATOR_DISTANCE
+	 * @see FieldConstants.Reef#CORNER_POSES
+	 */
+	public boolean closeToReef() {
+		// Get the position of the robot
+		Pose2d robotPose = drivetrain.getPose();
+		Translation2d robotTranslation = robotPose.getTranslation();
+
+		// Find the nearest reef edge position
+		Translation2d tagTranslation = robotPose.nearest(FieldConstants.Reef.CORNER_POSES).getTranslation();
+
+		// Find the distance from the reef
+		double distance = tagTranslation.getDistance(robotTranslation);
+
+		// Check if the distance is lower than the safe elevator distance
+		return distance <= FieldConstants.Reef.SAFE_ELEVATOR_DISTANCE.in(Meters);
 	}
 
 	/**

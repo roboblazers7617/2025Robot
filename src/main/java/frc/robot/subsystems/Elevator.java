@@ -183,6 +183,10 @@ public class Elevator extends SubsystemBase {
 	 */
 	@Override
 	public void periodic() {
+		// if the elevator and wrist have been disabled because they are too close to the reef
+		if (robotContainer.closeToReef()) {
+			return;
+		}
 		// ensure elevator target is within bounds
 		double safeElevatorTarget = elevatorTarget;
 
