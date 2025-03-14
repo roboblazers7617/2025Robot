@@ -32,6 +32,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.AngularAcceleration;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 
 /**
@@ -700,6 +701,10 @@ public final class Constants {
 			 */
 			public static final List<Pose3d> TAG_POSES = new ArrayList<Pose3d>();
 			/**
+			 * A list of poses that defines where the physical reef is.
+			 */
+			public static final List<Pose2d> REEF_EDGE_POSES = new ArrayList<Pose2d>();
+			/**
 			 * Offset from the AprilTag from which coral scoring should happen.
 			 */
 			public static final Transform2d CORAL_SCORING_OFFSET = new Transform2d(Meters.of(0.5), Meters.of(0.33 / 2), Rotation2d.k180deg);
@@ -731,6 +736,11 @@ public final class Constants {
 			 * Poses from which the robot can score algae on the red alliance.
 			 */
 			public static final List<Pose2d> ALGAE_SCORING_POSES_RED = new ArrayList<Pose2d>();
+			/**
+			 * The minimum distance away from the {@link #REEF_EDGE_POSES reef zone} at which it is
+			 * safe to move the elevator.
+			 */
+			public static final Distance SAFE_ELEVATOR_DISTANCE = Meters.of(0.5);
 
 			static {
 				// Generate a list of tag poses.
@@ -768,6 +778,20 @@ public final class Constants {
 				// Generate a list of algae scoring poses for the other alliance.
 				ALGAE_SCORING_POSES_BLUE.forEach((pose) -> {
 					ALGAE_SCORING_POSES_RED.add(PoseUtil.flipPose(pose));
+				});
+
+				// Generate the reef zone pose list.
+				CORAL_SCORING_POSES_BLUE_LEFT.forEach((pose) -> {
+					REEF_EDGE_POSES.add(pose);
+				});
+				CORAL_SCORING_POSES_BLUE_RIGHT.forEach((pose) -> {
+					REEF_EDGE_POSES.add(pose);
+				});
+				CORAL_SCORING_POSES_RED_LEFT.forEach((pose) -> {
+					REEF_EDGE_POSES.add(pose);
+				});
+				CORAL_SCORING_POSES_RED_RIGHT.forEach((pose) -> {
+					REEF_EDGE_POSES.add(pose);
 				});
 			}
 		}
