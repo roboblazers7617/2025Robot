@@ -229,9 +229,8 @@ public class RobotContainer {
 		// .onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4));
 
 		// Left Bumper is on an or with the Y button above
-		operatorController.rightBumper().onTrue(setGamepieceModeCommand(GamepieceMode.ALGAE_MODE));
-		// Left Trigger is on an or with the B button above
-		operatorController.rightTrigger().onTrue(setGamepieceModeCommand(GamepieceMode.CORAL_MODE));
+		operatorController.rightBumper().and(isCoralModeTrigger).onTrue(setGamepieceModeCommand(GamepieceMode.ALGAE_MODE));
+		operatorController.rightBumper().and(isAlgaeModeTrigger).onTrue(setGamepieceModeCommand(GamepieceMode.CORAL_MODE));
 	}
 
 	public GamepieceMode getGamepieceMode() {
