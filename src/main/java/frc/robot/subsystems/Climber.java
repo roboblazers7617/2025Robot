@@ -33,6 +33,7 @@ public class Climber extends SubsystemBase {
 		climberMotor.configure(new SparkMaxConfig()
 				.idleMode(IdleMode.kBrake)
 				.inverted(true)
+				.smartCurrentLimit(40)
 				.apply(new EncoderConfig().positionConversionFactor(ClimberConstants.CLIMBER_GEAR_RATIO)), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
 		climberEncoder = climberMotor.getEncoder();
@@ -53,18 +54,22 @@ public class Climber extends SubsystemBase {
 		return Commands.runOnce(() -> {
 			disableRatchet();
 			climberMotor.set(ClimberConstants.RAISE_CLIMBER_SPEED);
-		}, this).andThen(Commands.waitUntil(() -> (climberEncoder.getPosition() >= ClimberConstants.CLIMBER_RAISED_POSITION))).andThen(() -> {
-			climberMotor.set(0);
-		}, this);
+		}, this)
+				.andThen(Commands.waitUntil(() -> (climberEncoder.getPosition() >= ClimberConstants.CLIMBER_RAISED_POSITION)))
+				.finallyDo(() -> {
+					climberMotor.set(0);
+				});
 	}
 
 	public Command LowerClimber() {
 		return Commands.runOnce(() -> {
 			enableRatchet();
 			climberMotor.set(ClimberConstants.LOWER_CLIMBER_SPEED);
-		}, this).andThen(Commands.waitUntil(() -> (climberEncoder.getPosition() <= ClimberConstants.CLIMBER_LOWERED_POSITION))).andThen(() -> {
-			climberMotor.set(0);
-		}, this);
+		}, this)
+				.andThen(Commands.waitUntil(() -> (climberEncoder.getPosition() <= ClimberConstants.CLIMBER_LOWERED_POSITION)))
+				.finallyDo(() -> {
+					climberMotor.set(0);
+				});
 	}
 
 	@Override
