@@ -28,9 +28,11 @@ import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.Constants.LoggingConstants;
+import frc.robot.Constants.PhysicalConstants;
 import frc.robot.commands.drivetrain.LockWheelsCommand;
 import frc.robot.util.Util;
 
+import static edu.wpi.first.units.Units.Kilograms;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
@@ -360,9 +362,11 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	/**
-	 * The primary method for controlling the drivebase. Takes a {@link Translation2d} and a rotation rate, and
-	 * calculates and commands module states accordingly. Can use either open-loop or closed-loop velocity control for
-	 * the wheel velocities. Also has field- and robot-relative modes, which affect how the translation vector is used.
+	 * The primary method for controlling the drivebase. Takes a {@link Translation2d} and a rotation
+	 * rate, and calculates and commands module states accordingly. Can use either open-loop or
+	 * closed-loop velocity control for the wheel velocities. Has field- and robot-relative modes,
+	 * which affect how the translation vector is used. Also limits the velocity so the robot isn't
+	 * tippy.
 	 *
 	 * @param translation
 	 *            {@link Translation2d} that is the commanded linear velocity of the robot, in meters per
@@ -375,11 +379,41 @@ public class Drivetrain extends SubsystemBase {
 	 *            relativity.
 	 * @param fieldRelative
 	 *            Drive mode. True for field-relative, false for robot-relative.
-	 * @see
-	 *      SwerveDrive#drive(Translation2d, double, boolean, boolean)
+	 * @see SwerveDrive#drive(Translation2d, double, boolean, boolean)
 	 */
 	public void drive(Translation2d translation, double rotation, boolean fieldRelative) {
+		// Limit velocity to prevent tippy
+		translation = SwerveMath.limitVelocity(translation, swerveDrive.getFieldVelocity(), swerveDrive.getPose(), DrivetrainConstants.VELOCITY_LOOP_TIME, PhysicalConstants.ROBOT_MASS.in(Kilograms), List.of(PhysicalConstants.CHASSIS), swerveDrive.swerveDriveConfiguration);
+
 		swerveDrive.drive(translation, rotation, fieldRelative, false); // Open loop is disabled since it shouldn't be used most of the time.
+	}
+
+	/**
+	 * Drive according to the chassis velocity. Velocity is limited as described in
+	 * {@link #drive(Translation2d, double, boolean)}.
+	 *
+	 * @param velocity
+	 *            Robot oriented {@link ChassisSpeeds}
+	 * @see #drive(Translation2d, double, boolean)
+	 */
+	public void drive(ChassisSpeeds velocity, boolean fieldRelative) {
+		Translation2d translation = SwerveController.getTranslation2d(velocity);
+		drive(translation, velocity.omegaRadiansPerSecond, fieldRelative);
+	}
+
+	/**
+	 * Drive the robot given a chassis velocity.
+	 *
+	 * @param velocity
+	 *            Velocity according to the field.
+	 * @return
+	 *         Command to run
+	 * @see #drive(ChassisSpeeds, Boolean)
+	 */
+	public Command driveCommand(Supplier<ChassisSpeeds> velocity, BooleanSupplier fieldRelative) {
+		return run(() -> {
+			drive(velocity.get(), fieldRelative.getAsBoolean());
+		});
 	}
 
 	/**
@@ -533,7 +567,7 @@ public class Drivetrain extends SubsystemBase {
 	 *         Command to run
 	 */
 	public Command driveToDistanceCommand(double distanceInMeters, double speedInMetersPerSecond) {
-		return run(() -> drive(new ChassisSpeeds(speedInMetersPerSecond, 0, 0)))
+		return run(() -> drive(new ChassisSpeeds(speedInMetersPerSecond, 0, 0), false))
 				.until(() -> swerveDrive.getPose().getTranslation().getDistance(Translation2d.kZero) > distanceInMeters);
 	}
 
@@ -578,45 +612,7 @@ public class Drivetrain extends SubsystemBase {
 			Translation2d scaledInputs = SwerveMath.scaleTranslation(new Translation2d(translationX.getAsDouble(), translationY.getAsDouble()), DrivetrainConstants.TRANSLATION_SCALE_NORMAL);
 
 			// Make the robot move
-			driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(scaledInputs.getX(), scaledInputs.getY(), headingX.getAsDouble(), headingY.getAsDouble(), swerveDrive.getOdometryHeading().getRadians(), swerveDrive.getMaximumChassisVelocity()));
-		});
-	}
-
-	/**
-	 * Drive according to the chassis robot oriented velocity.
-	 *
-	 * @param velocity
-	 *            Robot oriented {@link ChassisSpeeds}
-	 * @see
-	 *      SwerveDrive#drive(ChassisSpeeds)
-	 */
-	public void drive(ChassisSpeeds velocity) {
-		swerveDrive.drive(velocity);
-	}
-
-	/**
-	 * Drive the robot given a chassis field oriented velocity.
-	 *
-	 * @param velocity
-	 *            Velocity according to the field.
-	 * @see SwerveDrive#driveFieldOriented(ChassisSpeeds)
-	 */
-	public void driveFieldOriented(ChassisSpeeds velocity) {
-		swerveDrive.driveFieldOriented(velocity);
-	}
-
-	/**
-	 * Drive the robot given a chassis field oriented velocity.
-	 *
-	 * @param velocity
-	 *            Velocity according to the field.
-	 * @return
-	 *         Command to run
-	 * @see SwerveDrive#driveFieldOriented(ChassisSpeeds)
-	 */
-	public Command driveFieldOrientedCommand(Supplier<ChassisSpeeds> velocity) {
-		return run(() -> {
-			driveFieldOriented(velocity.get());
+			drive(swerveDrive.swerveController.getTargetSpeeds(scaledInputs.getX(), scaledInputs.getY(), headingX.getAsDouble(), headingY.getAsDouble(), swerveDrive.getOdometryHeading().getRadians(), swerveDrive.getMaximumChassisVelocity()), true);
 		});
 	}
 
