@@ -35,7 +35,7 @@ public class PoseUtil {
 	}
 
 	/**
-	 * Flips a transform across the Y axis.
+	 * Flips a transform across the X axis (inverts the Y axis).
 	 *
 	 * @param transform
 	 *            Transform to flip.
