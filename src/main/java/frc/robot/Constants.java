@@ -731,7 +731,7 @@ public final class Constants {
 			 */
 			public static final List<Pose3d> TAG_POSES = new ArrayList<Pose3d>();
 			/**
-			 * Offset from the AprilTag from which coral scoring should happen.
+			 * Offset from the AprilTag from which coral scoring should happen on the right side.
 			 */
 			public static final Transform2d CORAL_SCORING_OFFSET = new Transform2d(Meters.of(0.5), Meters.of(0.33 / 2), Rotation2d.k180deg);
 			/**
@@ -778,7 +778,7 @@ public final class Constants {
 					Pose2d pose2d = pose.toPose2d();
 					// Regular side
 					CORAL_SCORING_POSES_BLUE_RIGHT.add(pose2d.transformBy(CORAL_SCORING_OFFSET));
-					// Flipped side
+					// Mirrored side
 					CORAL_SCORING_POSES_BLUE_LEFT.add(pose2d.transformBy(PoseUtil.flipTransformY(CORAL_SCORING_OFFSET)));
 				});
 
