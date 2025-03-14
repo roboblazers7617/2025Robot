@@ -193,7 +193,7 @@ public class RobotContainer {
 		operatorController.x()
 				.and(() -> gamepieceMode == GamepieceMode.CORAL_MODE) // temp
 				.onTrue(elevator.SetPositionCommand(ArmPosition.STOW)
-						.alongWith(endEffector.StopIntakeMotor()));/* .alongWith(endEffector.CoralReset())); */
+						.alongWith(endEffector.StopIntakeMotor()));
 		operatorController.y()
 				.or(operatorController.leftBumper())
 				.and(isAlgaeModeTrigger)

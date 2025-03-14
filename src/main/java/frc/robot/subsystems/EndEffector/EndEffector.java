@@ -74,10 +74,6 @@ public class EndEffector extends SubsystemBase {
 	@Override
 	public void periodic() {
 		speed = endEffectEncoder.getVelocity();
-		// if (algae = true && speed <= -0.1 && speed >= -0.2) {
-		// StartMotorCommand(() -> EndEffectorConstants.ALGAE_HOLD_SPEED);
-		// System.out.println("uh dang");
-		// }
 	}
 
 	public boolean isHoldingAlgae() {
@@ -155,8 +151,8 @@ public class EndEffector extends SubsystemBase {
 	public Command AlgaeIntake() {
 		return StartMotorCommand(() -> EndEffectorConstants.ALGAE_INTAKE_SPEED)
 				.andThen(Commands.waitUntil(() -> !isHoldingAlgaeInput.get()))
-				// .andThen(StartMotorCommand(() -> EndEffectorConstants.ALGAE_HOLD_SPEED))
-				// .andThen(Commands.waitSeconds(20))// temp to allow time to test
+				.andThen(StartMotorCommand(() -> EndEffectorConstants.ALGAE_HOLD_SPEED))
+				.andThen(Commands.waitSeconds(20))// temp to allow time to test
 				.finallyDo(this::stopMotor);
 	}
 
