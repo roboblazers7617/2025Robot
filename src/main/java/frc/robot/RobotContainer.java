@@ -253,6 +253,17 @@ public class RobotContainer {
 	}
 
 	/**
+	 * Get the position of the {@link #elevator} in meters.
+	 *
+	 * @return
+	 *         The position of the {@link #elevator} in meters.
+	 * @see Elevator#getElevatorPosition()
+	 */
+	public double getElevatorPosition() {
+		return elevator.getElevatorPosition();
+	}
+
+	/**
 	 * Use this to pass the autonomous command to the main {@link Robot} class.
 	 *
 	 * @return the command to run in autonomous
