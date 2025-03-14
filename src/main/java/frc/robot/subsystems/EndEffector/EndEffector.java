@@ -142,6 +142,7 @@ public class EndEffector extends SubsystemBase {
 	public Command CoralOuttake() {
 		return StartMotorCommand(() -> EndEffectorConstants.CORAL_OUTAKE_SPEED)
 				.andThen(Commands.waitUntil(() -> isNotHoldingCoralAdjuster.get()))
+				.alongWith(Commands.waitUntil(() -> isNotHoldingCoral.get()))
 				.finallyDo(this::stopMotor);
 	}
 

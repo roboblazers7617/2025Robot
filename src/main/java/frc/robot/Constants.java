@@ -603,7 +603,7 @@ public final class Constants {
 		/**
 		 * Intake motor speed for the coral to be behind secondary beam break for L4 scoring
 		 */
-		public static final double CORAL_BACKUP_SPEED = -0.02;
+		public static final double CORAL_BACKUP_SPEED = -0.1;
 		/**
 		 * Intake motor speed for the coral to return to the secondary beam break if L4 scoring is canceled.
 		 */
