@@ -28,12 +28,14 @@ public class Auto {
 
 			final boolean enableFeedforward = false;
 			// Configure AutoBuilder last
-			AutoBuilder.configure(drivetrain::getPose,
+			AutoBuilder.configure(
 					// Robot pose supplier
-					drivetrain::resetOdometry,
+					drivetrain::getPose,
 					// Method to reset odometry (will be called if your auto has a starting pose)
-					drivetrain::getRobotVelocity,
+					drivetrain::resetOdometry,
 					// ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+					drivetrain::getRobotVelocity,
+					// Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
 					(speedsRobotRelative, moduleFeedForwards) -> {
 						if (enableFeedforward) {
 							drivetrain.getSwerveDrive().drive(speedsRobotRelative, drivetrain.getSwerveDrive().kinematics.toSwerveModuleStates(speedsRobotRelative), moduleFeedForwards.linearForces());
@@ -41,23 +43,21 @@ public class Auto {
 							drivetrain.getSwerveDrive().setChassisSpeeds(speedsRobotRelative);
 						}
 					},
-					// Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-					new PPHolonomicDriveController(
-							// PPHolonomicController is the built in path following controller for holonomic drive trains
-							AutoConstants.TRANSLATION_PID_CONSTANTS, // Translation PID constants
+					// PPHolonomicController is the built in path following controller for holonomic drive trains
+					new PPHolonomicDriveController(AutoConstants.TRANSLATION_PID_CONSTANTS, // Translation PID constants
 							AutoConstants.ROTATION_PID_CONSTANTS // Rotation PID constants
-					), config,
+					),
 					// The robot configuration
+					config,
+					// Boolean supplier that controls when the path will be mirrored for the red alliance
+					// This will flip the path being followed to the red side of the field.
+					// THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 					() -> {
-						// Boolean supplier that controls when the path will be mirrored for the red alliance
-						// This will flip the path being followed to the red side of the field.
-						// THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
 						return alliance == DriverStation.Alliance.Red;
 						// return true;
-					}, drivetrain
-			// Reference to this subsystem to set requirements
-			);
+					},
+					// Reference to this subsystem to set requirements
+					drivetrain);
 		} catch (Exception e) {
 			// Handle exception as needed
 			e.printStackTrace();
