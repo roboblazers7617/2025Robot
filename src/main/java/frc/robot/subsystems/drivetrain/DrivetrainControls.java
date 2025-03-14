@@ -91,7 +91,8 @@ public class DrivetrainControls {
 	 */
 	private SwerveInputStream driveGeneric(CommandXboxController controller) {
 		return SwerveInputStream.of(drivetrain.getSwerveDrive(), () -> (-1 * controller.getLeftY()), () -> (-1 * controller.getLeftX()))
-				.deadband(OperatorConstants.DEADBAND);
+				.deadband(OperatorConstants.DEADBAND)
+				.allianceRelativeControl(true);
 	}
 
 	/**
@@ -104,8 +105,7 @@ public class DrivetrainControls {
 	 */
 	public SwerveInputStream driveAngularVelocity(CommandXboxController controller) {
 		return driveGeneric(controller)
-				.withControllerRotationAxis(() -> (-1 * controller.getRightX()))
-				.allianceRelativeControl(true);
+				.withControllerRotationAxis(() -> (-1 * controller.getRightX()));
 	}
 
 	/**
