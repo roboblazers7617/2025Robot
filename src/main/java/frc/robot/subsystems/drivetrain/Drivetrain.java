@@ -29,6 +29,7 @@ import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.Constants.LoggingConstants;
 import frc.robot.commands.drivetrain.LockWheelsCommand;
+import frc.robot.util.BiAlliancePose2d;
 import frc.robot.util.Util;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -471,8 +472,22 @@ public class Drivetrain extends SubsystemBase {
 	 * @return
 	 *         {@link Command} to run.
 	 */
-	public Command driveToNearestPoseCommand(List<Pose2d> poseList) {
-		return driveToPoseCommand(() -> getPose().nearest(poseList));
+	public Command driveToNearestPoseCommand(Supplier<List<Pose2d>> poseList) {
+		return driveToPoseCommand(() -> getPose().nearest(poseList.get()));
+	}
+
+	/**
+	 * Drives to the nearest pose for the current alliance out of a list.
+	 *
+	 * @param poseList
+	 *            List of poses to choose from.
+	 * @return
+	 *         {@link Command} to run.
+	 */
+	public Command driveToNearestPoseByAllianceCommand(List<BiAlliancePose2d> poseList) {
+		return driveToNearestPoseCommand(() -> poseList.stream()
+				.map((pose) -> pose.getPoseByAlliance())
+				.toList());
 	}
 
 	/**

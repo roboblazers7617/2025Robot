@@ -10,7 +10,6 @@ import frc.robot.Constants.DashboardConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.LoggingConstants;
 import frc.robot.subsystems.EndEffector.EndEffector;
-import frc.robot.util.Util;
 import frc.robot.util.Elastic;
 import frc.robot.Constants.OperatorConstants.GamepieceMode;
 import frc.robot.Constants.ArmPosition;
@@ -150,13 +149,13 @@ public class RobotContainer {
 		// Scoring pose pathfinding
 		driverController.leftTrigger()
 				.and(isAlgaeModeTrigger)
-				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.ALGAE_SCORING_POSES_RED), drivetrain.driveToNearestPoseCommand(ScoringPoses.ALGAE_SCORING_POSES_BLUE), () -> Util.isRedAlliance()));
+				.whileTrue(drivetrain.driveToNearestPoseByAllianceCommand(ScoringPoses.ALGAE_SCORING_POSES));
 		driverController.leftTrigger()
 				.and(isCoralModeTrigger)
-				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_RED_LEFT), drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_BLUE_LEFT), () -> Util.isRedAlliance()));
+				.whileTrue(drivetrain.driveToNearestPoseByAllianceCommand(ScoringPoses.CORAL_SCORING_POSES_LEFT));
 		driverController.rightTrigger()
 				.and(isCoralModeTrigger)
-				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_RED_RIGHT), drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_BLUE_RIGHT), () -> Util.isRedAlliance()));
+				.whileTrue(drivetrain.driveToNearestPoseByAllianceCommand(ScoringPoses.CORAL_SCORING_POSES_RIGHT));
 
 		driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
 		driverController.back().onTrue(StubbedCommands.Drivetrain.DisableVision());
