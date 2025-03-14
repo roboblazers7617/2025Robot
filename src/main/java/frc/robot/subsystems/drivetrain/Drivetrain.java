@@ -398,7 +398,7 @@ public class Drivetrain extends SubsystemBase {
 	 *            Velocity according to the field.
 	 * @return
 	 *         Command to run
-	 * @see #drive(ChassisSpeeds, Boolean)
+	 * @see #drive(ChassisSpeeds, boolean)
 	 */
 	public Command driveCommand(Supplier<ChassisSpeeds> velocity, BooleanSupplier fieldRelative) {
 		return run(() -> {
