@@ -17,11 +17,13 @@ import frc.robot.Constants.ArmPosition;
 import frc.robot.commands.StubbedCommands;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainControls;
+import frc.robot.subsystems.Auto;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.IntakeRamp.Ramp;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.MathUtil;
@@ -96,6 +98,9 @@ public class RobotContainer {
 			Elastic.selectTab(DashboardConstants.AUTO_TAB_NAME);
 		}
 
+		// Configure AutoBuilder if not already configured
+		Auto.setupPathPlannerFailsafe(drivetrain);
+
 		elevator.elevatorInit();
 	}
 
@@ -117,6 +122,9 @@ public class RobotContainer {
 		// else {
 		// gamepieceMode = GamepieceMode.CORAL_MODE;
 		// }
+
+		// Configure AutoBuilder if not already configured
+		Auto.setupPathPlannerFailsafe(drivetrain);
 
 		elevator.elevatorInit();
 	}
