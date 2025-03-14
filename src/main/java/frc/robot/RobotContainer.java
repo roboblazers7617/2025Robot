@@ -158,10 +158,10 @@ public class RobotContainer {
 		driverController.rightTrigger()
 				.and(isCoralModeTrigger)
 				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_RED_RIGHT), drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_BLUE_RIGHT), () -> Util.isRedAlliance()));
-		driverController.leftBumper()
+		driverController.povLeft()
 				.and(isCoralModeTrigger)
 				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_L4_RED_LEFT), drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_L4_BLUE_LEFT), () -> Util.isRedAlliance()));
-		driverController.rightBumper()
+		driverController.povRight()
 				.and(isCoralModeTrigger)
 				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_L4_RED_RIGHT), drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_L4_BLUE_RIGHT), () -> Util.isRedAlliance()));
 
