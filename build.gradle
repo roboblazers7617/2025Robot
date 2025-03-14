@@ -117,6 +117,7 @@ gversion {
 // Build javadoc
 tasks.withType(Javadoc) {
 	exclude('**/generated/**')
+	options.linkSource()
 	options.tags('apiNote:a:API Note:')
 	options.tags('implSpec:a:Implementation Requirements:')
 	options.tags('implNote:a:Implementation Note:')
