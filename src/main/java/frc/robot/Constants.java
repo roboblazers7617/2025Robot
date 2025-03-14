@@ -647,12 +647,10 @@ public final class Constants {
 		/**
 		 * Ramp gear ratio.
 		 */
-		// TODO: set proper gear ratio
 		public static final double RAMP_MOTOR_GEAR_RATIO = (1.0 / 60.0);
 		/**
 		 * Ramp CAN ID.
 		 */
-		// TODO: set ramp CAN_ID once assigned
 		public static final int RAMP_MOTOR_CAN_ID = 32;
 		/**
 		 * PID config for the motor controller.
@@ -666,16 +664,19 @@ public final class Constants {
 		 * Ramp motor's current limit.
 		 */
 		public static final int RAMP_MOTOR_CURRENT_LIMIT = 20;
-		/*
-		 * I Belive we used this to make the numbers apear correctly in the dirvers station?
-		 * May be a usesless holdover from arm code test though.
+		/**
+		 * Used for controlling the position of the motor correctly.
+		 * Used to display the correct degree values in software.
 		 */
 		public static final double POSITION_CONVERSION_FACTOR = RAMP_MOTOR_GEAR_RATIO * 360.0;
 		/**
-		 * Ramp Stow Position.
+		 * Ramp stow position.
 		 */
-		// TODO: Update with final value
 		public static final double RAMP_STOW_POSITION = 75.0;
+		/**
+		 * Ramp deploy position.
+		 */
+		public static final double RAMP_DEPLOY_POSITION = 0.0;
 	}
 
 	/**

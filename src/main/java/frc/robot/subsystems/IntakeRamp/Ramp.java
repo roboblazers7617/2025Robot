@@ -45,7 +45,12 @@ public class Ramp extends SubsystemBase {
 		encoderVal = rampEncoder.getPosition();
 	}
 
-	private void MoveToPosition(Double position) {
+	/**
+	 * Sends position info to the Ramp motor for it to move to.
+	 *
+	 * @param position
+	 */
+	private void moveToPosition(Double position) {
 		rampController.setReference(position, ControlType.kPosition);
 	}
 
@@ -54,14 +59,26 @@ public class Ramp extends SubsystemBase {
 	}
 
 	/**
-	 * Starts the Ramp motor.
+	 * Starts the Ramp motor to retract.
 	 *
 	 * @return
-	 *         Command to run.
+	 *         Command to retract.
 	 */
 	public Command RampRetract() {
 		return this.runOnce(() -> {
-			MoveToPosition(RampConstants.RAMP_STOW_POSITION);
+			moveToPosition(RampConstants.RAMP_STOW_POSITION);
+		});
+	}
+
+	/**
+	 * Starts the Ramp motor to deploy
+	 *
+	 * @return
+	 *         Command to deploy.
+	 */
+	public Command RampDeploy() {
+		return this.runOnce(() -> {
+			moveToPosition(RampConstants.RAMP_DEPLOY_POSITION);
 		});
 	}
 }
