@@ -6,9 +6,11 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.DegreesPerSecondPerSecond;
 import static edu.wpi.first.units.Units.FeetPerSecond;
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.Pounds;
 
 import java.io.File;
 import java.util.List;
@@ -31,8 +33,10 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.LinearAcceleration;
+import edu.wpi.first.units.measure.Mass;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -43,6 +47,26 @@ import edu.wpi.first.units.measure.LinearAcceleration;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+	/**
+	 * Constants that contain physical information about the robot.
+	 */
+	public static class PhysicalConstants {
+		/**
+		 * Mass of the robot.
+		 */
+		// TODO: Need to update with actual weight of robot
+		public static final Mass ROBOT_MASS = Pounds.of(115);
+		// TODO: Need to udpate with actual COGs
+		/**
+		 * The robot's COG with the elevator in the minimum position.
+		 */
+		public static final Translation3d COG_ELEVATOR_DOWN = new Translation3d(0, 0, Inches.of(8).in(Meters));
+		/**
+		 * The robot's COG with the elevator in the {@link ElevatorConstants#MAX_POSITION maximum position}.
+		 */
+		public static final Translation3d COG_ELEVATOR_UP = new Translation3d(0, 0, Inches.of(15).in(Meters));
+	}
+
 	/**
 	 * Constants used by the {@link frc.robot.subsystems.drivetrain.Drivetrain}.
 	 */
@@ -87,6 +111,10 @@ public final class Constants {
 		 * Enables {@link swervelib.parser.SwerveModuleConfiguration#useCosineCompensator cosine compensation}.
 		 */
 		public static final boolean ENABLE_COSINE_COMPENSATION = false;
+		/**
+		 * The time it takes to update the velocity in seconds.
+		 */
+		public static final double VELOCITY_LOOP_TIME = 0.13; // 20ms + 110ms SparkMax velocity lag
 
 		/**
 		 * Angular velocity skew correction configuration.

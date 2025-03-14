@@ -77,7 +77,7 @@ public class DrivetrainControls {
 	private Command driveInputStreamScaledCommand(SwerveInputStream inputStream) {
 		return drivetrain.run(() -> {
 			inputStream.scaleTranslation(speedMultiplier);
-			drivetrain.driveFieldOriented(inputStream.get());
+			drivetrain.drive(inputStream.get(), true);
 		});
 	}
 

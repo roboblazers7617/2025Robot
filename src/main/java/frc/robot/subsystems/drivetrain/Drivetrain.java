@@ -24,13 +24,16 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.Constants.LoggingConstants;
+import frc.robot.Constants.PhysicalConstants;
 import frc.robot.commands.drivetrain.LockWheelsCommand;
 import frc.robot.util.Util;
 
+import static edu.wpi.first.units.Units.Kilograms;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
@@ -41,6 +44,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.json.simple.parser.ParseException;
@@ -57,6 +61,10 @@ import swervelib.telemetry.SwerveDriveTelemetry;
  */
 public class Drivetrain extends SubsystemBase {
 	/**
+	 * The robot's {@link RobotContainer}. Used to query the state of other subsystems.
+	 */
+	private final RobotContainer robotContainer;
+	/**
 	 * Swerve drive object.
 	 */
 	private final SwerveDrive swerveDrive;
@@ -68,10 +76,14 @@ public class Drivetrain extends SubsystemBase {
 	/**
 	 * Initialize {@link SwerveDrive} with the directory provided.
 	 *
+	 * @param robotContainer
+	 *            The robot's {@link RobotContainer}.
 	 * @param directory
 	 *            Directory of swerve drive config files.
 	 */
-	public Drivetrain(File directory) {
+	public Drivetrain(RobotContainer robotContainer, File directory) {
+		this.robotContainer = robotContainer;
+
 		// Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
 		if (LoggingConstants.DEBUG_MODE) {
 			SwerveDriveTelemetry.verbosity = DrivetrainConstants.TELEMETRY_VERBOSITY_DEBUG;
@@ -131,8 +143,7 @@ public class Drivetrain extends SubsystemBase {
 	 *
 	 * @return
 	 *         {@link SwerveController} from the {@link SwerveDrive}.
-	 * @see
-	 *      SwerveDrive#swerveController
+	 * @see SwerveDrive#swerveController
 	 */
 	public SwerveController getSwerveController() {
 		return swerveDrive.swerveController;
@@ -143,8 +154,7 @@ public class Drivetrain extends SubsystemBase {
 	 *
 	 * @return
 	 *         The {@link SwerveDriveConfiguration} for the current drive.
-	 * @see
-	 *      SwerveDrive#swerveDriveConfiguration
+	 * @see SwerveDrive#swerveDriveConfiguration
 	 */
 	public SwerveDriveConfiguration getSwerveDriveConfiguration() {
 		return swerveDrive.swerveDriveConfiguration;
@@ -155,8 +165,7 @@ public class Drivetrain extends SubsystemBase {
 	 *
 	 * @return
 	 *         {@link SwerveDriveKinematics} of the swerve drive.
-	 * @see
-	 *      SwerveDrive#kinematics
+	 * @see SwerveDrive#kinematics
 	 */
 	public SwerveDriveKinematics getKinematics() {
 		return swerveDrive.kinematics;
@@ -179,8 +188,7 @@ public class Drivetrain extends SubsystemBase {
 	 *
 	 * @param initialHolonomicPose
 	 *            The pose to set the odometry to
-	 * @see
-	 *      SwerveDrive#resetOdometry(Pose2d)
+	 * @see SwerveDrive#resetOdometry(Pose2d)
 	 */
 	public void resetOdometry(Pose2d initialHolonomicPose) {
 		swerveDrive.resetOdometry(initialHolonomicPose);
@@ -192,8 +200,7 @@ public class Drivetrain extends SubsystemBase {
 	 *
 	 * @return
 	 *         The robot's pose
-	 * @see
-	 *      SwerveDrive#getPose()
+	 * @see SwerveDrive#getPose()
 	 */
 	public Pose2d getPose() {
 		return swerveDrive.getPose();
@@ -235,8 +242,7 @@ public class Drivetrain extends SubsystemBase {
 	 *
 	 * @param trajectory
 	 *            The trajectory to post.
-	 * @see
-	 *      SwerveDrive#postTrajectory(Trajectory)
+	 * @see SwerveDrive#postTrajectory(Trajectory)
 	 */
 	public void postTrajectory(Trajectory trajectory) {
 		swerveDrive.postTrajectory(trajectory);
@@ -283,8 +289,7 @@ public class Drivetrain extends SubsystemBase {
 	 *
 	 * @param brake
 	 *            True to set motors to brake mode, false for coast.
-	 * @see
-	 *      SwerveDrive#setMotorIdleMode(boolean)
+	 * @see SwerveDrive#setMotorIdleMode(boolean)
 	 */
 	public void setMotorBrake(boolean brake) {
 		swerveDrive.setMotorIdleMode(brake);
@@ -306,8 +311,7 @@ public class Drivetrain extends SubsystemBase {
 	 *
 	 * @return
 	 *         A ChassisSpeeds object of the current field-relative velocity
-	 * @see
-	 *      SwerveDrive#getFieldVelocity()
+	 * @see SwerveDrive#getFieldVelocity()
 	 */
 	public ChassisSpeeds getFieldVelocity() {
 		return swerveDrive.getFieldVelocity();
@@ -318,8 +322,7 @@ public class Drivetrain extends SubsystemBase {
 	 *
 	 * @return
 	 *         A {@link ChassisSpeeds} object of the current velocity
-	 * @see
-	 *      SwerveDrive#getRobotVelocity()
+	 * @see SwerveDrive#getRobotVelocity()
 	 */
 	public ChassisSpeeds getRobotVelocity() {
 		return swerveDrive.getRobotVelocity();
@@ -328,8 +331,7 @@ public class Drivetrain extends SubsystemBase {
 	/**
 	 * Lock the swerve drive to prevent it from moving.
 	 *
-	 * @see
-	 *      SwerveDrive#lockPose()
+	 * @see SwerveDrive#lockPose()
 	 */
 	public void lock() {
 		swerveDrive.lockPose();
@@ -342,7 +344,6 @@ public class Drivetrain extends SubsystemBase {
 	 *         A new {@link LockWheelsCommand}.
 	 * @see LockWheelsCommand
 	 */
-	// TODO: #113 (Max) Only putting in one comment for entire class, but all Commands should start with a capital letter per coding standards. Please update.
 	public Command lockCommand() {
 		return new LockWheelsCommand(this);
 	}
@@ -360,9 +361,11 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	/**
-	 * The primary method for controlling the drivebase. Takes a {@link Translation2d} and a rotation rate, and
-	 * calculates and commands module states accordingly. Can use either open-loop or closed-loop velocity control for
-	 * the wheel velocities. Also has field- and robot-relative modes, which affect how the translation vector is used.
+	 * The primary method for controlling the drivebase. Takes a {@link Translation2d} and a rotation
+	 * rate, and calculates and commands module states accordingly. Can use either open-loop or
+	 * closed-loop velocity control for the wheel velocities. Has field- and robot-relative modes,
+	 * which affect how the translation vector is used. Also limits the velocity so the robot isn't
+	 * tippy.
 	 *
 	 * @param translation
 	 *            {@link Translation2d} that is the commanded linear velocity of the robot, in meters per
@@ -375,11 +378,41 @@ public class Drivetrain extends SubsystemBase {
 	 *            relativity.
 	 * @param fieldRelative
 	 *            Drive mode. True for field-relative, false for robot-relative.
-	 * @see
-	 *      SwerveDrive#drive(Translation2d, double, boolean, boolean)
+	 * @see SwerveDrive#drive(Translation2d, double, boolean, boolean)
 	 */
 	public void drive(Translation2d translation, double rotation, boolean fieldRelative) {
+		// Limit velocity to prevent tippy
+		translation = SwerveMath.limitVelocity(translation, swerveDrive.getFieldVelocity(), swerveDrive.getPose(), DrivetrainConstants.VELOCITY_LOOP_TIME, PhysicalConstants.ROBOT_MASS.in(Kilograms), List.of(robotContainer.getChassis()), swerveDrive.swerveDriveConfiguration);
+
 		swerveDrive.drive(translation, rotation, fieldRelative, false); // Open loop is disabled since it shouldn't be used most of the time.
+	}
+
+	/**
+	 * Drive according to the chassis velocity. Velocity is limited as described in
+	 * {@link #drive(Translation2d, double, boolean)}.
+	 *
+	 * @param velocity
+	 *            Robot oriented {@link ChassisSpeeds}
+	 * @see #drive(Translation2d, double, boolean)
+	 */
+	public void drive(ChassisSpeeds velocity, boolean fieldRelative) {
+		Translation2d translation = SwerveController.getTranslation2d(velocity);
+		drive(translation, velocity.omegaRadiansPerSecond, fieldRelative);
+	}
+
+	/**
+	 * Drive the robot given a chassis velocity.
+	 *
+	 * @param velocity
+	 *            Velocity according to the field.
+	 * @return
+	 *         Command to run
+	 * @see #drive(ChassisSpeeds, boolean)
+	 */
+	public Command driveCommand(Supplier<ChassisSpeeds> velocity, BooleanSupplier fieldRelative) {
+		return run(() -> {
+			drive(velocity.get(), fieldRelative.getAsBoolean());
+		});
 	}
 
 	/**
@@ -508,8 +541,7 @@ public class Drivetrain extends SubsystemBase {
 	 *            Field-Relative {@link ChassisSpeeds}
 	 * @return
 	 *         Command to drive the robot using the setpoint generator.
-	 * @see
-	 *      #driveWithSetpointGeneratorCommand(Supplier)
+	 * @see #driveWithSetpointGeneratorCommand(Supplier)
 	 */
 	public Command driveWithSetpointGeneratorFieldRelativeCommand(Supplier<ChassisSpeeds> fieldRelativeSpeeds) {
 		try {
@@ -533,7 +565,7 @@ public class Drivetrain extends SubsystemBase {
 	 *         Command to run
 	 */
 	public Command driveToDistanceCommand(double distanceInMeters, double speedInMetersPerSecond) {
-		return run(() -> drive(new ChassisSpeeds(speedInMetersPerSecond, 0, 0)))
+		return run(() -> drive(new ChassisSpeeds(speedInMetersPerSecond, 0, 0), false))
 				.until(() -> swerveDrive.getPose().getTranslation().getDistance(Translation2d.kZero) > distanceInMeters);
 	}
 
@@ -548,8 +580,7 @@ public class Drivetrain extends SubsystemBase {
 	 *            Angular velocity of the robot to set. Cubed for smoother controls.
 	 * @return
 	 *         Command to run
-	 * @see
-	 *      SwerveDrive#drive(Translation2d, double, boolean, boolean)
+	 * @see SwerveDrive#drive(Translation2d, double, boolean, boolean)
 	 */
 	public Command driveAngularCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX) {
 		return run(() -> {
@@ -578,45 +609,7 @@ public class Drivetrain extends SubsystemBase {
 			Translation2d scaledInputs = SwerveMath.scaleTranslation(new Translation2d(translationX.getAsDouble(), translationY.getAsDouble()), DrivetrainConstants.TRANSLATION_SCALE_NORMAL);
 
 			// Make the robot move
-			driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(scaledInputs.getX(), scaledInputs.getY(), headingX.getAsDouble(), headingY.getAsDouble(), swerveDrive.getOdometryHeading().getRadians(), swerveDrive.getMaximumChassisVelocity()));
-		});
-	}
-
-	/**
-	 * Drive according to the chassis robot oriented velocity.
-	 *
-	 * @param velocity
-	 *            Robot oriented {@link ChassisSpeeds}
-	 * @see
-	 *      SwerveDrive#drive(ChassisSpeeds)
-	 */
-	public void drive(ChassisSpeeds velocity) {
-		swerveDrive.drive(velocity);
-	}
-
-	/**
-	 * Drive the robot given a chassis field oriented velocity.
-	 *
-	 * @param velocity
-	 *            Velocity according to the field.
-	 * @see SwerveDrive#driveFieldOriented(ChassisSpeeds)
-	 */
-	public void driveFieldOriented(ChassisSpeeds velocity) {
-		swerveDrive.driveFieldOriented(velocity);
-	}
-
-	/**
-	 * Drive the robot given a chassis field oriented velocity.
-	 *
-	 * @param velocity
-	 *            Velocity according to the field.
-	 * @return
-	 *         Command to run
-	 * @see SwerveDrive#driveFieldOriented(ChassisSpeeds)
-	 */
-	public Command driveFieldOrientedCommand(Supplier<ChassisSpeeds> velocity) {
-		return run(() -> {
-			driveFieldOriented(velocity.get());
+			drive(swerveDrive.swerveController.getTargetSpeeds(scaledInputs.getX(), scaledInputs.getY(), headingX.getAsDouble(), headingY.getAsDouble(), swerveDrive.getOdometryHeading().getRadians(), swerveDrive.getMaximumChassisVelocity()), true);
 		});
 	}
 
@@ -625,8 +618,7 @@ public class Drivetrain extends SubsystemBase {
 	 *
 	 * @param chassisSpeeds
 	 *            Chassis Speeds to set.
-	 * @see
-	 *      SwerveDrive#setChassisSpeeds(ChassisSpeeds)
+	 * @see SwerveDrive#setChassisSpeeds(ChassisSpeeds)
 	 */
 	public void setChassisSpeeds(ChassisSpeeds chassisSpeeds) {
 		swerveDrive.setChassisSpeeds(chassisSpeeds);
