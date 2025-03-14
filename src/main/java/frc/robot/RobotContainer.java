@@ -166,7 +166,7 @@ public class RobotContainer {
 				.and(isCoralModeTrigger)
 				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_RED_RIGHT), drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_BLUE_RIGHT), () -> Util.isRedAlliance()));
 
-		driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
+		driverController.start().onTrue(drivetrain.zeroGyroWithAllianceCommand());
 		driverController.back().onTrue(StubbedCommands.Drivetrain.DisableVision());
 	}
 

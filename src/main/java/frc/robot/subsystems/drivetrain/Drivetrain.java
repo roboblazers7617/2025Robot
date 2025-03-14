@@ -245,6 +245,8 @@ public class Drivetrain extends SubsystemBase {
 	/**
 	 * Resets the gyro angle to zero and resets odometry to the same position, but facing toward 0.
 	 *
+	 * @apiNote
+	 *          The resulting rotation will be flipped 180 degrees from what is expected for alliance-relative when run on the Red alliance.
 	 * @see SwerveDrive#zeroGyro()
 	 */
 	public void zeroGyro() {
@@ -254,6 +256,8 @@ public class Drivetrain extends SubsystemBase {
 	/**
 	 * Resets the gyro angle to zero and resets odometry to the same position, but facing toward 0.
 	 *
+	 * @apiNote
+	 *          The resulting rotation will be flipped 180 degrees from what is expected for alliance-relative when run on the Red alliance.
 	 * @see #zeroGyro()
 	 */
 	public Command zeroGyroCommand() {
@@ -264,11 +268,9 @@ public class Drivetrain extends SubsystemBase {
 	/**
 	 * This will zero (calibrate) the robot to assume the current position is facing forward
 	 * <p>
-	 * If red alliance rotate the robot 180 after the drviebase zero command
+	 * If on the Red alliance, it rotates the robot 180 degrees after the drivebase zero command to make it alliance-relative.
 	 */
 	public void zeroGyroWithAlliance() {
-		// TODO: (Max) What happens if this is called more than once? Seems like there needs to be logic that it
-		// is only called under certain circumstances.
 		if (Util.isRedAlliance()) {
 			zeroGyro();
 			// Set the pose 180 degrees
@@ -276,6 +278,18 @@ public class Drivetrain extends SubsystemBase {
 		} else {
 			zeroGyro();
 		}
+	}
+
+	/**
+	 * Resets the gyro angle to zero and resets odometry to the same position, but facing toward 0.
+	 * <p>
+	 * If on the Red alliance, it rotates the robot 180 degrees after the drivebase zero command to make it alliance-relative.
+	 *
+	 * @see #zeroGyroWithAlliance()
+	 */
+	public Command zeroGyroWithAllianceCommand() {
+		return Commands.runOnce(() -> zeroGyroWithAlliance(), this)
+				.ignoringDisable(true);
 	}
 
 	/**
