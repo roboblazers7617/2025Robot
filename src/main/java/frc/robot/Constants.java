@@ -290,12 +290,12 @@ public final class Constants {
 		// 80:1 gear box and diameter of spool is approx 1.59 inches and spools 5 inches
 		public static final double CLIMBER_GEAR_RATIO = 5.0 / 80.0;
 		public static final int SERVO_PWM_PORT = 0;
-		public static final double SERVO_ENABLED_ANGLE = 0;
-		public static final double SERVO_DISABLED_ANGLE = 0;
-		public static final double RAISE_CLIMBER_SPEED = 0;
-		public static final double CLIMBER_RAISED_POSITION = 20.0;
-		public static final double LOWER_CLIMBER_SPEED = 0;
-		public static final double CLIMBER_LOWERED_POSITION = 0.0;
+		public static final double SERVO_ENABLED_ANGLE = 180;
+		public static final double SERVO_DISABLED_ANGLE = 86;
+		public static final double RAISE_CLIMBER_SPEED = 0.7;
+		public static final double CLIMBER_RAISED_POSITION = 18.0;
+		public static final double LOWER_CLIMBER_SPEED = -0.7;
+		public static final double CLIMBER_LOWERED_POSITION = 0.0;// 0.0;
 	}
 
 	// wrist is 3:1
@@ -670,7 +670,7 @@ public final class Constants {
 		/**
 		 * Ramp stow position.
 		 */
-		public static final double RAMP_STOW_POSITION = 75.0;
+		public static final double RAMP_STOW_POSITION = 92.0;
 		/**
 		 * Ramp deploy position.
 		 */
