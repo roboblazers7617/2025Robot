@@ -232,9 +232,9 @@ public class RobotContainer {
 		operatorController.povUp()
 				.and(isAlgaeModeTrigger)
 				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_ALGAE_LEVEL_3));
-		// operatorController.povUp()
-		// .and(isCoralModeTrigger)
-		// .onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4));
+		operatorController.povUp()
+				.and(isCoralModeTrigger)
+				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4));
 
 		// Left Bumper is on an or with the Y button above
 		operatorController.rightBumper().onTrue(toggleGamepieceModeCommand());
