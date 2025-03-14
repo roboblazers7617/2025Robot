@@ -237,17 +237,33 @@ public class RobotContainer {
 		// .onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4));
 
 		// Left Bumper is on an or with the Y button above
-		operatorController.rightBumper().and(isCoralModeTrigger).onTrue(setGamepieceModeCommand(GamepieceMode.ALGAE_MODE));
-		operatorController.rightBumper().and(isAlgaeModeTrigger).onTrue(setGamepieceModeCommand(GamepieceMode.CORAL_MODE));
+		operatorController.rightBumper().onTrue(toggleGamepieceModeCommand());
 	}
 
+	/**
+	 * Gets the {@link #gamepieceMode}.
+	 *
+	 * @return
+	 *         The current {@link #gamepieceMode}.
+	 */
 	public GamepieceMode getGamepieceMode() {
 		return gamepieceMode;
 	}
 
-	private Command setGamepieceModeCommand(GamepieceMode mode) {
+	/**
+	 * Switches the {@link #gamepieceMode} to the next mode.
+	 *
+	 * @return
+	 *         Command to run.
+	 */
+	private Command toggleGamepieceModeCommand() {
 		return Commands.runOnce(() -> {
-			gamepieceMode = mode;
+			switch (gamepieceMode) {
+				case CORAL_MODE:
+					gamepieceMode = GamepieceMode.ALGAE_MODE;
+				case ALGAE_MODE:
+					gamepieceMode = GamepieceMode.CORAL_MODE;
+			}
 		});
 	}
 
