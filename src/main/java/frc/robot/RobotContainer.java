@@ -253,6 +253,15 @@ public class RobotContainer {
 	}
 
 	/**
+	 * Check if the robot is close to the reef. This will disable elevator and wrist movement.
+	 * 
+	 * @return true if the robot is close to the reef.
+	 */
+	public boolean closeToReef() {
+		return false; // TODO: check if drivetrain is too close to the reef
+	}
+
+	/**
 	 * Use this to pass the autonomous command to the main {@link Robot} class.
 	 *
 	 * @return the command to run in autonomous
