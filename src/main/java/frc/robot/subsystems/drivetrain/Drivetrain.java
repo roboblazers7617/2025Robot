@@ -133,8 +133,7 @@ public class Drivetrain extends SubsystemBase {
 	 *
 	 * @return
 	 *         {@link SwerveController} from the {@link SwerveDrive}.
-	 * @see
-	 *      SwerveDrive#swerveController
+	 * @see SwerveDrive#swerveController
 	 */
 	public SwerveController getSwerveController() {
 		return swerveDrive.swerveController;
@@ -145,8 +144,7 @@ public class Drivetrain extends SubsystemBase {
 	 *
 	 * @return
 	 *         The {@link SwerveDriveConfiguration} for the current drive.
-	 * @see
-	 *      SwerveDrive#swerveDriveConfiguration
+	 * @see SwerveDrive#swerveDriveConfiguration
 	 */
 	public SwerveDriveConfiguration getSwerveDriveConfiguration() {
 		return swerveDrive.swerveDriveConfiguration;
@@ -157,8 +155,7 @@ public class Drivetrain extends SubsystemBase {
 	 *
 	 * @return
 	 *         {@link SwerveDriveKinematics} of the swerve drive.
-	 * @see
-	 *      SwerveDrive#kinematics
+	 * @see SwerveDrive#kinematics
 	 */
 	public SwerveDriveKinematics getKinematics() {
 		return swerveDrive.kinematics;
@@ -181,8 +178,7 @@ public class Drivetrain extends SubsystemBase {
 	 *
 	 * @param initialHolonomicPose
 	 *            The pose to set the odometry to
-	 * @see
-	 *      SwerveDrive#resetOdometry(Pose2d)
+	 * @see SwerveDrive#resetOdometry(Pose2d)
 	 */
 	public void resetOdometry(Pose2d initialHolonomicPose) {
 		swerveDrive.resetOdometry(initialHolonomicPose);
@@ -194,8 +190,7 @@ public class Drivetrain extends SubsystemBase {
 	 *
 	 * @return
 	 *         The robot's pose
-	 * @see
-	 *      SwerveDrive#getPose()
+	 * @see SwerveDrive#getPose()
 	 */
 	public Pose2d getPose() {
 		return swerveDrive.getPose();
@@ -237,8 +232,7 @@ public class Drivetrain extends SubsystemBase {
 	 *
 	 * @param trajectory
 	 *            The trajectory to post.
-	 * @see
-	 *      SwerveDrive#postTrajectory(Trajectory)
+	 * @see SwerveDrive#postTrajectory(Trajectory)
 	 */
 	public void postTrajectory(Trajectory trajectory) {
 		swerveDrive.postTrajectory(trajectory);
@@ -285,8 +279,7 @@ public class Drivetrain extends SubsystemBase {
 	 *
 	 * @param brake
 	 *            True to set motors to brake mode, false for coast.
-	 * @see
-	 *      SwerveDrive#setMotorIdleMode(boolean)
+	 * @see SwerveDrive#setMotorIdleMode(boolean)
 	 */
 	public void setMotorBrake(boolean brake) {
 		swerveDrive.setMotorIdleMode(brake);
@@ -308,8 +301,7 @@ public class Drivetrain extends SubsystemBase {
 	 *
 	 * @return
 	 *         A ChassisSpeeds object of the current field-relative velocity
-	 * @see
-	 *      SwerveDrive#getFieldVelocity()
+	 * @see SwerveDrive#getFieldVelocity()
 	 */
 	public ChassisSpeeds getFieldVelocity() {
 		return swerveDrive.getFieldVelocity();
@@ -320,8 +312,7 @@ public class Drivetrain extends SubsystemBase {
 	 *
 	 * @return
 	 *         A {@link ChassisSpeeds} object of the current velocity
-	 * @see
-	 *      SwerveDrive#getRobotVelocity()
+	 * @see SwerveDrive#getRobotVelocity()
 	 */
 	public ChassisSpeeds getRobotVelocity() {
 		return swerveDrive.getRobotVelocity();
@@ -330,8 +321,7 @@ public class Drivetrain extends SubsystemBase {
 	/**
 	 * Lock the swerve drive to prevent it from moving.
 	 *
-	 * @see
-	 *      SwerveDrive#lockPose()
+	 * @see SwerveDrive#lockPose()
 	 */
 	public void lock() {
 		swerveDrive.lockPose();
@@ -344,7 +334,6 @@ public class Drivetrain extends SubsystemBase {
 	 *         A new {@link LockWheelsCommand}.
 	 * @see LockWheelsCommand
 	 */
-	// TODO: #113 (Max) Only putting in one comment for entire class, but all Commands should start with a capital letter per coding standards. Please update.
 	public Command lockCommand() {
 		return new LockWheelsCommand(this);
 	}
@@ -542,8 +531,7 @@ public class Drivetrain extends SubsystemBase {
 	 *            Field-Relative {@link ChassisSpeeds}
 	 * @return
 	 *         Command to drive the robot using the setpoint generator.
-	 * @see
-	 *      #driveWithSetpointGeneratorCommand(Supplier)
+	 * @see #driveWithSetpointGeneratorCommand(Supplier)
 	 */
 	public Command driveWithSetpointGeneratorFieldRelativeCommand(Supplier<ChassisSpeeds> fieldRelativeSpeeds) {
 		try {
@@ -582,8 +570,7 @@ public class Drivetrain extends SubsystemBase {
 	 *            Angular velocity of the robot to set. Cubed for smoother controls.
 	 * @return
 	 *         Command to run
-	 * @see
-	 *      SwerveDrive#drive(Translation2d, double, boolean, boolean)
+	 * @see SwerveDrive#drive(Translation2d, double, boolean, boolean)
 	 */
 	public Command driveAngularCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX) {
 		return run(() -> {
@@ -621,8 +608,7 @@ public class Drivetrain extends SubsystemBase {
 	 *
 	 * @param chassisSpeeds
 	 *            Chassis Speeds to set.
-	 * @see
-	 *      SwerveDrive#setChassisSpeeds(ChassisSpeeds)
+	 * @see SwerveDrive#setChassisSpeeds(ChassisSpeeds)
 	 */
 	public void setChassisSpeeds(ChassisSpeeds chassisSpeeds) {
 		swerveDrive.setChassisSpeeds(chassisSpeeds);
