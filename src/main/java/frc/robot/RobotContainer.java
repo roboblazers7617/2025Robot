@@ -261,8 +261,11 @@ public class RobotContainer {
 			switch (gamepieceMode) {
 				case CORAL_MODE:
 					gamepieceMode = GamepieceMode.ALGAE_MODE;
+					break;
+
 				case ALGAE_MODE:
 					gamepieceMode = GamepieceMode.CORAL_MODE;
+					break;
 			}
 		});
 	}
