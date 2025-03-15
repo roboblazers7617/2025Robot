@@ -19,6 +19,7 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainControls;
 import frc.robot.subsystems.Auto;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.IntakeRamp.Ramp;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -55,6 +56,7 @@ public class RobotContainer {
 	private final EndEffector endEffector = new EndEffector(this);
 	private final Elevator elevator = new Elevator(this);
 	private final Ramp ramp = new Ramp();
+	private final Climber climber = new Climber();
 
 	/**
 	 * The Controller used by the Driver of the robot, primarily controlling the drivetrain.
@@ -148,12 +150,10 @@ public class RobotContainer {
 		driverController.a().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_SLOW));
 		driverController.b().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_FAST));
 		driverController.x().whileTrue(drivetrain.lockCommand());
-
 		driverController.y().onTrue(elevator.SetPositionCommand(ArmPosition.STOW).andThen(ramp.RampRetract()));
-		driverController.povDown().whileTrue(StubbedCommands.Climber.ClimberDown());
-		driverController.povLeft().whileTrue(StubbedCommands.Climber.RampUp());
-		driverController.povRight().whileTrue(StubbedCommands.Climber.RampDown());
-		driverController.povUp().whileTrue(StubbedCommands.Climber.AutoClimb());
+
+		driverController.povUp().whileTrue(climber.RaiseClimber());
+		driverController.povDown().whileTrue(climber.LowerClimber());
 
 		// Scoring pose pathfinding
 		driverController.leftTrigger()
@@ -232,9 +232,9 @@ public class RobotContainer {
 		operatorController.povUp()
 				.and(isAlgaeModeTrigger)
 				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_ALGAE_LEVEL_3));
-		// operatorController.povUp()
-		// .and(isCoralModeTrigger)
-		// .onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4));
+		operatorController.povUp()
+				.and(isCoralModeTrigger)
+				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4));
 
 		// Left Bumper is on an or with the Y button above
 		operatorController.rightBumper().onTrue(toggleGamepieceModeCommand());
