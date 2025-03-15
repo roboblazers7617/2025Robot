@@ -22,13 +22,27 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ClimberConstants;
 
+/**
+ * Subsystem that controls the climber.
+ */
 @Logged
 public class Climber extends SubsystemBase {
+	/**
+	 * Main motor used by the climber.
+	 */
 	private final SparkMax climberMotor = new SparkMax(ClimberConstants.CLIMBER_MOTOR_CAN_ID, MotorType.kBrushless);
+	/**
+	 * Encoder for the {@link #climberMotor}.
+	 */
 	private final RelativeEncoder climberEncoder;
+	/**
+	 * Servo used to actuate the climber ratchet.
+	 */
 	private final Servo rachetServo;
 
-	/** Creates a new Climber. */
+	/**
+	 * Creates a new Climber.
+	 */
 	public Climber() {
 		climberMotor.configure(new SparkMaxConfig()
 				.idleMode(IdleMode.kBrake)
@@ -42,14 +56,26 @@ public class Climber extends SubsystemBase {
 		rachetServo = new Servo(ClimberConstants.SERVO_PWM_PORT);
 	}
 
+	/**
+	 * Engages the ratchet.
+	 */
 	private void enableRatchet() {
 		rachetServo.setAngle(ClimberConstants.SERVO_ENABLED_ANGLE);
 	}
 
+	/**
+	 * Disengages the ratchet.
+	 */
 	private void disableRatchet() {
 		rachetServo.setAngle(ClimberConstants.SERVO_DISABLED_ANGLE);
 	}
 
+	/**
+	 * Disengages the ratchet and raises the climber.
+	 *
+	 * @return
+	 *         Command to run.
+	 */
 	public Command RaiseClimber() {
 		return Commands.runOnce(() -> {
 			disableRatchet();
@@ -61,6 +87,12 @@ public class Climber extends SubsystemBase {
 				});
 	}
 
+	/**
+	 * Engages the ratchet and lowers the climber.
+	 *
+	 * @return
+	 *         Command to run.
+	 */
 	public Command LowerClimber() {
 		return Commands.runOnce(() -> {
 			enableRatchet();
