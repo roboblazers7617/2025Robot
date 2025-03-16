@@ -1,8 +1,10 @@
 package frc.robot.util;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.MoveServoAndWaitCommand;
@@ -12,9 +14,9 @@ import frc.robot.commands.MoveServoAndWaitCommand;
  */
 public class Servo extends edu.wpi.first.wpilibj.Servo {
 	/**
-	 * Conversion factor for the motor position. Defaults to 180.
+	 * Conversion factor for the motor position. Defaults to 180 degrees.
 	 */
-	private double positionConversionFactor;
+	private Angle positionConversionFactor;
 	/**
 	 * How fast does the servo usually rotate? Used to calculate when the servo should have reached
 	 * its setpoint. Defaults to 315 degrees per second.
@@ -33,7 +35,7 @@ public class Servo extends edu.wpi.first.wpilibj.Servo {
 		super(channel);
 
 		// Default values
-		this.positionConversionFactor = 180.0;
+		this.positionConversionFactor = Degrees.of(180.0);
 		this.rotationSpeed = DegreesPerSecond.of(315);
 	}
 
@@ -45,9 +47,8 @@ public class Servo extends edu.wpi.first.wpilibj.Servo {
 	 *            The position to set [0-{@link #positionConversionFactor}].
 	 * @see edu.wpi.first.wpilibj.Servo#set(double)
 	 */
-	@Override
-	public void setAngle(double position) {
-		double convertedPosition = position / positionConversionFactor;
+	public void setAngleMeasure(Angle position) {
+		double convertedPosition = position.div(positionConversionFactor).magnitude();
 		setPosition(MathUtil.clamp(convertedPosition, 0.0, 1.0));
 	}
 
@@ -62,9 +63,8 @@ public class Servo extends edu.wpi.first.wpilibj.Servo {
 	 *         The position of the servo [0-{@link #positionConversionFactor}].
 	 * @see edu.wpi.first.wpilibj.Servo#getPosition()
 	 */
-	@Override
-	public double getAngle() {
-		return getPosition() * positionConversionFactor;
+	public Angle getAngleMeasure() {
+		return positionConversionFactor.times(getPosition());
 	}
 
 	/**
@@ -75,22 +75,21 @@ public class Servo extends edu.wpi.first.wpilibj.Servo {
 	 *            The position to set the servo to.
 	 * @return
 	 *         Command to run.
-	 * @apiNote
-	 *          The {@link #positionConversionFactor} must be in degrees for this to work.
 	 */
-	public Command moveCommand(double position) {
+	public Command moveCommand(Angle position) {
 		return new MoveServoAndWaitCommand(this, position);
 	}
 
 	/**
-	 * Sets the {@link #positionConversionFactor} for this Servo.
+	 * Sets the {@link #positionConversionFactor} for this Servo. This states how much the servo can
+	 * turn over it's entire travel (eg. 180 degrees for a half-turn servo).
 	 *
 	 * @param positionConversionFactor
 	 *            The {@link #positionConversionFactor} to set.
 	 * @return
 	 *         This object for method chaining.
 	 */
-	public Servo setPositionConversionFactor(double positionConversionFactor) {
+	public Servo setPositionConversionFactor(Angle positionConversionFactor) {
 		this.positionConversionFactor = positionConversionFactor;
 		return this;
 	}

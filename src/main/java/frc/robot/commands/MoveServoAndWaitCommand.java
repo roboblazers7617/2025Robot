@@ -1,14 +1,15 @@
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.DegreesPerSecond;
+import static edu.wpi.first.units.Units.Revolutions;
+import static edu.wpi.first.units.Units.RevolutionsPerSecond;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.util.Servo;
 
 /**
- * Command to set a {@link Servo}'s position and wait for it to reach it. The Servo's position
- * conversion factor must convert to degrees for this to work.
+ * Command to set a {@link Servo}'s position and wait for it to reach it.
  */
 public class MoveServoAndWaitCommand extends Command {
 	/**
@@ -18,11 +19,11 @@ public class MoveServoAndWaitCommand extends Command {
 	/**
 	 * The position the servo started at.
 	 */
-	private double startPosition;
+	private Angle startPosition;
 	/**
 	 * The position to set the servo to.
 	 */
-	private final double endPosition;
+	private final Angle endPosition;
 	/**
 	 * The timer used to estimate how long the Servo will take to move.
 	 */
@@ -36,7 +37,7 @@ public class MoveServoAndWaitCommand extends Command {
 	 * @param position
 	 *            The position to set the Servo to.
 	 */
-	public MoveServoAndWaitCommand(Servo servo, double position) {
+	public MoveServoAndWaitCommand(Servo servo, Angle position) {
 		this.servo = servo;
 		this.endPosition = position;
 		this.timer = new Timer();
@@ -45,8 +46,8 @@ public class MoveServoAndWaitCommand extends Command {
 	@Override
 	public void initialize() {
 		timer.restart();
-		startPosition = servo.getAngle();
-		servo.setAngle(endPosition);
+		startPosition = servo.getAngleMeasure();
+		servo.setAngleMeasure(endPosition);
 	}
 
 	@Override
@@ -56,7 +57,8 @@ public class MoveServoAndWaitCommand extends Command {
 
 	@Override
 	public boolean isFinished() {
-		double moveTime = Math.abs(endPosition - startPosition) * (1 / servo.getRotationSpeed().in(DegreesPerSecond));
-		return timer.hasElapsed(moveTime);
+		double distance = startPosition.minus(endPosition).abs(Revolutions);
+		double rate = 1 / servo.getRotationSpeed().in(RevolutionsPerSecond);
+		return timer.hasElapsed(distance * rate);
 	}
 }

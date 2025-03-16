@@ -52,7 +52,7 @@ public class Climber extends SubsystemBase {
 		climberEncoder.setPosition(0.0);
 
 		rachetServo = new Servo(ClimberConstants.SERVO_PWM_PORT);
-		rachetServo.setPositionConversionFactor(360);
+		rachetServo.setPositionConversionFactor(ClimberConstants.SERVO_POSITION_CONVERSION_FACTOR);
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class Climber extends SubsystemBase {
 
 	/**
 	 * Disengages the ratchet.
-	 * 
+	 *
 	 * @return
 	 *         Command to run.
 	 */
