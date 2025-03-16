@@ -47,7 +47,7 @@ public class RobotContainer {
 	 */
 	private SendableChooser<Command> autoChooser;
 	// The robot's subsystems and commands are defined here...
-	private final ButtonBox buttonBox = new ButtonBox();
+	private final ButtonBox buttonBox = new ButtonBox(this);
 	@NotLogged
 	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
 	@NotLogged

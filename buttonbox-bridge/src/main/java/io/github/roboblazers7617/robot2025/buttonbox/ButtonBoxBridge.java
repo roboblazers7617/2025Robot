@@ -16,6 +16,7 @@ import javax.sound.midi.ShortMessage;
 import io.github.roboblazers7617.buttonbox.ButtonBoxClient;
 import io.github.roboblazers7617.buttonbox.controls.PhysicalJoystick;
 import io.github.roboblazers7617.buttonbox.controls.PhysicalPotentiometer;
+import io.github.roboblazers7617.buttonbox.controls.PhysicalLEDRGB;
 import io.github.roboblazers7617.buttonbox.midi.MIDIUtil;
 import io.github.roboblazers7617.buttonbox.midi.MIDIDevice;
 import io.github.roboblazers7617.buttonbox.midi.MIDIAddress;
@@ -68,5 +69,6 @@ public class ButtonBoxBridge {
 		// Driver controls
 		client.addControl(new PhysicalJoystick("Driver Joystick", new MIDIAddress(midiDevice, ShortMessage.CONTROL_CHANGE, 0, 1), new MIDIAddress(midiDevice, ShortMessage.CONTROL_CHANGE, 0, 2), new MIDIAddress(midiDevice, ShortMessage.NOTE_ON, 0, 0)));
 		client.addControl(new PhysicalPotentiometer("Driver Steering Knob", new MIDIAddress(midiDevice, ShortMessage.CONTROL_CHANGE, 0, 0)));
+		client.addControl(new PhysicalLEDRGB("Mode LED", new MIDIAddress(midiDevice, ShortMessage.CONTROL_CHANGE, 0, 3), new MIDIAddress(midiDevice, ShortMessage.CONTROL_CHANGE, 0, 4), new MIDIAddress(midiDevice, ShortMessage.CONTROL_CHANGE, 0, 5)));
 	}
 }
