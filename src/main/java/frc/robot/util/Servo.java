@@ -40,6 +40,35 @@ public class Servo extends edu.wpi.first.wpilibj.Servo {
 	}
 
 	/**
+	 * Sets the position of the motor in degrees. This gets divided by the {@link #positionConversionFactor}
+	 * and clamped to a range of [0-1].
+	 *
+	 * @param position
+	 *            The position to set in degrees [0-{@link #positionConversionFactor}].
+	 * @see edu.wpi.first.wpilibj.Servo#set(double)
+	 */
+	@Override
+	public void setAngle(double position) {
+		setAngleMeasure(Degrees.of(position));
+	}
+
+	/**
+	 * Gets the position of the servo in degrees. This will be in the range specified by the {@link #positionConversionFactor}.
+	 *
+	 * @apiNote
+	 *          Since the RIO just blindly sends PWM data to the servo, it doesn't recieve any
+	 *          feedback about where it is, so this just returns the commanded position, and, in
+	 *          the case that the servo can't reach its target, this will be incorrect.
+	 * @return
+	 *         The position of the servo in degrees [0-{@link #positionConversionFactor}].
+	 * @see edu.wpi.first.wpilibj.Servo#getPosition()
+	 */
+	@Override
+	public double getAngle() {
+		return getAngleMeasure().in(Degrees);
+	}
+
+	/**
 	 * Sets the position of the motor. This gets divided by the {@link #positionConversionFactor}
 	 * and clamped to a range of [0-1].
 	 *
