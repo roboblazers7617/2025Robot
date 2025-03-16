@@ -1,6 +1,5 @@
 package frc.robot.subsystems.drivetrain;
 
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.ButtonBox;
 import java.util.function.Supplier;
 import frc.robot.Constants.DrivetrainConstants;
@@ -142,14 +141,12 @@ public class DrivetrainControls {
 	/**
 	 * Converts ButtonBox input into a field-relative ChassisSpeeds that is controlled by a knob.
 	 *
-	 * @param drivetrain
-	 *            the drivetrain to control
 	 * @param buttonBox
-	 *            the ButtonBox to read from
+	 *            The ButtonBox to read from.
 	 * @return
-	 *         SwerveInputStream with data from the ButtonBox
+	 *         SwerveInputStream with data from the ButtonBox.
 	 */
-	public static SwerveInputStream driveButtonBox(Drivetrain drivetrain, ButtonBox buttonBox) {
+	public SwerveInputStream driveButtonBox(ButtonBox buttonBox) {
 		return SwerveInputStream.of(drivetrain.getSwerveDrive(), () -> (buttonBox.getDriverJoystick().getY() * 2 - 1), () -> ((buttonBox.getDriverJoystick().getX() * 2 - 1) * -1))
 				.withControllerHeadingAxis(() -> Math.sin((buttonBox.getDriverSteeringKnob().getPosition() * 2 - 1) * Math.PI) * (Math.PI * 2), () -> Math.cos((buttonBox.getDriverSteeringKnob().getPosition() * 2 - 1) * Math.PI) * (Math.PI * 2))
 				.deadband(OperatorConstants.DEADBAND)
@@ -192,5 +189,17 @@ public class DrivetrainControls {
 	 */
 	public Command driveFieldOrientedDirectAngleSimCommand(CommandXboxController controller) {
 		return driveInputStreamScaledCommand(driveDirectAngleSim(controller));
+	}
+
+	/**
+	 * {@link #driveFieldOrientedCommand(Supplier)} that uses {@link DrivetrainControls#driveButtonBox(Drivetrain, ButtonBox)}.
+	 *
+	 * @param buttonBox
+	 *            ButtonBox to use.
+	 * @return
+	 *         Command to run.
+	 */
+	public Command driveFieldOrientedButtonBoxCommand(ButtonBox buttonBox) {
+		return driveInputStreamScaledCommand(driveButtonBox(buttonBox));
 	}
 }

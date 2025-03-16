@@ -11,7 +11,6 @@ import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -25,7 +24,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
-import frc.robot.ButtonBox;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.vision.Vision;
@@ -67,10 +65,6 @@ public class Drivetrain extends SubsystemBase {
 	 * Vision object.
 	 */
 	private final Vision vision;
-	/**
-	 * ButtonBox that controls the drivetrain.
-	 */
-	private final ButtonBox buttonBox;
 
 	/**
 	 * Initialize {@link SwerveDrive} with the directory provided.
@@ -78,9 +72,7 @@ public class Drivetrain extends SubsystemBase {
 	 * @param directory
 	 *            Directory of swerve drive config files.
 	 */
-	public Drivetrain(File directory, ButtonBox buttonBox) {
-		this.buttonBox = buttonBox;
-
+	public Drivetrain(File directory) {
 		// Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
 		if (LoggingConstants.DEBUG_MODE) {
 			SwerveDriveTelemetry.verbosity = DrivetrainConstants.TELEMETRY_VERBOSITY_DEBUG;
@@ -641,18 +633,6 @@ public class Drivetrain extends SubsystemBase {
 		return run(() -> {
 			driveFieldOriented(velocity.get());
 		});
-	}
-
-	/**
-	 * {@link #driveFieldOrientedCommand(Supplier)} that uses {@link DrivetrainControls#driveButtonBox(Drivetrain, ButtonBox)}.
-	 *
-	 * @param buttonBox
-	 *            ButtonBox to use.
-	 * @return
-	 *         Command to run.
-	 */
-	public Command driveFieldOrientedButtonBoxCommand(ButtonBox buttonBox) {
-		return driveFieldOrientedCommand(DrivetrainControls.driveButtonBox(this, buttonBox));
 	}
 
 	/**

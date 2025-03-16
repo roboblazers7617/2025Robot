@@ -49,7 +49,7 @@ public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
 	private final ButtonBox buttonBox = new ButtonBox();
 	@NotLogged
-	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR, buttonBox);
+	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
 	@NotLogged
 	private final DrivetrainControls drivetrainControls = new DrivetrainControls(drivetrain);
 	@NotLogged
@@ -142,7 +142,7 @@ public class RobotContainer {
 			drivetrain.setDefaultCommand(drivetrainControls.driveFieldOrientedDirectAngleSimCommand(driverController));
 		} else {
 			// ButtonBox heading control
-			drivetrain.setDefaultCommand(drivetrain.driveFieldOrientedButtonBoxCommand(buttonBox));
+			drivetrain.setDefaultCommand(drivetrainControls.driveFieldOrientedButtonBoxCommand(buttonBox));
 		}
 
 		driverController.a().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_SLOW));
