@@ -5,15 +5,29 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.ScoringPoses;
+import frc.robot.Constants.DashboardConstants;
 import frc.robot.Constants.DrivetrainConstants;
-import frc.robot.Constants.FieldConstants;
+import frc.robot.Constants.LoggingConstants;
+import frc.robot.subsystems.EndEffector.EndEffector;
 import frc.robot.util.Util;
-import frc.robot.subsystems.Dashboard;
+import frc.robot.util.Elastic;
+import frc.robot.Constants.OperatorConstants.GamepieceMode;
+import frc.robot.Constants.ArmPosition;
+import frc.robot.commands.StubbedCommands;
 import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.drivetrain.DrivetrainControls;
+import frc.robot.subsystems.Auto;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.IntakeRamp.Ramp;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -28,16 +42,40 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 @Logged
 public class RobotContainer {
-	private SendableChooser<Command> autoChooser = new SendableChooser<>();
-	private final ButtonBox buttonBox = new ButtonBox();
-
+	/**
+	 * The sendable chooser for the autonomous command. This is added in the setAutoChooser method which is run when autobuilder is created after an alliance is selected.
+	 */
+	private SendableChooser<Command> autoChooser;
 	// The robot's subsystems and commands are defined here...
+	private final ButtonBox buttonBox = new ButtonBox();
+	@NotLogged
 	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR, buttonBox);
+	@NotLogged
+	private final DrivetrainControls drivetrainControls = new DrivetrainControls(drivetrain);
+	@NotLogged
 	private final Dashboard dashboard = new Dashboard(drivetrain, this);
+	private final EndEffector endEffector = new EndEffector(this);
+	private final Elevator elevator = new Elevator(this);
+	private final Ramp ramp = new Ramp();
+	private final Climber climber = new Climber();
 
-	// Replace with CommandPS4Controller or CommandJoystick if needed
+	/**
+	 * The Controller used by the Driver of the robot, primarily controlling the drivetrain.
+	 */
 	@NotLogged
 	private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
+	/**
+	 * The Controller used by the Operator of the robot, primarily controlling the superstructure.
+	 */
+	@NotLogged
+	private final CommandXboxController operatorController = new CommandXboxController(OperatorConstants.OPERATOR_CONTROLLER_PORT);
+
+	/**
+	 * Used to store what the currently select game piece to interact with is.
+	 */
+	private GamepieceMode gamepieceMode;
+	private final Trigger isAlgaeModeTrigger = new Trigger(() -> (gamepieceMode == GamepieceMode.ALGAE_MODE));
+	private final Trigger isCoralModeTrigger = new Trigger(() -> (gamepieceMode == GamepieceMode.CORAL_MODE));
 
 	/** The container for the robot. Contains subsystems, OI devices, and commands. */
 	public RobotContainer() {
@@ -45,7 +83,28 @@ public class RobotContainer {
 		VersionConstants.publishNetworkTables(NetworkTableInstance.getDefault().getTable("/Metadata"));
 
 		// Configure the trigger bindings
-		configureBindings();
+		configureDriverControls();
+		configureOperatorControls();
+		// Configure the Limelight mode switching
+		// new Trigger(DriverStation::isEnabled).onTrue(drivetrain.getVision().onEnableCommand());
+		// new Trigger(DriverStation::isDisabled).onTrue(drivetrain.getVision().onDisableCommand());
+		// By default interact with Coral
+		gamepieceMode = GamepieceMode.CORAL_MODE;
+	}
+
+	/**
+	 * This method is run at the start of Auto.
+	 */
+	public void autoInit() {
+		// Set the Elastic tab
+		if (!LoggingConstants.DEBUG_MODE) {
+			Elastic.selectTab(DashboardConstants.AUTO_TAB_NAME);
+		}
+
+		// Configure AutoBuilder if not already configured
+		Auto.setupPathPlannerFailsafe(drivetrain);
+
+		elevator.elevatorInit();
 	}
 
 	/**
@@ -53,37 +112,168 @@ public class RobotContainer {
 	 */
 	public void teleopInit() {
 		// Reset the last angle so the robot doesn't try to spin.
-		drivetrain.resetLastAngleScalarByAlliance();
+		drivetrain.resetLastAngleScalar();
+
+		// Set the Elastic tab
+		if (!LoggingConstants.DEBUG_MODE) {
+			Elastic.selectTab(DashboardConstants.TELEOP_TAB_NAME);
+		}
+		// if (StubbedCommands.EndEffector.isHoldingAlage()) {
+		// gamepieceMode = GamepieceMode.ALGAE_MODE;
+		// }
+
+		// else {
+		// gamepieceMode = GamepieceMode.CORAL_MODE;
+		// }
+
+		// Configure AutoBuilder if not already configured
+		Auto.setupPathPlannerFailsafe(drivetrain);
+
+		elevator.elevatorInit();
 	}
 
 	/**
-	 * Use this method to define your trigger->command mappings. Triggers can be created via the
-	 * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-	 * predicate, or via the named factories in {@link
-	 * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-	 * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-	 * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-	 * joysticks}.
+	 * Configures {@link Triggers} to bind Commands to the Driver Controller buttons.
 	 */
-	private void configureBindings() {
+	private void configureDriverControls() {
 		// Set the default drivetrain command (used for the driver controller)
 		if (RobotBase.isSimulation()) {
 			// Heading control
-			drivetrain.setDefaultCommand(drivetrain.driveFieldOrientedDirectAngleSimControllerCommand(driverController));
+			drivetrain.setDefaultCommand(drivetrainControls.driveFieldOrientedDirectAngleSimCommand(driverController));
 		} else {
 			// ButtonBox heading control
 			drivetrain.setDefaultCommand(drivetrain.driveFieldOrientedButtonBoxCommand(buttonBox));
 		}
-		// TODO: (Max) This lets the driver move to the closest reef tag but how do they make it go to the
-		// left or right reef branch of that tag? What if they are on the right side of the tag but
-		// want to drive to the left branch?
-		// TODO: (Max) Shouldn't this be a whileTrue to allow them to cancel the command if not longer desired?
-		driverController.x().onTrue(Commands.either(drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.SCORING_POSES_RED), drivetrain.driveToNearestPoseCommand(FieldConstants.Reef.SCORING_POSES_BLUE), () -> Util.isRedAlliance()));
-		// TODO: (Max) How does a driver have it align/drive to the 1) coral station and 2) processor?
 
-		// TODO: transfer to dashboard
-		driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
-		driverController.back().onTrue(drivetrain.centerModulesCommand());
+		driverController.a().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_SLOW));
+		driverController.b().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_FAST));
+		driverController.x().whileTrue(drivetrain.lockCommand());
+		driverController.y().onTrue(elevator.SetPositionCommand(ArmPosition.STOW).andThen(ramp.RampRetract()));
+
+		driverController.povUp().whileTrue(climber.RaiseClimber());
+		driverController.povDown().whileTrue(climber.LowerClimber());
+
+		// Scoring pose pathfinding
+		driverController.leftTrigger()
+				.and(isAlgaeModeTrigger)
+				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.ALGAE_SCORING_POSES_RED), drivetrain.driveToNearestPoseCommand(ScoringPoses.ALGAE_SCORING_POSES_BLUE), () -> Util.isRedAlliance()));
+		driverController.leftTrigger()
+				.and(isCoralModeTrigger)
+				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_RED_LEFT), drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_BLUE_LEFT), () -> Util.isRedAlliance()));
+		driverController.rightTrigger()
+				.and(isCoralModeTrigger)
+				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_RED_RIGHT), drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_BLUE_RIGHT), () -> Util.isRedAlliance()));
+
+		driverController.start().onTrue(drivetrain.zeroGyroWithAllianceCommand());
+		driverController.back().onTrue(StubbedCommands.Drivetrain.DisableVision());
+	}
+
+	/**
+	 * Configures {@link Triggers} to bind Commands to the Operator Controller buttons.
+	 */
+	private void configureOperatorControls() {
+		// Set the default elevator command where it moves manually
+		/*
+		 * StubbedCommands.Elevator elevator = (new StubbedCommands()).new Elevator();
+		 * elevator.setDefaultCommand(elevator.MoveElevatorAndWristManual(() -> (-1 * operatorController.getLeftX()), () -> (-1 * operatorController.getLeftY())));
+		 */
+		// Acts to cancel the currently running command, such as intaking or outaking
+		elevator.setDefaultCommand(elevator.setSpeedsCommand(() -> MathUtil.applyDeadband(-1.0 * operatorController.getLeftY(), OperatorConstants.DEADBAND), () -> MathUtil.applyDeadband(-1.0 * operatorController.getRightY(), OperatorConstants.DEADBAND)));
+		// TODO: #138 Cancel on EndEffector or all mechanism commands?
+		operatorController.a()
+				.onTrue(endEffector.StopIntakeMotor());
+		operatorController.b()
+				.or(operatorController.leftTrigger())
+				.and(isAlgaeModeTrigger)
+				.onTrue(endEffector.AlgaeIntake());
+		operatorController.b()
+				.or(operatorController.leftTrigger())
+				.and(isCoralModeTrigger)
+				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_CORAL_CORAL_STATION)
+						.andThen(endEffector.CoralIntake())
+						.andThen(elevator.SetPositionCommand(ArmPosition.STOW)));
+		operatorController.x()
+				.and(() -> gamepieceMode == GamepieceMode.ALGAE_MODE) // temp
+				.onTrue(elevator.SetPositionCommand(ArmPosition.STOW_ALGAE)
+						.alongWith(endEffector.StopIntakeMotor()));
+		operatorController.x()
+				.and(() -> gamepieceMode == GamepieceMode.CORAL_MODE) // temp
+				.onTrue(elevator.SetPositionCommand(ArmPosition.STOW)
+						.alongWith(endEffector.StopIntakeMotor()));
+		operatorController.y()
+				.or(operatorController.leftBumper())
+				.and(isAlgaeModeTrigger)
+				.onTrue(endEffector.AlgaeOuttake());
+		operatorController.y()
+				.or(operatorController.leftBumper())
+				.and(isCoralModeTrigger)
+				.onTrue(endEffector.CoralOuttake()
+						.alongWith(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4_HIGH).onlyIf(() -> elevator.getElevatorTarget() == ArmPosition.OUTTAKE_CORAL_LEVEL_4.ELEVATOR_POSITION)));
+
+		operatorController.povDown()
+				.and(isAlgaeModeTrigger)
+				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_ALGAE_LEVEL_2));
+		operatorController.povDown()
+				.and(isCoralModeTrigger)
+				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_1));
+		operatorController.povLeft()
+				.or(operatorController.povRight())
+				.and(isAlgaeModeTrigger)
+				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_ALGAE_PROCESSOR));
+		operatorController.povLeft()
+				.and(isCoralModeTrigger)
+				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_2));
+		operatorController.povRight()
+				.and(isCoralModeTrigger)
+				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_3));
+		// POV Right Algae mode is handeled above with POV Left
+		operatorController.povUp()
+				.and(isAlgaeModeTrigger)
+				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_ALGAE_LEVEL_3));
+		operatorController.povUp()
+				.and(isCoralModeTrigger)
+				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4));
+
+		// Left Bumper is on an or with the Y button above
+		operatorController.rightBumper().onTrue(toggleGamepieceModeCommand());
+	}
+
+	/**
+	 * Gets the {@link #gamepieceMode}.
+	 *
+	 * @return
+	 *         The current {@link #gamepieceMode}.
+	 */
+	public GamepieceMode getGamepieceMode() {
+		return gamepieceMode;
+	}
+
+	/**
+	 * Switches the {@link #gamepieceMode} to the next mode.
+	 *
+	 * @return
+	 *         Command to run.
+	 */
+	private Command toggleGamepieceModeCommand() {
+		return Commands.runOnce(() -> {
+			switch (gamepieceMode) {
+				case CORAL_MODE:
+					gamepieceMode = GamepieceMode.ALGAE_MODE;
+					break;
+
+				case ALGAE_MODE:
+					gamepieceMode = GamepieceMode.CORAL_MODE;
+					break;
+			}
+		});
+	}
+
+	public boolean isHoldingAlgae() {
+		return endEffector.isHoldingAlgae();
+	}
+
+	public boolean isHoldingCoral() {
+		return endEffector.isHoldingCoral();
 	}
 
 	/**
@@ -93,7 +283,11 @@ public class RobotContainer {
 	 */
 	public Command getAutonomousCommand() {
 		// resetLastAngleScalar stops the robot from trying to turn back to its original angle after the auto ends
-		return autoChooser.getSelected();
+		if (autoChooser == null) {
+			return Commands.runOnce(() -> System.out.println("Auto builder not made! Is the alliance set?"));
+		}
+		return autoChooser.getSelected()
+				.finallyDo(drivetrain::resetLastAngleScalar);
 	}
 
 	/**

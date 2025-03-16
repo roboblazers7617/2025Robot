@@ -69,6 +69,20 @@ public class Auto {
 	}
 
 	/**
+	 * Configures AutoBuilder if it hasn't already been configured. This should be run on enable so things like pathfinding commands don't cause the code to crash.
+	 *
+	 * @param drivetrain
+	 *            The Drivetrain for PathPlanner to control.
+	 */
+	public static void setupPathPlannerFailsafe(Drivetrain drivetrain) {
+		if (!AutoBuilder.isConfigured()) {
+			System.err.println("AutoBuilder not configured before enabling! Configuring AutoBuilder with data from the FMS.");
+			Auto.setupPathPlanner(drivetrain, DriverStation.getAlliance()
+					.orElse(DriverStation.Alliance.Blue));
+		}
+	}
+
+	/**
 	 * Get the path follower with events.
 	 *
 	 * @param pathName
@@ -78,6 +92,7 @@ public class Auto {
 	 */
 	public static Command getAutonomousCommand(String pathName) {
 		// Create a path following command using AutoBuilder. This will also trigger event markers.
+		// TODO: #119 (Max) I think would be better to add the ResetLastAngularScalar here
 		return new PathPlannerAuto(pathName);
 	}
 }

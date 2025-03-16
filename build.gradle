@@ -1,6 +1,6 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2025.2.1"
+    id "edu.wpi.first.GradleRIO" version "2025.3.1"
 	id "com.peterabeles.gversion" version "1.10"
 }
 
@@ -130,5 +130,6 @@ tasks.withType(Javadoc) {
 		"https://docs.home.thethriftybot.com/javadoc",
 		"https://shenzhen-robotics-alliance.github.io/maple-sim/javadocs",
 		"https://broncbotz3481.github.io/YAGSL-Lib/docs",
+		"https://broncbotz3481.github.io/YALL/docs",
 	])
 }
