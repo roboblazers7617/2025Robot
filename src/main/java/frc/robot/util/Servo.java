@@ -12,7 +12,7 @@ import frc.robot.commands.MoveServoAndWaitCommand;
  */
 public class Servo extends edu.wpi.first.wpilibj.Servo {
 	/**
-	 * Conversion factor for the motor position. Defaults to 1.
+	 * Conversion factor for the motor position. Defaults to 180.
 	 */
 	private double positionConversionFactor;
 	/**
@@ -33,7 +33,7 @@ public class Servo extends edu.wpi.first.wpilibj.Servo {
 		super(channel);
 
 		// Default values
-		this.positionConversionFactor = 1.0;
+		this.positionConversionFactor = 180.0;
 		this.rotationSpeed = DegreesPerSecond.of(315);
 	}
 
