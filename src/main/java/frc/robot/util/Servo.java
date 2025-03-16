@@ -58,7 +58,7 @@ public class Servo extends edu.wpi.first.wpilibj.Servo {
 	 *          the case that the servo can't reach its target, this will be incorrect.
 	 * @return
 	 *         The position of the servo [0-{@link #positionConversionFactor}].
-	 * @see edu.wpi.first.wpilibj.Servo#get()
+	 * @see edu.wpi.first.wpilibj.Servo#getPosition()
 	 */
 	@Override
 	public double getAngle() {
