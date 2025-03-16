@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.DegreesPerSecondPerSecond;
 import static edu.wpi.first.units.Units.FeetPerSecond;
 import static edu.wpi.first.units.Units.Meters;
@@ -32,6 +33,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.AngularAcceleration;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearAcceleration;
 
 /**
@@ -301,11 +303,15 @@ public final class Constants {
 		 */
 		public static final double SERVO_POSITION_CONVERSION_FACTOR = 360;
 		/**
-		 * Servo angle at which the climber is engaged.
+		 * The speed of the climber ratchet servo.
+		 */
+		public static final AngularVelocity SERVO_SPEED = DegreesPerSecond.of(300);
+		/**
+		 * Servo angle at which the ratchet is engaged.
 		 */
 		public static final double SERVO_ENABLED_ANGLE = 360;
 		/**
-		 * Servo angle at which the climber is disengaged.
+		 * Servo angle at which the ratchet is disengaged.
 		 */
 		public static final double SERVO_DISABLED_ANGLE = 172;
 		/**

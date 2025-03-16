@@ -1,6 +1,9 @@
 package frc.robot.util;
 
+import static edu.wpi.first.units.Units.DegreesPerSecond;
+
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.units.measure.AngularVelocity;
 
 /**
  * An extension of WPILib's {@link edu.wpi.first.wpilibj.Servo} that adds some nice features.
@@ -10,6 +13,11 @@ public class Servo extends edu.wpi.first.wpilibj.Servo {
 	 * Conversion factor for the motor position. Defaults to 1.
 	 */
 	private double positionConversionFactor;
+	/**
+	 * How fast does the servo usually rotate? Used to calculate when the servo should have reached
+	 * its setpoint. Defaults to 315 degrees per second.
+	 */
+	private AngularVelocity rotationSpeed;
 
 	/**
 	 * Creates a new Servo.
@@ -24,6 +32,7 @@ public class Servo extends edu.wpi.first.wpilibj.Servo {
 
 		// Default values
 		this.positionConversionFactor = 1.0;
+		this.rotationSpeed = DegreesPerSecond.of(315);
 	}
 
 	/**
@@ -57,15 +66,38 @@ public class Servo extends edu.wpi.first.wpilibj.Servo {
 	}
 
 	/**
-	 * Sets the {@link #positionConversionFactor} for this servo.
+	 * Sets the {@link #positionConversionFactor} for this Servo.
 	 *
 	 * @param positionConversionFactor
-	 *            The {@link #positionConversionFactor} for this servo.
+	 *            The {@link #positionConversionFactor} to set.
 	 * @return
 	 *         This object for method chaining.
 	 */
 	public Servo setPositionConversionFactor(double positionConversionFactor) {
 		this.positionConversionFactor = positionConversionFactor;
 		return this;
+	}
+
+	/**
+	 * Sets the {@link #rotationSpeed} of this Servo.
+	 *
+	 * @param rotationSpeed
+	 *            The {@link #rotationSpeed} to set.
+	 * @return
+	 *         This object for method chaining.
+	 */
+	public Servo setRotationSpeed(AngularVelocity rotationSpeed) {
+		this.rotationSpeed = rotationSpeed;
+		return this;
+	}
+
+	/**
+	 * Gets the {@link #rotationSpeed} of this Servo.
+	 *
+	 * @return
+	 *         The {@link #rotationSpeed} of this Servo.
+	 */
+	public AngularVelocity getRotationSpeed() {
+		return rotationSpeed;
 	}
 }
