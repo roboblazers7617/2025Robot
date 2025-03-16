@@ -311,7 +311,7 @@ public final class Constants {
 		/**
 		 * Position where the climber is fully raised.
 		 */
-		public static final double CLIMBER_RAISED_POSITION = 18.0;
+		public static final double CLIMBER_RAISED_POSITION = 150;// Change back to 18.0;
 		/**
 		 * Speed at which the climber is lowered.
 		 */
@@ -319,7 +319,7 @@ public final class Constants {
 		/**
 		 * Position at which the climber is fully lowered.
 		 */
-		public static final double CLIMBER_LOWERED_POSITION = 0.0;
+		public static final double CLIMBER_LOWERED_POSITION = -150; // Change back to 0.0;
 	}
 
 	// wrist is 3:1
@@ -650,11 +650,11 @@ public final class Constants {
 		/**
 		 * DIO pin for the main beam break.
 		 */
-		public static final int MAIN_BEAM_BREAK_DIO = 0;
+		public static final int MAIN_BEAM_BREAK_DIO = 1;
 		/**
 		 * DIO pin for the secondary beam break.
 		 */
-		public static final int SECONDARY_BEAM_BREAK_DIO = 1;
+		public static final int SECONDARY_BEAM_BREAK_DIO = 0;
 		// Limit Switch constants
 		/**
 		 * DIO pin for limit switch.
