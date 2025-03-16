@@ -301,7 +301,7 @@ public final class Constants {
 		/**
 		 * The position conversion factor for the servo.
 		 */
-		public static final double SERVO_POSITION_CONVERSION_FACTOR = 360;
+		public static final double SERVO_POSITION_CONVERSION_FACTOR = 280;
 		/**
 		 * The speed of the climber ratchet servo.
 		 */
@@ -309,11 +309,11 @@ public final class Constants {
 		/**
 		 * Servo angle at which the ratchet is engaged.
 		 */
-		public static final double SERVO_ENABLED_ANGLE = 360;
+		public static final double SERVO_ENABLED_ANGLE = 280;
 		/**
 		 * Servo angle at which the ratchet is disengaged.
 		 */
-		public static final double SERVO_DISABLED_ANGLE = 172;
+		public static final double SERVO_DISABLED_ANGLE = 133;
 		/**
 		 * Speed at which the climber is raised.
 		 */
