@@ -297,13 +297,17 @@ public final class Constants {
 		 */
 		public static final int SERVO_PWM_PORT = 0;
 		/**
+		 * The position conversion factor for the servo.
+		 */
+		public static final double SERVO_POSITION_CONVERSION_FACTOR = 360;
+		/**
 		 * Servo angle at which the climber is engaged.
 		 */
-		public static final double SERVO_ENABLED_ANGLE = 180;
+		public static final double SERVO_ENABLED_ANGLE = 360;
 		/**
 		 * Servo angle at which the climber is disengaged.
 		 */
-		public static final double SERVO_DISABLED_ANGLE = 86;
+		public static final double SERVO_DISABLED_ANGLE = 172;
 		/**
 		 * Speed at which the climber is raised.
 		 */

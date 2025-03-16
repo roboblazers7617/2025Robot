@@ -13,8 +13,8 @@ import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import frc.robot.util.Servo;
 import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -52,6 +52,7 @@ public class Climber extends SubsystemBase {
 		climberEncoder.setPosition(0.0);
 
 		rachetServo = new Servo(ClimberConstants.SERVO_PWM_PORT);
+		rachetServo.setPositionConversionFactor(360);
 	}
 
 	/**
