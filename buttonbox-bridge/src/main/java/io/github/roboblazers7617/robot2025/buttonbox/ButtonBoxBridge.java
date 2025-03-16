@@ -14,6 +14,7 @@ import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.ShortMessage;
 
 import io.github.roboblazers7617.buttonbox.ButtonBoxClient;
+import io.github.roboblazers7617.buttonbox.addresses.DoubleAddress;
 import io.github.roboblazers7617.buttonbox.controls.PhysicalJoystick;
 import io.github.roboblazers7617.buttonbox.controls.PhysicalPotentiometer;
 import io.github.roboblazers7617.buttonbox.controls.PhysicalLEDRGB;
@@ -67,8 +68,18 @@ public class ButtonBoxBridge {
 	 */
 	private void configureControls(ButtonBoxClient client, MIDIDevice midiDevice) {
 		// Driver controls
-		client.addControl(new PhysicalJoystick("Driver Joystick", new MIDIAddress(midiDevice, ShortMessage.CONTROL_CHANGE, 0, 1), new MIDIAddress(midiDevice, ShortMessage.CONTROL_CHANGE, 0, 2), new MIDIAddress(midiDevice, ShortMessage.NOTE_ON, 0, 0)));
-		client.addControl(new PhysicalPotentiometer("Driver Steering Knob", new MIDIAddress(midiDevice, ShortMessage.CONTROL_CHANGE, 0, 0)));
-		client.addControl(new PhysicalLEDRGB("Mode LED", new MIDIAddress(midiDevice, ShortMessage.CONTROL_CHANGE, 0, 3), new MIDIAddress(midiDevice, ShortMessage.CONTROL_CHANGE, 0, 4), new MIDIAddress(midiDevice, ShortMessage.CONTROL_CHANGE, 0, 5)));
+		DoubleAddress steeringKnobAddress = new MIDIAddress(midiDevice, ShortMessage.CONTROL_CHANGE, 0, 0);
+
+		DoubleAddress joystickXAddress = new MIDIAddress(midiDevice, ShortMessage.CONTROL_CHANGE, 0, 1);
+		DoubleAddress joystickYAddress = new MIDIAddress(midiDevice, ShortMessage.CONTROL_CHANGE, 0, 2);
+		DoubleAddress joystickButtonAddress = new MIDIAddress(midiDevice, ShortMessage.NOTE_ON, 0, 0);
+
+		DoubleAddress modeLedRedAddress = new MIDIAddress(midiDevice, ShortMessage.CONTROL_CHANGE, 0, 3);
+		DoubleAddress modeLedGreenAddress = new MIDIAddress(midiDevice, ShortMessage.CONTROL_CHANGE, 0, 4);
+		DoubleAddress modeLedBlueAddress = new MIDIAddress(midiDevice, ShortMessage.CONTROL_CHANGE, 0, 5);
+
+		client.addControl(new PhysicalJoystick("Driver Joystick", joystickXAddress, joystickYAddress, joystickButtonAddress));
+		client.addControl(new PhysicalPotentiometer("Driver Steering Knob", steeringKnobAddress));
+		client.addControl(new PhysicalLEDRGB("Mode LED", modeLedRedAddress, modeLedGreenAddress, modeLedBlueAddress));
 	}
 }
