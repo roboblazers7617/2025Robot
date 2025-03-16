@@ -192,7 +192,7 @@ public class DrivetrainControls {
 	}
 
 	/**
-	 * {@link #driveFieldOrientedCommand(Supplier)} that uses {@link DrivetrainControls#driveButtonBox(Drivetrain, ButtonBox)}.
+	 * {@link #driveInputStreamScaledCommand(SwerveInputStream)} that uses {@link DrivetrainControls#driveButtonBox(ButtonBox)}.
 	 *
 	 * @param buttonBox
 	 *            ButtonBox to use.
