@@ -57,16 +57,22 @@ public class Climber extends SubsystemBase {
 
 	/**
 	 * Engages the ratchet.
+	 *
+	 * @return
+	 *         Command to run.
 	 */
-	private void enableRatchet() {
-		rachetServo.setAngle(ClimberConstants.SERVO_ENABLED_ANGLE);
+	private Command enableRatchetCommand() {
+		return rachetServo.moveCommand(ClimberConstants.SERVO_ENABLED_ANGLE);
 	}
 
 	/**
 	 * Disengages the ratchet.
+	 * 
+	 * @return
+	 *         Command to run.
 	 */
-	private void disableRatchet() {
-		rachetServo.setAngle(ClimberConstants.SERVO_DISABLED_ANGLE);
+	private Command disableRatchetCommand() {
+		return rachetServo.moveCommand(ClimberConstants.SERVO_DISABLED_ANGLE);
 	}
 
 	/**
@@ -76,10 +82,10 @@ public class Climber extends SubsystemBase {
 	 *         Command to run.
 	 */
 	public Command RaiseClimber() {
-		return Commands.runOnce(() -> {
-			disableRatchet();
-			climberMotor.set(ClimberConstants.RAISE_CLIMBER_SPEED);
-		}, this)
+		return disableRatchetCommand()
+				.andThen(Commands.runOnce(() -> {
+					climberMotor.set(ClimberConstants.RAISE_CLIMBER_SPEED);
+				}, this))
 				.andThen(Commands.waitUntil(() -> (climberEncoder.getPosition() >= ClimberConstants.CLIMBER_RAISED_POSITION)))
 				.finallyDo(() -> {
 					climberMotor.set(0);
@@ -93,10 +99,10 @@ public class Climber extends SubsystemBase {
 	 *         Command to run.
 	 */
 	public Command LowerClimber() {
-		return Commands.runOnce(() -> {
-			enableRatchet();
-			climberMotor.set(ClimberConstants.LOWER_CLIMBER_SPEED);
-		}, this)
+		return enableRatchetCommand()
+				.andThen(Commands.runOnce(() -> {
+					climberMotor.set(ClimberConstants.LOWER_CLIMBER_SPEED);
+				}, this))
 				.andThen(Commands.waitUntil(() -> (climberEncoder.getPosition() <= ClimberConstants.CLIMBER_LOWERED_POSITION)))
 				.finallyDo(() -> {
 					climberMotor.set(0);

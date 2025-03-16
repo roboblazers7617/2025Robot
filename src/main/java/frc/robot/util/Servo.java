@@ -4,6 +4,8 @@ import static edu.wpi.first.units.Units.DegreesPerSecond;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.MoveServoAndWaitCommand;
 
 /**
  * An extension of WPILib's {@link edu.wpi.first.wpilibj.Servo} that adds some nice features.
@@ -63,6 +65,21 @@ public class Servo extends edu.wpi.first.wpilibj.Servo {
 	@Override
 	public double getAngle() {
 		return getPosition() * positionConversionFactor;
+	}
+
+	/**
+	 * Moves this servo and finishes after the servo has reached its target position. Estimates the
+	 * amount of time this will take using the {@link #rotationSpeed}.
+	 *
+	 * @param position
+	 *            The position to set the servo to.
+	 * @return
+	 *         Command to run.
+	 * @apiNote
+	 *          The {@link #positionConversionFactor} must be in degrees for this to work.
+	 */
+	public Command moveCommand(double position) {
+		return new MoveServoAndWaitCommand(this, position);
 	}
 
 	/**
