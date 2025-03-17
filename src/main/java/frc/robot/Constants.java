@@ -74,7 +74,7 @@ public final class Constants {
 		/**
 		 * Translation axis scaling. Changes the overall maximum speed of the drivetrain in slow mode.
 		 */
-		public static final double TRANSLATION_SCALE_SLOW = 0.6;
+		public static final double TRANSLATION_SCALE_SLOW = 0.3;
 		/**
 		 * Starting pose.
 		 */
@@ -278,26 +278,48 @@ public final class Constants {
 	}
 
 	/**
-	 * Constants used to configure the autonomous program.
+	 * Constants used to configure the climber.
 	 */
 	public static class ClimberConstants {
 		/**
-		 * Port for the right climber motor.
+		 * CAN ID for the climber motor.
 		 */
 		// TODO: make sure these get set
 		// TODO: (Sam) Please update with correct values
-		public static final int RIGHT_CLIMBER_PORT = 0;
+		public static final int CLIMBER_MOTOR_CAN_ID = 51;
 		/**
-		 * Port for the left climber motor.
+		 * Gear ratio for the climber mechanism.
 		 */
-		// TODO: (Sam) Please update with correct values
-		public static final int LEFT_CLIMBER_PORT = 1;
-
+		// 80:1 gear box and diameter of spool is approx 1.59 inches and spools 5 inches
+		public static final double CLIMBER_GEAR_RATIO = 5.0 / 80.0;
 		/**
-		 * Port for the ramp pivot motor.
+		 * PWM port for the climber ratchet servo.
 		 */
-		// TODO: (Sam) Please update with correct values
-		public static final int RAMP_PIVOT_PORT = 2;
+		public static final int SERVO_PWM_PORT = 0;
+		/**
+		 * Servo angle at which the climber is engaged.
+		 */
+		public static final double SERVO_ENABLED_ANGLE = 180;
+		/**
+		 * Servo angle at which the climber is disengaged.
+		 */
+		public static final double SERVO_DISABLED_ANGLE = 86;
+		/**
+		 * Speed at which the climber is raised.
+		 */
+		public static final double RAISE_CLIMBER_SPEED = 0.7;
+		/**
+		 * Position where the climber is fully raised.
+		 */
+		public static final double CLIMBER_RAISED_POSITION = 150;// Change back to 18.0;
+		/**
+		 * Speed at which the climber is lowered.
+		 */
+		public static final double LOWER_CLIMBER_SPEED = -0.7;
+		/**
+		 * Position at which the climber is fully lowered.
+		 */
+		public static final double CLIMBER_LOWERED_POSITION = -150; // Change back to 0.0;
 	}
 
 	// wrist is 3:1
@@ -326,7 +348,7 @@ public final class Constants {
 		/**
 		 * Elevator kP.
 		 */
-		public static final double KP = .8; // 0.8
+		public static final double KP = 1.2; // 0.8
 		/**
 		 * Elevator kI.
 		 */
@@ -539,11 +561,11 @@ public final class Constants {
 		//
 		OUTTAKE_CORAL_LEVEL_4_HIGH(87.9, 1.4),
 		//
-		OUTTAKE_ALGAE_PROCESSOR(-57, .14),
+		OUTTAKE_ALGAE_PROCESSOR(-57, .1),
 		//
 		OUTTAKE_ALGAE_NET(0, 0),
 		/** elevator at bottom, wrist open so we don't crush the algae into the robot */
-		STOW_ALGAE(0, 0),
+		STOW_ALGAE(48, 0),
 		/** wrist up and elevator down */
 		STOW(125, ElevatorConstants.MIN_POSITION),
 		//
@@ -581,7 +603,7 @@ public final class Constants {
 		 */
 		public static final int CAN_ID_END_EFFECTOR = 41;
 		/*
-		 * I Belive we used this to make the numbers apear correctly in the dirvers station?
+		 * Used for making numbers apear correctly in software.
 		 */
 		public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO_END_EFFECTOR_MOTOR * 360.0;
 		/**
@@ -593,17 +615,21 @@ public final class Constants {
 				.i(0)
 				.d(0);
 		/**
-		 * DIO pin for the beam break.
-		 */
-		public static final int BEAM_BREAK_DIO = 0;
-		/**
 		 * Intake motor speed for coral. (to be changed and edited later)
 		 */
-		public static final double CORAL_INTAKE_SPEED = 0.5; // was 0.7
+		public static final double CORAL_MAIN_INTAKE_SPEED = 0.5;
+		/**
+		 * Intake motor speed for coral after hitting main beam break. (to be changed and edited later)
+		 */
+		public static final double CORAL_SECONDARY_INTAKE_SPEED = 0.05;
+		/**
+		 * Intake motor speed for the coral to be behind secondary beam break for L4 scoring
+		 */
+		public static final double CORAL_BACKUP_SPEED = -0.1;
 		/**
 		 * Outtake motor speed for coral. (to be changed and edited later)
 		 */
-		public static final double CORAL_OUTAKE_SPEED = 0.2;
+		public static final double CORAL_OUTAKE_SPEED = 0.5;
 		/**
 		 * Intake motor speed for algae. (to be changed and edited later)
 		 */
@@ -611,7 +637,11 @@ public final class Constants {
 		/**
 		 * Outtake motor speed for algae. (to be changed and edited later)
 		 */
-		public static final double ALGAE_OUTAKE_SPEED = 1;
+		public static final double ALGAE_OUTAKE_SPEED = 1.0;
+		/**
+		 * Speed that the motor will use to keep force on the Algae while it is being held.
+		 */
+		public static final double ALGAE_HOLD_SPEED = -0.1;
 		/**
 		 * Time (in seconds) that the motors run after beam break detects no coral after using the outtake command
 		 */
@@ -620,19 +650,20 @@ public final class Constants {
 		 * Time (in seconds) that the motors run after algae outake is called to eject algae.
 		 */
 		public static final double ALGAE_OUTTAKE_RUN_TIME = 0.3;
+		// Beam Break constants
 		/**
-		 * Time (in seconds) determines how long the break period is before the Current spike can be detected.
-		 * This allows it to not shutoff with the initial motor startup spike. (this will need to be adjusted)
+		 * DIO pin for the main beam break.
 		 */
-		public static final double MOTOR_CURRENT_CHECK_DELAY = 0.1;
+		public static final int MAIN_BEAM_BREAK_DIO = 1;
 		/**
-		 * Limit to the current before it shuts off the motor for the Algae Intake system. (also needs to be adjusted)
+		 * DIO pin for the secondary beam break.
 		 */
-		public static final double AlGAE_INTAKE_CURRENT_SHUTOFF_THRESHOLD = 25.0;
+		public static final int SECONDARY_BEAM_BREAK_DIO = 0;
+		// Limit Switch constants
 		/**
-		 * Alternate method to shutof algae intake method using a minimum motor speed limit.
+		 * DIO pin for limit switch.
 		 */
-		public static final double ALGAE_INTAKE_MINIMUM_SHUTOFF_SPEED = -0.05;
+		public static final int LIMIT_SWITCH_DIO = 4;
 	}
 
 	/**
@@ -642,12 +673,10 @@ public final class Constants {
 		/**
 		 * Ramp gear ratio.
 		 */
-		// TODO: set proper gear ratio
 		public static final double RAMP_MOTOR_GEAR_RATIO = (1.0 / 60.0);
 		/**
 		 * Ramp CAN ID.
 		 */
-		// TODO: set ramp CAN_ID once assigned
 		public static final int RAMP_MOTOR_CAN_ID = 32;
 		/**
 		 * PID config for the motor controller.
@@ -661,16 +690,19 @@ public final class Constants {
 		 * Ramp motor's current limit.
 		 */
 		public static final int RAMP_MOTOR_CURRENT_LIMIT = 20;
-		/*
-		 * I Belive we used this to make the numbers apear correctly in the dirvers station?
-		 * May be a usesless holdover from arm code test though.
+		/**
+		 * Used for controlling the position of the motor correctly.
+		 * Used to display the correct degree values in software.
 		 */
 		public static final double POSITION_CONVERSION_FACTOR = RAMP_MOTOR_GEAR_RATIO * 360.0;
 		/**
-		 * Ramp Stow Position.
+		 * Ramp stow position.
 		 */
-		// TODO: Update with final value
-		public static final double RAMP_STOW_POSITION = 75.0;
+		public static final double RAMP_STOW_POSITION = 92.0;
+		/**
+		 * Ramp deploy position.
+		 */
+		public static final double RAMP_DEPLOY_POSITION = 0.0;
 	}
 
 	/**
@@ -685,7 +717,6 @@ public final class Constants {
 		/**
 		 * Constants relating to the reef.
 		 */
-		// TODO: #101 (Max) This will work for moving to score a coral. How do you move to remove an algae?
 		public static class Reef {
 			/**
 			 * AprilTag IDs for the reef on the blue alliance.
@@ -698,7 +729,7 @@ public final class Constants {
 			/**
 			 * Offset from the AprilTag from which coral scoring should happen.
 			 */
-			public static final Transform2d CORAL_SCORING_OFFSET = new Transform2d(Meters.of(0.4), Meters.of(0.33 / 2), Rotation2d.k180deg);
+			public static final Transform2d CORAL_SCORING_OFFSET = new Transform2d(Meters.of(0.5), Meters.of(0.33 / 2), Rotation2d.k180deg);
 			/**
 			 * Offset from the AprilTag from which algae scoring should happen.
 			 */
@@ -809,6 +840,71 @@ public final class Constants {
 				ALGAE_SCORING_POSE_BLUE = pose2d.transformBy(SCORING_OFFSET);
 				ALGAE_SCORING_POSE_RED = PoseUtil.flipPose(ALGAE_SCORING_POSE_BLUE);
 			}
+		}
+	}
+
+	/**
+	 * Poses that the robot can score from.
+	 */
+	public static class ScoringPoses {
+		// TODO: Add poses for pathfinding to the coral station and the cages
+		/**
+		 * Poses from which the robot can score coral on the left side on the blue alliance.
+		 */
+		public static final List<Pose2d> CORAL_SCORING_POSES_BLUE_LEFT = new ArrayList<Pose2d>();
+		/**
+		 * Poses from which the robot can score coral on the right side on the blue alliance.
+		 */
+		public static final List<Pose2d> CORAL_SCORING_POSES_BLUE_RIGHT = new ArrayList<Pose2d>();
+		/**
+		 * Poses from which the robot can score coral on the left side on the red alliance.
+		 */
+		public static final List<Pose2d> CORAL_SCORING_POSES_RED_LEFT = new ArrayList<Pose2d>();
+		/**
+		 * Poses from which the robot can score coral on the right side on the red alliance.
+		 */
+		public static final List<Pose2d> CORAL_SCORING_POSES_RED_RIGHT = new ArrayList<Pose2d>();
+		/**
+		 * Poses from which the robot can score algae on the blue alliance.
+		 */
+		public static final List<Pose2d> ALGAE_SCORING_POSES_BLUE = new ArrayList<Pose2d>();
+		/**
+		 * Poses from which the robot can score algae on the red alliance.
+		 */
+		public static final List<Pose2d> ALGAE_SCORING_POSES_RED = new ArrayList<Pose2d>();
+
+		static {
+			// Compile CORAL_SCORING_POSES_BLUE_LEFT poses
+			FieldConstants.Reef.CORAL_SCORING_POSES_BLUE_LEFT.forEach((pose) -> {
+				CORAL_SCORING_POSES_BLUE_LEFT.add(pose);
+			});
+
+			// Compile CORAL_SCORING_POSES_BLUE_RIGHT poses
+			FieldConstants.Reef.CORAL_SCORING_POSES_BLUE_RIGHT.forEach((pose) -> {
+				CORAL_SCORING_POSES_BLUE_RIGHT.add(pose);
+			});
+
+			// Compile CORAL_SCORING_POSES_RED_LEFT poses
+			FieldConstants.Reef.CORAL_SCORING_POSES_RED_LEFT.forEach((pose) -> {
+				CORAL_SCORING_POSES_RED_LEFT.add(pose);
+			});
+
+			// Compile CORAL_SCORING_POSES_RED_RIGHT poses
+			FieldConstants.Reef.CORAL_SCORING_POSES_RED_RIGHT.forEach((pose) -> {
+				CORAL_SCORING_POSES_RED_RIGHT.add(pose);
+			});
+
+			// Compile ALGAE_SCORING_POSES_BLUE poses
+			FieldConstants.Reef.ALGAE_SCORING_POSES_BLUE.forEach((pose) -> {
+				ALGAE_SCORING_POSES_BLUE.add(pose);
+			});
+			ALGAE_SCORING_POSES_BLUE.add(FieldConstants.Processor.ALGAE_SCORING_POSE_BLUE);
+
+			// Compile ALGAE_SCORING_POSES_RED poses
+			FieldConstants.Reef.ALGAE_SCORING_POSES_RED.forEach((pose) -> {
+				ALGAE_SCORING_POSES_RED.add(pose);
+			});
+			ALGAE_SCORING_POSES_RED.add(FieldConstants.Processor.ALGAE_SCORING_POSE_RED);
 		}
 	}
 }

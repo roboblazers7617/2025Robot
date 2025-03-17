@@ -5,17 +5,21 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.ScoringPoses;
 import frc.robot.Constants.DashboardConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.LoggingConstants;
 import frc.robot.subsystems.EndEffector.EndEffector;
-import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.util.Util;
 import frc.robot.util.Elastic;
 import frc.robot.Constants.OperatorConstants.GamepieceMode;
 import frc.robot.Constants.ArmPosition;
 import frc.robot.commands.StubbedCommands;
-
+import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.drivetrain.DrivetrainControls;
+import frc.robot.subsystems.Auto;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.IntakeRamp.Ramp;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -48,10 +52,13 @@ public class RobotContainer {
 	@NotLogged
 	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
 	@NotLogged
+	private final DrivetrainControls drivetrainControls = new DrivetrainControls(drivetrain);
+	@NotLogged
 	private final Dashboard dashboard = new Dashboard(drivetrain, this);
-	private final EndEffector endEffector = new EndEffector();
+	private final EndEffector endEffector = new EndEffector(this);
 	private final Elevator elevator = new Elevator(this);
 	private final Ramp ramp = new Ramp();
+	private final Climber climber = new Climber();
 
 	/**
 	 * The Controller used by the Driver of the robot, primarily controlling the drivetrain.
@@ -82,8 +89,8 @@ public class RobotContainer {
 		configureDriverControls();
 		configureOperatorControls();
 		// Configure the Limelight mode switching
-		new Trigger(DriverStation::isEnabled).onTrue(drivetrain.getVision().onEnableCommand());
-		new Trigger(DriverStation::isDisabled).onTrue(drivetrain.getVision().onDisableCommand());
+		// new Trigger(DriverStation::isEnabled).onTrue(drivetrain.getVision().onEnableCommand());
+		// new Trigger(DriverStation::isDisabled).onTrue(drivetrain.getVision().onDisableCommand());
 		// By default interact with Coral
 		gamepieceMode = GamepieceMode.CORAL_MODE;
 	}
@@ -93,7 +100,12 @@ public class RobotContainer {
 	 */
 	public void autoInit() {
 		// Set the Elastic tab
-		Elastic.selectTab(DashboardConstants.AUTO_TAB_NAME);
+		if (!LoggingConstants.DEBUG_MODE) {
+			Elastic.selectTab(DashboardConstants.AUTO_TAB_NAME);
+		}
+
+		// Configure AutoBuilder if not already configured
+		Auto.setupPathPlannerFailsafe(drivetrain);
 
 		elevator.elevatorInit();
 	}
@@ -109,13 +121,16 @@ public class RobotContainer {
 		if (!LoggingConstants.DEBUG_MODE) {
 			Elastic.selectTab(DashboardConstants.TELEOP_TAB_NAME);
 		}
-		if (StubbedCommands.EndEffector.isHoldingAlage()) {
-			gamepieceMode = GamepieceMode.ALGAE_MODE;
-		}
+		// if (StubbedCommands.EndEffector.isHoldingAlage()) {
+		// gamepieceMode = GamepieceMode.ALGAE_MODE;
+		// }
 
-		else {
-			gamepieceMode = GamepieceMode.CORAL_MODE;
-		}
+		// else {
+		// gamepieceMode = GamepieceMode.CORAL_MODE;
+		// }
+
+		// Configure AutoBuilder if not already configured
+		Auto.setupPathPlannerFailsafe(drivetrain);
 
 		elevator.elevatorInit();
 	}
@@ -127,27 +142,40 @@ public class RobotContainer {
 		// Set the default drivetrain command (used for the driver controller)
 		if (RobotBase.isSimulation()) {
 			// Heading control
-			drivetrain.setDefaultCommand(drivetrain.driveFieldOrientedDirectAngleSimControllerCommand(driverController));
+			drivetrain.setDefaultCommand(drivetrainControls.driveFieldOrientedDirectAngleSimCommand(driverController));
 		} else {
 			// Heading control
-			drivetrain.setDefaultCommand(drivetrain.driveFieldOrientedDirectAngleControllerCommand(driverController));
+			drivetrain.setDefaultCommand(drivetrainControls.driveFieldOrientedDirectAngleCommand(driverController));
 			// Angular velocity control
 			driverController.leftBumper()
-					.whileTrue(drivetrain.driveFieldOrientedAngularVelocityControllerCommand(driverController));
+					.whileTrue(drivetrainControls.driveFieldOrientedAngularVelocityCommand(driverController));
 		}
-		driverController.a().whileTrue(StubbedCommands.Drivetrain.DriverSlowMode());
-		driverController.b().whileTrue(StubbedCommands.Drivetrain.DriverFastMode());
-		driverController.x().whileTrue(StubbedCommands.Drivetrain.LockWheels());
-		driverController.y().onTrue(StubbedCommands.Climber.StowRamp());
-		driverController.povDown().whileTrue(StubbedCommands.Climber.ClimberDown());
-		driverController.povLeft().whileTrue(StubbedCommands.Climber.RampUp());
-		driverController.povRight().whileTrue(StubbedCommands.Climber.RampDown());
-		driverController.povUp().whileTrue(StubbedCommands.Climber.AutoClimb());
-		// TODO: #137 Put actual commands to align to reef
-		driverController.rightBumper().whileTrue(StubbedCommands.Drivetrain.AlignMiddleOfTag());
-		driverController.leftTrigger().whileTrue(StubbedCommands.Drivetrain.AlignLeftOfTag());
-		driverController.rightTrigger().whileTrue(StubbedCommands.Drivetrain.AlignRightOfTag());
-		driverController.start().onTrue(Commands.runOnce(() -> drivetrain.zeroGyro(), drivetrain));
+
+		driverController.a().onTrue(ramp.RampDeploy());
+		driverController.b().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_FAST));
+		driverController.x().whileTrue(drivetrain.lockCommand());
+		driverController.y().onTrue(elevator.SetPositionCommand(ArmPosition.STOW).andThen(ramp.RampRetract()));
+
+		driverController.povUp().whileTrue(climber.RaiseClimber());
+		driverController.povDown().whileTrue(climber.LowerClimber());
+
+		// Scoring pose pathfinding
+		driverController.leftTrigger()
+				.and(isAlgaeModeTrigger)
+				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.ALGAE_SCORING_POSES_RED), drivetrain.driveToNearestPoseCommand(ScoringPoses.ALGAE_SCORING_POSES_BLUE), () -> Util.isRedAlliance()));
+		driverController.leftTrigger()
+				.and(isCoralModeTrigger)
+				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_RED_LEFT), drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_BLUE_LEFT), () -> Util.isRedAlliance()));
+		driverController.rightTrigger()
+				.and(isAlgaeModeTrigger)
+				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.ALGAE_SCORING_POSES_RED), drivetrain.driveToNearestPoseCommand(ScoringPoses.ALGAE_SCORING_POSES_BLUE), () -> Util.isRedAlliance()));
+		driverController.rightTrigger()
+				.and(isCoralModeTrigger)
+				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_RED_RIGHT), drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_BLUE_RIGHT), () -> Util.isRedAlliance()));
+
+		driverController.rightBumper().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_SLOW));
+
+		driverController.start().onTrue(drivetrain.zeroGyroWithAllianceCommand());
 		driverController.back().onTrue(StubbedCommands.Drivetrain.DisableVision());
 	}
 
@@ -161,29 +189,29 @@ public class RobotContainer {
 		operatorController.a()
 				.onTrue(endEffector.StopIntakeMotor());
 		operatorController.b()
-				.or(operatorController.leftTrigger())
+				.or(operatorController.rightTrigger())
 				.and(isAlgaeModeTrigger)
 				.onTrue(endEffector.AlgaeIntake());
 		operatorController.b()
-				.or(operatorController.leftTrigger())
+				.or(operatorController.rightTrigger())
 				.and(isCoralModeTrigger)
 				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_CORAL_CORAL_STATION)
 						.andThen(endEffector.CoralIntake())
 						.andThen(elevator.SetPositionCommand(ArmPosition.STOW)));
 		operatorController.x()
-				.and(() -> isHoldingAlgae())
+				.and(() -> gamepieceMode == GamepieceMode.ALGAE_MODE) // temp
 				.onTrue(elevator.SetPositionCommand(ArmPosition.STOW_ALGAE)
 						.alongWith(endEffector.StopIntakeMotor()));
 		operatorController.x()
-				.and(() -> !isHoldingAlgae())
+				.and(() -> gamepieceMode == GamepieceMode.CORAL_MODE) // temp
 				.onTrue(elevator.SetPositionCommand(ArmPosition.STOW)
 						.alongWith(endEffector.StopIntakeMotor()));
 		operatorController.y()
-				.or(operatorController.leftBumper())
+				.or(operatorController.leftTrigger())
 				.and(isAlgaeModeTrigger)
 				.onTrue(endEffector.AlgaeOuttake());
 		operatorController.y()
-				.or(operatorController.leftBumper())
+				.or(operatorController.leftTrigger())
 				.and(isCoralModeTrigger)
 				.onTrue(endEffector.CoralOuttake()
 						.alongWith(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4_HIGH).onlyIf(() -> elevator.getElevatorTarget() == ArmPosition.OUTTAKE_CORAL_LEVEL_4.ELEVATOR_POSITION)));
@@ -210,26 +238,45 @@ public class RobotContainer {
 				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_ALGAE_LEVEL_3));
 		operatorController.povUp()
 				.and(isCoralModeTrigger)
-				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4));
+				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4).alongWith(endEffector.CoralBackup()));
 
 		// Left Bumper is on an or with the Y button above
-		operatorController.rightBumper().onTrue(setGamepieceModeCommand(GamepieceMode.ALGAE_MODE));
-		// Left Trigger is on an or with the B button above
-		operatorController.rightTrigger().onTrue(setGamepieceModeCommand(GamepieceMode.CORAL_MODE));
+		operatorController.rightBumper().onTrue(toggleGamepieceModeCommand());
+		operatorController.leftBumper().onTrue(endEffector.CoralBackup());
 	}
 
+	/**
+	 * Gets the {@link #gamepieceMode}.
+	 *
+	 * @return
+	 *         The current {@link #gamepieceMode}.
+	 */
 	public GamepieceMode getGamepieceMode() {
 		return gamepieceMode;
 	}
 
-	private Command setGamepieceModeCommand(GamepieceMode mode) {
+	/**
+	 * Switches the {@link #gamepieceMode} to the next mode.
+	 *
+	 * @return
+	 *         Command to run.
+	 */
+	private Command toggleGamepieceModeCommand() {
 		return Commands.runOnce(() -> {
-			gamepieceMode = mode;
+			switch (gamepieceMode) {
+				case CORAL_MODE:
+					gamepieceMode = GamepieceMode.ALGAE_MODE;
+					break;
+
+				case ALGAE_MODE:
+					gamepieceMode = GamepieceMode.CORAL_MODE;
+					break;
+			}
 		});
 	}
 
 	public boolean isHoldingAlgae() {
-		return endEffector.isHoldingAlage();
+		return endEffector.isHoldingAlgae();
 	}
 
 	public boolean isHoldingCoral() {

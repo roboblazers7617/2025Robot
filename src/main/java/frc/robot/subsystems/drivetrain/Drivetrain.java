@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.VisionConstants;
@@ -121,14 +120,10 @@ public class Drivetrain extends SubsystemBase {
 	 * Gets the swerve drive object.
 	 *
 	 * @return
-	 *         {@link SwerveDrive}
+	 *         {@link #swerveDrive}
 	 */
 	public SwerveDrive getSwerveDrive() {
 		return swerveDrive;
-	}
-
-	public Vision getVision() {
-		return vision;
 	}
 
 	/**
@@ -165,6 +160,16 @@ public class Drivetrain extends SubsystemBase {
 	 */
 	public SwerveDriveKinematics getKinematics() {
 		return swerveDrive.kinematics;
+	}
+
+	/**
+	 * Gets the vision object.
+	 *
+	 * @return
+	 *         {@link #vision}
+	 */
+	public Vision getVision() {
+		return vision;
 	}
 
 	/**
@@ -240,6 +245,8 @@ public class Drivetrain extends SubsystemBase {
 	/**
 	 * Resets the gyro angle to zero and resets odometry to the same position, but facing toward 0.
 	 *
+	 * @apiNote
+	 *          The resulting rotation will be flipped 180 degrees from what is expected for alliance-relative when run on the Red alliance.
 	 * @see SwerveDrive#zeroGyro()
 	 */
 	public void zeroGyro() {
@@ -249,6 +256,8 @@ public class Drivetrain extends SubsystemBase {
 	/**
 	 * Resets the gyro angle to zero and resets odometry to the same position, but facing toward 0.
 	 *
+	 * @apiNote
+	 *          The resulting rotation will be flipped 180 degrees from what is expected for alliance-relative when run on the Red alliance.
 	 * @see #zeroGyro()
 	 */
 	public Command zeroGyroCommand() {
@@ -259,11 +268,9 @@ public class Drivetrain extends SubsystemBase {
 	/**
 	 * This will zero (calibrate) the robot to assume the current position is facing forward
 	 * <p>
-	 * If red alliance rotate the robot 180 after the drviebase zero command
+	 * If on the Red alliance, it rotates the robot 180 degrees after the drivebase zero command to make it alliance-relative.
 	 */
 	public void zeroGyroWithAlliance() {
-		// TODO: (Max) What happens if this is called more than once? Seems like there needs to be logic that it
-		// is only called under certain circumstances.
 		if (Util.isRedAlliance()) {
 			zeroGyro();
 			// Set the pose 180 degrees
@@ -271,6 +278,18 @@ public class Drivetrain extends SubsystemBase {
 		} else {
 			zeroGyro();
 		}
+	}
+
+	/**
+	 * Resets the gyro angle to zero and resets odometry to the same position, but facing toward 0.
+	 * <p>
+	 * If on the Red alliance, it rotates the robot 180 degrees after the drivebase zero command to make it alliance-relative.
+	 *
+	 * @see #zeroGyroWithAlliance()
+	 */
+	public Command zeroGyroWithAllianceCommand() {
+		return Commands.runOnce(() -> zeroGyroWithAlliance(), this)
+				.ignoringDisable(true);
 	}
 
 	/**
@@ -594,8 +613,7 @@ public class Drivetrain extends SubsystemBase {
 	 *
 	 * @param velocity
 	 *            Velocity according to the field.
-	 * @see
-	 *      SwerveDrive#driveFieldOriented(ChassisSpeeds)
+	 * @see SwerveDrive#driveFieldOriented(ChassisSpeeds)
 	 */
 	public void driveFieldOriented(ChassisSpeeds velocity) {
 		swerveDrive.driveFieldOriented(velocity);
@@ -608,50 +626,12 @@ public class Drivetrain extends SubsystemBase {
 	 *            Velocity according to the field.
 	 * @return
 	 *         Command to run
-	 * @see
-	 *      SwerveDrive#driveFieldOriented(ChassisSpeeds)
+	 * @see SwerveDrive#driveFieldOriented(ChassisSpeeds)
 	 */
 	public Command driveFieldOrientedCommand(Supplier<ChassisSpeeds> velocity) {
 		return run(() -> {
-			swerveDrive.driveFieldOriented(velocity.get());
+			driveFieldOriented(velocity.get());
 		});
-	}
-
-	/**
-	 * {@link #driveFieldOrientedCommand(Supplier)} that uses {@link DrivetrainControls#driveAngularVelocity(Drivetrain, CommandXboxController)}. Calls {@link #resetLastAngleScalar()} on end to prevent snapback.
-	 *
-	 * @param controller
-	 *            Controller to use.
-	 * @return
-	 *         Command to run.
-	 */
-	public Command driveFieldOrientedAngularVelocityControllerCommand(CommandXboxController controller) {
-		return driveFieldOrientedCommand(DrivetrainControls.driveAngularVelocity(this, controller))
-				.finallyDo(this::resetLastAngleScalar);
-	}
-
-	/**
-	 * {@link #driveFieldOrientedCommand(Supplier)} that uses {@link DrivetrainControls#driveDirectAngle(Drivetrain, CommandXboxController)}.
-	 *
-	 * @param controller
-	 *            Controller to use.
-	 * @return
-	 *         Command to run.
-	 */
-	public Command driveFieldOrientedDirectAngleControllerCommand(CommandXboxController controller) {
-		return driveFieldOrientedCommand(DrivetrainControls.driveDirectAngle(this, controller));
-	}
-
-	/**
-	 * {@link #driveFieldOrientedCommand(Supplier)} that uses {@link DrivetrainControls#driveDirectAngleSim(Drivetrain, CommandXboxController)}.
-	 *
-	 * @param controller
-	 *            Controller to use.
-	 * @return
-	 *         Command to run.
-	 */
-	public Command driveFieldOrientedDirectAngleSimControllerCommand(CommandXboxController controller) {
-		return driveFieldOrientedCommand(DrivetrainControls.driveDirectAngleSim(this, controller));
 	}
 
 	/**

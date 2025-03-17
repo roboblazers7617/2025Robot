@@ -9,12 +9,15 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.OperatorConstants.GamepieceMode;
 import frc.robot.commands.RunOnceDeferred;
 import frc.robot.commands.drivetrain.LockWheelsCommand;
 import frc.robot.subsystems.Auto;
@@ -30,6 +33,8 @@ public class Dashboard {
 	final SendableChooser<DriverStation.Alliance> alliancePicker;
 	final SendableChooser<Pose2d> pose;
 	SendableChooser<Command> auto;
+	/** Is the robot in coral mode, if not then it is assumed it is in algae mode. */
+	private final BooleanPublisher isCoralMode;
 
 	/** Creates a new Dashboard. */
 	public Dashboard(Drivetrain drivetrain, RobotContainer robotContainer) {
@@ -52,6 +57,10 @@ public class Dashboard {
 		pose.setDefaultOption("center edge on blue side", new Pose2d(.5, 4, new Rotation2d(0)));
 		pose.addOption("position 2", new Pose2d(0, 0, new Rotation2d(45)));
 		pose.addOption("center edge on red side", new Pose2d(17, 4, new Rotation2d(0)));
+
+		isCoralMode = NetworkTableInstance.getDefault().getTable("").getBooleanTopic("CoralMode").publish();
+		isCoralMode.set(true);
+		new Trigger(() -> robotContainer.getGamepieceMode() == GamepieceMode.CORAL_MODE).onChange(new InstantCommand(() -> isCoralMode.set(robotContainer.getGamepieceMode() == GamepieceMode.CORAL_MODE)));
 
 		// pose.onChange((pose) -> {
 		// drivetrain.resetOdometry(pose);
