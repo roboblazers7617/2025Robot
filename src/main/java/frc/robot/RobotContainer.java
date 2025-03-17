@@ -243,6 +243,7 @@ public class RobotContainer {
 
 		// Left Bumper is on an or with the Y button above
 		operatorController.rightBumper().onTrue(toggleGamepieceModeCommand());
+		operatorController.leftBumper().onTrue(endEffector.CoralBackup());
 	}
 
 	/**
