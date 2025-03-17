@@ -239,10 +239,11 @@ public class RobotContainer {
 				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_ALGAE_LEVEL_3));
 		operatorController.povUp()
 				.and(isCoralModeTrigger)
-				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4));
+				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4).alongWith(endEffector.CoralBackup()));
 
 		// Left Bumper is on an or with the Y button above
 		operatorController.rightBumper().onTrue(toggleGamepieceModeCommand());
+		operatorController.leftBumper().onTrue(endEffector.CoralBackup());
 	}
 
 	/**
@@ -283,9 +284,7 @@ public class RobotContainer {
 		return endEffector.isHoldingCoral();
 	}
 
-	/**
-	 * Use this to pass the autonomous command to the main {@link Robot} class.
-	 *
+	/*
 	 * @return the command to run in autonomous
 	 */
 	public Command getAutonomousCommand() {
