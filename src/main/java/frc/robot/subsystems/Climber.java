@@ -17,6 +17,7 @@ import frc.robot.util.Servo;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
 
@@ -99,7 +100,7 @@ public class Climber extends SubsystemBase {
 	 *         Command to run.
 	 */
 	public Command LowerClimber() {
-		return enableRatchetCommand()
+		return new ScheduleCommand(enableRatchetCommand())
 				.andThen(Commands.runOnce(() -> {
 					climberMotor.set(ClimberConstants.LOWER_CLIMBER_SPEED);
 				}, this))
