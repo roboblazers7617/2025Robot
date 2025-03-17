@@ -60,11 +60,11 @@ public final class Constants {
 		/**
 		 * The robot's COG with the elevator in the minimum position.
 		 */
-		public static final Translation3d COG_ELEVATOR_DOWN = new Translation3d(0, 0, Inches.of(8).in(Meters));
+		public static final Translation3d COG_ELEVATOR_DOWN = new Translation3d(0, 0, Inches.of(10).in(Meters));
 		/**
 		 * The robot's COG with the elevator in the {@link ElevatorConstants#MAX_POSITION maximum position}.
 		 */
-		public static final Translation3d COG_ELEVATOR_UP = new Translation3d(0, 0, Inches.of(15).in(Meters));
+		public static final Translation3d COG_ELEVATOR_UP = new Translation3d(0, 0, Inches.of(25).in(Meters));
 	}
 
 	/**
