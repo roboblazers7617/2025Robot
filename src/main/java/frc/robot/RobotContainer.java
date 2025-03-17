@@ -147,7 +147,7 @@ public class RobotContainer {
 					.whileTrue(drivetrainControls.driveFieldOrientedAngularVelocityCommand(driverController));
 		}
 
-		driverController.a().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_SLOW));
+		driverController.a().onTrue(ramp.RampDeploy());
 		driverController.b().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_FAST));
 		driverController.x().whileTrue(drivetrain.lockCommand());
 		driverController.y().onTrue(elevator.SetPositionCommand(ArmPosition.STOW).andThen(ramp.RampRetract()));
@@ -163,8 +163,13 @@ public class RobotContainer {
 				.and(isCoralModeTrigger)
 				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_RED_LEFT), drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_BLUE_LEFT), () -> Util.isRedAlliance()));
 		driverController.rightTrigger()
+				.and(isAlgaeModeTrigger)
+				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.ALGAE_SCORING_POSES_RED), drivetrain.driveToNearestPoseCommand(ScoringPoses.ALGAE_SCORING_POSES_BLUE), () -> Util.isRedAlliance()));
+		driverController.rightTrigger()
 				.and(isCoralModeTrigger)
 				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_RED_RIGHT), drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_BLUE_RIGHT), () -> Util.isRedAlliance()));
+
+		driverController.rightBumper().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_SLOW));
 
 		driverController.start().onTrue(drivetrain.zeroGyroWithAllianceCommand());
 		driverController.back().onTrue(StubbedCommands.Drivetrain.DisableVision());
@@ -185,11 +190,11 @@ public class RobotContainer {
 		operatorController.a()
 				.onTrue(endEffector.StopIntakeMotor());
 		operatorController.b()
-				.or(operatorController.leftTrigger())
+				.or(operatorController.rightTrigger())
 				.and(isAlgaeModeTrigger)
 				.onTrue(endEffector.AlgaeIntake());
 		operatorController.b()
-				.or(operatorController.leftTrigger())
+				.or(operatorController.rightTrigger())
 				.and(isCoralModeTrigger)
 				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_CORAL_CORAL_STATION)
 						.andThen(endEffector.CoralIntake())
@@ -203,11 +208,11 @@ public class RobotContainer {
 				.onTrue(elevator.SetPositionCommand(ArmPosition.STOW)
 						.alongWith(endEffector.StopIntakeMotor()));
 		operatorController.y()
-				.or(operatorController.leftBumper())
+				.or(operatorController.leftTrigger())
 				.and(isAlgaeModeTrigger)
 				.onTrue(endEffector.AlgaeOuttake());
 		operatorController.y()
-				.or(operatorController.leftBumper())
+				.or(operatorController.leftTrigger())
 				.and(isCoralModeTrigger)
 				.onTrue(endEffector.CoralOuttake()
 						.alongWith(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4_HIGH).onlyIf(() -> elevator.getElevatorTarget() == ArmPosition.OUTTAKE_CORAL_LEVEL_4.ELEVATOR_POSITION)));
