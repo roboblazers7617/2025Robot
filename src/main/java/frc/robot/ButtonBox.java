@@ -59,7 +59,7 @@ public class ButtonBox extends SubsystemBase {
 				break;
 
 			case ALGAE_MODE:
-				modeLED.setColor(Color.kAquamarine);
+				modeLED.setColor(new Color(0, 1, 0.64));
 				break;
 		}
 	}
