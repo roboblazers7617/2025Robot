@@ -291,7 +291,7 @@ public class RobotContainer {
 		NamedCommands.registerCommand("Elevator L1 Position", elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_1));
 		NamedCommands.registerCommand("Elevator L2 Position", elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_2));
 		NamedCommands.registerCommand("Elevator L3 Position", elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_3));
-		NamedCommands.registerCommand("Elevator L4 Position", elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4));
+		NamedCommands.registerCommand("Elevator L4 Position", elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4).alongWith(endEffector.CoralBackup()));
 		NamedCommands.registerCommand("Elevator Processor Position", elevator.SetPositionCommand(ArmPosition.OUTTAKE_ALGAE_PROCESSOR));
 
 		NamedCommands.registerCommand("Stow Empty", elevator.SetPositionCommand(ArmPosition.INTAKE_CORAL_CORAL_STATION));

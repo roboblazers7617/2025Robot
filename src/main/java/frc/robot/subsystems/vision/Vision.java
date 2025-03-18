@@ -1,6 +1,8 @@
 package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.VisionConstants;
@@ -70,7 +72,7 @@ public class Vision {
 	 */
 	public void updatePoseEstimation() {
 		// Get robot pose from YAGSL and use it to set the orientation in Limelight
-		frontLimelight.setRobotOrientation(swerveDrive.getGyroRotation3d());
+		frontLimelight.setRobotOrientation(new Rotation3d(swerveDrive.getPose().getRotation()));
 		// backLimelight.setRobotOrientation(swerveDrive.getGyroRotation3d());
 
 		// Get pose estimates from Limelights
@@ -79,7 +81,7 @@ public class Vision {
 
 		for (PoseEstimate poseEstimate : frontLimelightPoseEstimates) {
 			// Don't try to use a null PoseEstimate
-			if (poseEstimate != null) {
+			if (poseEstimate != null && DriverStation.isEnabled()) {
 				// Only update vision if our angular velocity is less than 720 degrees per second and a tag was detected
 				if (Math.abs(swerveDrive.getMaximumChassisAngularVelocity()) < 720 && poseEstimate.tagCount > 0) {
 					swerveDrive.addVisionMeasurement(poseEstimate.getPose2d(), poseEstimate.getTimestampSeconds(), VecBuilder.fill(.7, .7, 9999999));

@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Barge Start Right to Branch F"
+                  "pathName": "Barge Start Left to Branch I"
                 }
               },
               {
@@ -44,18 +44,18 @@
                       }
                     },
                     {
-                      "type": "path",
+                      "type": "named",
                       "data": {
-                        "pathName": "Branch F to Coral Station Right Far"
+                        "name": "Intake Coral"
                       }
                     }
                   ]
                 }
               },
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "Intake Coral"
+                  "pathName": "Branch I to Coral Station Left Far"
                 }
               }
             ]
@@ -68,7 +68,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Coral Station Right Far to Branch D"
+                  "pathName": "Coral Station Left Far  to Branch K"
                 }
               },
               {
@@ -101,18 +101,18 @@
                       }
                     },
                     {
-                      "type": "path",
+                      "type": "named",
                       "data": {
-                        "pathName": "Branch D to Coral Station Right Far"
+                        "name": "Intake Coral"
                       }
                     }
                   ]
                 }
               },
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "Intake Coral"
+                  "pathName": "Branch K to Coral Station Left Far"
                 }
               }
             ]
@@ -125,7 +125,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Coral Station Right Far to Branch C"
+                  "pathName": "Coral Station Left Far to Branch L"
                 }
               },
               {

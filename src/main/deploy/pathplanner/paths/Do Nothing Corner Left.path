@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.65,
-        "y": 5.07
+        "x": 7.207423618861607,
+        "y": 7.503589303152901
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.4560578692159707,
-        "y": 5.2557821590455855
+        "x": 7.457423618861607,
+        "y": 7.503589303152901
       },
       "isLocked": false,
-      "linkedName": "Branch L"
+      "linkedName": "Corner Start Left"
     },
     {
       "anchor": {
-        "x": 1.55,
-        "y": 7.55
+        "x": 7.207423618861607,
+        "y": 7.503589303152901
       },
       "prevControl": {
-        "x": 1.7251646515103682,
-        "y": 7.371625829052379
+        "x": 6.957423618861607,
+        "y": 7.503589303152901
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Coral Station Left Far"
+      "linkedName": "Corner Start Left"
     }
   ],
   "rotationTargets": [],
@@ -34,7 +34,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 2.0,
-    "maxAcceleration": 3.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -54.0
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -59.99999999999999
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

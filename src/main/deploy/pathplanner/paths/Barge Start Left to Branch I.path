@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.225684465680803,
-        "y": 4.980684988839285
+        "x": 7.15,
+        "y": 6.13
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.771291979077041,
-        "y": 5.117528324818778
+        "x": 6.085037990960348,
+        "y": 6.230105503050109
       },
       "isLocked": false,
       "linkedName": "Barge Start Left"
     },
     {
       "anchor": {
-        "x": 5.355630929129465,
-        "y": 5.180993216378348
+        "x": 5.39,
+        "y": 5.09
       },
       "prevControl": {
-        "x": 5.596928875739177,
-        "y": 5.115607430752296
+        "x": 5.573218055384254,
+        "y": 5.26009157586786
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 1.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -50,5 +50,5 @@
     "velocity": 0,
     "rotation": 180.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
