@@ -2,6 +2,7 @@ package frc.robot.util;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants.FieldConstants;
 
@@ -17,8 +18,8 @@ public class PoseUtil {
 	 * @return
 	 *         Flipped pose.
 	 */
-	public static Pose2d flipPose(Pose2d pose) {
-		return new Pose2d(flipTranslation(pose.getTranslation()), pose.getRotation().rotateBy(Rotation2d.k180deg));
+	public static Pose2d flipPoseAlliance(Pose2d pose) {
+		return new Pose2d(flipTranslationAlliance(pose.getTranslation()), pose.getRotation().rotateBy(Rotation2d.k180deg));
 	}
 
 	/**
@@ -29,7 +30,19 @@ public class PoseUtil {
 	 * @return
 	 *         Flipped translation.
 	 */
-	public static Translation2d flipTranslation(Translation2d translation) {
+	public static Translation2d flipTranslationAlliance(Translation2d translation) {
 		return new Translation2d(FieldConstants.FIELD_LAYOUT.getFieldLength() - translation.getX(), FieldConstants.FIELD_LAYOUT.getFieldWidth() - translation.getY());
+	}
+
+	/**
+	 * Flips a transform across the X axis (inverts the Y axis).
+	 *
+	 * @param transform
+	 *            Transform to flip.
+	 * @return
+	 *         Flipped transform.
+	 */
+	public static Transform2d flipTransformY(Transform2d transform) {
+		return new Transform2d(transform.getMeasureX(), transform.getMeasureY().times(-1), transform.getRotation());
 	}
 }
