@@ -85,6 +85,19 @@
               "true_icon": "None",
               "false_icon": "None"
             }
+          },
+          {
+            "title": "Toggle Elevator Brake Mode",
+            "x": 256.0,
+            "y": 0.0,
+            "width": 384.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/Toggle Elevator Brake Mode",
+              "period": 0.06,
+              "show_type": true
+            }
           }
         ]
       }
