@@ -382,12 +382,12 @@ public final class Constants {
 		 * Maximum velocity in m/s.
 		 */
 		// TODO: (Brandon) Update with accurate number. Is the elevator really going to travel 3 feet in one second? Use reca.lc
-		public static final double MAX_VELOCITY = 2;
+		public static final double MAX_VELOCITY = 2.5;
 		/**
 		 * Maximum acceleration in m/s^2.
 		 */
 		// TODO: (Brandon) Update with accurate number Use reca.lc
-		public static final double MAX_ACCELERATION = 2;
+		public static final double MAX_ACCELERATION = 3;
 
 		/**
 		 * Maximum position in meters.
@@ -472,11 +472,11 @@ public final class Constants {
 		/**
 		 * Wrist kMinOutput.
 		 */
-		public static final double KMIN_OUTPUT = -.3;
+		public static final double KMIN_OUTPUT = -.5;
 		/**
 		 * Wrist kMaxOutput.
 		 */
-		public static final double KMAX_OUTPUT = .3;
+		public static final double KMAX_OUTPUT = .5;
 		/**
 		 * Maximum velocity in degrees/s.
 		 */
