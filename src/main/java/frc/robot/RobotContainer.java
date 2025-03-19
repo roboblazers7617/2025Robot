@@ -141,8 +141,11 @@ public class RobotContainer {
 			// Heading control
 			drivetrain.setDefaultCommand(drivetrainControls.driveFieldOrientedDirectAngleSimCommand(driverController));
 		} else {
-			// ButtonBox heading control
-			drivetrain.setDefaultCommand(drivetrainControls.driveFieldOrientedButtonBoxCommand(buttonBox));
+			// Heading control
+			drivetrain.setDefaultCommand(drivetrainControls.driveFieldOrientedDirectAngleCommand(driverController));
+			// Angular velocity control
+			driverController.leftBumper()
+					.whileTrue(drivetrainControls.driveFieldOrientedAngularVelocityCommand(driverController));
 		}
 
 		driverController.a().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_SLOW));

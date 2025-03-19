@@ -1,6 +1,5 @@
 package frc.robot.subsystems.drivetrain;
 
-import frc.robot.ButtonBox;
 import java.util.function.Supplier;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.OperatorConstants;
@@ -139,22 +138,6 @@ public class DrivetrainControls {
 	}
 
 	/**
-	 * Converts ButtonBox input into a field-relative ChassisSpeeds that is controlled by a knob.
-	 *
-	 * @param buttonBox
-	 *            The ButtonBox to read from.
-	 * @return
-	 *         SwerveInputStream with data from the ButtonBox.
-	 */
-	public SwerveInputStream driveButtonBox(ButtonBox buttonBox) {
-		return SwerveInputStream.of(drivetrain.getSwerveDrive(), () -> (buttonBox.getDriverJoystick().getY() * 2 - 1), () -> ((buttonBox.getDriverJoystick().getX() * 2 - 1) * -1))
-				.withControllerHeadingAxis(() -> Math.sin((buttonBox.getDriverSteeringKnob().getPosition() * 2 - 1) * Math.PI) * (Math.PI * 2), () -> Math.cos((buttonBox.getDriverSteeringKnob().getPosition() * 2 - 1) * Math.PI) * (Math.PI * 2))
-				.deadband(OperatorConstants.DEADBAND)
-				.allianceRelativeControl(true)
-				.headingWhile(true);
-	}
-
-	/**
 	 * {@link #driveInputStreamScaledCommand(SwerveInputStream)} that uses {@link #driveAngularVelocity(CommandXboxController)}. Calls {@link Drivetrain#resetLastAngleScalar()} on end to prevent snapback.
 	 *
 	 * @param controller
@@ -189,17 +172,5 @@ public class DrivetrainControls {
 	 */
 	public Command driveFieldOrientedDirectAngleSimCommand(CommandXboxController controller) {
 		return driveInputStreamScaledCommand(driveDirectAngleSim(controller));
-	}
-
-	/**
-	 * {@link #driveInputStreamScaledCommand(SwerveInputStream)} that uses {@link DrivetrainControls#driveButtonBox(ButtonBox)}.
-	 *
-	 * @param buttonBox
-	 *            ButtonBox to use.
-	 * @return
-	 *         Command to run.
-	 */
-	public Command driveFieldOrientedButtonBoxCommand(ButtonBox buttonBox) {
-		return driveInputStreamScaledCommand(driveButtonBox(buttonBox));
 	}
 }

@@ -3,8 +3,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import io.github.roboblazers7617.buttonbox.ButtonBoxServer;
-import io.github.roboblazers7617.buttonbox.controls.Joystick;
-import io.github.roboblazers7617.buttonbox.controls.Knob;
 import io.github.roboblazers7617.buttonbox.controls.LEDMulticolor;
 
 public class ButtonBox extends SubsystemBase {
@@ -12,14 +10,6 @@ public class ButtonBox extends SubsystemBase {
 	 * ButtonBoxServer to use to interface with the ButtonBox.
 	 */
 	private final ButtonBoxServer buttonBoxServer = new ButtonBoxServer();
-	/**
-	 * Joystick used to drive the robot.
-	 */
-	private final Joystick driverJoystick;
-	/**
-	 * Knob used to turn the robot.
-	 */
-	private final Knob driverSteeringKnob;
 	/**
 	 * LED used to show coral/algae state.
 	 */
@@ -40,12 +30,6 @@ public class ButtonBox extends SubsystemBase {
 		this.robotContainer = robotContainer;
 
 		// Create controls
-		driverJoystick = new Joystick("Driver Joystick");
-		buttonBoxServer.addControl(driverJoystick);
-
-		driverSteeringKnob = new Knob("Driver Steering Knob");
-		buttonBoxServer.addControl(driverSteeringKnob);
-
 		modeLED = new LEDMulticolor("Mode LED");
 		buttonBoxServer.addControl(modeLED);
 		modeLED.setBrightness(1);
@@ -62,26 +46,6 @@ public class ButtonBox extends SubsystemBase {
 				modeLED.setColor(new Color(0, 1, 0.64));
 				break;
 		}
-	}
-
-	/**
-	 * Gets the driver Joystick.
-	 *
-	 * @return
-	 *         Driver Joystick.
-	 */
-	public Joystick getDriverJoystick() {
-		return driverJoystick;
-	}
-
-	/**
-	 * Gets the driver steering Knob.
-	 *
-	 * @return
-	 *         Driver steering Knob.
-	 */
-	public Knob getDriverSteeringKnob() {
-		return driverSteeringKnob;
 	}
 
 	/**

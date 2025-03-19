@@ -11,16 +11,11 @@ import edu.wpi.first.math.jni.WPIMathJNI;
 import edu.wpi.first.util.WPIUtilJNI;
 
 import javax.sound.midi.MidiUnavailableException;
-import javax.sound.midi.ShortMessage;
 
 import io.github.roboblazers7617.buttonbox.ButtonBoxClient;
-import io.github.roboblazers7617.buttonbox.addresses.DoubleAddress;
-import io.github.roboblazers7617.buttonbox.controls.PhysicalJoystick;
-import io.github.roboblazers7617.buttonbox.controls.PhysicalPotentiometer;
 import io.github.roboblazers7617.buttonbox.midi.MIDIUtil;
 import io.github.roboblazers7617.buttonbox.midi.controls.PhysicalLEDRGBLaunchpad;
 import io.github.roboblazers7617.buttonbox.midi.MIDIDevice;
-import io.github.roboblazers7617.buttonbox.midi.MIDIAddress;
 
 /**
  * Bridge program to connect the 2025Robot ButtonBox hardware to NetworkTables.
@@ -68,14 +63,6 @@ public class ButtonBoxBridge {
 	 */
 	private void configureControls(ButtonBoxClient client, MIDIDevice midiDevice) {
 		// Driver controls
-		DoubleAddress steeringKnobAddress = new MIDIAddress(midiDevice, ShortMessage.CONTROL_CHANGE, 0, 0);
-
-		DoubleAddress joystickXAddress = new MIDIAddress(midiDevice, ShortMessage.CONTROL_CHANGE, 0, 1);
-		DoubleAddress joystickYAddress = new MIDIAddress(midiDevice, ShortMessage.CONTROL_CHANGE, 0, 2);
-		DoubleAddress joystickButtonAddress = new MIDIAddress(midiDevice, ShortMessage.NOTE_ON, 0, 0);
-
-		client.addControl(new PhysicalJoystick("Driver Joystick", joystickXAddress, joystickYAddress, joystickButtonAddress));
-		client.addControl(new PhysicalPotentiometer("Driver Steering Knob", steeringKnobAddress));
 		client.addControl(new PhysicalLEDRGBLaunchpad("Mode LED", (byte) 0, midiDevice));
 	}
 }
