@@ -175,6 +175,7 @@ public class Elevator extends SubsystemBase {
 		wristMotor.configure(wristConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
 		SmartDashboard.putData("Toggle Elevator Brake Mode", toggleBrakeModesCommand());
+		SmartDashboard.putData("Stop Elevator Command", doNothing());
 	}
 
 	/**
