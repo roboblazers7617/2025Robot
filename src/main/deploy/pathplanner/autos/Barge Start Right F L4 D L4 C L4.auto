@@ -44,18 +44,18 @@
                       }
                     },
                     {
-                      "type": "path",
+                      "type": "named",
                       "data": {
-                        "pathName": "Branch F to Coral Station Right Far"
+                        "name": "Intake Coral"
                       }
                     }
                   ]
                 }
               },
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "Intake Coral"
+                  "pathName": "Branch F to Coral Station Right Far"
                 }
               }
             ]
@@ -74,7 +74,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Elevator L3 Position"
+                  "name": "Elevator L4 Position"
                 }
               }
             ]
@@ -83,7 +83,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Score Coral L1-3"
+            "name": "Score Coral L4"
           }
         },
         {
@@ -101,18 +101,18 @@
                       }
                     },
                     {
-                      "type": "path",
+                      "type": "named",
                       "data": {
-                        "pathName": "Branch D to Coral Station Right Far"
+                        "name": "Intake Coral"
                       }
                     }
                   ]
                 }
               },
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "Intake Coral"
+                  "pathName": "Branch D to Coral Station Right Far"
                 }
               }
             ]
@@ -131,7 +131,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Elevator L3 Position"
+                  "name": "Elevator L4 Position"
                 }
               }
             ]
@@ -140,7 +140,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Score Coral L1-3"
+            "name": "Score Coral L4"
           }
         }
       ]

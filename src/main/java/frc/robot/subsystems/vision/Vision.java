@@ -1,6 +1,7 @@
 package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,6 +38,10 @@ public class Vision {
 	 * {@link PoseEstimator} for the {@link Limelight} on the front of the robot.
 	 */
 	// private final PoseEstimator backPoseEstimator;
+	/**
+	 * Stores the previous gyro heading
+	 */
+	private Rotation2d previousHeading;
 
 	/**
 	 * Creates a new Vision.
@@ -52,6 +57,8 @@ public class Vision {
 		// backPoseEstimator = backLimelight.makePoseEstimator(VisionConstants.POSE_ESTIMATOR_TYPE);
 
 		/* backLimelight.settings.withImuMode(VisionConstants.DISABLED_IMU_MODE).withProcessedFrameFrequency(VisionConstants.DISABLED_UPDATE_FREQUENCY).save(); */
+
+		previousHeading = swerveDrive.getOdometryHeading();
 	}
 
 	/*
@@ -72,7 +79,7 @@ public class Vision {
 	 */
 	public void updatePoseEstimation() {
 		// Get robot pose from YAGSL and use it to set the orientation in Limelight
-		frontLimelight.setRobotOrientation(new Rotation3d(swerveDrive.getPose().getRotation()));
+		frontLimelight.setRobotOrientation(new Rotation3d(swerveDrive.getOdometryHeading()));
 		// backLimelight.setRobotOrientation(swerveDrive.getGyroRotation3d());
 
 		// Get pose estimates from Limelights
@@ -81,13 +88,14 @@ public class Vision {
 
 		for (PoseEstimate poseEstimate : frontLimelightPoseEstimates) {
 			// Don't try to use a null PoseEstimate
-			if (poseEstimate != null && DriverStation.isEnabled()) {
+			if (poseEstimate != null && DriverStation.isEnabled() && Math.abs(swerveDrive.getOdometryHeading().minus(previousHeading).getDegrees()) < 50.0) {
 				// Only update vision if our angular velocity is less than 720 degrees per second and a tag was detected
 				if (Math.abs(swerveDrive.getMaximumChassisAngularVelocity()) < 720 && poseEstimate.tagCount > 0) {
 					swerveDrive.addVisionMeasurement(poseEstimate.getPose2d(), poseEstimate.getTimestampSeconds(), VecBuilder.fill(.7, .7, 9999999));
 				}
 			}
 		}
+
 		/*
 		 * for (PoseEstimate poseEstimate : backLimelightPoseEstimates) {
 		 * // Don't try to use a null PoseEstimate
@@ -99,5 +107,6 @@ public class Vision {
 		 * }
 		 * }
 		 */
+		previousHeading = swerveDrive.getOdometryHeading();
 	}
 }

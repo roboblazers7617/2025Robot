@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.6292449951171875,
-        "y": 0.759368896484375
+        "x": 1.298,
+        "y": 0.9
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6718808710795825,
-        "y": 1.623862073022445
+        "x": 2.340635875962395,
+        "y": 1.7644931765380698
       },
       "isLocked": false,
       "linkedName": "Coral Station Right Far"
     },
     {
       "anchor": {
-        "x": 4.0,
-        "y": 2.8
+        "x": 3.97,
+        "y": 2.79
       },
       "prevControl": {
-        "x": 2.5706714595088487,
-        "y": 1.6049477831172674
+        "x": 2.540671459508849,
+        "y": 1.5949477831172676
       },
       "nextControl": null,
       "isLocked": false,
