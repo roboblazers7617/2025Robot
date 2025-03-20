@@ -698,7 +698,7 @@ public final class Constants {
 		/**
 		 * Ramp stow position.
 		 */
-		public static final double RAMP_STOW_POSITION = 92.0;
+		public static final double RAMP_STOW_POSITION = 108.0;
 		/**
 		 * Ramp deploy position.
 		 */
