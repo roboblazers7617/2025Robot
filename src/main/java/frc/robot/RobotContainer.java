@@ -291,13 +291,14 @@ public class RobotContainer {
 	}
 
 	/**
-	 * Toggles brake mode on the {@link #elevator}.
+	 * Toggles brake mode on the {@link #elevator} and {@link #endEffector}.
 	 *
 	 * @return
 	 *         Command to run.
 	 */
 	public Command toggleBrakeModesCommand() {
-		return elevator.toggleBrakeModesCommand();
+		return elevator.toggleBrakeModesCommand()
+				.alongWith(endEffector.toggleBrakeModesCommand());
 	}
 
 	public boolean isHoldingAlgae() {
