@@ -44,6 +44,11 @@ import edu.wpi.first.units.measure.LinearAcceleration;
  */
 public final class Constants {
 	/**
+	 * The DIO pin used by the brake toggle button.
+	 */
+	public static final int BRAKE_TOGGLE_DIO = 5;
+
+	/**
 	 * Constants used by the {@link frc.robot.subsystems.drivetrain.Drivetrain}.
 	 */
 	public static class DrivetrainConstants {
