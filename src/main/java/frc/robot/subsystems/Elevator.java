@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.WristConstants;
@@ -173,6 +174,17 @@ public class Elevator extends SubsystemBase {
 		// .maxAcceleration(WristConstants.MAX_ACCELERATION);
 
 		wristMotor.configure(wristConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+
+		// Enable brake mode on enable
+		RobotModeTriggers.disabled()
+				.onFalse(this.runOnce(() -> {
+					SparkBaseConfig newConfig = new SparkMaxConfig()
+							.idleMode(IdleMode.kBrake);
+
+					leaderElevatorMotor.configure(newConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
+					followerElevatorMotor.configure(newConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
+					wristMotor.configure(newConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
+				}));
 
 		SmartDashboard.putData("Toggle Elevator Brake Mode", toggleBrakeModesCommand());
 		SmartDashboard.putData("Stop Elevator Command", doNothing());
@@ -320,7 +332,7 @@ public class Elevator extends SubsystemBase {
 
 	/**
 	 * A command that does nothing. This command requires the elevator subsystem so it will kill any other command. This is used to let the drivers regain controll of the elevator if it is unable to reach its target.
-	 * 
+	 *
 	 * @return Command to run.
 	 */
 	public Command doNothing() {
@@ -376,7 +388,7 @@ public class Elevator extends SubsystemBase {
 	 * @return
 	 *         Command to run.
 	 */
-	private Command toggleBrakeModesCommand() {
+	public Command toggleBrakeModesCommand() {
 		return this.runOnce(() -> {
 			SparkBaseConfig newElevatorConfig = new SparkMaxConfig();
 			if (leaderElevatorMotor.configAccessor.getIdleMode() == IdleMode.kBrake) {

@@ -5,12 +5,14 @@
 package frc.robot.subsystems.EndEffector;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.EndEffectorConstants;
 
 import java.util.concurrent.BlockingDeque;
 import java.util.function.Supplier;
 
+import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -69,6 +71,15 @@ public class EndEffector extends SubsystemBase {
 				.apply(EndEffectorConstants.CLOSED_LOOP_CONFIG);
 		motorConfig.encoder.positionConversionFactor(EndEffectorConstants.POSITION_CONVERSION_FACTOR);
 		endEffectorMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+		// Enable brake mode on enable
+		RobotModeTriggers.disabled()
+				.onFalse(this.runOnce(() -> {
+					SparkBaseConfig newConfig = new SparkMaxConfig()
+							.idleMode(IdleMode.kBrake);
+
+					endEffectorMotor.configure(newConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
+				}));
 	}
 
 	@Override
@@ -161,5 +172,23 @@ public class EndEffector extends SubsystemBase {
 				.andThen(Commands.waitUntil(() -> isHoldingAlgaeInput.get()))
 				.andThen(Commands.waitSeconds(EndEffectorConstants.ALGAE_OUTTAKE_RUN_TIME))
 				.finallyDo(this::stopMotor);
+	}
+
+	/**
+	 * Toggles brake mode on the end effector motor.
+	 *
+	 * @return
+	 *         Command to run.
+	 */
+	public Command toggleBrakeModesCommand() {
+		return this.runOnce(() -> {
+			SparkBaseConfig newConfig = new SparkMaxConfig();
+			if (endEffectorMotor.configAccessor.getIdleMode() == IdleMode.kBrake) {
+				newConfig.idleMode(IdleMode.kCoast);
+			} else {
+				newConfig.idleMode(IdleMode.kBrake);
+			}
+			endEffectorMotor.configure(newConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
+		}).ignoringDisable(true);
 	}
 }

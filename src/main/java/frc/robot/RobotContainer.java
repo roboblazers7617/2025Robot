@@ -21,6 +21,7 @@ import frc.robot.subsystems.Auto;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.IntakeRamp.Ramp;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -34,6 +35,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -53,12 +55,12 @@ public class RobotContainer {
 	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
 	@NotLogged
 	private final DrivetrainControls drivetrainControls = new DrivetrainControls(drivetrain);
-	@NotLogged
-	private final Dashboard dashboard = new Dashboard(drivetrain, this);
 	private final EndEffector endEffector = new EndEffector(this);
 	private final Elevator elevator = new Elevator(this);
 	private final Ramp ramp = new Ramp();
 	private final Climber climber = new Climber();
+	@NotLogged
+	private final Dashboard dashboard = new Dashboard(drivetrain, this);
 
 	/**
 	 * The Controller used by the Driver of the robot, primarily controlling the drivetrain.
@@ -78,6 +80,15 @@ public class RobotContainer {
 	private final Trigger isAlgaeModeTrigger = new Trigger(() -> (gamepieceMode == GamepieceMode.ALGAE_MODE));
 	private final Trigger isCoralModeTrigger = new Trigger(() -> (gamepieceMode == GamepieceMode.CORAL_MODE));
 
+	/**
+	 * The button used to toggle brake mode. Momentary switch, normally open, pulled up.
+	 */
+	private final DigitalInput brakeModeButton = new DigitalInput(Constants.BRAKE_TOGGLE_DIO);
+	/**
+	 * Trigger for the {@link #brakeModeButton}. Negated such that it returns true when pressed.
+	 */
+	private final Trigger brakeModeButtonTrigger = new Trigger(() -> brakeModeButton.get()).negate();
+
 	/** The container for the robot. Contains subsystems, OI devices, and commands. */
 	public RobotContainer() {
 		// Publish version metadata
@@ -93,6 +104,10 @@ public class RobotContainer {
 		// new Trigger(DriverStation::isDisabled).onTrue(drivetrain.getVision().onDisableCommand());
 		// By default interact with Coral
 		gamepieceMode = GamepieceMode.CORAL_MODE;
+
+		// Set up the brake mode button
+		brakeModeButtonTrigger.and(RobotModeTriggers.disabled())
+				.onTrue(toggleBrakeModesCommand());
 	}
 
 	/**
@@ -273,6 +288,17 @@ public class RobotContainer {
 					break;
 			}
 		});
+	}
+
+	/**
+	 * Toggles brake mode on the {@link #elevator} and {@link #endEffector}.
+	 *
+	 * @return
+	 *         Command to run.
+	 */
+	public Command toggleBrakeModesCommand() {
+		return elevator.toggleBrakeModesCommand()
+				.alongWith(endEffector.toggleBrakeModesCommand());
 	}
 
 	public boolean isHoldingAlgae() {

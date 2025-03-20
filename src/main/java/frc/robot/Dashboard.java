@@ -71,6 +71,7 @@ public class Dashboard {
 		SmartDashboard.putData("Alliance", alliancePicker);
 		SmartDashboard.putData("Pose", pose);
 		SmartDashboard.putData("Reset pose to selected position", resetPose());
+		SmartDashboard.putData("Toggle brake modes", robotContainer.toggleBrakeModesCommand());
 	}
 
 	/**
