@@ -37,7 +37,7 @@ public class ButtonBoxBridge {
 		inst.setServer("localhost"); // where TEAM=190, 294, etc, or use inst.setServer("hostname") or similar
 		inst.startDSClient(); // recommended if running on DS computer; this gets the robot IP from the DS
 
-		Optional<MIDIDevice> midiDevice = MIDIUtil.getDeviceByName("CoreMIDI4J - Pico");
+		Optional<MIDIDevice> midiDevice = MIDIUtil.getDeviceByName("CoreMIDI4J - Pico W");
 
 		if (midiDevice.isEmpty()) {
 			throw new MidiUnavailableException("No MIDI device found.");
