@@ -2,8 +2,8 @@
 #include <Control_Surface.h> // Include the Control Surface library
 
 // Hardware info
-const uint8_t NEOPIXEL_PIN = D24;
-const uint8_t NEOPIXEL_COUNT = 1;
+const uint8_t NEOPIXEL_PIN = D2;
+const uint8_t NEOPIXEL_COUNT = 15;
 
 // Define the array of leds.
 Array<CRGB, NEOPIXEL_COUNT> leds{};
@@ -18,7 +18,9 @@ struct MyMIDI_Callbacks : MIDI_Callbacks {
 	void onSysExMessage(MIDI_Interface&, SysExMessage sysex) override {
 		// Print the message
 		if (sysex.isCompleteMessage() && sysex.length == 13) {
-			leds[0] = CRGB(sysex.data[9], sysex.data[10], sysex.data[11]);
+			for (int i = 0; i < leds.length; i++) {
+				leds[i] = CRGB(sysex.data[9], sysex.data[10], sysex.data[11]);
+			}
 		}
 		ledsDirty = true;
 	}
@@ -27,6 +29,9 @@ struct MyMIDI_Callbacks : MIDI_Callbacks {
 void setup() {
 	FastLED.addLeds<NEOPIXEL, NEOPIXEL_PIN>(leds.data, leds.length);
 	FastLED.setCorrection(TypicalPixelString);
+
+	leds[0] = CRGB::Purple;
+	FastLED.show();
 
 	Control_Surface.begin(); // Initialize Control Surface
 	midi.setCallbacks(callback);
