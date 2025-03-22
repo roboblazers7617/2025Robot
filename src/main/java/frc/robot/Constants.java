@@ -551,7 +551,7 @@ public final class Constants {
 		//
 		INTAKE_ALGAE_LEVEL_3(-23, .854),
 		//
-		OUTTAKE_CORAL_LEVEL_1(-45, 1), // dummy value
+		OUTTAKE_CORAL_LEVEL_1(125, ElevatorConstants.MIN_POSITION), // stow position
 		//
 		OUTTAKE_CORAL_LEVEL_2(125, 0.18),
 		//
