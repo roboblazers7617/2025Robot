@@ -643,6 +643,10 @@ public final class Constants {
 		 */
 		public static final double ALGAE_HOLD_SPEED = -0.1;
 		/**
+		 * Coral wait after outtake.
+		 */
+		public static final double CORAL_OUTTAKE_L4_WAIT = 0.1;
+		/**
 		 * Time (in seconds) that the motors run after beam break detects no coral after using the outtake command
 		 */
 		public static final double OUTTAKE_WAIT_TIME = 0.2;

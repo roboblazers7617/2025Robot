@@ -232,7 +232,7 @@ public class RobotContainer {
 				.onTrue(endEffector.AlgaeOuttake());
 		operatorController.leftTrigger()
 				.and(isCoralModeTrigger)
-				.onTrue(endEffector.CoralOuttake()
+				.onTrue(endEffector.CoralOuttakeTeleop()
 						.alongWith(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4_HIGH).onlyIf(() -> elevator.getElevatorTarget() == ArmPosition.OUTTAKE_CORAL_LEVEL_4.ELEVATOR_POSITION)));
 
 		operatorController.rightBumper().onTrue(toggleGamepieceModeCommand());
