@@ -25,6 +25,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.MathUtil;
@@ -81,6 +83,8 @@ public class RobotContainer {
 		// Publish version metadata
 		VersionConstants.publishNetworkTables(NetworkTableInstance.getDefault().getTable("/Metadata"));
 
+		// create named commands for autonomous
+		createNamedCommands();
 		// Configure the trigger bindings
 		configureDriverControls();
 		configureOperatorControls();
@@ -180,11 +184,6 @@ public class RobotContainer {
 	 */
 	private void configureOperatorControls() {
 		// Set the default elevator command where it moves manually
-		/*
-		 * StubbedCommands.Elevator elevator = (new StubbedCommands()).new Elevator();
-		 * elevator.setDefaultCommand(elevator.MoveElevatorAndWristManual(() -> (-1 * operatorController.getLeftX()), () -> (-1 * operatorController.getLeftY())));
-		 */
-		// Acts to cancel the currently running command, such as intaking or outaking
 		elevator.setDefaultCommand(elevator.setSpeedsCommand(() -> MathUtil.applyDeadband(-1.0 * operatorController.getLeftY(), OperatorConstants.DEADBAND), () -> MathUtil.applyDeadband(-1.0 * operatorController.getRightY(), OperatorConstants.DEADBAND)));
 		// TODO: #138 Cancel on EndEffector or all mechanism commands?
 		operatorController.a()
@@ -284,7 +283,27 @@ public class RobotContainer {
 		return endEffector.isHoldingCoral();
 	}
 
-	/*
+	public void createNamedCommands() {
+		NamedCommands.registerCommand("Intake Coral", elevator.SetPositionCommand(ArmPosition.INTAKE_CORAL_CORAL_STATION).andThen(endEffector.CoralIntake()));
+		NamedCommands.registerCommand("Intake Algae L2", elevator.SetPositionCommand(ArmPosition.INTAKE_ALGAE_LEVEL_2).andThen(endEffector.AlgaeIntake()));
+		NamedCommands.registerCommand("Intake Algae L3", elevator.SetPositionCommand(ArmPosition.INTAKE_ALGAE_LEVEL_3).andThen(endEffector.AlgaeIntake()));
+
+		NamedCommands.registerCommand("Elevator L1 Position", elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_1));
+		NamedCommands.registerCommand("Elevator L2 Position", elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_2));
+		NamedCommands.registerCommand("Elevator L3 Position", elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_3));
+		NamedCommands.registerCommand("Elevator L4 Position", elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4).alongWith(endEffector.CoralBackup()));
+		NamedCommands.registerCommand("Elevator Processor Position", elevator.SetPositionCommand(ArmPosition.OUTTAKE_ALGAE_PROCESSOR));
+
+		NamedCommands.registerCommand("Stow Empty", elevator.SetPositionCommand(ArmPosition.INTAKE_CORAL_CORAL_STATION));
+
+		NamedCommands.registerCommand("Score Coral L1-3", endEffector.CoralOuttake());
+		NamedCommands.registerCommand("Score Coral L4", endEffector.CoralOuttake().alongWith(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4_HIGH)));
+		NamedCommands.registerCommand("Score Algae", endEffector.AlgaeOuttake());
+	}
+
+	/**
+	 * Use this to pass the autonomous command to the main {@link Robot} class.
+	 *
 	 * @return the command to run in autonomous
 	 */
 	public Command getAutonomousCommand() {

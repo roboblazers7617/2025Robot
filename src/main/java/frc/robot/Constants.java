@@ -382,12 +382,12 @@ public final class Constants {
 		 * Maximum velocity in m/s.
 		 */
 		// TODO: (Brandon) Update with accurate number. Is the elevator really going to travel 3 feet in one second? Use reca.lc
-		public static final double MAX_VELOCITY = 2;
+		public static final double MAX_VELOCITY = 2.5;
 		/**
 		 * Maximum acceleration in m/s^2.
 		 */
 		// TODO: (Brandon) Update with accurate number Use reca.lc
-		public static final double MAX_ACCELERATION = 2;
+		public static final double MAX_ACCELERATION = 3;
 
 		/**
 		 * Maximum position in meters.
@@ -472,11 +472,11 @@ public final class Constants {
 		/**
 		 * Wrist kMinOutput.
 		 */
-		public static final double KMIN_OUTPUT = -.3;
+		public static final double KMIN_OUTPUT = -.5;
 		/**
 		 * Wrist kMaxOutput.
 		 */
-		public static final double KMAX_OUTPUT = .3;
+		public static final double KMAX_OUTPUT = .5;
 		/**
 		 * Maximum velocity in degrees/s.
 		 */
@@ -551,7 +551,7 @@ public final class Constants {
 		//
 		INTAKE_ALGAE_LEVEL_3(-23, .854),
 		//
-		OUTTAKE_CORAL_LEVEL_1(-45, 1), // dummy value
+		OUTTAKE_CORAL_LEVEL_1(125, ElevatorConstants.MIN_POSITION), // stow position
 		//
 		OUTTAKE_CORAL_LEVEL_2(125, 0.18),
 		//
@@ -702,7 +702,7 @@ public final class Constants {
 		/**
 		 * Ramp stow position.
 		 */
-		public static final double RAMP_STOW_POSITION = 92.0;
+		public static final double RAMP_STOW_POSITION = 108.0;
 		/**
 		 * Ramp deploy position.
 		 */

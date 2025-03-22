@@ -28,6 +28,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
@@ -174,6 +175,7 @@ public class Elevator extends SubsystemBase {
 		wristMotor.configure(wristConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
 		SmartDashboard.putData("Toggle Elevator Brake Mode", toggleBrakeModesCommand());
+		SmartDashboard.putData("Stop Elevator Command", doNothing());
 	}
 
 	/**
@@ -313,6 +315,17 @@ public class Elevator extends SubsystemBase {
 		};
 		command.addRequirements(this);
 
+		return command;
+	}
+
+	/**
+	 * A command that does nothing. This command requires the elevator subsystem so it will kill any other command. This is used to let the drivers regain controll of the elevator if it is unable to reach its target.
+	 * 
+	 * @return Command to run.
+	 */
+	public Command doNothing() {
+		Command command = Commands.none();
+		command.addRequirements(this);
 		return command;
 	}
 

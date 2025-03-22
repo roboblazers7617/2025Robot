@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.922052437918526,
-        "y": 2.707872663225446
+        "x": 3.97,
+        "y": 2.79
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.7280311950528717,
-        "y": 2.5500986657316504
+        "x": 3.7759787571343457,
+        "y": 2.6322260025062043
       },
       "isLocked": false,
       "linkedName": "Branch D"
     },
     {
       "anchor": {
-        "x": 1.6292449951171875,
-        "y": 0.759368896484375
+        "x": 1.298,
+        "y": 0.9
       },
       "prevControl": {
-        "x": 1.8430534418235338,
-        "y": 0.9286946616476439
+        "x": 1.5118084467063464,
+        "y": 1.0693257651632688
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 2.5,
+    "maxAcceleration": 2.25,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.678875732421875,
-        "y": 7.322460065569196
+        "x": 1.55,
+        "y": 7.55
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.495263095819427,
-        "y": 6.614896034559765
+        "x": 2.3663873633975516,
+        "y": 6.842435968990569
       },
       "isLocked": false,
       "linkedName": "Coral Station Left Far"
     },
     {
       "anchor": {
-        "x": 3.9007311139787944,
-        "y": 5.335088239397321
+        "x": 3.98,
+        "y": 5.23
       },
       "prevControl": {
-        "x": 2.1114596439018793,
-        "y": 6.922981289530276
+        "x": 2.190728529923085,
+        "y": 6.817893050132955
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 2.5,
+    "maxAcceleration": 2.25,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
