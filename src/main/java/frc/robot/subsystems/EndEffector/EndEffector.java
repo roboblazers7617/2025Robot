@@ -162,4 +162,14 @@ public class EndEffector extends SubsystemBase {
 				.andThen(Commands.waitSeconds(EndEffectorConstants.ALGAE_OUTTAKE_RUN_TIME))
 				.finallyDo(this::stopMotor);
 	}
+
+	public Command emergencyCoralIntake() {
+		return StartMotorCommand(() -> EndEffectorConstants.CORAL_EMERGENCY_MODE_INTAKE_SPEED);
+	}
+
+	public Command emergencyCoralOuttake() {
+		return StartMotorCommand(() -> EndEffectorConstants.CORAL_OUTAKE_SPEED)
+				.andThen(Commands.waitSeconds(EndEffectorConstants.CORAL_EMERGENCY_OUTTAKE_TIMER))
+				.finallyDo(this::stopMotor);
+	}
 }

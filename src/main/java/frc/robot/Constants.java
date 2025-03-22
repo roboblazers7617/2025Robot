@@ -623,6 +623,10 @@ public final class Constants {
 		 */
 		public static final double CORAL_SECONDARY_INTAKE_SPEED = 0.05;
 		/**
+		 * Intake motor speed for coral in emergency mode
+		 */
+		public static final double CORAL_EMERGENCY_MODE_INTAKE_SPEED = 0.1;
+		/**
 		 * Intake motor speed for the coral to be behind secondary beam break for L4 scoring
 		 */
 		public static final double CORAL_BACKUP_SPEED = -0.1;
