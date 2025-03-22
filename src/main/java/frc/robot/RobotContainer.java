@@ -14,7 +14,6 @@ import frc.robot.util.Util;
 import frc.robot.util.Elastic;
 import frc.robot.Constants.OperatorConstants.GamepieceMode;
 import frc.robot.Constants.ArmPosition;
-import frc.robot.commands.StubbedCommands;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainControls;
 import frc.robot.subsystems.Auto;
@@ -174,7 +173,6 @@ public class RobotContainer {
 		driverController.rightBumper().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_SLOW));
 
 		driverController.start().onTrue(drivetrain.zeroGyroWithAllianceCommand());
-		driverController.back().onTrue(StubbedCommands.Drivetrain.DisableVision());
 	}
 
 	/**
