@@ -1,17 +1,17 @@
 package frc.robot.subsystems.vision;
 
+import java.util.Optional;
+
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
+
 import frc.robot.Constants.VisionConstants;
+
 import swervelib.SwerveDrive;
 import io.github.roboblazers7617.limelight.Limelight;
-import io.github.roboblazers7617.limelight.LimelightSettings;
 import io.github.roboblazers7617.limelight.PoseEstimator;
-import io.github.roboblazers7617.limelight.LimelightSettings.ImuMode;
 import io.github.roboblazers7617.limelight.PoseEstimate;
 
 /**
@@ -81,6 +81,21 @@ public class Vision {
 		// Get robot pose from YAGSL and use it to set the orientation in Limelight
 		frontLimelight.setRobotOrientation(new Rotation3d(swerveDrive.getOdometryHeading()));
 		// backLimelight.setRobotOrientation(swerveDrive.getGyroRotation3d());
+
+		// Set the tag filters in the Limelight
+		// TODO: This really shouldn't be done periodically. Not really sure where else to put it,
+		// but we should figure out something (maybe something when the robot enables or when the
+		// alliance color changes?).
+		Optional<DriverStation.Alliance> allianceColor = DriverStation.getAlliance();
+		switch (allianceColor.get()) {
+			case Red:
+				frontLimelight.settings.withArilTagIdFilter(VisionConstants.RED_TAG_ID_FILTER);
+				break;
+
+			case Blue:
+				frontLimelight.settings.withArilTagIdFilter(VisionConstants.BLUE_TAG_ID_FILTER);
+				break;
+		}
 
 		// Get pose estimates from Limelights
 		PoseEstimate[] frontLimelightPoseEstimates = frontPoseEstimator.getBotPoseEstimates();
