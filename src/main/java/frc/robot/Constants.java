@@ -638,7 +638,11 @@ public final class Constants {
 		/**
 		 * Outtake timer for emergency coral outtake.
 		 */
-		public static final double CORAL_EMERGENCY_OUTTAKE_TIMER = 0.5;
+		public static final double CORAL_EMERGENCY_OUTTAKE_TIMER = 0.75;
+		/**
+		 * When using single beam break commands offsets time when it will check for beam break.
+		 */
+		public static final double CORAL_SINGLE_BEAM_ADJUSTER_OUTTAKE_WAITTIME = 0.1;
 		// Algae
 		/**
 		 * Intake motor speed for algae. (to be changed and edited later)

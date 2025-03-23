@@ -127,6 +127,7 @@ public class EndEffector extends SubsystemBase {
 		});
 	}
 
+	// Coral Regular
 	public Command CoralIntake() {
 		return StartMotorCommand(() -> EndEffectorConstants.CORAL_MAIN_INTAKE_SPEED)
 				.andThen(Commands.waitUntil(() -> !isNotHoldingCoral.get()))
@@ -148,6 +149,7 @@ public class EndEffector extends SubsystemBase {
 				.finallyDo(this::stopMotor);
 	}
 
+	// Algae Regular
 	public Command AlgaeIntake() {
 		return StartMotorCommand(() -> EndEffectorConstants.ALGAE_INTAKE_SPEED)
 				.andThen(Commands.waitUntil(() -> !isHoldingAlgaeInput.get()))
@@ -163,6 +165,7 @@ public class EndEffector extends SubsystemBase {
 				.finallyDo(this::stopMotor);
 	}
 
+	// Coral Emergency
 	public Command emergencyCoralIntake() {
 		return StartMotorCommand(() -> EndEffectorConstants.CORAL_EMERGENCY_MODE_INTAKE_SPEED)
 				.finallyDo(this::stopMotor);
@@ -171,6 +174,20 @@ public class EndEffector extends SubsystemBase {
 	public Command emergencyCoralOuttake() {
 		return StartMotorCommand(() -> EndEffectorConstants.CORAL_OUTAKE_SPEED)
 				.andThen(Commands.waitSeconds(EndEffectorConstants.CORAL_EMERGENCY_OUTTAKE_TIMER))
+				.finallyDo(this::stopMotor);
+	}
+
+	// Coral Single Beam Break (with adjuster)
+	public Command singleBeamAdjusterCoralIntake() {
+		return StartMotorCommand(() -> EndEffectorConstants.CORAL_SECONDARY_INTAKE_SPEED)
+				.andThen(Commands.waitUntil(() -> !isNotHoldingCoralAdjuster.get()))
+				.finallyDo(this::stopMotor);
+	}
+
+	public Command singleBeamAdjusterCoralOuttake() {
+		return StartMotorCommand(() -> EndEffectorConstants.CORAL_OUTAKE_SPEED)
+				.andThen(Commands.waitSeconds(EndEffectorConstants.CORAL_SINGLE_BEAM_ADJUSTER_OUTTAKE_WAITTIME))
+				.andThen(Commands.waitUntil(() -> !isNotHoldingCoralAdjuster.get()))
 				.finallyDo(this::stopMotor);
 	}
 }
