@@ -1,13 +1,15 @@
 package frc.robot.subsystems.vision;
 
-import java.util.Optional;
-
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 
 import frc.robot.Constants.VisionConstants;
+import frc.robot.util.Util;
 
 import swervelib.SwerveDrive;
 import io.github.roboblazers7617.limelight.Limelight;
@@ -59,6 +61,15 @@ public class Vision {
 		/* backLimelight.settings.withImuMode(VisionConstants.DISABLED_IMU_MODE).withProcessedFrameFrequency(VisionConstants.DISABLED_UPDATE_FREQUENCY).save(); */
 
 		previousHeading = swerveDrive.getOdometryHeading();
+
+		// Set up alliance color mode switching
+		Util.isRedAllianceTrigger()
+				.onTrue(onRedAllianceCommand())
+				.onFalse(onBlueAllianceCommand());
+
+		// Set an alliance on enable
+		RobotModeTriggers.disabled()
+				.onFalse(Commands.either(onRedAllianceCommand(), onBlueAllianceCommand(), () -> Util.isRedAlliance()));
 	}
 
 	/*
@@ -75,27 +86,38 @@ public class Vision {
 	 */
 
 	/**
+	 * Command to call when the robot's alliance switches to the red alliance. Changes the AprilTag ID filter.
+	 *
+	 * @return
+	 *         Command to run.
+	 */
+	private Command onRedAllianceCommand() {
+		return Commands.runOnce(() -> {
+			frontLimelight.settings.withArilTagIdFilter(VisionConstants.RED_TAG_ID_FILTER)
+					.save();
+		});
+	}
+
+	/**
+	 * Command to call when the robot's alliance switches to the blue alliance. Changes the AprilTag ID filter.
+	 *
+	 * @return
+	 *         Command to run.
+	 */
+	private Command onBlueAllianceCommand() {
+		return Commands.runOnce(() -> {
+			frontLimelight.settings.withArilTagIdFilter(VisionConstants.BLUE_TAG_ID_FILTER)
+					.save();
+		});
+	}
+
+	/**
 	 * Update the pose estimation inside of {@link #swerveDrive} with data from Limelight.
 	 */
 	public void updatePoseEstimation() {
 		// Get robot pose from YAGSL and use it to set the orientation in Limelight
 		frontLimelight.setRobotOrientation(new Rotation3d(swerveDrive.getOdometryHeading()));
 		// backLimelight.setRobotOrientation(swerveDrive.getGyroRotation3d());
-
-		// Set the tag filters in the Limelight
-		// TODO: This really shouldn't be done periodically. Not really sure where else to put it,
-		// but we should figure out something (maybe something when the robot enables or when the
-		// alliance color changes?).
-		Optional<DriverStation.Alliance> allianceColor = DriverStation.getAlliance();
-		switch (allianceColor.get()) {
-			case Red:
-				frontLimelight.settings.withArilTagIdFilter(VisionConstants.RED_TAG_ID_FILTER);
-				break;
-
-			case Blue:
-				frontLimelight.settings.withArilTagIdFilter(VisionConstants.BLUE_TAG_ID_FILTER);
-				break;
-		}
 
 		// Get pose estimates from Limelights
 		PoseEstimate[] frontLimelightPoseEstimates = frontPoseEstimator.getBotPoseEstimates();
