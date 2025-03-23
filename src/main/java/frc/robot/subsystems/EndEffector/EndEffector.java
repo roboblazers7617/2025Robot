@@ -164,7 +164,8 @@ public class EndEffector extends SubsystemBase {
 	}
 
 	public Command emergencyCoralIntake() {
-		return StartMotorCommand(() -> EndEffectorConstants.CORAL_EMERGENCY_MODE_INTAKE_SPEED);
+		return StartMotorCommand(() -> EndEffectorConstants.CORAL_EMERGENCY_MODE_INTAKE_SPEED)
+				.finallyDo(this::stopMotor);
 	}
 
 	public Command emergencyCoralOuttake() {

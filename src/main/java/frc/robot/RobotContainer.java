@@ -198,6 +198,9 @@ public class RobotContainer {
 				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_CORAL_CORAL_STATION)
 						.andThen(endEffector.CoralIntake())
 						.andThen(elevator.SetPositionCommand(ArmPosition.STOW)));
+		// .onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_CORAL_CORAL_STATION))
+		// .whileTrue(endEffector.emergencyCoralIntake())
+		// .onFalse(elevator.SetPositionCommand(ArmPosition.STOW));
 		operatorController.x()
 				.and(() -> gamepieceMode == GamepieceMode.ALGAE_MODE) // temp
 				.onTrue(elevator.SetPositionCommand(ArmPosition.STOW_ALGAE)
@@ -213,8 +216,9 @@ public class RobotContainer {
 		operatorController.y()
 				.or(operatorController.leftTrigger())
 				.and(isCoralModeTrigger)
-				.onTrue(endEffector.CoralOuttake()
-						.alongWith(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4_HIGH).onlyIf(() -> elevator.getElevatorTarget() == ArmPosition.OUTTAKE_CORAL_LEVEL_4.ELEVATOR_POSITION)));
+				.whileTrue(endEffector.CoralOuttake())
+				// .whileTrue(endEffector.emergencyCoralOuttake())
+				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4_HIGH).onlyIf(() -> elevator.getElevatorTarget() == ArmPosition.OUTTAKE_CORAL_LEVEL_4.ELEVATOR_POSITION));
 
 		operatorController.povDown()
 				.and(isAlgaeModeTrigger)

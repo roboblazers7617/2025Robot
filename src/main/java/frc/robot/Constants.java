@@ -614,6 +614,7 @@ public final class Constants {
 				.p(0)
 				.i(0)
 				.d(0);
+		// Coral
 		/**
 		 * Intake motor speed for coral. (to be changed and edited later)
 		 */
@@ -634,6 +635,11 @@ public final class Constants {
 		 * Outtake motor speed for coral. (to be changed and edited later)
 		 */
 		public static final double CORAL_OUTAKE_SPEED = 0.5;
+		/**
+		 * Outtake timer for emergency coral outtake.
+		 */
+		public static final double CORAL_EMERGENCY_OUTTAKE_TIMER = 0.5;
+		// Algae
 		/**
 		 * Intake motor speed for algae. (to be changed and edited later)
 		 */
