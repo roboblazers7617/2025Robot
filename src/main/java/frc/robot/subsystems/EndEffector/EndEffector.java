@@ -162,7 +162,7 @@ public class EndEffector extends SubsystemBase {
 		return StartMotorCommand(() -> EndEffectorConstants.ALGAE_INTAKE_SPEED)
 				.andThen(Commands.waitUntil(() -> !isHoldingAlgaeInput.get()))
 				.andThen(StartMotorCommand(() -> EndEffectorConstants.ALGAE_HOLD_SPEED))
-				.andThen(Commands.waitSeconds(20))// temp to allow time to test
+				.andThen(Commands.waitSeconds((EndEffectorConstants.ALGAE_HOLD_TIME)))
 				.finallyDo(this::stopMotor);
 	}
 
@@ -173,19 +173,19 @@ public class EndEffector extends SubsystemBase {
 				.finallyDo(this::stopMotor);
 	}
 
-	// Coral Emergency
-	public Command emergencyCoralIntake() {
+	// Coral Manual
+	public Command manualCoralIntake() {
 		return StartMotorCommand(() -> EndEffectorConstants.CORAL_EMERGENCY_MODE_INTAKE_SPEED)
 				.finallyDo(this::stopMotor);
 	}
 
-	public Command emergencyCoralOuttake() {
+	public Command manualCoralOuttake() {
 		return StartMotorCommand(() -> EndEffectorConstants.CORAL_OUTAKE_SPEED)
 				.andThen(Commands.waitSeconds(EndEffectorConstants.CORAL_EMERGENCY_OUTTAKE_TIMER))
 				.finallyDo(this::stopMotor);
 	}
 
-	public Command emergencyCoralBackup() {
+	public Command manualCoralBackup() {
 		return StartMotorCommand(() -> EndEffectorConstants.CORAL_BACKUP_SPEED)
 				.finallyDo(this::stopMotor);
 	}

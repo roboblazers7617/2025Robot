@@ -672,6 +672,10 @@ public final class Constants {
 		 * Time (in seconds) that the motors run after algae outake is called to eject algae.
 		 */
 		public static final double ALGAE_OUTTAKE_RUN_TIME = 0.3;
+		/**
+		 * Time algae is being held (in seconds) after intake
+		 */
+		public static final double ALGAE_HOLD_TIME = 20;
 		// Beam Break constants
 		/**
 		 * DIO pin for the main beam break.
