@@ -201,7 +201,7 @@ public class DrivetrainControls {
 	}
 
 	/**
-	 * {@link #driveInputStreamScaledCommand(SwerveInputStream, TranslationOrientation)} that uses {@link DrivetrainControls#driveStaticHeading(CommandXboxController, Rotation2d)}.
+	 * {@link #driveInputStreamScaledCommand(SwerveInputStream, TranslationOrientation)} that uses {@link DrivetrainControls#driveStaticHeading(CommandXboxController, Supplier)}.
 	 *
 	 * @param controller
 	 *            Controller to use.
