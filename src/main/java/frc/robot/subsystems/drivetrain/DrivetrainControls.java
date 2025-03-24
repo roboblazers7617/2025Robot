@@ -80,6 +80,7 @@ public class DrivetrainControls {
 	 */
 	private Command driveInputStreamScaledCommand(SwerveInputStream inputStream, TranslationOrientation orientation) {
 		return drivetrain.run(() -> {
+			inputStream.allianceRelativeControl(orientation == TranslationOrientation.FIELD_RELATIVE);
 			inputStream.scaleTranslation(speedMultiplier);
 			drivetrain.drive(inputStream.get(), orientation);
 		});
@@ -95,8 +96,7 @@ public class DrivetrainControls {
 	 */
 	private SwerveInputStream driveGeneric(CommandXboxController controller) {
 		return SwerveInputStream.of(drivetrain.getSwerveDrive(), () -> (-1 * controller.getLeftY()), () -> (-1 * controller.getLeftX()))
-				.deadband(OperatorConstants.DEADBAND)
-				.allianceRelativeControl(true);
+				.deadband(OperatorConstants.DEADBAND);
 	}
 
 	/**
@@ -153,7 +153,7 @@ public class DrivetrainControls {
 	 */
 	public SwerveInputStream driveStaticHeading(CommandXboxController controller, Supplier<Rotation2d> heading) {
 		return driveGeneric(controller)
-				.withControllerHeadingAxis(() -> heading.get().getSin() * (Math.PI * 2), () -> heading.get().getCos() * (Math.PI * -2))
+				.withControllerHeadingAxis(() -> heading.get().getSin() * (Math.PI * 2), () -> heading.get().getCos() * (Math.PI * 2))
 				.headingWhile(true);
 	}
 
