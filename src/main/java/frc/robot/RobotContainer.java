@@ -16,6 +16,7 @@ import frc.robot.Constants.OperatorConstants.GamepieceMode;
 import frc.robot.Constants.ArmPosition;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainControls;
+import frc.robot.subsystems.drivetrain.Drivetrain.TranslationOrientation;
 import frc.robot.subsystems.Auto;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Climber;
@@ -142,13 +143,13 @@ public class RobotContainer {
 		// Set the default drivetrain command (used for the driver controller)
 		if (RobotBase.isSimulation()) {
 			// Heading control
-			drivetrain.setDefaultCommand(drivetrainControls.driveFieldOrientedDirectAngleSimCommand(driverController));
+			drivetrain.setDefaultCommand(drivetrainControls.driveDirectAngleSimCommand(driverController, TranslationOrientation.FIELD_RELATIVE));
 		} else {
 			// Heading control
-			drivetrain.setDefaultCommand(drivetrainControls.driveFieldOrientedDirectAngleCommand(driverController));
+			drivetrain.setDefaultCommand(drivetrainControls.driveDirectAngleCommand(driverController, TranslationOrientation.FIELD_RELATIVE));
 			// Angular velocity control
 			driverController.leftBumper()
-					.whileTrue(drivetrainControls.driveFieldOrientedAngularVelocityCommand(driverController));
+					.whileTrue(drivetrainControls.driveAngularVelocityCommand(driverController, TranslationOrientation.FIELD_RELATIVE));
 		}
 
 		driverController.a().onTrue(ramp.RampDeploy());
@@ -174,7 +175,7 @@ public class RobotContainer {
 		driverController.rightBumper().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_SLOW));
 
 		driverController.y()
-				.whileTrue(drivetrainControls.driveRobotOrientedStaticHeadingCommand(driverController, Rotation2d.kCW_90deg));
+				.whileTrue(drivetrainControls.driveStaticHeadingCommand(driverController, TranslationOrientation.ROBOT_RELATIVE, Rotation2d.kCW_90deg));
 
 		driverController.start().onTrue(drivetrain.zeroGyroWithAllianceCommand());
 	}

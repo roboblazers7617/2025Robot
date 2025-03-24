@@ -66,6 +66,20 @@ public class Drivetrain extends SubsystemBase {
 	private final Vision vision;
 
 	/**
+	 * The frame of reference for drivetrain translation.
+	 */
+	public enum TranslationOrientation {
+		/**
+		 * Translation relative to the field rotation.
+		 */
+		FIELD_RELATIVE,
+		/**
+		 * Translation relative to thd robot rotation.
+		 */
+		ROBOT_RELATIVE,
+	}
+
+	/**
 	 * Initialize {@link SwerveDrive} with the directory provided.
 	 *
 	 * @param directory
@@ -617,6 +631,26 @@ public class Drivetrain extends SubsystemBase {
 	 */
 	public void driveFieldOriented(ChassisSpeeds velocity) {
 		swerveDrive.driveFieldOriented(velocity);
+	}
+
+	/**
+	 * Drives the robot with the given translation orientation.
+	 *
+	 * @param velocity
+	 *            {@link ChassisSpeeds} to drive with.
+	 * @param orientation
+	 *            The translation's field of reference.
+	 */
+	public void drive(ChassisSpeeds velocity, TranslationOrientation orientation) {
+		switch (orientation) {
+			case ROBOT_RELATIVE:
+				drive(velocity);
+				break;
+
+			case FIELD_RELATIVE:
+				driveFieldOriented(velocity);
+				break;
+		}
 	}
 
 	/**

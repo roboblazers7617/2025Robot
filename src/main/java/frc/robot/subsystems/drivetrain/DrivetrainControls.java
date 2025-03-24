@@ -3,6 +3,7 @@ package frc.robot.subsystems.drivetrain;
 import java.util.function.Supplier;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.drivetrain.Drivetrain.TranslationOrientation;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -71,30 +72,16 @@ public class DrivetrainControls {
 	 *
 	 * @param inputStream
 	 *            The {@link SwerveInputStream} to read from.
+	 * @param orientation
+	 *            The translation's field of reference.
 	 * @return
 	 *         Command to run.
-	 * @see Drivetrain#driveFieldOriented(ChassisSpeeds)
+	 * @see Drivetrain#drive(ChassisSpeeds, TranslationOrientation)
 	 */
-	private Command driveInputStreamScaledCommand(SwerveInputStream inputStream) {
+	private Command driveInputStreamScaledCommand(SwerveInputStream inputStream, TranslationOrientation orientation) {
 		return drivetrain.run(() -> {
 			inputStream.scaleTranslation(speedMultiplier);
-			drivetrain.driveFieldOriented(inputStream.get());
-		});
-	}
-
-	/**
-	 * Drive the robot given a SwerveInputStream, scaled with the {@link #speedMultiplier}. Translation is robot-relative.
-	 *
-	 * @param inputStream
-	 *            The {@link SwerveInputStream} to read from.
-	 * @return
-	 *         Command to run.
-	 * @see Drivetrain#driveFieldOriented(ChassisSpeeds)
-	 */
-	private Command driveRobotOrientedInputStreamScaledCommand(SwerveInputStream inputStream) {
-		return drivetrain.run(() -> {
-			inputStream.scaleTranslation(speedMultiplier);
-			drivetrain.drive(inputStream.get());
+			drivetrain.drive(inputStream.get(), orientation);
 		});
 	}
 
@@ -171,69 +158,62 @@ public class DrivetrainControls {
 	}
 
 	/**
-	 * {@link #driveInputStreamScaledCommand(SwerveInputStream)} that uses {@link #driveAngularVelocity(CommandXboxController)}. Calls {@link Drivetrain#resetLastAngleScalar()} on end to prevent snapback.
+	 * {@link #driveInputStreamScaledCommand(SwerveInputStream, TranslationOrientation)} that uses {@link #driveAngularVelocity(CommandXboxController)}. Calls {@link Drivetrain#resetLastAngleScalar()} on end to prevent snapback.
 	 *
 	 * @param controller
 	 *            Controller to use.
+	 * @param orientation
+	 *            The translation's field of reference.
 	 * @return
 	 *         Command to run.
 	 */
-	public Command driveFieldOrientedAngularVelocityCommand(CommandXboxController controller) {
-		return driveInputStreamScaledCommand(driveAngularVelocity(controller))
+	public Command driveAngularVelocityCommand(CommandXboxController controller, TranslationOrientation orientation) {
+		return driveInputStreamScaledCommand(driveAngularVelocity(controller), orientation)
 				.finallyDo(drivetrain::resetLastAngleScalar);
 	}
 
 	/**
-	 * {@link #driveInputStreamScaledCommand(SwerveInputStream)} that uses {@link DrivetrainControls#driveDirectAngle(CommandXboxController)}.
+	 * {@link #driveInputStreamScaledCommand(SwerveInputStream, TranslationOrientation)} that uses {@link DrivetrainControls#driveDirectAngle(CommandXboxController)}.
 	 *
 	 * @param controller
 	 *            Controller to use.
+	 * @param orientation
+	 *            The translation's field of reference.
 	 * @return
 	 *         Command to run.
 	 */
-	public Command driveFieldOrientedDirectAngleCommand(CommandXboxController controller) {
-		return driveInputStreamScaledCommand(driveDirectAngle(controller));
+	public Command driveDirectAngleCommand(CommandXboxController controller, TranslationOrientation orientation) {
+		return driveInputStreamScaledCommand(driveDirectAngle(controller), orientation);
 	}
 
 	/**
-	 * {@link #driveInputStreamScaledCommand(SwerveInputStream)} that uses {@link DrivetrainControls#driveDirectAngleSim(CommandXboxController)}.
+	 * {@link #driveInputStreamScaledCommand(SwerveInputStream, TranslationOrientation)} that uses {@link DrivetrainControls#driveDirectAngleSim(CommandXboxController)}.
 	 *
 	 * @param controller
 	 *            Controller to use.
+	 * @param orientation
+	 *            The translation's field of reference.
 	 * @return
 	 *         Command to run.
 	 */
-	public Command driveFieldOrientedDirectAngleSimCommand(CommandXboxController controller) {
-		return driveInputStreamScaledCommand(driveDirectAngleSim(controller));
+	public Command driveDirectAngleSimCommand(CommandXboxController controller, TranslationOrientation orientation) {
+		return driveInputStreamScaledCommand(driveDirectAngleSim(controller), orientation);
 	}
 
 	/**
-	 * {@link #driveInputStreamScaledCommand(SwerveInputStream)} that uses {@link DrivetrainControls#driveStaticHeading(CommandXboxController, Rotation2d)}.
+	 * {@link #driveInputStreamScaledCommand(SwerveInputStream, TranslationOrientation)} that uses {@link DrivetrainControls#driveStaticHeading(CommandXboxController, Rotation2d)}.
 	 *
 	 * @param controller
 	 *            Controller to use.
+	 * @param orientation
+	 *            The translation's field of reference.
 	 * @param heading
 	 *            The rotation to point the heading to.
 	 * @return
 	 *         Command to run.
 	 */
-	public Command driveFieldOrientedStaticHeadingCommand(CommandXboxController controller, Rotation2d heading) {
-		return driveInputStreamScaledCommand(driveStaticHeading(controller, heading))
-				.finallyDo(() -> drivetrain.setLastAngleScalar(heading));
-	}
-
-	/**
-	 * {@link #driveRobotOrientedInputStreamScaledCommand(SwerveInputStream)} that uses {@link DrivetrainControls#driveStaticHeading(CommandXboxController, Rotation2d)}.
-	 *
-	 * @param controller
-	 *            Controller to use.
-	 * @param heading
-	 *            The rotation to point the heading to.
-	 * @return
-	 *         Command to run.
-	 */
-	public Command driveRobotOrientedStaticHeadingCommand(CommandXboxController controller, Rotation2d heading) {
-		return driveRobotOrientedInputStreamScaledCommand(driveStaticHeading(controller, heading))
+	public Command driveStaticHeadingCommand(CommandXboxController controller, TranslationOrientation orientation, Rotation2d heading) {
+		return driveInputStreamScaledCommand(driveStaticHeading(controller, heading), orientation)
 				.finallyDo(() -> drivetrain.setLastAngleScalar(heading));
 	}
 }
