@@ -152,9 +152,6 @@ public class Elevator extends SubsystemBase {
 				.zeroCentered(true);
 		wristAbsoluteEncoder = wristMotor.getAbsoluteEncoder();
 
-		setWristPosition(wristAbsoluteEncoder.getPosition());
-		currentWristSetpoint = new TrapezoidProfile.State(wristTarget, 0);
-
 		wristConfig.encoder
 				.positionConversionFactor(WristConstants.POSITION_CONVERSION_FACTOR)
 				.velocityConversionFactor(WristConstants.VELOCITY_CONVERSION_FACTOR);
@@ -173,6 +170,9 @@ public class Elevator extends SubsystemBase {
 		// .maxAcceleration(WristConstants.MAX_ACCELERATION);
 
 		wristMotor.configure(wristConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+
+		setWristPosition(wristAbsoluteEncoder.getPosition());
+		currentWristSetpoint = new TrapezoidProfile.State(wristTarget, 0);
 
 		SmartDashboard.putData("Toggle Elevator Brake Mode", toggleBrakeModesCommand());
 		SmartDashboard.putData("Stop Elevator Command", doNothing());

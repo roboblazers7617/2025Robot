@@ -14,7 +14,6 @@ import frc.robot.util.Util;
 import frc.robot.util.Elastic;
 import frc.robot.Constants.OperatorConstants.GamepieceMode;
 import frc.robot.Constants.ArmPosition;
-import frc.robot.commands.StubbedCommands;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainControls;
 import frc.robot.subsystems.Auto;
@@ -154,9 +153,7 @@ public class RobotContainer {
 		driverController.a().onTrue(ramp.RampDeploy());
 		driverController.b().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_FAST));
 		driverController.x().whileTrue(drivetrain.lockCommand());
-		driverController.y().onTrue(elevator.SetPositionCommand(ArmPosition.STOW).andThen(ramp.RampRetract()));
 
-		driverController.povUp().whileTrue(climber.RaiseClimber());
 		driverController.povDown().whileTrue(climber.LowerClimber());
 
 		// Scoring pose pathfinding
@@ -176,7 +173,6 @@ public class RobotContainer {
 		driverController.rightBumper().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_SLOW));
 
 		driverController.start().onTrue(drivetrain.zeroGyroWithAllianceCommand());
-		driverController.back().onTrue(StubbedCommands.Drivetrain.DisableVision());
 	}
 
 	/**
@@ -188,19 +184,7 @@ public class RobotContainer {
 		// TODO: #138 Cancel on EndEffector or all mechanism commands?
 		operatorController.a()
 				.onTrue(endEffector.StopIntakeMotor());
-		operatorController.b()
-				.or(operatorController.rightTrigger())
-				.and(isAlgaeModeTrigger)
-				.onTrue(endEffector.AlgaeIntake());
-		operatorController.b()
-				.or(operatorController.rightTrigger())
-				.and(isCoralModeTrigger)
-				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_CORAL_CORAL_STATION)
-						.andThen(endEffector.CoralIntake())
-						.andThen(elevator.SetPositionCommand(ArmPosition.STOW)));
-		// .onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_CORAL_CORAL_STATION))
-		// .whileTrue(endEffector.emergencyCoralIntake())
-		// .onFalse(elevator.SetPositionCommand(ArmPosition.STOW));
+		operatorController.b().whileTrue(climber.RaiseClimber());
 		operatorController.x()
 				.and(() -> gamepieceMode == GamepieceMode.ALGAE_MODE) // temp
 				.onTrue(elevator.SetPositionCommand(ArmPosition.STOW_ALGAE)
@@ -209,17 +193,7 @@ public class RobotContainer {
 				.and(() -> gamepieceMode == GamepieceMode.CORAL_MODE) // temp
 				.onTrue(elevator.SetPositionCommand(ArmPosition.STOW)
 						.alongWith(endEffector.StopIntakeMotor()));
-		operatorController.y()
-				.or(operatorController.leftTrigger())
-				.and(isAlgaeModeTrigger)
-				.onTrue(endEffector.AlgaeOuttake());
-		operatorController.y()
-				.or(operatorController.leftTrigger())
-				.and(isCoralModeTrigger)
-				.onTrue(endEffector.CoralOuttake())
-				// .whileTrue(endEffector.emergencyCoralOuttake())
-				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4_HIGH).onlyIf(() -> elevator.getElevatorTarget() == ArmPosition.OUTTAKE_CORAL_LEVEL_4.ELEVATOR_POSITION));
-
+		operatorController.y().onTrue(elevator.SetPositionCommand(ArmPosition.STOW).andThen(ramp.RampRetract()));
 		operatorController.povDown()
 				.and(isAlgaeModeTrigger)
 				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_ALGAE_LEVEL_2));
@@ -245,7 +219,23 @@ public class RobotContainer {
 				.and(isCoralModeTrigger)
 				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4).alongWith(endEffector.CoralBackup()));
 
-		// Left Bumper is on an or with the Y button above
+		operatorController.rightTrigger()
+				.and(isAlgaeModeTrigger)
+				.onTrue(endEffector.AlgaeIntake());
+		operatorController.rightTrigger()
+				.and(isCoralModeTrigger)
+				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_CORAL_CORAL_STATION)
+						.andThen(endEffector.CoralIntake())
+						// .whileTrue(endEffector.emergencyCoralOuttake())
+						.andThen(elevator.SetPositionCommand(ArmPosition.STOW)));
+		operatorController.leftTrigger()
+				.and(isAlgaeModeTrigger)
+				.onTrue(endEffector.AlgaeOuttake());
+		operatorController.leftTrigger()
+				.and(isCoralModeTrigger)
+				.onTrue(endEffector.CoralOuttakeTeleop()
+						.alongWith(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4_HIGH).onlyIf(() -> elevator.getElevatorTarget() == ArmPosition.OUTTAKE_CORAL_LEVEL_4.ELEVATOR_POSITION)));
+
 		operatorController.rightBumper().onTrue(toggleGamepieceModeCommand());
 		operatorController.leftBumper().onTrue(endEffector.CoralBackup());
 		// operatorController.leftBumper().whileTrue(endEffector.emergencyCoralBackup());

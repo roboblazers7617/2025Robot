@@ -307,7 +307,7 @@ public final class Constants {
 		/**
 		 * Speed at which the climber is raised.
 		 */
-		public static final double RAISE_CLIMBER_SPEED = 0.7;
+		public static final double RAISE_CLIMBER_SPEED = 1.0;
 		/**
 		 * Position where the climber is fully raised.
 		 */
@@ -660,6 +660,10 @@ public final class Constants {
 		 * Speed that the motor will use to keep force on the Algae while it is being held.
 		 */
 		public static final double ALGAE_HOLD_SPEED = -0.1;
+		/**
+		 * Coral wait after outtake.
+		 */
+		public static final double CORAL_OUTTAKE_L4_WAIT = 0.1;
 		/**
 		 * Time (in seconds) that the motors run after beam break detects no coral after using the outtake command
 		 */

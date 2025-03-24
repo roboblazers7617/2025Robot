@@ -143,6 +143,14 @@ public class EndEffector extends SubsystemBase {
 				.finallyDo(this::stopMotor);
 	}
 
+	public Command CoralOuttakeTeleop() {
+		return StartMotorCommand(() -> EndEffectorConstants.CORAL_OUTAKE_SPEED)
+				.andThen(Commands.waitUntil(() -> isNotHoldingCoralAdjuster.get()))
+				.alongWith(Commands.waitUntil(() -> isNotHoldingCoral.get()))
+				.andThen(Commands.waitSeconds(EndEffectorConstants.CORAL_OUTTAKE_L4_WAIT))
+				.finallyDo(this::stopMotor);
+	}
+
 	public Command CoralBackup() {
 		return StartMotorCommand(() -> EndEffectorConstants.CORAL_BACKUP_SPEED)
 				.andThen(Commands.waitUntil(() -> isNotHoldingCoralAdjuster.get()))
