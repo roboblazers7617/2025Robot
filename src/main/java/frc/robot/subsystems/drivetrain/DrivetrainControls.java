@@ -151,9 +151,9 @@ public class DrivetrainControls {
 	 * @return
 	 *         SwerveInputStream with data from the controller.
 	 */
-	public SwerveInputStream driveStaticHeading(CommandXboxController controller, Rotation2d heading) {
+	public SwerveInputStream driveStaticHeading(CommandXboxController controller, Supplier<Rotation2d> heading) {
 		return driveGeneric(controller)
-				.withControllerHeadingAxis(() -> heading.getSin() * (Math.PI * 2), () -> heading.getCos() * (Math.PI * -2))
+				.withControllerHeadingAxis(() -> heading.get().getSin() * (Math.PI * 2), () -> heading.get().getCos() * (Math.PI * -2))
 				.headingWhile(true);
 	}
 
@@ -212,7 +212,7 @@ public class DrivetrainControls {
 	 * @return
 	 *         Command to run.
 	 */
-	public Command driveStaticHeadingCommand(CommandXboxController controller, TranslationOrientation orientation, Rotation2d heading) {
+	public Command driveStaticHeadingCommand(CommandXboxController controller, TranslationOrientation orientation, Supplier<Rotation2d> heading) {
 		return driveInputStreamScaledCommand(driveStaticHeading(controller, heading), orientation)
 				.finallyDo(() -> drivetrain.setLastAngleScalar(heading));
 	}

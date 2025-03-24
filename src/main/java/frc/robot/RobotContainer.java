@@ -175,7 +175,7 @@ public class RobotContainer {
 		driverController.rightBumper().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_SLOW));
 
 		driverController.y()
-				.whileTrue(drivetrainControls.driveStaticHeadingCommand(driverController, TranslationOrientation.ROBOT_RELATIVE, Rotation2d.kCW_90deg));
+				.whileTrue(drivetrainControls.driveStaticHeadingCommand(driverController, TranslationOrientation.ROBOT_RELATIVE, () -> Rotation2d.kCW_90deg));
 
 		driverController.start().onTrue(drivetrain.zeroGyroWithAllianceCommand());
 	}
