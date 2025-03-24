@@ -83,6 +83,22 @@ public class DrivetrainControls {
 	}
 
 	/**
+	 * Drive the robot given a SwerveInputStream, scaled with the {@link #speedMultiplier}. Translation is robot-relative.
+	 *
+	 * @param inputStream
+	 *            The {@link SwerveInputStream} to read from.
+	 * @return
+	 *         Command to run.
+	 * @see Drivetrain#driveFieldOriented(ChassisSpeeds)
+	 */
+	private Command driveRobotOrientedInputStreamScaledCommand(SwerveInputStream inputStream) {
+		return drivetrain.run(() -> {
+			inputStream.scaleTranslation(speedMultiplier);
+			drivetrain.drive(inputStream.get());
+		});
+	}
+
+	/**
 	 * Converts driver input into a SwerveInputStream with default settings.
 	 *
 	 * @param controller
@@ -203,6 +219,21 @@ public class DrivetrainControls {
 	 */
 	public Command driveFieldOrientedStaticHeadingCommand(CommandXboxController controller, Rotation2d heading) {
 		return driveInputStreamScaledCommand(driveStaticHeading(controller, heading))
+				.finallyDo(() -> drivetrain.setLastAngleScalar(heading));
+	}
+
+	/**
+	 * {@link #driveRobotOrientedInputStreamScaledCommand(SwerveInputStream)} that uses {@link DrivetrainControls#driveStaticHeading(CommandXboxController, Rotation2d)}.
+	 *
+	 * @param controller
+	 *            Controller to use.
+	 * @param heading
+	 *            The rotation to point the heading to.
+	 * @return
+	 *         Command to run.
+	 */
+	public Command driveRobotOrientedStaticHeadingCommand(CommandXboxController controller, Rotation2d heading) {
+		return driveRobotOrientedInputStreamScaledCommand(driveStaticHeading(controller, heading))
 				.finallyDo(() -> drivetrain.setLastAngleScalar(heading));
 	}
 }
