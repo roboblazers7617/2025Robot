@@ -3,6 +3,7 @@ package frc.robot.subsystems.drivetrain;
 import java.util.function.Supplier;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.OperatorConstants;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -138,6 +139,22 @@ public class DrivetrainControls {
 	}
 
 	/**
+	 * A copy of {@link #driveGeneric(CommandXboxController)} that uses a preset heading.
+	 *
+	 * @param controller
+	 *            The controller to read from.
+	 * @param heading
+	 *            The rotation to point the heading to.
+	 * @return
+	 *         SwerveInputStream with data from the controller.
+	 */
+	public SwerveInputStream driveStaticHeading(CommandXboxController controller, Rotation2d heading) {
+		return driveGeneric(controller)
+				.withControllerHeadingAxis(() -> heading.getSin() * (Math.PI * 2), () -> heading.getCos() * (Math.PI * -2))
+				.headingWhile(true);
+	}
+
+	/**
 	 * {@link #driveInputStreamScaledCommand(SwerveInputStream)} that uses {@link #driveAngularVelocity(CommandXboxController)}. Calls {@link Drivetrain#resetLastAngleScalar()} on end to prevent snapback.
 	 *
 	 * @param controller
@@ -172,5 +189,20 @@ public class DrivetrainControls {
 	 */
 	public Command driveFieldOrientedDirectAngleSimCommand(CommandXboxController controller) {
 		return driveInputStreamScaledCommand(driveDirectAngleSim(controller));
+	}
+
+	/**
+	 * {@link #driveInputStreamScaledCommand(SwerveInputStream)} that uses {@link DrivetrainControls#driveStaticHeading(CommandXboxController, Rotation2d)}.
+	 *
+	 * @param controller
+	 *            Controller to use.
+	 * @param heading
+	 *            The rotation to point the heading to.
+	 * @return
+	 *         Command to run.
+	 */
+	public Command driveFieldOrientedStaticHeadingCommand(CommandXboxController controller, Rotation2d heading) {
+		return driveInputStreamScaledCommand(driveStaticHeading(controller, heading))
+				.finallyDo(() -> drivetrain.setLastAngleScalar(heading));
 	}
 }
