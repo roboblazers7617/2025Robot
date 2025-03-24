@@ -22,7 +22,6 @@ import frc.robot.subsystems.Auto;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.IntakeRamp.Ramp;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
@@ -31,7 +30,6 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
