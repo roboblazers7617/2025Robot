@@ -240,7 +240,7 @@ public class RobotContainer {
 		operatorController.povUp()
 				.and(isAlgaeModeTrigger)
 				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_ALGAE_LEVEL_3));
-		// If in emergency mode CoralBackup Must be off
+		// If in emergency mode CoralBackup Must be off!!
 		operatorController.povUp()
 				.and(isCoralModeTrigger)
 				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4).alongWith(endEffector.CoralBackup()));
