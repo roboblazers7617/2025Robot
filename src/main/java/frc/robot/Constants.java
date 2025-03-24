@@ -731,6 +731,16 @@ public final class Constants {
 			 */
 			public static final List<Pose3d> TAG_POSES = new ArrayList<Pose3d>();
 			/**
+			 * Center poses for the reef faces on the blue alliance. Point inwards towards the center
+			 * of the reef.
+			 */
+			public static final List<Pose2d> FACE_POSES_BLUE = new ArrayList<Pose2d>();
+			/**
+			 * Center poses for the reef faces on the red alliance. Point inwards towards the center
+			 * of the reef.
+			 */
+			public static final List<Pose2d> FACE_POSES_RED = new ArrayList<Pose2d>();
+			/**
 			 * Offset from the AprilTag from which coral scoring should happen.
 			 */
 			public static final Transform2d CORAL_SCORING_OFFSET = new Transform2d(Meters.of(0.5), Meters.of(0.33 / 2), Rotation2d.k180deg);
@@ -771,6 +781,15 @@ public final class Constants {
 					if (tagPose.isPresent()) {
 						TAG_POSES.add(tagPose.get());
 					}
+				});
+
+				// Generate a list of face poses.
+				TAG_POSES.forEach((pose) -> {
+					Pose2d facePose = pose.toPose2d()
+							.transformBy(new Transform2d(0, 0, Rotation2d.k180deg));
+
+					FACE_POSES_BLUE.add(facePose);
+					FACE_POSES_RED.add(PoseUtil.flipPose(facePose));
 				});
 
 				// Generate lists of coral scoring poses.

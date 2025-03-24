@@ -1,9 +1,11 @@
 package frc.robot.subsystems.drivetrain;
 
+import java.util.List;
 import java.util.function.Supplier;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.drivetrain.Drivetrain.TranslationOrientation;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -215,5 +217,26 @@ public class DrivetrainControls {
 	public Command driveStaticHeadingCommand(CommandXboxController controller, TranslationOrientation orientation, Supplier<Rotation2d> heading) {
 		return driveInputStreamScaledCommand(driveStaticHeading(controller, heading), orientation)
 				.finallyDo(() -> drivetrain.setLastAngleScalar(heading));
+	}
+
+	/**
+	 * {@link #driveStaticHeadingCommand(CommandXboxController, TranslationOrientation, Supplier)} that uses the heading of the nearest pose from a list of poses.
+	 *
+	 * @param controller
+	 *            Controller to use.
+	 * @param orientation
+	 *            The translation's field of reference.
+	 * @param poses
+	 *            The list of poses to choose the nearest pose from.
+	 * @return
+	 *         Command to run.
+	 */
+	public Command driveStaticHeadingNearestPoseCommand(CommandXboxController controller, TranslationOrientation orientation, List<Pose2d> poses) {
+		return driveStaticHeadingCommand(controller, TranslationOrientation.ROBOT_RELATIVE, () -> {
+			// Get the rotation of the nearest reef tag
+			return drivetrain.getPose()
+					.nearest(poses)
+					.getRotation();
+		});
 	}
 }

@@ -8,6 +8,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ScoringPoses;
 import frc.robot.Constants.DashboardConstants;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.LoggingConstants;
 import frc.robot.subsystems.EndEffector.EndEffector;
 import frc.robot.util.Util;
@@ -175,7 +176,7 @@ public class RobotContainer {
 		driverController.rightBumper().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_SLOW));
 
 		driverController.y()
-				.whileTrue(drivetrainControls.driveStaticHeadingCommand(driverController, TranslationOrientation.ROBOT_RELATIVE, () -> Rotation2d.kCW_90deg));
+				.whileTrue(Commands.either(drivetrainControls.driveStaticHeadingNearestPoseCommand(driverController, TranslationOrientation.ROBOT_RELATIVE, FieldConstants.Reef.FACE_POSES_RED), drivetrainControls.driveStaticHeadingNearestPoseCommand(driverController, TranslationOrientation.ROBOT_RELATIVE, FieldConstants.Reef.FACE_POSES_BLUE), () -> Util.isRedAlliance()));
 
 		driverController.start().onTrue(drivetrain.zeroGyroWithAllianceCommand());
 	}
