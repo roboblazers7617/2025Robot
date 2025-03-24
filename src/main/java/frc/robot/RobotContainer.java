@@ -174,7 +174,8 @@ public class RobotContainer {
 		driverController.rightBumper().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_SLOW));
 
 		driverController.y()
-				.whileTrue(Commands.either(drivetrainControls.driveStaticHeadingNearestPoseCommand(driverController, TranslationOrientation.ROBOT_RELATIVE, FieldConstants.Reef.FACE_POSES_RED), drivetrainControls.driveStaticHeadingNearestPoseCommand(driverController, TranslationOrientation.ROBOT_RELATIVE, FieldConstants.Reef.FACE_POSES_BLUE), () -> Util.isRedAlliance()));
+				.whileTrue(Commands.either(drivetrainControls.driveStaticHeadingNearestPoseCommand(driverController, TranslationOrientation.ROBOT_RELATIVE, FieldConstants.Reef.FACE_POSES_RED), drivetrainControls.driveStaticHeadingNearestPoseCommand(driverController, TranslationOrientation.ROBOT_RELATIVE, FieldConstants.Reef.FACE_POSES_BLUE), () -> Util.isRedAlliance())
+						.alongWith(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_SLIDE)));
 
 		driverController.start().onTrue(drivetrain.zeroGyroWithAllianceCommand());
 	}

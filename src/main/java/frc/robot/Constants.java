@@ -76,6 +76,10 @@ public final class Constants {
 		 */
 		public static final double TRANSLATION_SCALE_SLOW = 0.3;
 		/**
+		 * Translation axis scaling. Changes the overall maximum speed of the drivetrain when in slide mode.
+		 */
+		public static final double TRANSLATION_SCALE_SLIDE = 0.3;
+		/**
 		 * Starting pose.
 		 */
 		public static final Pose2d STARTING_POSITION = new Pose2d(new Translation2d(Meters.of(1), Meters.of(4)), Rotation2d.fromDegrees(0));
