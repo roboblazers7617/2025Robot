@@ -632,6 +632,10 @@ public final class Constants {
 		 */
 		public static final double CORAL_BACKUP_SPEED = -0.1;
 		/**
+		 * Intake motor speed for backing up coral when in emergency mode
+		 */
+		public static final double CORAL_EMERGENCY_BACKUP_SPEED = -0.05;
+		/**
 		 * Outtake motor speed for coral. (to be changed and edited later)
 		 */
 		public static final double CORAL_OUTAKE_SPEED = 0.5;

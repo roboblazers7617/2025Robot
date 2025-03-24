@@ -197,7 +197,6 @@ public class RobotContainer {
 				.and(isCoralModeTrigger)
 				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_CORAL_CORAL_STATION)
 						.andThen(endEffector.CoralIntake())
-						// .andThen(endEffector.singleBeamAdjusterCoralIntake())
 						.andThen(elevator.SetPositionCommand(ArmPosition.STOW)));
 		// .onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_CORAL_CORAL_STATION))
 		// .whileTrue(endEffector.emergencyCoralIntake())
@@ -217,8 +216,7 @@ public class RobotContainer {
 		operatorController.y()
 				.or(operatorController.leftTrigger())
 				.and(isCoralModeTrigger)
-				.whileTrue(endEffector.CoralOuttake())
-				// .whileTrue(endEffector.singleBeamAdjusterCoralOuttake())
+				.onTrue(endEffector.CoralOuttake())
 				// .whileTrue(endEffector.emergencyCoralOuttake())
 				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4_HIGH).onlyIf(() -> elevator.getElevatorTarget() == ArmPosition.OUTTAKE_CORAL_LEVEL_4.ELEVATOR_POSITION));
 
@@ -250,6 +248,7 @@ public class RobotContainer {
 		// Left Bumper is on an or with the Y button above
 		operatorController.rightBumper().onTrue(toggleGamepieceModeCommand());
 		operatorController.leftBumper().onTrue(endEffector.CoralBackup());
+		// operatorController.leftBumper().whileTrue(endEffector.emergencyCoralBackup());
 	}
 
 	/**

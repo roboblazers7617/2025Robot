@@ -177,17 +177,8 @@ public class EndEffector extends SubsystemBase {
 				.finallyDo(this::stopMotor);
 	}
 
-	// Coral Single Beam Break (with adjuster)
-	public Command singleBeamAdjusterCoralIntake() {
-		return StartMotorCommand(() -> EndEffectorConstants.CORAL_SECONDARY_INTAKE_SPEED)
-				.andThen(Commands.waitUntil(() -> !isNotHoldingCoralAdjuster.get()))
-				.finallyDo(this::stopMotor);
-	}
-
-	public Command singleBeamAdjusterCoralOuttake() {
-		return StartMotorCommand(() -> EndEffectorConstants.CORAL_OUTAKE_SPEED)
-				.andThen(Commands.waitSeconds(EndEffectorConstants.CORAL_SINGLE_BEAM_ADJUSTER_OUTTAKE_WAITTIME))
-				.andThen(Commands.waitUntil(() -> !isNotHoldingCoralAdjuster.get()))
+	public Command emergencyCoralBackup() {
+		return StartMotorCommand(() -> EndEffectorConstants.CORAL_BACKUP_SPEED)
 				.finallyDo(this::stopMotor);
 	}
 }
