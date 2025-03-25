@@ -1,5 +1,6 @@
 package frc.robot.subsystems.drivetrain;
 
+import java.util.List;
 import java.util.function.Supplier;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.OperatorConstants;
@@ -216,5 +217,19 @@ public class DrivetrainControls {
 	 */
 	public Command driveFieldOrientedPathfindCommand(CommandXboxController controller, Supplier<Pose2d> pose) {
 		return drivetrain.driveFieldOrientedCommand(drivePathfind(controller, pose));
+	}
+
+	/**
+	 * {@link Drivetrain#driveFieldOrientedCommand(Supplier)} that uses {@link DrivetrainControls#drivePathfind(CommandXboxController, Supplier)}.
+	 *
+	 * @param controller
+	 *            Controller to use.
+	 * @param poses
+	 *            List of poses to choose from.
+	 * @return
+	 *         Command to run.
+	 */
+	public Command driveFieldOrientedPathfindNearestCommand(CommandXboxController controller, List<Pose2d> poses) {
+		return driveFieldOrientedPathfindCommand(controller, () -> drivetrain.getPose().nearest(poses));
 	}
 }
