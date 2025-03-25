@@ -141,7 +141,7 @@ public final class Constants {
 			/**
 			 * kP used for the YAGSL pathfinding translation PID controller.
 			 */
-			public static final double TRANSLATION_KP = 0.0;
+			public static final double TRANSLATION_KP = 5.0;
 			/**
 			 * kI used for the YAGSL pathfinding translation PID controller.
 			 */
@@ -153,12 +153,12 @@ public final class Constants {
 			/**
 			 * Constraints used for the YAGSL pathfinding translation PID controller.
 			 */
-			public static final Constraints TRANSLATION_CONSTRAINTS = new Constraints(0.0, 0.0);
+			public static final Constraints TRANSLATION_CONSTRAINTS = new Constraints(2.25, 2.0);
 
 			/**
 			 * kP used for the YAGSL pathfinding rotation PID controller.
 			 */
-			public static final double ROTATION_KP = 0.0;
+			public static final double ROTATION_KP = 5.0;
 			/**
 			 * kI used for the YAGSL pathfinding rotation PID controller.
 			 */
@@ -170,7 +170,7 @@ public final class Constants {
 			/**
 			 * Constraints used for the YAGSL pathfinding rotation PID controller.
 			 */
-			public static final Constraints ROTATION_CONSTRAINTS = new Constraints(0.0, 0.0);
+			public static final Constraints ROTATION_CONSTRAINTS = new Constraints(540.0, 720.0);
 		}
 
 		/**
