@@ -1,0 +1,21 @@
+{
+    "fileName": "ClassyLimelights.json",
+    "name": "ClassyLimelights",
+    "version": "2025.1.1",
+    "frcYear": "2025",
+    "uuid": "fcd76068-fd6d-446c-944a-5ae06c26d6d7",
+    "mavenUrls": [
+        "https://roboblazers7617.github.io/maven-repo/limelight"
+    ],
+    "jsonUrl": "https://roboblazers7617.github.io/ClassyLimelights/ClassyLimelights.json",
+    "javaDependencies": [
+        {
+            "groupId": "io.github.roboblazers7617.limelight",
+            "artifactId": "ClassyLimelights-java",
+            "version": "2025.1.1"
+        }
+    ],
+    "requires": [],
+    "jniDependencies": [],
+    "cppDependencies": []
+}
