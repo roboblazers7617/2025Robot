@@ -387,7 +387,7 @@ public final class Constants {
 		 * Maximum acceleration in m/s^2.
 		 */
 		// TODO: (Brandon) Update with accurate number Use reca.lc
-		public static final double MAX_ACCELERATION = 3;
+		public static final double MAX_ACCELERATION = 2.5;
 
 		/**
 		 * Maximum position in meters.

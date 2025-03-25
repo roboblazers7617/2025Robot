@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.55,
-        "y": 7.55
+        "x": 1.6662909836065571,
+        "y": 7.38155737704918
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.074449620304306,
-        "y": 6.980674650065964
+        "x": 2.190740603910863,
+        "y": 6.812232027115145
       },
       "isLocked": false,
       "linkedName": "Coral Station Left Far"
