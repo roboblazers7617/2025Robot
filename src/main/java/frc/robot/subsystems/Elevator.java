@@ -4,10 +4,18 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Kilograms;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+
 import java.util.function.DoubleSupplier;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -24,9 +32,19 @@ import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.wpilibj.simulation.BatterySim;
+import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -91,6 +109,19 @@ public class Elevator extends SubsystemBase {
 	private final TrapezoidProfile wristProfile = new TrapezoidProfile(new Constraints(WristConstants.MAX_VELOCITY, WristConstants.MAX_ACCELERATION));
 
 	/**
+	 * The motor object used to simulate the wrist gearbox.
+	 */
+	private final DCMotor wristGearbox = DCMotor.getNEO(1);
+	/**
+	 * The simulation object used for the wrist mechanism.
+	 */
+	private final SingleJointedArmSim wristSim = new SingleJointedArmSim(wristGearbox, WristConstants.POSITION_CONVERSION_FACTOR, SingleJointedArmSim.estimateMOI(WristConstants.Simulation.LENGTH.in(Meters), WristConstants.Simulation.MASS.in(Kilograms)), WristConstants.Simulation.LENGTH.in(Meters), Degrees.of(WristConstants.MIN_POSITION).in(Radians), Degrees.of(WristConstants.MAX_POSITION).in(Radians), true, 0);
+	/**
+	 * The simulation object used for the wrist motor.
+	 */
+	private final SparkMaxSim wristMotorSim = new SparkMaxSim(wristMotor, wristGearbox);
+
+	/**
 	 * This is the current trapezoid profile setpoint for the wrist. It is not the final target, that is in the {@link #wristTarget} variable.
 	 */
 	private TrapezoidProfile.State currentWristSetpoint;
@@ -99,6 +130,14 @@ public class Elevator extends SubsystemBase {
 	 * The wrist target in degrees, This is within the outer bounds of the wrist but the danger zone at the bottom has not been accounted for.
 	 */
 	private double wristTarget;
+
+	/**
+	 * The Mechanism2d used to represent the elevator and wrist.
+	 */
+	private final Mechanism2d mechanism2d = new Mechanism2d(60, 60);
+	private final MechanismRoot2d armPivot = mechanism2d.getRoot("ArmPivot", 30, 30);
+	private final MechanismLigament2d armTower = armPivot.append(new MechanismLigament2d("ArmTower", 30, -90));
+	private final MechanismLigament2d arm = armPivot.append(new MechanismLigament2d("Arm", 30, Radians.of(wristSim.getAngleRads()).in(Degrees), 6, new Color8Bit(Color.kYellow)));
 
 	/**
 	 * Creates a new Elevator.
@@ -176,6 +215,10 @@ public class Elevator extends SubsystemBase {
 
 		SmartDashboard.putData("Toggle Elevator Brake Mode", toggleBrakeModesCommand());
 		SmartDashboard.putData("Stop Elevator Command", doNothing());
+
+		// Put Mechanism 2d to SmartDashboard
+		SmartDashboard.putData("Arm Sim", mechanism2d);
+		armTower.setColor(new Color8Bit(Color.kBlue));
 	}
 
 	/**
@@ -237,6 +280,25 @@ public class Elevator extends SubsystemBase {
 		double wristFeedForwardValue = wristFeedforward.calculate(Math.toRadians(currentWristSetpoint.position), Math.toRadians(currentWristSetpoint.velocity));
 
 		wristMotor.getClosedLoopController().setReference(currentWristSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0, wristFeedForwardValue, ArbFFUnits.kVoltage);
+	}
+
+	@Override
+	public void simulationPeriodic() {
+		// In this method, we update our simulation of what our arm is doing
+		// First, we set our "inputs" (voltages)
+		wristSim.setInput(wristMotor.getAppliedOutput() * RoboRioSim.getVInVoltage());
+
+		// Next, we update it. The standard loop time is 20ms.
+		wristSim.update(0.02);
+
+		// Now, we update the Spark Max
+		wristMotorSim.iterate(RadiansPerSecond.of(wristSim.getVelocityRadPerSec()).in(RPM), RoboRioSim.getVInVoltage(), 0.02);
+
+		// SimBattery estimates loaded battery voltages
+		// This should include all motors being simulated
+		RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(wristSim.getCurrentDrawAmps()));
+
+		arm.setAngle(Radians.of(wristSim.getAngleRads()).in(Degrees));
 	}
 
 	/**
@@ -320,7 +382,7 @@ public class Elevator extends SubsystemBase {
 
 	/**
 	 * A command that does nothing. This command requires the elevator subsystem so it will kill any other command. This is used to let the drivers regain controll of the elevator if it is unable to reach its target.
-	 * 
+	 *
 	 * @return Command to run.
 	 */
 	public Command doNothing() {

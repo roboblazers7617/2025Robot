@@ -6,6 +6,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.DegreesPerSecondPerSecond;
 import static edu.wpi.first.units.Units.FeetPerSecond;
+import static edu.wpi.first.units.Units.Kilograms;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
@@ -32,7 +33,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.AngularAcceleration;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
+import edu.wpi.first.units.measure.Mass;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -536,6 +539,21 @@ public final class Constants {
 		 * Tolerance for the target to be considered reached in degrees.
 		 */
 		public static final double TOLERANCE = 5;
+
+		/**
+		 * Constants used for simulating the Wrist.
+		 */
+		public static class Simulation {
+			// TODO: Update these with real values
+			/**
+			 * The length of the arm.
+			 */
+			public static final Distance LENGTH = Meters.of(1.5);
+			/**
+			 * The mass of the arm.
+			 */
+			public static final Mass MASS = Kilograms.of(1.5);
+		}
 	}
 
 	/**
