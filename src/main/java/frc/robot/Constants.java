@@ -382,7 +382,7 @@ public final class Constants {
 		 * Maximum velocity in m/s.
 		 */
 		// TODO: (Brandon) Update with accurate number. Is the elevator really going to travel 3 feet in one second? Use reca.lc
-		public static final double MAX_VELOCITY = 2.5;
+		public static final double MAX_VELOCITY = 2;
 		/**
 		 * Maximum acceleration in m/s^2.
 		 */

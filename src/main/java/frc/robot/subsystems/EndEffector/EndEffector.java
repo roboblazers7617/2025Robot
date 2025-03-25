@@ -127,10 +127,22 @@ public class EndEffector extends SubsystemBase {
 		});
 	}
 
-	public Command CoralIntake() {
+	public Command CoralIntakeTeleop() {
 		return StartMotorCommand(() -> EndEffectorConstants.CORAL_MAIN_INTAKE_SPEED)
 				.andThen(Commands.waitUntil(() -> !isNotHoldingCoral.get()))
 				.andThen(StartMotorCommand(() -> EndEffectorConstants.CORAL_SECONDARY_INTAKE_SPEED))
+				.andThen(Commands.waitUntil(() -> !isNotHoldingCoralAdjuster.get()))
+				.finallyDo(this::stopMotor);
+	}
+
+	public Command CoralIntakeStart() {
+		return StartMotorCommand(() -> EndEffectorConstants.CORAL_MAIN_INTAKE_SPEED)
+				.andThen(Commands.waitUntil(() -> !isNotHoldingCoral.get()))
+				.finallyDo(this::stopMotor);
+	}
+
+	public Command CoralIntakeFinish() {
+		return StartMotorCommand(() -> EndEffectorConstants.CORAL_SECONDARY_INTAKE_SPEED)
 				.andThen(Commands.waitUntil(() -> !isNotHoldingCoralAdjuster.get()))
 				.finallyDo(this::stopMotor);
 	}

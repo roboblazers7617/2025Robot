@@ -14,7 +14,7 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 /** This stores Automations, primarly to be used with Autonomous routines. */
 public class Automations {
 	public void createNamedCommands(Drivetrain drivetrain, EndEffector endEffector, Elevator elevator) {
-		NamedCommands.registerCommand("Intake Coral", elevator.SetPositionCommand(ArmPosition.INTAKE_CORAL_CORAL_STATION).andThen(endEffector.CoralIntake()));
+		NamedCommands.registerCommand("Intake Coral", elevator.SetPositionCommand(ArmPosition.INTAKE_CORAL_CORAL_STATION).andThen(endEffector.CoralIntakeTeleop()));
 		NamedCommands.registerCommand("Intake Algae L2", elevator.SetPositionCommand(ArmPosition.INTAKE_ALGAE_LEVEL_2).andThen(endEffector.AlgaeIntake()));
 		NamedCommands.registerCommand("Intake Algae L3", elevator.SetPositionCommand(ArmPosition.INTAKE_ALGAE_LEVEL_3).andThen(endEffector.AlgaeIntake()));
 
