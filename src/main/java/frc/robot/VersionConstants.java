@@ -66,39 +66,39 @@ public class VersionConstants {
 	 */
 	@SuppressWarnings("all")
 	public static void publishNetworkTables(NetworkTable table) {
-		StringPublisher mavenGroupPublisher = table.getStringTopic("/MavenGroup")
+		StringPublisher mavenGroupPublisher = table.getStringTopic("MavenGroup")
 				.publish();
 		mavenGroupPublisher.set(MAVEN_GROUP);
 
-		StringPublisher mavenNamePublisher = table.getStringTopic("/MavenName")
+		StringPublisher mavenNamePublisher = table.getStringTopic("MavenName")
 				.publish();
 		mavenNamePublisher.set(MAVEN_NAME);
 
-		StringPublisher versionPublisher = table.getStringTopic("/Version")
+		StringPublisher versionPublisher = table.getStringTopic("Version")
 				.publish();
 		versionPublisher.set(VERSION);
 
-		StringPublisher gitRevisionPublisher = table.getStringTopic("/GitRevision")
+		StringPublisher gitRevisionPublisher = table.getStringTopic("GitRevision")
 				.publish();
 		gitRevisionPublisher.set(String.valueOf(GIT_REVISION));
 
-		StringPublisher gitShaPublisher = table.getStringTopic("/GitSHA")
+		StringPublisher gitShaPublisher = table.getStringTopic("GitSHA")
 				.publish();
 		gitShaPublisher.set(GIT_SHA);
 
-		StringPublisher gitDatePublisher = table.getStringTopic("/GitDate")
+		StringPublisher gitDatePublisher = table.getStringTopic("GitDate")
 				.publish();
 		gitDatePublisher.set(GIT_DATE);
 
-		StringPublisher gitBranchPublisher = table.getStringTopic("/GitBranch")
+		StringPublisher gitBranchPublisher = table.getStringTopic("GitBranch")
 				.publish();
 		gitBranchPublisher.set(GIT_BRANCH);
 
-		StringPublisher buildDatePublisher = table.getStringTopic("/BuildDate")
+		StringPublisher buildDatePublisher = table.getStringTopic("BuildDate")
 				.publish();
 		buildDatePublisher.set(BUILD_DATE);
 
-		StringPublisher dirtyPublisher = table.getStringTopic("/Dirty")
+		StringPublisher dirtyPublisher = table.getStringTopic("Dirty")
 				.publish();
 		dirtyPublisher.set((DIRTY != 0) ? "Uncommited changes" : "All changes commited");
 	}
