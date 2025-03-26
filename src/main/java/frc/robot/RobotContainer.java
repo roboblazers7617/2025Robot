@@ -166,16 +166,16 @@ public class RobotContainer {
 		// Scoring pose pathfinding
 		driverController.leftTrigger()
 				.and(isAlgaeModeTrigger)
-				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.ALGAE_SCORING_POSES_RED), drivetrain.driveToNearestPoseCommand(ScoringPoses.ALGAE_SCORING_POSES_BLUE), () -> Util.isRedAlliance()));
+				.whileTrue(Commands.either(drivetrainControls.driveFieldOrientedPathfindNearestCommand(driverController, ScoringPoses.ALGAE_SCORING_POSES_RED), drivetrainControls.driveFieldOrientedPathfindNearestCommand(driverController, ScoringPoses.ALGAE_SCORING_POSES_BLUE), () -> Util.isRedAlliance()));
 		driverController.leftTrigger()
 				.and(isCoralModeTrigger)
-				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_RED_LEFT), drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_BLUE_LEFT), () -> Util.isRedAlliance()));
+				.whileTrue(Commands.either(drivetrainControls.driveFieldOrientedPathfindNearestCommand(driverController, ScoringPoses.CORAL_SCORING_POSES_RED_LEFT), drivetrainControls.driveFieldOrientedPathfindNearestCommand(driverController, ScoringPoses.CORAL_SCORING_POSES_BLUE_LEFT), () -> Util.isRedAlliance()));
 		driverController.rightTrigger()
 				.and(isAlgaeModeTrigger)
-				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.ALGAE_SCORING_POSES_RED), drivetrain.driveToNearestPoseCommand(ScoringPoses.ALGAE_SCORING_POSES_BLUE), () -> Util.isRedAlliance()));
+				.whileTrue(Commands.either(drivetrainControls.driveFieldOrientedPathfindNearestCommand(driverController, ScoringPoses.ALGAE_SCORING_POSES_RED), drivetrainControls.driveFieldOrientedPathfindNearestCommand(driverController, ScoringPoses.ALGAE_SCORING_POSES_BLUE), () -> Util.isRedAlliance()));
 		driverController.rightTrigger()
 				.and(isCoralModeTrigger)
-				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_RED_RIGHT), drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_BLUE_RIGHT), () -> Util.isRedAlliance()));
+				.whileTrue(Commands.either(drivetrainControls.driveFieldOrientedPathfindNearestCommand(driverController, ScoringPoses.CORAL_SCORING_POSES_RED_RIGHT), drivetrainControls.driveFieldOrientedPathfindNearestCommand(driverController, ScoringPoses.CORAL_SCORING_POSES_BLUE_RIGHT), () -> Util.isRedAlliance()));
 
 		driverController.rightBumper().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_SLOW));
 

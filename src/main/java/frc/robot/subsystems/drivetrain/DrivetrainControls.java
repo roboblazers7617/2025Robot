@@ -1,8 +1,11 @@
 package frc.robot.subsystems.drivetrain;
 
+import java.util.List;
 import java.util.function.Supplier;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.OperatorConstants;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -21,6 +24,14 @@ public class DrivetrainControls {
 	 * Speed multiplier used for scaling controller inputs (0, 1].
 	 */
 	private double speedMultiplier;
+	/**
+	 * The PID controller used for translation while pathfinding.
+	 */
+	private final ProfiledPIDController pathfindingTranslationPidController;
+	/**
+	 * The PID controller used for rotation while pathfinding.
+	 */
+	private final ProfiledPIDController pathfindingRotationPidController;
 
 	/**
 	 * Creates a new DrivetrainControls.
@@ -30,6 +41,10 @@ public class DrivetrainControls {
 	 */
 	public DrivetrainControls(Drivetrain drivetrain) {
 		this.drivetrain = drivetrain;
+
+		// Create PID controllers for pathfinding
+		pathfindingTranslationPidController = new ProfiledPIDController(DrivetrainConstants.Pathfinding.TRANSLATION_KP, DrivetrainConstants.Pathfinding.TRANSLATION_KI, DrivetrainConstants.Pathfinding.TRANSLATION_KD, DrivetrainConstants.Pathfinding.TRANSLATION_CONSTRAINTS);
+		pathfindingRotationPidController = new ProfiledPIDController(DrivetrainConstants.Pathfinding.ROTATION_KP, DrivetrainConstants.Pathfinding.ROTATION_KI, DrivetrainConstants.Pathfinding.ROTATION_KD, DrivetrainConstants.Pathfinding.ROTATION_CONSTRAINTS);
 
 		// Set things to their default states
 		resetSpeedMultiplier();
@@ -138,6 +153,22 @@ public class DrivetrainControls {
 	}
 
 	/**
+	 * A copy of {@link #driveGeneric(CommandXboxController)} that pathfinds to a given pose.
+	 *
+	 * @param controller
+	 *            The controller to read from.
+	 * @param pose
+	 *            The pose to pathfind to.
+	 * @return
+	 *         SwerveInputStream with data from the controller.
+	 */
+	public SwerveInputStream drivePathfind(CommandXboxController controller, Supplier<Pose2d> pose) {
+		return driveGeneric(controller)
+				.driveToPose(pose, pathfindingTranslationPidController, pathfindingRotationPidController)
+				.driveToPoseEnabled(true);
+	}
+
+	/**
 	 * {@link #driveInputStreamScaledCommand(SwerveInputStream)} that uses {@link #driveAngularVelocity(CommandXboxController)}. Calls {@link Drivetrain#resetLastAngleScalar()} on end to prevent snapback.
 	 *
 	 * @param controller
@@ -172,5 +203,33 @@ public class DrivetrainControls {
 	 */
 	public Command driveFieldOrientedDirectAngleSimCommand(CommandXboxController controller) {
 		return driveInputStreamScaledCommand(driveDirectAngleSim(controller));
+	}
+
+	/**
+	 * {@link Drivetrain#driveFieldOrientedCommand(Supplier)} that uses {@link DrivetrainControls#drivePathfind(CommandXboxController, Supplier)}.
+	 *
+	 * @param controller
+	 *            Controller to use.
+	 * @param pose
+	 *            Pose to pathfind to.
+	 * @return
+	 *         Command to run.
+	 */
+	public Command driveFieldOrientedPathfindCommand(CommandXboxController controller, Supplier<Pose2d> pose) {
+		return drivetrain.driveFieldOrientedCommand(drivePathfind(controller, pose));
+	}
+
+	/**
+	 * {@link Drivetrain#driveFieldOrientedCommand(Supplier)} that uses {@link DrivetrainControls#drivePathfind(CommandXboxController, Supplier)}.
+	 *
+	 * @param controller
+	 *            Controller to use.
+	 * @param poses
+	 *            List of poses to choose from.
+	 * @return
+	 *         Command to run.
+	 */
+	public Command driveFieldOrientedPathfindNearestCommand(CommandXboxController controller, List<Pose2d> poses) {
+		return driveFieldOrientedPathfindCommand(controller, () -> drivetrain.getPose().nearest(poses));
 	}
 }

@@ -31,6 +31,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.LinearAcceleration;
 
@@ -136,6 +137,40 @@ public final class Constants {
 			 * Maximum angular acceleration.
 			 */
 			public static final AngularAcceleration MAX_ANGULAR_ACCELERATION = DegreesPerSecondPerSecond.of(720);
+
+			/**
+			 * kP used for the YAGSL pathfinding translation PID controller.
+			 */
+			public static final double TRANSLATION_KP = 5.0;
+			/**
+			 * kI used for the YAGSL pathfinding translation PID controller.
+			 */
+			public static final double TRANSLATION_KI = 0.0;
+			/**
+			 * kD used for the YAGSL pathfinding translation PID controller.
+			 */
+			public static final double TRANSLATION_KD = 0.0;
+			/**
+			 * Constraints used for the YAGSL pathfinding translation PID controller.
+			 */
+			public static final Constraints TRANSLATION_CONSTRAINTS = new Constraints(2.25, 2.0);
+
+			/**
+			 * kP used for the YAGSL pathfinding rotation PID controller.
+			 */
+			public static final double ROTATION_KP = 5.0;
+			/**
+			 * kI used for the YAGSL pathfinding rotation PID controller.
+			 */
+			public static final double ROTATION_KI = 0.0;
+			/**
+			 * kD used for the YAGSL pathfinding rotation PID controller.
+			 */
+			public static final double ROTATION_KD = 0.0;
+			/**
+			 * Constraints used for the YAGSL pathfinding rotation PID controller.
+			 */
+			public static final Constraints ROTATION_CONSTRAINTS = new Constraints(540.0, 720.0);
 		}
 
 		/**
