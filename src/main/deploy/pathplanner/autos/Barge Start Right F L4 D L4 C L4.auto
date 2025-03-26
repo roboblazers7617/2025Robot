@@ -76,6 +76,12 @@
                 "data": {
                   "name": "Elevator L4 Position"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Finish Intake Coral"
+                }
               }
             ]
           }
@@ -132,6 +138,12 @@
                 "type": "named",
                 "data": {
                   "name": "Elevator L4 Position"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Finish Intake Coral"
                 }
               }
             ]
