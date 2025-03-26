@@ -761,9 +761,13 @@ public final class Constants {
 			 */
 			public static final List<Pose3d> TAG_POSES = new ArrayList<Pose3d>();
 			/**
-			 * Offset from the AprilTag from which coral scoring should happen.
+			 * Offset from the AprilTag from which coral scoring should happen on the right side.
 			 */
 			public static final Transform2d CORAL_SCORING_OFFSET = new Transform2d(Meters.of(0.5), Meters.of(0.33 / 2), Rotation2d.k180deg);
+			/**
+			 * Offset from the AprilTag from which coral scoring into L4 should happen on the right side.
+			 */
+			public static final Transform2d CORAL_SCORING_OFFSET_L4 = new Transform2d(Meters.of(0.6), CORAL_SCORING_OFFSET.getMeasureY(), Rotation2d.k180deg);
 			/**
 			 * Offset from the AprilTag from which algae scoring should happen.
 			 */
@@ -784,6 +788,22 @@ public final class Constants {
 			 * Poses from which the robot can score coral on the right side on the red alliance.
 			 */
 			public static final List<Pose2d> CORAL_SCORING_POSES_RED_RIGHT = new ArrayList<Pose2d>();
+			/**
+			 * Poses from which the robot can score coral in L4 on the left side on the blue alliance.
+			 */
+			public static final List<Pose2d> CORAL_SCORING_POSES_L4_BLUE_LEFT = new ArrayList<Pose2d>();
+			/**
+			 * Poses from which the robot can score coral in L4 on the right side on the blue alliance.
+			 */
+			public static final List<Pose2d> CORAL_SCORING_POSES_L4_BLUE_RIGHT = new ArrayList<Pose2d>();
+			/**
+			 * Poses from which the robot can score coral in L4 on the left side on the red alliance.
+			 */
+			public static final List<Pose2d> CORAL_SCORING_POSES_L4_RED_LEFT = new ArrayList<Pose2d>();
+			/**
+			 * Poses from which the robot can score coral in L4 on the right side on the red alliance.
+			 */
+			public static final List<Pose2d> CORAL_SCORING_POSES_L4_RED_RIGHT = new ArrayList<Pose2d>();
 			/**
 			 * Poses from which the robot can score algae on the blue alliance.
 			 */
@@ -806,18 +826,32 @@ public final class Constants {
 				// Generate lists of coral scoring poses.
 				TAG_POSES.forEach((pose) -> {
 					Pose2d pose2d = pose.toPose2d();
+
 					// Regular side
 					CORAL_SCORING_POSES_BLUE_RIGHT.add(pose2d.transformBy(CORAL_SCORING_OFFSET));
-					// Flipped side
-					CORAL_SCORING_POSES_BLUE_LEFT.add(pose2d.transformBy(new Transform2d(CORAL_SCORING_OFFSET.getMeasureX(), CORAL_SCORING_OFFSET.getMeasureY().times(-1), CORAL_SCORING_OFFSET.getRotation())));
+					// Mirrored side
+					CORAL_SCORING_POSES_BLUE_LEFT.add(pose2d.transformBy(PoseUtil.flipTransformY(CORAL_SCORING_OFFSET)));
+
+					// Regular side (L4)
+					CORAL_SCORING_POSES_L4_BLUE_RIGHT.add(pose2d.transformBy(CORAL_SCORING_OFFSET_L4));
+					// Mirrored side (L4)
+					CORAL_SCORING_POSES_L4_BLUE_LEFT.add(pose2d.transformBy(PoseUtil.flipTransformY(CORAL_SCORING_OFFSET_L4)));
 				});
 
 				// Generate lists of coral scoring poses for the other alliance.
 				CORAL_SCORING_POSES_BLUE_LEFT.forEach((pose) -> {
-					CORAL_SCORING_POSES_RED_LEFT.add(PoseUtil.flipPose(pose));
+					CORAL_SCORING_POSES_RED_LEFT.add(PoseUtil.flipPoseAlliance(pose));
 				});
 				CORAL_SCORING_POSES_BLUE_RIGHT.forEach((pose) -> {
-					CORAL_SCORING_POSES_RED_RIGHT.add(PoseUtil.flipPose(pose));
+					CORAL_SCORING_POSES_RED_RIGHT.add(PoseUtil.flipPoseAlliance(pose));
+				});
+
+				// Generate lists of coral scoring poses for L4 for the other alliance.
+				CORAL_SCORING_POSES_L4_BLUE_LEFT.forEach((pose) -> {
+					CORAL_SCORING_POSES_L4_RED_LEFT.add(PoseUtil.flipPoseAlliance(pose));
+				});
+				CORAL_SCORING_POSES_L4_BLUE_RIGHT.forEach((pose) -> {
+					CORAL_SCORING_POSES_L4_RED_RIGHT.add(PoseUtil.flipPoseAlliance(pose));
 				});
 
 				// Generate a list of algae scoring poses.
@@ -828,7 +862,7 @@ public final class Constants {
 
 				// Generate a list of algae scoring poses for the other alliance.
 				ALGAE_SCORING_POSES_BLUE.forEach((pose) -> {
-					ALGAE_SCORING_POSES_RED.add(PoseUtil.flipPose(pose));
+					ALGAE_SCORING_POSES_RED.add(PoseUtil.flipPoseAlliance(pose));
 				});
 			}
 		}
@@ -872,7 +906,7 @@ public final class Constants {
 				Pose2d pose2d = TAG_POSE.toPose2d();
 
 				ALGAE_SCORING_POSE_BLUE = pose2d.transformBy(SCORING_OFFSET);
-				ALGAE_SCORING_POSE_RED = PoseUtil.flipPose(ALGAE_SCORING_POSE_BLUE);
+				ALGAE_SCORING_POSE_RED = PoseUtil.flipPoseAlliance(ALGAE_SCORING_POSE_BLUE);
 			}
 		}
 	}
@@ -899,6 +933,22 @@ public final class Constants {
 		 */
 		public static final List<Pose2d> CORAL_SCORING_POSES_RED_RIGHT = new ArrayList<Pose2d>();
 		/**
+		 * Poses from which the robot can score coral in L4 on the left side on the blue alliance.
+		 */
+		public static final List<Pose2d> CORAL_SCORING_POSES_L4_BLUE_LEFT = new ArrayList<Pose2d>();
+		/**
+		 * Poses from which the robot can score coral in L4 on the right side on the blue alliance.
+		 */
+		public static final List<Pose2d> CORAL_SCORING_POSES_L4_BLUE_RIGHT = new ArrayList<Pose2d>();
+		/**
+		 * Poses from which the robot can score coral in L4 on the left side on the red alliance.
+		 */
+		public static final List<Pose2d> CORAL_SCORING_POSES_L4_RED_LEFT = new ArrayList<Pose2d>();
+		/**
+		 * Poses from which the robot can score coral in L4 on the right side on the red alliance.
+		 */
+		public static final List<Pose2d> CORAL_SCORING_POSES_L4_RED_RIGHT = new ArrayList<Pose2d>();
+		/**
 		 * Poses from which the robot can score algae on the blue alliance.
 		 */
 		public static final List<Pose2d> ALGAE_SCORING_POSES_BLUE = new ArrayList<Pose2d>();
@@ -909,35 +959,35 @@ public final class Constants {
 
 		static {
 			// Compile CORAL_SCORING_POSES_BLUE_LEFT poses
-			FieldConstants.Reef.CORAL_SCORING_POSES_BLUE_LEFT.forEach((pose) -> {
-				CORAL_SCORING_POSES_BLUE_LEFT.add(pose);
-			});
+			CORAL_SCORING_POSES_BLUE_LEFT.addAll(FieldConstants.Reef.CORAL_SCORING_POSES_BLUE_LEFT);
 
 			// Compile CORAL_SCORING_POSES_BLUE_RIGHT poses
-			FieldConstants.Reef.CORAL_SCORING_POSES_BLUE_RIGHT.forEach((pose) -> {
-				CORAL_SCORING_POSES_BLUE_RIGHT.add(pose);
-			});
+			CORAL_SCORING_POSES_BLUE_RIGHT.addAll(FieldConstants.Reef.CORAL_SCORING_POSES_BLUE_RIGHT);
 
 			// Compile CORAL_SCORING_POSES_RED_LEFT poses
-			FieldConstants.Reef.CORAL_SCORING_POSES_RED_LEFT.forEach((pose) -> {
-				CORAL_SCORING_POSES_RED_LEFT.add(pose);
-			});
+			CORAL_SCORING_POSES_RED_LEFT.addAll(FieldConstants.Reef.CORAL_SCORING_POSES_RED_LEFT);
 
 			// Compile CORAL_SCORING_POSES_RED_RIGHT poses
-			FieldConstants.Reef.CORAL_SCORING_POSES_RED_RIGHT.forEach((pose) -> {
-				CORAL_SCORING_POSES_RED_RIGHT.add(pose);
-			});
+			CORAL_SCORING_POSES_RED_RIGHT.addAll(FieldConstants.Reef.CORAL_SCORING_POSES_RED_RIGHT);
+
+			// Compile CORAL_SCORING_POSES_L4_BLUE_LEFT poses
+			CORAL_SCORING_POSES_L4_BLUE_LEFT.addAll(FieldConstants.Reef.CORAL_SCORING_POSES_L4_BLUE_LEFT);
+
+			// Compile CORAL_SCORING_POSES_L4_BLUE_RIGHT poses
+			CORAL_SCORING_POSES_L4_BLUE_RIGHT.addAll(FieldConstants.Reef.CORAL_SCORING_POSES_L4_BLUE_RIGHT);
+
+			// Compile CORAL_SCORING_POSES_L4_RED_LEFT poses
+			CORAL_SCORING_POSES_L4_RED_LEFT.addAll(FieldConstants.Reef.CORAL_SCORING_POSES_L4_RED_LEFT);
+
+			// Compile CORAL_SCORING_POSES_L4_RED_RIGHT poses
+			CORAL_SCORING_POSES_L4_RED_RIGHT.addAll(FieldConstants.Reef.CORAL_SCORING_POSES_L4_RED_RIGHT);
 
 			// Compile ALGAE_SCORING_POSES_BLUE poses
-			FieldConstants.Reef.ALGAE_SCORING_POSES_BLUE.forEach((pose) -> {
-				ALGAE_SCORING_POSES_BLUE.add(pose);
-			});
+			ALGAE_SCORING_POSES_BLUE.addAll(FieldConstants.Reef.ALGAE_SCORING_POSES_BLUE);
 			ALGAE_SCORING_POSES_BLUE.add(FieldConstants.Processor.ALGAE_SCORING_POSE_BLUE);
 
 			// Compile ALGAE_SCORING_POSES_RED poses
-			FieldConstants.Reef.ALGAE_SCORING_POSES_RED.forEach((pose) -> {
-				ALGAE_SCORING_POSES_RED.add(pose);
-			});
+			ALGAE_SCORING_POSES_RED.addAll(FieldConstants.Reef.ALGAE_SCORING_POSES_RED);
 			ALGAE_SCORING_POSES_RED.add(FieldConstants.Processor.ALGAE_SCORING_POSE_RED);
 		}
 	}
