@@ -1,17 +1,20 @@
 package frc.robot.subsystems.vision;
 
+import java.util.Optional;
+
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+
 import frc.robot.Constants.VisionConstants;
+
 import swervelib.SwerveDrive;
 import io.github.roboblazers7617.limelight.Limelight;
-import io.github.roboblazers7617.limelight.LimelightSettings;
 import io.github.roboblazers7617.limelight.PoseEstimator;
-import io.github.roboblazers7617.limelight.LimelightSettings.ImuMode;
 import io.github.roboblazers7617.limelight.PoseEstimate;
 
 /**
@@ -59,6 +62,10 @@ public class Vision {
 		/* backLimelight.settings.withImuMode(VisionConstants.DISABLED_IMU_MODE).withProcessedFrameFrequency(VisionConstants.DISABLED_UPDATE_FREQUENCY).save(); */
 
 		previousHeading = swerveDrive.getOdometryHeading();
+
+		// Run enable command on enable
+		RobotModeTriggers.teleop()
+				.onTrue(onEnableCommand());
 	}
 
 	/*
@@ -73,6 +80,44 @@ public class Vision {
 	 * }).ignoringDisable(true);
 	 * }
 	 */
+
+	/**
+	 * Command to call when the robot is enabled.
+	 * <p>
+	 * Updates the AprilTag ID filter.
+	 *
+	 * @return
+	 *         Command to run.
+	 */
+	private Command onEnableCommand() {
+		return Commands.runOnce(() -> {
+			// Update the AprilTag ID filter
+			Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
+			if (alliance.isPresent()) {
+				setTagFilterAlliance(alliance.get());
+			}
+		});
+	}
+
+	/**
+	 * Sets the AprilTag ID filter to the appropriate set for the given alliance.
+	 *
+	 * @param alliance
+	 *            The alliance to set it for.
+	 */
+	public void setTagFilterAlliance(DriverStation.Alliance alliance) {
+		switch (alliance) {
+			case Blue:
+				frontLimelight.settings.withArilTagIdFilter(VisionConstants.BLUE_TAG_ID_FILTER)
+						.save();
+				break;
+
+			case Red:
+				frontLimelight.settings.withArilTagIdFilter(VisionConstants.RED_TAG_ID_FILTER)
+						.save();
+				break;
+		}
+	}
 
 	/**
 	 * Update the pose estimation inside of {@link #swerveDrive} with data from Limelight.

@@ -275,6 +275,14 @@ public final class Constants {
 		 * The {@link ImuMode} to use while enabled.
 		 */
 		public static final ImuMode ENABLED_IMU_MODE = ImuMode.ExternalAssistInternalIMU;
+		/**
+		 * The {@link io.github.roboblazers7617.limelight.LimelightSettings#withArilTagIdFilter(List)} to use on the blue alliance.
+		 */
+		public static final List<Double> BLUE_TAG_ID_FILTER = List.of(17.0, 18.0, 19.0, 20.0, 21.0, 22.0);
+		/**
+		 * The {@link io.github.roboblazers7617.limelight.LimelightSettings#withArilTagIdFilter(List)} to use on the Red alliance.
+		 */
+		public static final List<Double> RED_TAG_ID_FILTER = List.of(6.0, 7.0, 8.0, 9.0, 10.0, 11.0);
 	}
 
 	/**
