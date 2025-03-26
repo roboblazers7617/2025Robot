@@ -62,11 +62,6 @@ public class Vision {
 
 		previousHeading = swerveDrive.getOdometryHeading();
 
-		// Set up alliance color mode switching
-		Util.isRedAllianceTrigger()
-				.onTrue(onRedAllianceCommand())
-				.onFalse(onBlueAllianceCommand());
-
 		// Set an alliance on enable
 		RobotModeTriggers.disabled()
 				.onFalse(Commands.either(onRedAllianceCommand(), onBlueAllianceCommand(), () -> Util.isRedAlliance()));
