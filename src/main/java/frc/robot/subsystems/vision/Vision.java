@@ -64,8 +64,8 @@ public class Vision {
 		previousHeading = swerveDrive.getOdometryHeading();
 
 		// Run enable command on enable
-		RobotModeTriggers.disabled()
-				.onFalse(onEnableCommand());
+		RobotModeTriggers.teleop()
+				.onTrue(onEnableCommand());
 	}
 
 	/*
