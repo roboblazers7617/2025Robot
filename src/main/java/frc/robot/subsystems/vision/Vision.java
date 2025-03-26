@@ -94,19 +94,29 @@ public class Vision {
 			// Update the AprilTag ID filter
 			Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
 			if (alliance.isPresent()) {
-				switch (alliance.get()) {
-					case Blue:
-						frontLimelight.settings.withArilTagIdFilter(VisionConstants.BLUE_TAG_ID_FILTER)
-								.save();
-						break;
-
-					case Red:
-						frontLimelight.settings.withArilTagIdFilter(VisionConstants.RED_TAG_ID_FILTER)
-								.save();
-						break;
-				}
+				setTagFilterAlliance(alliance.get());
 			}
 		});
+	}
+
+	/**
+	 * Sets the AprilTag ID filter to the appropriate set for the given alliance.
+	 *
+	 * @param alliance
+	 *            The alliance to set it for.
+	 */
+	public void setTagFilterAlliance(DriverStation.Alliance alliance) {
+		switch (alliance) {
+			case Blue:
+				frontLimelight.settings.withArilTagIdFilter(VisionConstants.BLUE_TAG_ID_FILTER)
+						.save();
+				break;
+
+			case Red:
+				frontLimelight.settings.withArilTagIdFilter(VisionConstants.RED_TAG_ID_FILTER)
+						.save();
+				break;
+		}
 	}
 
 	/**

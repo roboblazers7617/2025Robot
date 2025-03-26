@@ -51,6 +51,7 @@ public class Dashboard {
 			new RunOnceDeferred(() -> {
 				configureAutoBuilder(alliance);
 			}).ignoringDisable(true).schedule();
+			drivetrain.getVision().setTagFilterAlliance(alliance);
 		});
 
 		pose = new SendableChooser<Pose2d>();
