@@ -1,5 +1,7 @@
 package frc.robot.subsystems.vision;
 
+import java.util.Optional;
+
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -9,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 
 import frc.robot.Constants.VisionConstants;
-import frc.robot.util.Util;
 
 import swervelib.SwerveDrive;
 import io.github.roboblazers7617.limelight.Limelight;
@@ -62,9 +63,9 @@ public class Vision {
 
 		previousHeading = swerveDrive.getOdometryHeading();
 
-		// Set an alliance on enable
+		// Run enable command on enable
 		RobotModeTriggers.disabled()
-				.onFalse(Commands.either(onRedAllianceCommand(), onBlueAllianceCommand(), () -> Util.isRedAlliance()));
+				.onFalse(onEnableCommand());
 	}
 
 	/*
@@ -81,28 +82,30 @@ public class Vision {
 	 */
 
 	/**
-	 * Command to call when the robot's alliance switches to the red alliance. Changes the AprilTag ID filter.
+	 * Command to call when the robot is enabled.
+	 * <p>
+	 * Updates the AprilTag ID filter.
 	 *
 	 * @return
 	 *         Command to run.
 	 */
-	private Command onRedAllianceCommand() {
+	private Command onEnableCommand() {
 		return Commands.runOnce(() -> {
-			frontLimelight.settings.withArilTagIdFilter(VisionConstants.RED_TAG_ID_FILTER)
-					.save();
-		});
-	}
+			// Update the AprilTag ID filter
+			Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
+			if (alliance.isPresent()) {
+				switch (alliance.get()) {
+					case Blue:
+						frontLimelight.settings.withArilTagIdFilter(VisionConstants.BLUE_TAG_ID_FILTER)
+								.save();
+						break;
 
-	/**
-	 * Command to call when the robot's alliance switches to the blue alliance. Changes the AprilTag ID filter.
-	 *
-	 * @return
-	 *         Command to run.
-	 */
-	private Command onBlueAllianceCommand() {
-		return Commands.runOnce(() -> {
-			frontLimelight.settings.withArilTagIdFilter(VisionConstants.BLUE_TAG_ID_FILTER)
-					.save();
+					case Red:
+						frontLimelight.settings.withArilTagIdFilter(VisionConstants.RED_TAG_ID_FILTER)
+								.save();
+						break;
+				}
+			}
 		});
 	}
 
