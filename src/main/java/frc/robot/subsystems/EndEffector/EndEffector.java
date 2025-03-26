@@ -25,6 +25,7 @@ import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 
 /**
  * Subsystem for the robot's End Effector functionality
@@ -116,6 +117,16 @@ public class EndEffector extends SubsystemBase {
 	}
 
 	/**
+	 * run the motor at the specified speed, will not finish.
+	 * 
+	 * @param speed
+	 * @return
+	 */
+	public Command RunMotorContinuosCommand(Supplier<Double> speed) {
+		return new RunCommand(() -> startMotor(speed.get()));
+	}
+
+	/**
 	 * Stops the intake motor.
 	 *
 	 * @return
@@ -186,7 +197,7 @@ public class EndEffector extends SubsystemBase {
 
 	// Coral Manual
 	public Command manualCoralIntake() {
-		return StartMotorCommand(() -> EndEffectorConstants.CORAL_EMERGENCY_MODE_INTAKE_SPEED)
+		return RunMotorContinuosCommand(() -> EndEffectorConstants.CORAL_EMERGENCY_MODE_INTAKE_SPEED)
 				.finallyDo(this::stopMotor);
 	}
 
@@ -197,7 +208,7 @@ public class EndEffector extends SubsystemBase {
 	}
 
 	public Command manualCoralBackup() {
-		return StartMotorCommand(() -> EndEffectorConstants.CORAL_BACKUP_SPEED)
+		return RunMotorContinuosCommand(() -> EndEffectorConstants.CORAL_BACKUP_SPEED)
 				.finallyDo(this::stopMotor);
 	}
 }
