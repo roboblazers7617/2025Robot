@@ -48,6 +48,10 @@ public class Dashboard {
 
 		// TODO: #103 (Brandon) What happens if you change the color multiple times? Does this work or crash?
 		alliancePicker.onChange((alliance) -> {
+			if (alliance == null) {
+				System.err.println("BAD! Alliance chooser run without selected alliance");
+				return;
+			}
 			new RunOnceDeferred(() -> {
 				configureAutoBuilder(alliance);
 			}).ignoringDisable(true).schedule();
@@ -81,10 +85,6 @@ public class Dashboard {
 	 *            The alliance to configure the auto builder for.
 	 */
 	public void configureAutoBuilder(DriverStation.Alliance alliance) {
-		if (alliance == null) {
-			System.out.println("BAD! Allicance builder run without selected alliance");
-			return;
-		}
 		Auto.setupPathPlanner(drivetrain, alliance);
 		System.out.println("Configured path planner");
 
