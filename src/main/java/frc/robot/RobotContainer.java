@@ -8,6 +8,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ScoringPoses;
 import frc.robot.Constants.DashboardConstants;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.LoggingConstants;
 import frc.robot.subsystems.EndEffector.EndEffector;
 import frc.robot.util.Util;
@@ -16,11 +17,11 @@ import frc.robot.Constants.OperatorConstants.GamepieceMode;
 import frc.robot.Constants.ArmPosition;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainControls;
+import frc.robot.subsystems.drivetrain.Drivetrain.TranslationOrientation;
 import frc.robot.subsystems.Auto;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.IntakeRamp.Ramp;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -148,13 +149,13 @@ public class RobotContainer {
 		// Set the default drivetrain command (used for the driver controller)
 		if (RobotBase.isSimulation()) {
 			// Heading control
-			drivetrain.setDefaultCommand(drivetrainControls.driveFieldOrientedDirectAngleSimCommand(driverController));
+			drivetrain.setDefaultCommand(drivetrainControls.driveDirectAngleSimCommand(driverController, TranslationOrientation.FIELD_RELATIVE));
 		} else {
 			// Heading control
-			drivetrain.setDefaultCommand(drivetrainControls.driveFieldOrientedDirectAngleCommand(driverController));
+			drivetrain.setDefaultCommand(drivetrainControls.driveDirectAngleCommand(driverController, TranslationOrientation.FIELD_RELATIVE));
 			// Angular velocity control
 			driverController.leftBumper()
-					.whileTrue(drivetrainControls.driveFieldOrientedAngularVelocityCommand(driverController));
+					.whileTrue(drivetrainControls.driveAngularVelocityCommand(driverController, TranslationOrientation.FIELD_RELATIVE));
 		}
 
 		driverController.a().onTrue(ramp.RampDeploy());
@@ -178,6 +179,10 @@ public class RobotContainer {
 				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_RED_RIGHT), drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_BLUE_RIGHT), () -> Util.isRedAlliance()));
 
 		driverController.rightBumper().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_SLOW));
+
+		driverController.y()
+				.whileTrue(Commands.either(drivetrainControls.driveStaticHeadingNearestPoseCommand(driverController, TranslationOrientation.ROBOT_RELATIVE, FieldConstants.Reef.FACE_POSES_RED), drivetrainControls.driveStaticHeadingNearestPoseCommand(driverController, TranslationOrientation.ROBOT_RELATIVE, FieldConstants.Reef.FACE_POSES_BLUE), () -> Util.isRedAlliance())
+						.alongWith(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_SLIDE)));
 
 		driverController.start().onTrue(drivetrain.zeroGyroWithAllianceCommand());
 	}
