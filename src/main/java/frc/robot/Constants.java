@@ -279,6 +279,14 @@ public final class Constants {
 		 * The {@link ImuMode} to use while enabled.
 		 */
 		public static final ImuMode ENABLED_IMU_MODE = ImuMode.ExternalAssistInternalIMU;
+		/**
+		 * The {@link io.github.roboblazers7617.limelight.LimelightSettings#withArilTagIdFilter(List)} to use on the blue alliance.
+		 */
+		public static final List<Double> BLUE_TAG_ID_FILTER = List.of(17.0, 18.0, 19.0, 20.0, 21.0, 22.0);
+		/**
+		 * The {@link io.github.roboblazers7617.limelight.LimelightSettings#withArilTagIdFilter(List)} to use on the Red alliance.
+		 */
+		public static final List<Double> RED_TAG_ID_FILTER = List.of(6.0, 7.0, 8.0, 9.0, 10.0, 11.0);
 	}
 
 	/**
@@ -386,12 +394,12 @@ public final class Constants {
 		 * Maximum velocity in m/s.
 		 */
 		// TODO: (Brandon) Update with accurate number. Is the elevator really going to travel 3 feet in one second? Use reca.lc
-		public static final double MAX_VELOCITY = 2.5;
+		public static final double MAX_VELOCITY = 2;
 		/**
 		 * Maximum acceleration in m/s^2.
 		 */
 		// TODO: (Brandon) Update with accurate number Use reca.lc
-		public static final double MAX_ACCELERATION = 3;
+		public static final double MAX_ACCELERATION = 2.5;
 
 		/**
 		 * Maximum position in meters.
@@ -618,6 +626,7 @@ public final class Constants {
 				.p(0)
 				.i(0)
 				.d(0);
+		// Coral
 		/**
 		 * Intake motor speed for coral. (to be changed and edited later)
 		 */
@@ -627,13 +636,30 @@ public final class Constants {
 		 */
 		public static final double CORAL_SECONDARY_INTAKE_SPEED = 0.05;
 		/**
+		 * Intake motor speed for coral in emergency mode
+		 */
+		public static final double CORAL_EMERGENCY_MODE_INTAKE_SPEED = 0.1;
+		/**
 		 * Intake motor speed for the coral to be behind secondary beam break for L4 scoring
 		 */
 		public static final double CORAL_BACKUP_SPEED = -0.1;
 		/**
+		 * Intake motor speed for backing up coral when in emergency mode
+		 */
+		public static final double CORAL_EMERGENCY_BACKUP_SPEED = -0.05;
+		/**
 		 * Outtake motor speed for coral. (to be changed and edited later)
 		 */
 		public static final double CORAL_OUTAKE_SPEED = 0.5;
+		/**
+		 * Outtake timer for emergency coral outtake.
+		 */
+		public static final double CORAL_EMERGENCY_OUTTAKE_TIMER = 0.75;
+		/**
+		 * When using single beam break commands offsets time when it will check for beam break.
+		 */
+		public static final double CORAL_SINGLE_BEAM_ADJUSTER_OUTTAKE_WAITTIME = 0.1;
+		// Algae
 		/**
 		 * Intake motor speed for algae. (to be changed and edited later)
 		 */
@@ -658,6 +684,10 @@ public final class Constants {
 		 * Time (in seconds) that the motors run after algae outake is called to eject algae.
 		 */
 		public static final double ALGAE_OUTTAKE_RUN_TIME = 0.3;
+		/**
+		 * Time algae is being held (in seconds) after intake
+		 */
+		public static final double ALGAE_HOLD_TIME = 20;
 		// Beam Break constants
 		/**
 		 * DIO pin for the main beam break.

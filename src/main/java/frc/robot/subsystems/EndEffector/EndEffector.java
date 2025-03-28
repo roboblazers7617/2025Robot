@@ -25,6 +25,7 @@ import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 
 /**
  * Subsystem for the robot's End Effector functionality
@@ -116,6 +117,16 @@ public class EndEffector extends SubsystemBase {
 	}
 
 	/**
+	 * run the motor at the specified speed, will not finish.
+	 * 
+	 * @param speed
+	 * @return
+	 */
+	public Command RunMotorContinuosCommand(Supplier<Double> speed) {
+		return new RunCommand(() -> startMotor(speed.get()));
+	}
+
+	/**
 	 * Stops the intake motor.
 	 *
 	 * @return
@@ -127,10 +138,22 @@ public class EndEffector extends SubsystemBase {
 		});
 	}
 
-	public Command CoralIntake() {
+	public Command CoralIntakeTeleop() {
 		return StartMotorCommand(() -> EndEffectorConstants.CORAL_MAIN_INTAKE_SPEED)
 				.andThen(Commands.waitUntil(() -> !isNotHoldingCoral.get()))
 				.andThen(StartMotorCommand(() -> EndEffectorConstants.CORAL_SECONDARY_INTAKE_SPEED))
+				.andThen(Commands.waitUntil(() -> !isNotHoldingCoralAdjuster.get()))
+				.finallyDo(this::stopMotor);
+	}
+
+	public Command CoralIntakeStart() {
+		return StartMotorCommand(() -> EndEffectorConstants.CORAL_MAIN_INTAKE_SPEED)
+				.andThen(Commands.waitUntil(() -> !isNotHoldingCoral.get()))
+				.finallyDo(this::stopMotor);
+	}
+
+	public Command CoralIntakeFinish() {
+		return StartMotorCommand(() -> EndEffectorConstants.CORAL_SECONDARY_INTAKE_SPEED)
 				.andThen(Commands.waitUntil(() -> !isNotHoldingCoralAdjuster.get()))
 				.finallyDo(this::stopMotor);
 	}
@@ -156,11 +179,12 @@ public class EndEffector extends SubsystemBase {
 				.finallyDo(this::stopMotor);
 	}
 
+	// Algae Regular
 	public Command AlgaeIntake() {
 		return StartMotorCommand(() -> EndEffectorConstants.ALGAE_INTAKE_SPEED)
 				.andThen(Commands.waitUntil(() -> !isHoldingAlgaeInput.get()))
 				.andThen(StartMotorCommand(() -> EndEffectorConstants.ALGAE_HOLD_SPEED))
-				.andThen(Commands.waitSeconds(20))// temp to allow time to test
+				.andThen(Commands.waitSeconds((EndEffectorConstants.ALGAE_HOLD_TIME)))
 				.finallyDo(this::stopMotor);
 	}
 
@@ -168,6 +192,23 @@ public class EndEffector extends SubsystemBase {
 		return StartMotorCommand(() -> EndEffectorConstants.ALGAE_OUTAKE_SPEED)
 				.andThen(Commands.waitUntil(() -> isHoldingAlgaeInput.get()))
 				.andThen(Commands.waitSeconds(EndEffectorConstants.ALGAE_OUTTAKE_RUN_TIME))
+				.finallyDo(this::stopMotor);
+	}
+
+	// Coral Manual
+	public Command manualCoralIntake() {
+		return RunMotorContinuosCommand(() -> EndEffectorConstants.CORAL_EMERGENCY_MODE_INTAKE_SPEED)
+				.finallyDo(this::stopMotor);
+	}
+
+	public Command manualCoralOuttake() {
+		return StartMotorCommand(() -> EndEffectorConstants.CORAL_OUTAKE_SPEED)
+				.andThen(Commands.waitSeconds(EndEffectorConstants.CORAL_EMERGENCY_OUTTAKE_TIMER))
+				.finallyDo(this::stopMotor);
+	}
+
+	public Command manualCoralBackup() {
+		return RunMotorContinuosCommand(() -> EndEffectorConstants.CORAL_BACKUP_SPEED)
 				.finallyDo(this::stopMotor);
 	}
 }
