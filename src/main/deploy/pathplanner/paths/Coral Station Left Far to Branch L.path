@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 1.5703893442622954,
-        "y": 7.273668032786885
+        "y": 7.4295081967213115
       },
       "prevControl": null,
       "nextControl": {
         "x": 2.094838964566601,
-        "y": 6.704342682852849
+        "y": 6.860182846787276
       },
       "isLocked": false,
       "linkedName": "Coral Station Left Far"
