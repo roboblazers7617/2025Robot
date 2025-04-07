@@ -5,11 +5,15 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.AbsoluteEncoderConfig;
 import com.revrobotics.spark.config.EncoderConfig;
+import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -19,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
+import frc.robot.Constants.WristConstants;
 
 /**
  * Subsystem that controls the climber.
@@ -32,24 +37,26 @@ public class Climber extends SubsystemBase {
 	/**
 	 * Encoder for the {@link #climberMotor}.
 	 */
-	private final RelativeEncoder climberEncoder;
+	// private final RelativeEncoder climberEncoder;
+	private final AbsoluteEncoder climberAbsoluteEncoder;
+
 	/**
 	 * Servo used to actuate the climber ratchet.
 	 */
 	private final Servo rachetServo;
 
-	/**
+	/*
 	 * Creates a new Climber.
 	 */
 	public Climber() {
-		climberMotor.configure(new SparkMaxConfig()
+		SparkBaseConfig climberConfig = new SparkMaxConfig()
 				.idleMode(IdleMode.kBrake)
 				.inverted(true)
-				.smartCurrentLimit(40)
-				.apply(new EncoderConfig().positionConversionFactor(ClimberConstants.CLIMBER_GEAR_RATIO)), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+				.smartCurrentLimit(40);
+		climberConfig.absoluteEncoder.positionConversionFactor(ClimberConstants.CLIMBER_GEAR_RATIO);
+		climberMotor.configure(climberConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
-		climberEncoder = climberMotor.getEncoder();
-		climberEncoder.setPosition(0.0);
+		climberAbsoluteEncoder = climberMotor.getAbsoluteEncoder();
 
 		rachetServo = new Servo(ClimberConstants.SERVO_PWM_PORT);
 	}
@@ -74,12 +81,12 @@ public class Climber extends SubsystemBase {
 	 * @return
 	 *         Command to run.
 	 */
-	public Command RaiseClimber() {
+	public Command RaiseClimber(double position) {
 		return Commands.runOnce(() -> {
 			disableRatchet();
 			climberMotor.set(ClimberConstants.RAISE_CLIMBER_SPEED);
 		}, this)
-				.andThen(Commands.waitUntil(() -> (climberEncoder.getPosition() >= ClimberConstants.CLIMBER_RAISED_POSITION)))
+				.andThen(Commands.waitUntil(() -> (climberAbsoluteEncoder.getPosition() >= position)))
 				.finallyDo(() -> {
 					climberMotor.set(0);
 				});
@@ -91,12 +98,12 @@ public class Climber extends SubsystemBase {
 	 * @return
 	 *         Command to run.
 	 */
-	public Command LowerClimber() {
+	public Command LowerClimber(double position) {
 		return Commands.runOnce(() -> {
 			enableRatchet();
 			climberMotor.set(ClimberConstants.LOWER_CLIMBER_SPEED);
 		}, this)
-				.andThen(Commands.waitUntil(() -> (climberEncoder.getPosition() <= ClimberConstants.CLIMBER_LOWERED_POSITION)))
+				.andThen(Commands.waitUntil(() -> (climberAbsoluteEncoder.getPosition() <= position)))
 				.finallyDo(() -> {
 					climberMotor.set(0);
 				});
