@@ -135,7 +135,8 @@ public class Vision {
 			// Don't try to use a null PoseEstimate
 			if (poseEstimate != null && Math.abs(swerveDrive.getOdometryHeading().minus(previousHeading).getDegrees()) < 50.0) {
 				// Only update vision if our angular velocity is less than 720 degrees per second and a tag was detected
-				if (Math.abs(swerveDrive.getMaximumChassisAngularVelocity()) < 720 && poseEstimate.tagCount > 0) {
+				// TODO: This max chassis speed check doesnt pull values from robot and is in radians not degree
+				if (Math.abs(swerveDrive.getMaximumChassisAngularVelocity()) < 720 && poseEstimate.tagCount > 0 && DriverStation.isEnabled()) {
 					swerveDrive.addVisionMeasurement(poseEstimate.getPose2d(), poseEstimate.getTimestampSeconds(), VecBuilder.fill(.7, .7, 9999999));
 				}
 			}

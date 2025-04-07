@@ -360,7 +360,7 @@ public final class Constants {
 		/**
 		 * Elevator kP.
 		 */
-		public static final double KP = 1.2; // 0.8
+		public static final double KP = 1.35; // 0.8
 		/**
 		 * Elevator kI.
 		 */
