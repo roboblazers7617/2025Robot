@@ -39,6 +39,7 @@ public class Climber extends SubsystemBase {
 	 */
 	// private final RelativeEncoder climberEncoder;
 	private final AbsoluteEncoder climberAbsoluteEncoder;
+	private final RelativeEncoder climberRelativeEncoder;
 
 	/**
 	 * Servo used to actuate the climber ratchet.
@@ -53,12 +54,24 @@ public class Climber extends SubsystemBase {
 				.idleMode(IdleMode.kBrake)
 				.inverted(true)
 				.smartCurrentLimit(40);
-		climberConfig.absoluteEncoder.positionConversionFactor(ClimberConstants.CLIMBER_GEAR_RATIO);
+		climberConfig.absoluteEncoder
+				.positionConversionFactor(ClimberConstants.CLIMBER_JUST_SPOOL_RATIO)
+				.zeroOffset(ClimberConstants.ABSOLUTE_ENCODER_OFFSET)
+				.inverted(true);
+		climberConfig.encoder.positionConversionFactor(ClimberConstants.CLIMBER_GEAR_RATIO);
 		climberMotor.configure(climberConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
 		climberAbsoluteEncoder = climberMotor.getAbsoluteEncoder();
 
+		climberRelativeEncoder = climberMotor.getEncoder();
+
 		rachetServo = new Servo(ClimberConstants.SERVO_PWM_PORT);
+	}
+
+	public void teleopInit() {
+		System.out.println("absolute encoder value: " + climberAbsoluteEncoder.getPosition());
+		climberRelativeEncoder.setPosition(climberAbsoluteEncoder.getPosition());
+		System.out.println("relative encoder position: " + climberRelativeEncoder.getPosition());
 	}
 
 	/**
@@ -86,7 +99,7 @@ public class Climber extends SubsystemBase {
 			disableRatchet();
 			climberMotor.set(ClimberConstants.RAISE_CLIMBER_SPEED);
 		}, this)
-				.andThen(Commands.waitUntil(() -> (climberAbsoluteEncoder.getPosition() >= position)))
+				.andThen(Commands.waitUntil(() -> (climberRelativeEncoder.getPosition() >= position)))
 				.finallyDo(() -> {
 					climberMotor.set(0);
 				});
@@ -103,7 +116,7 @@ public class Climber extends SubsystemBase {
 			enableRatchet();
 			climberMotor.set(ClimberConstants.LOWER_CLIMBER_SPEED);
 		}, this)
-				.andThen(Commands.waitUntil(() -> (climberAbsoluteEncoder.getPosition() <= position)))
+				.andThen(Commands.waitUntil(() -> (climberRelativeEncoder.getPosition() <= position)))
 				.finallyDo(() -> {
 					climberMotor.set(0);
 				});

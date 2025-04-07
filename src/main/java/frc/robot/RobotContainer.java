@@ -141,6 +141,7 @@ public class RobotContainer {
 		Auto.setupPathPlannerFailsafe(drivetrain);
 
 		elevator.elevatorInit();
+		climber.teleopInit();
 	}
 
 	/**
