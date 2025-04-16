@@ -324,16 +324,12 @@ public final class Constants {
 		/**
 		 * Position where the climber is fully raised.
 		 */
-		public static final double CLIMBER_RAISED_POSITION = 150;// Change back to 18.0;
+		public static final double CLIMBER_RAISED_POSITION = .34;
 		/**
 		 * Speed at which the climber is lowered.
 		 */
 		public static final double LOWER_CLIMBER_SPEED = -0.7;
-		/**
-		 * Position at which the climber is fully lowered.
-		 */
-		public static final double CLIMBER_LOWERED_POSITION = -150; // Change back to 0.0;
-		public static final double ABSOLUTE_ENCODER_OFFSET = 0.836;
+		public static final double ABSOLUTE_ENCODER_OFFSET = .86;
 	}
 
 	// wrist is 3:1

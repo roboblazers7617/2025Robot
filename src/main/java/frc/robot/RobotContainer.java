@@ -141,7 +141,6 @@ public class RobotContainer {
 		Auto.setupPathPlannerFailsafe(drivetrain);
 
 		elevator.elevatorInit();
-		climber.teleopInit();
 	}
 
 	/**
@@ -164,7 +163,7 @@ public class RobotContainer {
 		driverController.b().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_FAST));
 		driverController.x().whileTrue(drivetrain.lockCommand());
 
-		driverController.povDown().whileTrue(climber.LowerClimber(ClimberConstants.CLIMBER_LOWERED_POSITION));
+		driverController.povDown().whileTrue(climber.LowerClimber());
 
 		// Scoring pose pathfinding
 		driverController.leftTrigger()
