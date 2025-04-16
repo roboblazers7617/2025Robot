@@ -320,7 +320,7 @@ public class Elevator extends SubsystemBase {
 
 	/**
 	 * A command that does nothing. This command requires the elevator subsystem so it will kill any other command. This is used to let the drivers regain controll of the elevator if it is unable to reach its target.
-	 * 
+	 *
 	 * @return Command to run.
 	 */
 	public Command doNothing() {

@@ -304,6 +304,7 @@ public final class Constants {
 		 */
 		// 80:1 gear box and diameter of spool is approx 1.59 inches and spools 5 inches
 		public static final double CLIMBER_GEAR_RATIO = 5.0 / 80.0;
+		public static final double CLIMBER_JUST_SPOOL_RATIO = 5.0;
 		/**
 		 * PWM port for the climber ratchet servo.
 		 */
@@ -323,15 +324,12 @@ public final class Constants {
 		/**
 		 * Position where the climber is fully raised.
 		 */
-		public static final double CLIMBER_RAISED_POSITION = 150;// Change back to 18.0;
+		public static final double CLIMBER_RAISED_POSITION = .34;
 		/**
 		 * Speed at which the climber is lowered.
 		 */
 		public static final double LOWER_CLIMBER_SPEED = -0.7;
-		/**
-		 * Position at which the climber is fully lowered.
-		 */
-		public static final double CLIMBER_LOWERED_POSITION = -150; // Change back to 0.0;
+		public static final double ABSOLUTE_ENCODER_OFFSET = .86;
 	}
 
 	// wrist is 3:1

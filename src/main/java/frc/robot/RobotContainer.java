@@ -15,6 +15,7 @@ import frc.robot.util.Util;
 import frc.robot.util.Elastic;
 import frc.robot.Constants.OperatorConstants.GamepieceMode;
 import frc.robot.Constants.ArmPosition;
+import frc.robot.Constants.ClimberConstants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainControls;
 import frc.robot.subsystems.drivetrain.Drivetrain.TranslationOrientation;
@@ -196,7 +197,7 @@ public class RobotContainer {
 		// TODO: #138 Cancel on EndEffector or all mechanism commands?
 		operatorController.a()
 				.onTrue(endEffector.StopIntakeMotor());
-		operatorController.b().whileTrue(climber.RaiseClimber());
+		operatorController.b().whileTrue(climber.RaiseClimber(ClimberConstants.CLIMBER_RAISED_POSITION));
 		operatorController.x()
 				.and(() -> gamepieceMode == GamepieceMode.ALGAE_MODE) // temp
 				.onTrue(elevator.SetPositionCommand(ArmPosition.STOW_ALGAE)
