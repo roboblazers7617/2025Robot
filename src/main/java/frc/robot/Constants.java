@@ -226,7 +226,7 @@ public final class Constants {
 		/**
 		 * Send logging data to NetworkTables. Data is written to storage when set to false.
 		 */
-		public static final boolean DEBUG_MODE = true;
+		public static final boolean DEBUG_MODE = false;
 		/**
 		 * Log all data above specified level.
 		 */
@@ -329,7 +329,7 @@ public final class Constants {
 		 * Speed at which the climber is lowered.
 		 */
 		public static final double LOWER_CLIMBER_SPEED = -0.7;
-		public static final double ABSOLUTE_ENCODER_OFFSET = .86;
+		public static final double ABSOLUTE_ENCODER_OFFSET = .02;
 	}
 
 	// wrist is 3:1
@@ -748,7 +748,7 @@ public final class Constants {
 		/**
 		 * AprilTag Field Layout for the current game.
 		 */
-		public static final AprilTagFieldLayout FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
+		public static final AprilTagFieldLayout FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
 
 		/**
 		 * Constants relating to the reef.
