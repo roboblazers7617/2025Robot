@@ -1,0 +1,21 @@
+{
+	"fileName": "ButtonBoxLib.json",
+	"name": "ButtonBoxLib",
+	"version": "2025.0.0-beta5",
+	"frcYear": "2025",
+	"uuid": "274bba2e-7c91-45eb-860e-6c38f9034afc",
+	"mavenUrls": [
+		"https://roboblazers7617.github.io/maven-repo/buttonbox-lib"
+	],
+	"jsonUrl": "https://roboblazers7617.github.io/ButtonBoxLib/ButtonBoxLib.json",
+	"javaDependencies": [
+		{
+			"groupId": "io.github.roboblazers7617.buttonbox",
+			"artifactId": "ButtonBoxLib-java",
+			"version": "2025.0.0-beta5"
+		}
+	],
+	"requires": [],
+	"jniDependencies": [],
+	"cppDependencies": []
+}

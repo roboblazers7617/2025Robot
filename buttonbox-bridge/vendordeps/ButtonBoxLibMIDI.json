@@ -1,0 +1,34 @@
+{
+	"fileName": "ButtonBoxLibMIDI.json",
+	"name": "ButtonBoxLibMIDI",
+	"version": "2025.0.0-beta5",
+	"frcYear": "2025",
+	"uuid": "4aed0cd1-70c8-424e-8c35-6d0126e4f5a8",
+	"mavenUrls": [
+		"https://roboblazers7617.github.io/maven-repo/buttonbox-lib-midi",
+		"https://repo1.maven.org/maven2"
+	],
+	"jsonUrl": "https://roboblazers7617.github.io/ButtonBoxLib/ButtonBoxLibMIDI.json",
+	"javaDependencies": [
+		{
+			"groupId": "io.github.roboblazers7617.buttonbox.midi",
+			"artifactId": "ButtonBoxLibMIDI-java",
+			"version": "2025.0.0-beta5"
+		},
+		{
+			"groupId": "uk.co.xfactory-librarians",
+			"artifactId": "coremidi4j",
+			"version": "1.6"
+		}
+	],
+	"requires": [
+		{
+			"uuid": "274bba2e-7c91-45eb-860e-6c38f9034afc",
+			"errorMessage": "ButtonBoxLib is required!",
+			"offlineFileName": "ButtonBoxLib.json",
+			"onlineUrl": "https://roboblazers7617.github.io/ButtonBoxLib/ButtonBoxLib.json"
+		}
+	],
+	"jniDependencies": [],
+	"cppDependencies": []
+}

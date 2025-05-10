@@ -137,7 +137,7 @@ $RECYCLE.BIN/
 
 ### Gradle ###
 .gradle
-/build/
+build/
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -189,3 +189,6 @@ compile_commands.json
 
 # Classes auto-generated at build time
 src/main/java/frc/robot/generated/
+
+# Include library jars
+!libs/*.jar
