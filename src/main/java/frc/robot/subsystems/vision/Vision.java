@@ -2,7 +2,10 @@ package frc.robot.subsystems.vision;
 
 import java.util.Optional;
 
+import javax.print.attribute.standard.MediaSize.Other;
+
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -68,6 +71,17 @@ public class Vision {
 		// .onTrue(onEnableCommand());
 	}
 
+	public Optional<Pose2d> getPose2d() {
+		for (PoseEstimate poseEstimate : frontPoseEstimator.getBotPoseEstimates()) {
+			if (poseEstimate != null) {
+				if (poseEstimate.tagCount > 0) {
+					return Optional.of(poseEstimate.getPose2d());
+				}
+			}
+		}
+		return Optional.empty();
+	}
+
 	/*
 	 * public Command onEnableCommand() {
 	 * return Commands.runOnce(() -> {
@@ -108,12 +122,12 @@ public class Vision {
 	public void setTagFilterAlliance(DriverStation.Alliance alliance) {
 		switch (alliance) {
 			case Blue:
-				frontLimelight.settings.withArilTagIdFilter(VisionConstants.BLUE_TAG_ID_FILTER)
+				frontLimelight.settings.withPipelineIndex(0)
 						.save();
 				break;
 
 			case Red:
-				frontLimelight.settings.withArilTagIdFilter(VisionConstants.RED_TAG_ID_FILTER)
+				frontLimelight.settings.withPipelineIndex(1)
 						.save();
 				break;
 		}

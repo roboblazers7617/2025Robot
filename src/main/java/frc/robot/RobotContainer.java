@@ -27,11 +27,15 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import java.util.Optional;
+
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.IntegerEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -86,6 +90,11 @@ public class RobotContainer {
 	private boolean isManualCoralMode = false;
 	private final Trigger isManualCoralModeTrigger = new Trigger(() -> (isManualCoralMode));
 
+	private final IntegerEntry limelightHeartbeatEntry;
+
+	// public Pose2d limelightPose;
+	public long limelightHeartbeat;
+
 	/** The container for the robot. Contains subsystems, OI devices, and commands. */
 	public RobotContainer() {
 		// Publish version metadata
@@ -101,6 +110,20 @@ public class RobotContainer {
 		// new Trigger(DriverStation::isDisabled).onTrue(drivetrain.getVision().onDisableCommand());
 		// By default interact with Coral
 		gamepieceMode = GamepieceMode.CORAL_MODE;
+
+		limelightHeartbeatEntry = NetworkTableInstance.getDefault()
+				.getIntegerTopic("/limelight-front/hb")
+				.getEntry(0);
+	}
+
+	public void robotPeriodic() {
+		// Optional<Pose2d> pose = drivetrain.getVision().getPose2d();
+		// if (pose.isPresent()) {
+		// System.out.println(Math.random());
+		// limelightPose = pose.get();
+		// }
+
+		limelightHeartbeat = limelightHeartbeatEntry.get();
 	}
 
 	/**
@@ -192,91 +215,30 @@ public class RobotContainer {
 	 * Configures {@link Triggers} to bind Commands to the Operator Controller buttons.
 	 */
 	private void configureOperatorControls() {
-		// Set the default elevator command where it moves manually
-		elevator.setDefaultCommand(elevator.setSpeedsCommand(() -> MathUtil.applyDeadband(-1.0 * operatorController.getLeftY(), OperatorConstants.DEADBAND), () -> MathUtil.applyDeadband(-1.0 * operatorController.getRightY(), OperatorConstants.DEADBAND)));
 		// TODO: #138 Cancel on EndEffector or all mechanism commands?
-		operatorController.a()
-				.onTrue(endEffector.StopIntakeMotor());
-		operatorController.b().whileTrue(climber.RaiseClimber(ClimberConstants.CLIMBER_RAISED_POSITION));
-		operatorController.x()
-				.and(() -> gamepieceMode == GamepieceMode.ALGAE_MODE) // temp
-				.onTrue(elevator.SetPositionCommand(ArmPosition.STOW_ALGAE)
-						.alongWith(endEffector.StopIntakeMotor()));
-		operatorController.x()
-				.and(() -> gamepieceMode == GamepieceMode.CORAL_MODE) // temp
-				.onTrue(elevator.SetPositionCommand(ArmPosition.STOW)
-						.alongWith(endEffector.StopIntakeMotor()));
-		operatorController.y().onTrue(elevator.SetPositionCommand(ArmPosition.STOW).andThen(ramp.RampRetract()));
-		operatorController.povDown()
-				.and(isAlgaeModeTrigger)
-				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_ALGAE_LEVEL_2));
-		operatorController.povDown()
-				.and(isCoralModeTrigger)
-				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_1));
-		operatorController.povLeft()
-				.or(operatorController.povRight())
-				.and(isAlgaeModeTrigger)
-				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_ALGAE_PROCESSOR));
-		operatorController.povLeft()
-				.and(isCoralModeTrigger)
-				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_2));
-		operatorController.povRight()
-				.and(isCoralModeTrigger)
-				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_3));
-		// POV Right Algae mode is handeled above with POV Left
-		operatorController.povUp()
-				.and(isAlgaeModeTrigger)
-				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_ALGAE_LEVEL_3));
-		// If in emergency mode CoralBackup Must be off!!
-		operatorController.povUp()
-				.and(isCoralModeTrigger)
-				.and(isManualCoralModeTrigger.negate())
-				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4).alongWith(endEffector.CoralBackup()));
-		operatorController.povUp()
-				.and(isCoralModeTrigger)
-				.and(isManualCoralModeTrigger)
-				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4));
 
-		operatorController.rightTrigger()
-				.and(isAlgaeModeTrigger)
+		operatorController.b()
+				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_1)
+						.andThen(endEffector.CoralOuttakeTeleop())
+						.andThen(elevator.SetPositionCommand(ArmPosition.STOW)));
+		operatorController.y()
+				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_2)
+						.andThen(endEffector.CoralOuttakeTeleop())
+						.andThen(elevator.SetPositionCommand(ArmPosition.STOW)));
+
+		operatorController.povLeft()
 				.onTrue(endEffector.AlgaeIntake());
-		operatorController.rightTrigger()
-				.and(isCoralModeTrigger)
-				.and(isManualCoralModeTrigger.negate())
+		operatorController.a()
 				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_CORAL_CORAL_STATION)
 						.andThen(endEffector.CoralIntakeTeleop())
 						.andThen(elevator.SetPositionCommand(ArmPosition.STOW)));
-		operatorController.rightTrigger()
-				.and(isCoralModeTrigger)
-				.and(isManualCoralModeTrigger)
-				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_CORAL_CORAL_STATION))
-				.whileTrue(endEffector.manualCoralIntake())
-				.onFalse(elevator.SetPositionCommand(ArmPosition.STOW));
-		operatorController.leftTrigger()
-				.and(isAlgaeModeTrigger)
+
+		operatorController.x()
+				.onTrue(elevator.SetPositionCommand(ArmPosition.STOW)
+						.andThen(endEffector.StopIntakeMotor()));
+
+		operatorController.povRight()
 				.onTrue(endEffector.AlgaeOuttake());
-		operatorController.leftTrigger()
-				.and(isCoralModeTrigger)
-				.and(isManualCoralModeTrigger.negate())
-				.onTrue(endEffector.CoralOuttakeTeleop()
-						.alongWith(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4_HIGH).onlyIf(() -> elevator.getElevatorTarget() == ArmPosition.OUTTAKE_CORAL_LEVEL_4.ELEVATOR_POSITION)));
-		operatorController.leftTrigger()
-				.and(isCoralModeTrigger)
-				.and(isManualCoralModeTrigger)
-				.onTrue(endEffector.manualCoralOuttake()
-						.alongWith(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4_HIGH).onlyIf(() -> elevator.getElevatorTarget() == ArmPosition.OUTTAKE_CORAL_LEVEL_4.ELEVATOR_POSITION)));
-
-		operatorController.rightBumper().onTrue(toggleGamepieceModeCommand());
-		operatorController.leftBumper()
-				.and(isManualCoralModeTrigger.negate())
-				.onTrue(endEffector.CoralBackup());
-		operatorController.leftBumper()
-				.and(isManualCoralModeTrigger)
-				.whileTrue(endEffector.manualCoralBackup());
-
-		operatorController.start().onTrue(Commands.runOnce(() -> {
-			isManualCoralMode = !isManualCoralMode;
-		}));
 	}
 
 	/**

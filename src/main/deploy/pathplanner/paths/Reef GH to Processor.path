@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.8935556279533925,
-        "y": 3.7503677806235958
+        "x": 7.22858606557377,
+        "y": 4.276741803278688
       },
       "isLocked": false,
       "linkedName": "Reef GH"
@@ -20,8 +20,8 @@
         "y": 0.6104256766183039
       },
       "prevControl": {
-        "x": 5.925782441442734,
-        "y": 0.8524211112211436
+        "x": 6.021535073411554,
+        "y": 0.858238441813679
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +30,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.342469939217759,
+      "waypointRelativePos": 0.23498318116290556,
       "rotationDegrees": 180.0
     }
   ],

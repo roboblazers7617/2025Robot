@@ -50,7 +50,7 @@ public final class Constants {
 		/**
 		 * Maximum speed of the robot in meters per second.
 		 */
-		public static final double MAX_SPEED = FeetPerSecond.of(14.5).in(MetersPerSecond);
+		public static final double MAX_SPEED = FeetPerSecond.of(5).in(MetersPerSecond);
 		/**
 		 * Directory that contains the YAGSL configuration.
 		 */
@@ -226,7 +226,7 @@ public final class Constants {
 		/**
 		 * Send logging data to NetworkTables. Data is written to storage when set to false.
 		 */
-		public static final boolean DEBUG_MODE = false;
+		public static final boolean DEBUG_MODE = true;
 		/**
 		 * Log all data above specified level.
 		 */
