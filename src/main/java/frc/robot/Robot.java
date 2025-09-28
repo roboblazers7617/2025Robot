@@ -7,6 +7,9 @@ package frc.robot;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.logging.FileBackend;
 import edu.wpi.first.net.WebServer;
+
+import com.ctre.phoenix6.SignalLogger;
+
 import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -41,6 +44,8 @@ public class Robot extends TimedRobot {
 	 * initialization code.
 	 */
 	public Robot() {
+		SignalLogger.enableAutoLogging(false);
+
 		DataLogManager.start();
 		DriverStation.startDataLog(DataLogManager.getLog());
 		Epilogue.configure(config -> {

@@ -76,6 +76,10 @@ public final class Constants {
 		 */
 		public static final double TRANSLATION_SCALE_SLOW = 0.3;
 		/**
+		 * Translation axis scaling. Changes the overall maximum speed of the drivetrain when in slide mode.
+		 */
+		public static final double TRANSLATION_SCALE_SLIDE = 0.3;
+		/**
 		 * Starting pose.
 		 */
 		public static final Pose2d STARTING_POSITION = new Pose2d(new Translation2d(Meters.of(1), Meters.of(4)), Rotation2d.fromDegrees(0));
@@ -222,7 +226,7 @@ public final class Constants {
 		/**
 		 * Send logging data to NetworkTables. Data is written to storage when set to false.
 		 */
-		public static final boolean DEBUG_MODE = true;
+		public static final boolean DEBUG_MODE = false;
 		/**
 		 * Log all data above specified level.
 		 */
@@ -275,6 +279,14 @@ public final class Constants {
 		 * The {@link ImuMode} to use while enabled.
 		 */
 		public static final ImuMode ENABLED_IMU_MODE = ImuMode.ExternalAssistInternalIMU;
+		/**
+		 * The {@link io.github.roboblazers7617.limelight.LimelightSettings#withArilTagIdFilter(List)} to use on the blue alliance.
+		 */
+		public static final List<Double> BLUE_TAG_ID_FILTER = List.of(17.0, 18.0, 19.0, 20.0, 21.0, 22.0);
+		/**
+		 * The {@link io.github.roboblazers7617.limelight.LimelightSettings#withArilTagIdFilter(List)} to use on the Red alliance.
+		 */
+		public static final List<Double> RED_TAG_ID_FILTER = List.of(6.0, 7.0, 8.0, 9.0, 10.0, 11.0);
 	}
 
 	/**
@@ -292,6 +304,7 @@ public final class Constants {
 		 */
 		// 80:1 gear box and diameter of spool is approx 1.59 inches and spools 5 inches
 		public static final double CLIMBER_GEAR_RATIO = 5.0 / 80.0;
+		public static final double CLIMBER_JUST_SPOOL_RATIO = 5.0;
 		/**
 		 * PWM port for the climber ratchet servo.
 		 */
@@ -307,19 +320,16 @@ public final class Constants {
 		/**
 		 * Speed at which the climber is raised.
 		 */
-		public static final double RAISE_CLIMBER_SPEED = 0.7;
+		public static final double RAISE_CLIMBER_SPEED = 1.0;
 		/**
 		 * Position where the climber is fully raised.
 		 */
-		public static final double CLIMBER_RAISED_POSITION = 150;// Change back to 18.0;
+		public static final double CLIMBER_RAISED_POSITION = .34;
 		/**
 		 * Speed at which the climber is lowered.
 		 */
 		public static final double LOWER_CLIMBER_SPEED = -0.7;
-		/**
-		 * Position at which the climber is fully lowered.
-		 */
-		public static final double CLIMBER_LOWERED_POSITION = -150; // Change back to 0.0;
+		public static final double ABSOLUTE_ENCODER_OFFSET = .02;
 	}
 
 	// wrist is 3:1
@@ -348,7 +358,7 @@ public final class Constants {
 		/**
 		 * Elevator kP.
 		 */
-		public static final double KP = 1.2; // 0.8
+		public static final double KP = 1.35; // 0.8
 		/**
 		 * Elevator kI.
 		 */
@@ -387,7 +397,7 @@ public final class Constants {
 		 * Maximum acceleration in m/s^2.
 		 */
 		// TODO: (Brandon) Update with accurate number Use reca.lc
-		public static final double MAX_ACCELERATION = 2;
+		public static final double MAX_ACCELERATION = 2.5;
 
 		/**
 		 * Maximum position in meters.
@@ -472,11 +482,11 @@ public final class Constants {
 		/**
 		 * Wrist kMinOutput.
 		 */
-		public static final double KMIN_OUTPUT = -.3;
+		public static final double KMIN_OUTPUT = -.5;
 		/**
 		 * Wrist kMaxOutput.
 		 */
-		public static final double KMAX_OUTPUT = .3;
+		public static final double KMAX_OUTPUT = .5;
 		/**
 		 * Maximum velocity in degrees/s.
 		 */
@@ -551,7 +561,7 @@ public final class Constants {
 		//
 		INTAKE_ALGAE_LEVEL_3(-23, .854),
 		//
-		OUTTAKE_CORAL_LEVEL_1(-45, 1), // dummy value
+		OUTTAKE_CORAL_LEVEL_1(125, ElevatorConstants.MIN_POSITION), // stow position
 		//
 		OUTTAKE_CORAL_LEVEL_2(125, 0.18),
 		//
@@ -614,6 +624,7 @@ public final class Constants {
 				.p(0)
 				.i(0)
 				.d(0);
+		// Coral
 		/**
 		 * Intake motor speed for coral. (to be changed and edited later)
 		 */
@@ -623,9 +634,30 @@ public final class Constants {
 		 */
 		public static final double CORAL_SECONDARY_INTAKE_SPEED = 0.05;
 		/**
+		 * Intake motor speed for coral in emergency mode
+		 */
+		public static final double CORAL_EMERGENCY_MODE_INTAKE_SPEED = 0.1;
+		/**
+		 * Intake motor speed for the coral to be behind secondary beam break for L4 scoring
+		 */
+		public static final double CORAL_BACKUP_SPEED = -0.1;
+		/**
+		 * Intake motor speed for backing up coral when in emergency mode
+		 */
+		public static final double CORAL_EMERGENCY_BACKUP_SPEED = -0.05;
+		/**
 		 * Outtake motor speed for coral. (to be changed and edited later)
 		 */
 		public static final double CORAL_OUTAKE_SPEED = 0.5;
+		/**
+		 * Outtake timer for emergency coral outtake.
+		 */
+		public static final double CORAL_EMERGENCY_OUTTAKE_TIMER = 0.75;
+		/**
+		 * When using single beam break commands offsets time when it will check for beam break.
+		 */
+		public static final double CORAL_SINGLE_BEAM_ADJUSTER_OUTTAKE_WAITTIME = 0.1;
+		// Algae
 		/**
 		 * Intake motor speed for algae. (to be changed and edited later)
 		 */
@@ -639,6 +671,10 @@ public final class Constants {
 		 */
 		public static final double ALGAE_HOLD_SPEED = -0.1;
 		/**
+		 * Coral wait after outtake.
+		 */
+		public static final double CORAL_OUTTAKE_L4_WAIT = 0.1;
+		/**
 		 * Time (in seconds) that the motors run after beam break detects no coral after using the outtake command
 		 */
 		public static final double OUTTAKE_WAIT_TIME = 0.2;
@@ -646,6 +682,10 @@ public final class Constants {
 		 * Time (in seconds) that the motors run after algae outake is called to eject algae.
 		 */
 		public static final double ALGAE_OUTTAKE_RUN_TIME = 0.3;
+		/**
+		 * Time algae is being held (in seconds) after intake
+		 */
+		public static final double ALGAE_HOLD_TIME = 20;
 		// Beam Break constants
 		/**
 		 * DIO pin for the main beam break.
@@ -694,7 +734,7 @@ public final class Constants {
 		/**
 		 * Ramp stow position.
 		 */
-		public static final double RAMP_STOW_POSITION = 92.0;
+		public static final double RAMP_STOW_POSITION = 108.0;
 		/**
 		 * Ramp deploy position.
 		 */
@@ -708,7 +748,7 @@ public final class Constants {
 		/**
 		 * AprilTag Field Layout for the current game.
 		 */
-		public static final AprilTagFieldLayout FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
+		public static final AprilTagFieldLayout FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
 
 		/**
 		 * Constants relating to the reef.
@@ -723,7 +763,17 @@ public final class Constants {
 			 */
 			public static final List<Pose3d> TAG_POSES = new ArrayList<Pose3d>();
 			/**
-			 * Offset from the AprilTag from which coral scoring should happen.
+			 * Center poses for the reef faces on the blue alliance. Point inwards towards the center
+			 * of the reef.
+			 */
+			public static final List<Pose2d> FACE_POSES_BLUE = new ArrayList<Pose2d>();
+			/**
+			 * Center poses for the reef faces on the red alliance. Point inwards towards the center
+			 * of the reef.
+			 */
+			public static final List<Pose2d> FACE_POSES_RED = new ArrayList<Pose2d>();
+			/**
+			 * Offset from the AprilTag from which coral scoring should happen on the right side.
 			 */
 			public static final Transform2d CORAL_SCORING_OFFSET = new Transform2d(Meters.of(0.5), Meters.of(0.33 / 2), Rotation2d.k180deg);
 			/**
@@ -765,21 +815,30 @@ public final class Constants {
 					}
 				});
 
+				// Generate a list of face poses.
+				TAG_POSES.forEach((pose) -> {
+					Pose2d facePose = pose.toPose2d()
+							.transformBy(new Transform2d(0, 0, Rotation2d.k180deg));
+
+					FACE_POSES_BLUE.add(facePose);
+					FACE_POSES_RED.add(PoseUtil.flipPoseAlliance(facePose));
+				});
+
 				// Generate lists of coral scoring poses.
 				TAG_POSES.forEach((pose) -> {
 					Pose2d pose2d = pose.toPose2d();
 					// Regular side
 					CORAL_SCORING_POSES_BLUE_RIGHT.add(pose2d.transformBy(CORAL_SCORING_OFFSET));
-					// Flipped side
-					CORAL_SCORING_POSES_BLUE_LEFT.add(pose2d.transformBy(new Transform2d(CORAL_SCORING_OFFSET.getMeasureX(), CORAL_SCORING_OFFSET.getMeasureY().times(-1), CORAL_SCORING_OFFSET.getRotation())));
+					// Mirrored side
+					CORAL_SCORING_POSES_BLUE_LEFT.add(pose2d.transformBy(PoseUtil.flipTransformY(CORAL_SCORING_OFFSET)));
 				});
 
 				// Generate lists of coral scoring poses for the other alliance.
 				CORAL_SCORING_POSES_BLUE_LEFT.forEach((pose) -> {
-					CORAL_SCORING_POSES_RED_LEFT.add(PoseUtil.flipPose(pose));
+					CORAL_SCORING_POSES_RED_LEFT.add(PoseUtil.flipPoseAlliance(pose));
 				});
 				CORAL_SCORING_POSES_BLUE_RIGHT.forEach((pose) -> {
-					CORAL_SCORING_POSES_RED_RIGHT.add(PoseUtil.flipPose(pose));
+					CORAL_SCORING_POSES_RED_RIGHT.add(PoseUtil.flipPoseAlliance(pose));
 				});
 
 				// Generate a list of algae scoring poses.
@@ -790,7 +849,7 @@ public final class Constants {
 
 				// Generate a list of algae scoring poses for the other alliance.
 				ALGAE_SCORING_POSES_BLUE.forEach((pose) -> {
-					ALGAE_SCORING_POSES_RED.add(PoseUtil.flipPose(pose));
+					ALGAE_SCORING_POSES_RED.add(PoseUtil.flipPoseAlliance(pose));
 				});
 			}
 		}
@@ -834,7 +893,7 @@ public final class Constants {
 				Pose2d pose2d = TAG_POSE.toPose2d();
 
 				ALGAE_SCORING_POSE_BLUE = pose2d.transformBy(SCORING_OFFSET);
-				ALGAE_SCORING_POSE_RED = PoseUtil.flipPose(ALGAE_SCORING_POSE_BLUE);
+				ALGAE_SCORING_POSE_RED = PoseUtil.flipPoseAlliance(ALGAE_SCORING_POSE_BLUE);
 			}
 		}
 	}
@@ -871,35 +930,23 @@ public final class Constants {
 
 		static {
 			// Compile CORAL_SCORING_POSES_BLUE_LEFT poses
-			FieldConstants.Reef.CORAL_SCORING_POSES_BLUE_LEFT.forEach((pose) -> {
-				CORAL_SCORING_POSES_BLUE_LEFT.add(pose);
-			});
+			CORAL_SCORING_POSES_BLUE_LEFT.addAll(FieldConstants.Reef.CORAL_SCORING_POSES_BLUE_LEFT);
 
 			// Compile CORAL_SCORING_POSES_BLUE_RIGHT poses
-			FieldConstants.Reef.CORAL_SCORING_POSES_BLUE_RIGHT.forEach((pose) -> {
-				CORAL_SCORING_POSES_BLUE_RIGHT.add(pose);
-			});
+			CORAL_SCORING_POSES_BLUE_RIGHT.addAll(FieldConstants.Reef.CORAL_SCORING_POSES_BLUE_RIGHT);
 
 			// Compile CORAL_SCORING_POSES_RED_LEFT poses
-			FieldConstants.Reef.CORAL_SCORING_POSES_RED_LEFT.forEach((pose) -> {
-				CORAL_SCORING_POSES_RED_LEFT.add(pose);
-			});
+			CORAL_SCORING_POSES_RED_LEFT.addAll(FieldConstants.Reef.CORAL_SCORING_POSES_RED_LEFT);
 
 			// Compile CORAL_SCORING_POSES_RED_RIGHT poses
-			FieldConstants.Reef.CORAL_SCORING_POSES_RED_RIGHT.forEach((pose) -> {
-				CORAL_SCORING_POSES_RED_RIGHT.add(pose);
-			});
+			CORAL_SCORING_POSES_RED_RIGHT.addAll(FieldConstants.Reef.CORAL_SCORING_POSES_RED_RIGHT);
 
 			// Compile ALGAE_SCORING_POSES_BLUE poses
-			FieldConstants.Reef.ALGAE_SCORING_POSES_BLUE.forEach((pose) -> {
-				ALGAE_SCORING_POSES_BLUE.add(pose);
-			});
+			ALGAE_SCORING_POSES_BLUE.addAll(FieldConstants.Reef.ALGAE_SCORING_POSES_BLUE);
 			ALGAE_SCORING_POSES_BLUE.add(FieldConstants.Processor.ALGAE_SCORING_POSE_BLUE);
 
 			// Compile ALGAE_SCORING_POSES_RED poses
-			FieldConstants.Reef.ALGAE_SCORING_POSES_RED.forEach((pose) -> {
-				ALGAE_SCORING_POSES_RED.add(pose);
-			});
+			ALGAE_SCORING_POSES_RED.addAll(FieldConstants.Reef.ALGAE_SCORING_POSES_RED);
 			ALGAE_SCORING_POSES_RED.add(FieldConstants.Processor.ALGAE_SCORING_POSE_RED);
 		}
 	}

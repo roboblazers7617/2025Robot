@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Example Path"
+            "pathName": "Barge Start Center to Off Line Center"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Move Off Line",
   "choreoAuto": false
 }

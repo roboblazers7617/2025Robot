@@ -5,9 +5,28 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Barge Start Center to Branch G"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Barge Start Center to Branch G"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevator L4 Position"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral L4"
           }
         },
         {
@@ -23,6 +42,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Score Algae"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Processor to Reef EF"
@@ -33,11 +58,17 @@
           "data": {
             "pathName": "Reef EF to Processor"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Algae"
+          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "1 Coral 2 Algae",
+  "folder": null,
   "choreoAuto": false
 }

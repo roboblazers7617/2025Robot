@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.5703893442622954,
-        "y": 7.4295081967213115
+        "x": 5.885963114754098,
+        "y": 5.4875
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.094838964566601,
-        "y": 6.860182846787276
+        "x": 6.885963114754098,
+        "y": 5.4875
       },
       "isLocked": false,
-      "linkedName": "Coral Station Left Far"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.65,
-        "y": 5.08
+        "x": 4.878995901639344,
+        "y": 4.924077868852459
       },
       "prevControl": {
-        "x": 2.215543165282526,
-        "y": 6.646190686770468
+        "x": 3.8789959016393443,
+        "y": 4.924077868852459
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Branch L"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -59.99999999999999
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -54.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

@@ -8,22 +8,26 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ScoringPoses;
 import frc.robot.Constants.DashboardConstants;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.LoggingConstants;
 import frc.robot.subsystems.EndEffector.EndEffector;
 import frc.robot.util.Util;
 import frc.robot.util.Elastic;
 import frc.robot.Constants.OperatorConstants.GamepieceMode;
 import frc.robot.Constants.ArmPosition;
-import frc.robot.commands.StubbedCommands;
+import frc.robot.Constants.ClimberConstants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainControls;
+import frc.robot.subsystems.drivetrain.Drivetrain.TranslationOrientation;
 import frc.robot.subsystems.Auto;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.IntakeRamp.Ramp;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
@@ -77,11 +81,19 @@ public class RobotContainer {
 	private final Trigger isAlgaeModeTrigger = new Trigger(() -> (gamepieceMode == GamepieceMode.ALGAE_MODE));
 	private final Trigger isCoralModeTrigger = new Trigger(() -> (gamepieceMode == GamepieceMode.CORAL_MODE));
 
+	/**
+	 * Used to store what End Effector mode is being used
+	 */
+	private boolean isManualCoralMode = false;
+	private final Trigger isManualCoralModeTrigger = new Trigger(() -> (isManualCoralMode));
+
 	/** The container for the robot. Contains subsystems, OI devices, and commands. */
 	public RobotContainer() {
 		// Publish version metadata
 		VersionConstants.publishNetworkTables(NetworkTableInstance.getDefault().getTable("/Metadata"));
 
+		// create named commands for autonomous
+		createNamedCommands();
 		// Configure the trigger bindings
 		configureDriverControls();
 		configureOperatorControls();
@@ -139,21 +151,19 @@ public class RobotContainer {
 		// Set the default drivetrain command (used for the driver controller)
 		if (RobotBase.isSimulation()) {
 			// Heading control
-			drivetrain.setDefaultCommand(drivetrainControls.driveFieldOrientedDirectAngleSimCommand(driverController));
+			drivetrain.setDefaultCommand(drivetrainControls.driveDirectAngleSimCommand(driverController, TranslationOrientation.FIELD_RELATIVE));
 		} else {
 			// Heading control
-			drivetrain.setDefaultCommand(drivetrainControls.driveFieldOrientedDirectAngleCommand(driverController));
+			drivetrain.setDefaultCommand(drivetrainControls.driveDirectAngleCommand(driverController, TranslationOrientation.FIELD_RELATIVE));
 			// Angular velocity control
 			driverController.leftBumper()
-					.whileTrue(drivetrainControls.driveFieldOrientedAngularVelocityCommand(driverController));
+					.whileTrue(drivetrainControls.driveAngularVelocityCommand(driverController, TranslationOrientation.FIELD_RELATIVE));
 		}
 
-		driverController.a().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_SLOW));
+		driverController.a().onTrue(ramp.RampDeploy());
 		driverController.b().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_FAST));
 		driverController.x().whileTrue(drivetrain.lockCommand());
-		driverController.y().onTrue(elevator.SetPositionCommand(ArmPosition.STOW).andThen(ramp.RampRetract()));
 
-		driverController.povUp().whileTrue(climber.RaiseClimber());
 		driverController.povDown().whileTrue(climber.LowerClimber());
 
 		// Scoring pose pathfinding
@@ -164,11 +174,19 @@ public class RobotContainer {
 				.and(isCoralModeTrigger)
 				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_RED_LEFT), drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_BLUE_LEFT), () -> Util.isRedAlliance()));
 		driverController.rightTrigger()
+				.and(isAlgaeModeTrigger)
+				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.ALGAE_SCORING_POSES_RED), drivetrain.driveToNearestPoseCommand(ScoringPoses.ALGAE_SCORING_POSES_BLUE), () -> Util.isRedAlliance()));
+		driverController.rightTrigger()
 				.and(isCoralModeTrigger)
 				.whileTrue(Commands.either(drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_RED_RIGHT), drivetrain.driveToNearestPoseCommand(ScoringPoses.CORAL_SCORING_POSES_BLUE_RIGHT), () -> Util.isRedAlliance()));
 
+		driverController.rightBumper().whileTrue(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_SLOW));
+
+		driverController.y()
+				.whileTrue(Commands.either(drivetrainControls.driveStaticHeadingNearestPoseCommand(driverController, TranslationOrientation.ROBOT_RELATIVE, FieldConstants.Reef.FACE_POSES_RED), drivetrainControls.driveStaticHeadingNearestPoseCommand(driverController, TranslationOrientation.ROBOT_RELATIVE, FieldConstants.Reef.FACE_POSES_BLUE), () -> Util.isRedAlliance())
+						.alongWith(drivetrainControls.setSpeedMultiplierCommand(() -> DrivetrainConstants.TRANSLATION_SCALE_SLIDE)));
+
 		driverController.start().onTrue(drivetrain.zeroGyroWithAllianceCommand());
-		driverController.back().onTrue(StubbedCommands.Drivetrain.DisableVision());
 	}
 
 	/**
@@ -176,25 +194,11 @@ public class RobotContainer {
 	 */
 	private void configureOperatorControls() {
 		// Set the default elevator command where it moves manually
-		/*
-		 * StubbedCommands.Elevator elevator = (new StubbedCommands()).new Elevator();
-		 * elevator.setDefaultCommand(elevator.MoveElevatorAndWristManual(() -> (-1 * operatorController.getLeftX()), () -> (-1 * operatorController.getLeftY())));
-		 */
-		// Acts to cancel the currently running command, such as intaking or outaking
 		elevator.setDefaultCommand(elevator.setSpeedsCommand(() -> MathUtil.applyDeadband(-1.0 * operatorController.getLeftY(), OperatorConstants.DEADBAND), () -> MathUtil.applyDeadband(-1.0 * operatorController.getRightY(), OperatorConstants.DEADBAND)));
 		// TODO: #138 Cancel on EndEffector or all mechanism commands?
 		operatorController.a()
 				.onTrue(endEffector.StopIntakeMotor());
-		operatorController.b()
-				.or(operatorController.leftTrigger())
-				.and(isAlgaeModeTrigger)
-				.onTrue(endEffector.AlgaeIntake());
-		operatorController.b()
-				.or(operatorController.leftTrigger())
-				.and(isCoralModeTrigger)
-				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_CORAL_CORAL_STATION)
-						.andThen(endEffector.CoralIntake())
-						.andThen(elevator.SetPositionCommand(ArmPosition.STOW)));
+		operatorController.b().whileTrue(climber.RaiseClimber(ClimberConstants.CLIMBER_RAISED_POSITION));
 		operatorController.x()
 				.and(() -> gamepieceMode == GamepieceMode.ALGAE_MODE) // temp
 				.onTrue(elevator.SetPositionCommand(ArmPosition.STOW_ALGAE)
@@ -203,16 +207,7 @@ public class RobotContainer {
 				.and(() -> gamepieceMode == GamepieceMode.CORAL_MODE) // temp
 				.onTrue(elevator.SetPositionCommand(ArmPosition.STOW)
 						.alongWith(endEffector.StopIntakeMotor()));
-		operatorController.y()
-				.or(operatorController.leftBumper())
-				.and(isAlgaeModeTrigger)
-				.onTrue(endEffector.AlgaeOuttake());
-		operatorController.y()
-				.or(operatorController.leftBumper())
-				.and(isCoralModeTrigger)
-				.onTrue(endEffector.CoralOuttake()
-						.alongWith(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4_HIGH).onlyIf(() -> elevator.getElevatorTarget() == ArmPosition.OUTTAKE_CORAL_LEVEL_4.ELEVATOR_POSITION)));
-
+		operatorController.y().onTrue(elevator.SetPositionCommand(ArmPosition.STOW).andThen(ramp.RampRetract()));
 		operatorController.povDown()
 				.and(isAlgaeModeTrigger)
 				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_ALGAE_LEVEL_2));
@@ -233,12 +228,56 @@ public class RobotContainer {
 		operatorController.povUp()
 				.and(isAlgaeModeTrigger)
 				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_ALGAE_LEVEL_3));
+		// If in emergency mode CoralBackup Must be off!!
 		operatorController.povUp()
 				.and(isCoralModeTrigger)
+				.and(isManualCoralModeTrigger.negate())
+				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4).alongWith(endEffector.CoralBackup()));
+		operatorController.povUp()
+				.and(isCoralModeTrigger)
+				.and(isManualCoralModeTrigger)
 				.onTrue(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4));
 
-		// Left Bumper is on an or with the Y button above
+		operatorController.rightTrigger()
+				.and(isAlgaeModeTrigger)
+				.onTrue(endEffector.AlgaeIntake());
+		operatorController.rightTrigger()
+				.and(isCoralModeTrigger)
+				.and(isManualCoralModeTrigger.negate())
+				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_CORAL_CORAL_STATION)
+						.andThen(endEffector.CoralIntakeTeleop())
+						.andThen(elevator.SetPositionCommand(ArmPosition.STOW)));
+		operatorController.rightTrigger()
+				.and(isCoralModeTrigger)
+				.and(isManualCoralModeTrigger)
+				.onTrue(elevator.SetPositionCommand(ArmPosition.INTAKE_CORAL_CORAL_STATION))
+				.whileTrue(endEffector.manualCoralIntake())
+				.onFalse(elevator.SetPositionCommand(ArmPosition.STOW));
+		operatorController.leftTrigger()
+				.and(isAlgaeModeTrigger)
+				.onTrue(endEffector.AlgaeOuttake());
+		operatorController.leftTrigger()
+				.and(isCoralModeTrigger)
+				.and(isManualCoralModeTrigger.negate())
+				.onTrue(endEffector.CoralOuttakeTeleop()
+						.alongWith(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4_HIGH).onlyIf(() -> elevator.getElevatorTarget() == ArmPosition.OUTTAKE_CORAL_LEVEL_4.ELEVATOR_POSITION)));
+		operatorController.leftTrigger()
+				.and(isCoralModeTrigger)
+				.and(isManualCoralModeTrigger)
+				.onTrue(endEffector.manualCoralOuttake()
+						.alongWith(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4_HIGH).onlyIf(() -> elevator.getElevatorTarget() == ArmPosition.OUTTAKE_CORAL_LEVEL_4.ELEVATOR_POSITION)));
+
 		operatorController.rightBumper().onTrue(toggleGamepieceModeCommand());
+		operatorController.leftBumper()
+				.and(isManualCoralModeTrigger.negate())
+				.onTrue(endEffector.CoralBackup());
+		operatorController.leftBumper()
+				.and(isManualCoralModeTrigger)
+				.whileTrue(endEffector.manualCoralBackup());
+
+		operatorController.start().onTrue(Commands.runOnce(() -> {
+			isManualCoralMode = !isManualCoralMode;
+		}));
 	}
 
 	/**
@@ -277,6 +316,25 @@ public class RobotContainer {
 
 	public boolean isHoldingCoral() {
 		return endEffector.isHoldingCoral();
+	}
+
+	public void createNamedCommands() {
+		NamedCommands.registerCommand("Intake Coral", elevator.SetPositionCommand(ArmPosition.INTAKE_CORAL_CORAL_STATION).andThen(endEffector.CoralIntakeStart()));
+		NamedCommands.registerCommand("Finish Intake Coral", endEffector.CoralIntakeFinish());
+		NamedCommands.registerCommand("Intake Algae L2", elevator.SetPositionCommand(ArmPosition.INTAKE_ALGAE_LEVEL_2).andThen(endEffector.AlgaeIntake()));
+		NamedCommands.registerCommand("Intake Algae L3", elevator.SetPositionCommand(ArmPosition.INTAKE_ALGAE_LEVEL_3).andThen(endEffector.AlgaeIntake()));
+
+		NamedCommands.registerCommand("Elevator L1 Position", elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_1));
+		NamedCommands.registerCommand("Elevator L2 Position", elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_2));
+		NamedCommands.registerCommand("Elevator L3 Position", elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_3));
+		NamedCommands.registerCommand("Elevator L4 Position", elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4));
+		NamedCommands.registerCommand("Elevator Processor Position", elevator.SetPositionCommand(ArmPosition.OUTTAKE_ALGAE_PROCESSOR));
+
+		NamedCommands.registerCommand("Stow Empty", elevator.SetPositionCommand(ArmPosition.INTAKE_CORAL_CORAL_STATION));
+
+		NamedCommands.registerCommand("Score Coral L1-3", endEffector.CoralOuttake());
+		NamedCommands.registerCommand("Score Coral L4", endEffector.CoralOuttake().alongWith(elevator.SetPositionCommand(ArmPosition.OUTTAKE_CORAL_LEVEL_4_HIGH)));
+		NamedCommands.registerCommand("Score Algae", endEffector.AlgaeOuttake());
 	}
 
 	/**
