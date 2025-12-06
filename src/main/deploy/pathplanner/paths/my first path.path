@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.202,
-        "y": 4.016022600446428
+        "x": 1.228023097826087,
+        "y": 3.9802904211956514
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.937059600558,
-        "y": 3.994031030804009
+        "x": 2.228023097826089,
+        "y": 3.9802904211956514
       },
       "isLocked": false,
-      "linkedName": "Barge Start Center"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.8,
-        "y": 3.85
+        "x": 6.384794776119402,
+        "y": 3.9802904211956514
       },
       "prevControl": {
-        "x": 6.138793289656925,
-        "y": 3.8834101433591384
+        "x": 5.384794776119402,
+        "y": 3.9802904211956514
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Branch G"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.5,
-    "maxAcceleration": 1.0,
+    "maxVelocity": 2.75,
+    "maxAcceleration": 2.75,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "New Folder",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }
