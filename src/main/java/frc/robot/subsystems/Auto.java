@@ -1,12 +1,20 @@
 package frc.robot.subsystems;
 
+import java.nio.file.Path;
+import java.util.List;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.AutoConstants;
@@ -16,6 +24,8 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
  * Subsystem for the robot's autonomous functionality.
  */
 public class Auto {
+	private static PathPlannerPath lastRunPath = null; // stores the most recently run path
+
 	/**
 	 * Setup AutoBuilder for PathPlanner.
 	 */
@@ -82,6 +92,26 @@ public class Auto {
 		}
 	}
 
+	public static PathPlannerPath createPathFromTransform(Transform3d transform) {
+		if (lastRunPath == null) {
+			System.out.println("No previous auto path was found, aborting path creation on the fly");
+			return new PathPlannerPath(null, null, null, null, false);
+		}
+		// grab the end pose of the previously run path
+		Pose2d startPose2d = lastRunPath.getPathPoses().get(lastRunPath.getPathPoses().size() - 1);
+		// take the transform3d and turn in into a pose2d and add start position to get to global coordinates
+		Pose2d endPose2d = new Pose2d(transform.getX() + startPose2d.getX(), transform.getY() + startPose2d.getY(), transform.getRotation().toRotation2d().plus(startPose2d.getRotation()));
+		List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPose2d, endPose2d);
+
+		// copy the constraints of the previous path
+		PathConstraints constraints = lastRunPath.getGlobalConstraints();
+
+		PathPlannerPath path = new PathPlannerPath(waypoints, constraints, null, null);
+		path.preventFlipping = true;
+
+		return path;
+	}
+
 	/**
 	 * Get the path follower with events.
 	 *
@@ -93,6 +123,7 @@ public class Auto {
 	public static Command getAutonomousCommand(String pathName) {
 		// Create a path following command using AutoBuilder. This will also trigger event markers.
 		// TODO: #119 (Max) I think would be better to add the ResetLastAngularScalar here
+		lastRunPath = PathPlannerPath.fromPathFile(pathName);
 		return new PathPlannerAuto(pathName);
 	}
 }
