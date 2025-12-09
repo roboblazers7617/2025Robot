@@ -18,6 +18,7 @@ import frc.robot.Constants.ArmPosition;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainControls;
+import frc.robot.subsystems.vision.PhotonVision;
 import frc.robot.subsystems.drivetrain.Drivetrain.TranslationOrientation;
 import frc.robot.subsystems.Auto;
 import frc.robot.subsystems.Elevator;
@@ -27,11 +28,14 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -67,6 +71,12 @@ public class RobotContainer {
 	 */
 	@NotLogged
 	private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
+
+	/**
+	 * class that contains camera for object detection
+	 */
+	private final PhotonVision PhotonCam = new PhotonVision("CAMERA NAME DONT FORGET TO FILL THIS IN RILEY");
+
 	/**
 	 * The Controller used by the Operator of the robot, primarily controlling the superstructure.
 	 */
@@ -277,6 +287,16 @@ public class RobotContainer {
 		operatorController.start().onTrue(Commands.runOnce(() -> {
 			isManualCoralMode = !isManualCoralMode;
 		}));
+	}
+
+	public void checkAndBuildObjectRecognitionPath() {
+		Transform3d transformToPiece = PhotonCam.LookForClosestTarget(PhotonVision.OBJECT_ID.CORAL);
+		if (transformToPiece != null) {
+			System.out.println(transformToPiece);
+			PathPlannerPath path = Auto.createPathFromTransform(transformToPiece, drivetrain);
+			Command autoCommand = AutoBuilder.followPath(path);
+			autoCommand.schedule();
+		}
 	}
 
 	/**

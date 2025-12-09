@@ -13,6 +13,10 @@ public class PhotonVision {
 	private final boolean DEBUG_MODE = true; // do print statements work or not
 	private PhotonPipelineResult latestResult;
 
+	public static enum OBJECT_ID {
+		CORAL, ALGAE
+	}
+
 	public PhotonVision(String cameraName) {
 		camera = new PhotonCamera(cameraName);
 		if (DEBUG_MODE) {
@@ -20,8 +24,10 @@ public class PhotonVision {
 		}
 	}
 
-	// updates the latestResult variable and returns it
-	// this function is basically a less efficient replacement for PhotonCamera.getLatestResult() because that function is deprecated
+	/**
+	 * updates the latestResult variable and returns it.
+	 * this function is basically a less efficient replacement for PhotonCamera.getLatestResult() because that function is deprecated
+	 */
 	private PhotonPipelineResult updateLatestResult() {
 		List<PhotonPipelineResult> results = camera.getAllUnreadResults();
 		// if there are new results, update the latestResult, otherwise leave it as is
@@ -31,12 +37,13 @@ public class PhotonVision {
 		return latestResult;
 	}
 
-	// returns the transform3d to the closest object of the specified objectID
-	// returns null if none is found
-	// TODO change objectID to an enum
-	public Transform3d LookForClosestTarget(int objectID) {
+	/**
+	 * returns the transform3d to the closest object of the specified objectID
+	 * returns null if none is found
+	 */
+	public Transform3d LookForClosestTarget(OBJECT_ID objectID) {
 		if (DEBUG_MODE) {
-			System.out.println("Looking for the closest tracked target of objectID " + objectID);
+			System.out.println("Looking for the closest tracked target of objectID " + objectID.name() + "/" + objectID.ordinal());
 		}
 
 		double closestTransformDistance = 99999;
@@ -47,7 +54,7 @@ public class PhotonVision {
 			PhotonTrackedTarget target = result.targets.get(idx);
 
 			// Check if the target is of the correct objectID
-			if (target.objDetectId != objectID) {
+			if (target.objDetectId != objectID.ordinal()) {
 				if (DEBUG_MODE) {
 					System.out.println("Target of ID " + target.objDetectId + " was discarded for not matching specified objectID " + objectID);
 				}

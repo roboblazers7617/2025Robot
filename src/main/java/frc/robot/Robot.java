@@ -39,10 +39,6 @@ public class Robot extends TimedRobot {
 	private Command autonomousCommand;
 
 	/**
-	 * class that contains camera for object detection
-	 */
-	private final PhotonVision PhotonCam = new PhotonVision("CAMERA NAME DONT FORGET TO FILL THIS IN RILEY");
-	/**
 	 * Class that contains most of the robot initialization and control logic.
 	 */
 	private final RobotContainer robotContainer;
@@ -119,13 +115,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousPeriodic() {
 		if (autonomousCommand.isFinished()) {
-			Transform3d transformToPiece = PhotonCam.LookForClosestTarget(0);
-			if (transformToPiece != null) {
-				System.out.println(transformToPiece);
-				PathPlannerPath path = Auto.createPathFromTransform(transformToPiece);
-				Command autoCommand = AutoBuilder.followPath(path);
-				autoCommand.schedule();
-			}
+			robotContainer.checkAndBuildObjectRecognitionPath()
 		}
 	}
 
