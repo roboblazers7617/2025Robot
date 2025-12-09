@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
+import java.io.IOException;
 import java.nio.file.Path;
+import java.text.ParseException;
 import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -11,6 +13,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
+import com.pathplanner.lib.util.FileVersionException;
 
 import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -105,9 +108,22 @@ public class Auto {
 	 *         {@link AutoBuilder#followPath(PathPlannerPath)} path command.
 	 */
 	public static Command getAutonomousCommand(String pathName) {
+		// store the path for later referencing
+		try {
+			lastRunPath = PathPlannerPath.fromPathFile(pathName);
+		} catch (IOException e) {
+			lastRunPath = null;
+			System.out.println("no auto path was loaded");
+		} catch (org.json.simple.parser.ParseException e) {
+			lastRunPath = null;
+			System.out.println("path json could not be parsed");
+		} catch (FileVersionException e) {
+			lastRunPath = null;
+			System.out.println("path json could not be parsed");
+		}
+
 		// Create a path following command using AutoBuilder. This will also trigger event markers.
 		// TODO: #119 (Max) I think would be better to add the ResetLastAngularScalar here
-		lastRunPath = PathPlannerPath.fromPathFile(pathName);
 		return new PathPlannerAuto(pathName);
 	}
 
