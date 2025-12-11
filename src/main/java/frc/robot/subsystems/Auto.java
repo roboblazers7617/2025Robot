@@ -142,7 +142,8 @@ public class Auto {
 			startPose2d = lastRunPath.getPathPoses().get(lastRunPath.getPathPoses().size() - 1);
 		}
 		// take the transform3d and turn in into a pose2d and add current position to get to global coordinates
-		Pose2d endPose2d = new Pose2d(transform.getX() + currentPose2d.getX(), transform.getY() + currentPose2d.getY(), transform.getRotation().toRotation2d().plus(currentPose2d.getRotation()));
+		Pose2d endPose2d = new Pose2d(transform.getX() + currentPose2d.getX(), transform.getY() + currentPose2d.getY(), currentPose2d.getRotation().plus(Rotation2d.fromDegrees(Math.atan2(transform.getY(), transform.getX()))));
+
 		List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPose2d, endPose2d);
 
 		// copy the constraints of the previous path

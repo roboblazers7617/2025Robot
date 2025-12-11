@@ -75,7 +75,7 @@ public class RobotContainer {
 	/**
 	 * class that contains camera for object detection
 	 */
-	private final PhotonVision PhotonCam = new PhotonVision("CAMERA NAME DONT FORGET TO FILL THIS IN RILEY");
+	private final PhotonVision PhotonCam = new PhotonVision("photonvision-blahaj");
 
 	/**
 	 * The Controller used by the Operator of the robot, primarily controlling the superstructure.
@@ -295,7 +295,7 @@ public class RobotContainer {
 			System.out.println(transformToPiece);
 			PathPlannerPath path = Auto.createPathFromTransform(transformToPiece, drivetrain);
 			Command autoCommand = AutoBuilder.followPath(path);
-			autoCommand.schedule();
+			// autoCommand.schedule();
 		}
 	}
 
