@@ -18,8 +18,8 @@ import frc.robot.Constants.ArmPosition;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainControls;
-import frc.robot.subsystems.vision.PhotonVision;
 import frc.robot.subsystems.drivetrain.Drivetrain.TranslationOrientation;
+import frc.robot.subsystems.vision.PhotonVision;
 import frc.robot.subsystems.Auto;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Climber;
@@ -75,8 +75,7 @@ public class RobotContainer {
 	/**
 	 * class that contains camera for object detection
 	 */
-	private final PhotonVision PhotonCam = new PhotonVision("photonvision-blahaj");
-
+	private final PhotonVision photonCam = new PhotonVision("Arducam");
 	/**
 	 * The Controller used by the Operator of the robot, primarily controlling the superstructure.
 	 */
@@ -290,7 +289,7 @@ public class RobotContainer {
 	}
 
 	public void checkAndBuildObjectRecognitionPath() {
-		Transform3d transformToPiece = PhotonCam.LookForClosestTarget(PhotonVision.OBJECT_ID.CORAL);
+		Transform3d transformToPiece = photonCam.getTransformOfObject(PhotonVision.OBJECTS.ALGAE);
 		if (transformToPiece != null) {
 			System.out.println(transformToPiece);
 			PathPlannerPath path = Auto.createPathFromTransform(transformToPiece, drivetrain);

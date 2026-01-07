@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.LoggingConstants;
 import frc.robot.subsystems.Auto;
-import frc.robot.subsystems.vision.PhotonVision;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
