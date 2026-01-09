@@ -9,19 +9,6 @@
           "data": {
             "pathName": "my first path"
           }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake Algae L2"
-                }
-              }
-            ]
-          }
         }
       ]
     }

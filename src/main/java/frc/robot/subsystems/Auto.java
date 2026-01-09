@@ -133,14 +133,7 @@ public class Auto {
 	public static PathPlannerPath createPathFromTransform(Transform3d transform, Drivetrain drivetrain) {
 		Pose2d startPose2d;
 		Pose2d currentPose2d = drivetrain.getPose();
-		if (lastRunPath == null) {
-			// if no lastRunPath is found, use the current start position
-			System.out.println("No previous auto path was found, using current position");
-			startPose2d = currentPose2d;
-		} else {
-			// if the path exists, get the end pose of it
-			startPose2d = lastRunPath.getPathPoses().get(lastRunPath.getPathPoses().size() - 1);
-		}
+		startPose2d = currentPose2d;
 		// take the transform3d and turn in into a pose2d and add current position to get to global coordinates
 		Pose2d endPose2d = new Pose2d(transform.getX() + currentPose2d.getX(), transform.getY() + currentPose2d.getY(), currentPose2d.getRotation().plus(Rotation2d.fromDegrees(Math.atan2(transform.getY(), transform.getX()))));
 

@@ -66,6 +66,7 @@ public class PhotonVision extends SubsystemBase {
 
 	public Transform3d getTransformOfObject(OBJECTS objectID) {
 		PhotonPipelineResult result = camera.getLatestResult();
+		Transform3d transformResult;
 		if (result.hasTargets()) {
 			List<PhotonTrackedTarget> targets = result.getTargets();
 			for (int idx = 0; idx < targets.size(); idx++) {
@@ -74,13 +75,16 @@ public class PhotonVision extends SubsystemBase {
 					System.out.println("detected object of ID " + target.getDetectedObjectClassID() + " does not match selected objectID of " + objectID.ordinal());
 					continue;
 				}
-				System.out.println(getTransform3dFromBoundingBox(target.getMinAreaRectCorners(), objectID));
+				transformResult = getTransform3dFromBoundingBox(target.getMinAreaRectCorners(), objectID);
+				System.out.println(transformResult);
+				// TODO this needs to look for the closest target, not just the first one it sees, but for now this will work
+				return transformResult;
 			}
 		} else {
 			// System.out.println("no targets");
 		}
 
-		return new Transform3d();
+		return null;
 	}
 
 	/*
