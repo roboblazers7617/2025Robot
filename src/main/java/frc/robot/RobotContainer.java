@@ -301,8 +301,9 @@ public class RobotContainer {
 			System.out.println("Scheduling the path");
 			autoCommand.schedule();
 			// return autoCommand;
+		} else {
+			System.out.println("no piece transform found");
 		}
-		System.out.println("no piece transform found");
 		// return null;
 	}
 
