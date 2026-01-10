@@ -150,6 +150,8 @@ public class RobotContainer {
 		Auto.setupPathPlannerFailsafe(drivetrain);
 
 		elevator.elevatorInit();
+
+		checkAndBuildObjectRecognitionPath();
 	}
 
 	/**
@@ -289,13 +291,18 @@ public class RobotContainer {
 	}
 
 	public void checkAndBuildObjectRecognitionPath() {
+		System.out.println("finding transforms");
 		Transform3d transformToPiece = photonCam.getTransformOfObject(PhotonVision.OBJECTS.ALGAE);
 		if (transformToPiece != null) {
-			System.out.println(transformToPiece);
+			System.out.println("transform is " + transformToPiece);
 			PathPlannerPath path = Auto.createPathFromTransform(transformToPiece, drivetrain);
+			System.out.println(path.toString());
 			Command autoCommand = AutoBuilder.followPath(path);
-			// autoCommand.schedule();
+			System.out.println("Scheduling the path");
+			autoCommand.schedule();
+			// return autoCommand;
 		}
+		// return null;
 	}
 
 	/**

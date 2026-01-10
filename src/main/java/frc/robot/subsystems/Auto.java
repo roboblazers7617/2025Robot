@@ -10,6 +10,8 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.IdealStartingState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
@@ -133,23 +135,22 @@ public class Auto {
 	public static PathPlannerPath createPathFromTransform(Transform3d transform, Drivetrain drivetrain) {
 		Pose2d startPose2d;
 		Pose2d currentPose2d = drivetrain.getPose();
-		if (lastRunPath == null) {
-			// if no lastRunPath is found, use the current start position
-			System.out.println("No previous auto path was found, using current position");
-			startPose2d = currentPose2d;
-		} else {
-			// if the path exists, get the end pose of it
-			startPose2d = lastRunPath.getPathPoses().get(lastRunPath.getPathPoses().size() - 1);
-		}
+		startPose2d = currentPose2d;
+		System.out.println("defined start and current poses, transform is " + transform);
 		// take the transform3d and turn in into a pose2d and add current position to get to global coordinates
-		Pose2d endPose2d = new Pose2d(transform.getX() + currentPose2d.getX(), transform.getY() + currentPose2d.getY(), currentPose2d.getRotation().plus(Rotation2d.fromDegrees(Math.atan2(transform.getY(), transform.getX()))));
-
+		Pose2d endPose2d = new Pose2d(transform.getX() + currentPose2d.getX(), transform.getY() + currentPose2d.getY(), currentPose2d.getRotation().plus(Rotation2d.fromDegrees(0)));
+		// Math.atan2(transform.getY(), transform.getX()
+		System.out.println("end pose calculated to be " + endPose2d);
+		endPose2d = new Pose2d(1, 0, Rotation2d.fromDegrees(0));
 		List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPose2d, endPose2d);
-
+		System.out.println("starting at: " + waypoints.get(0));
+		System.out.println("ending at: " + waypoints.get(waypoints.size() - 1));
 		// copy the constraints of the previous path
-		PathConstraints constraints = lastRunPath.getGlobalConstraints();
-
-		PathPlannerPath path = new PathPlannerPath(waypoints, constraints, null, null);
+		// PathConstraints constraints = lastRunPath.getGlobalConstraints();
+		PathConstraints constraints = new PathConstraints(.1, .1, 3 * Math.PI, 4 * Math.PI, 12);
+		GoalEndState goalEndState = new GoalEndState(0, Rotation2d.fromDegrees(0));
+		IdealStartingState idealStartingState = new IdealStartingState(0, Rotation2d.fromDegrees(0));
+		PathPlannerPath path = new PathPlannerPath(waypoints, constraints, idealStartingState, goalEndState);
 		path.preventFlipping = true;
 
 		return path;
