@@ -193,7 +193,8 @@ public class PhotonVision extends SubsystemBase {
 		double yCoordinate = distanceToObject * Math.sin(thetaToObject) * Math.cos(phiToObject);
 		double zCoordinate = distanceToObject * -Math.sin(phiToObject);
 
-		return new Transform3d(xCoordinate, yCoordinate, zCoordinate, new Rotation3d());
+		double INtoMconversion = .0254;
+		return new Transform3d(xCoordinate * INtoMconversion, yCoordinate * INtoMconversion, zCoordinate * INtoMconversion, new Rotation3d());
 	}
 
 	/*
