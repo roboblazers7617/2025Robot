@@ -152,6 +152,8 @@ public class RobotContainer {
 		elevator.elevatorInit();
 
 		checkAndBuildObjectRecognitionPath();
+
+		checkAndBuildObjectRecognitionPath();
 	}
 
 	/**
@@ -297,11 +299,15 @@ public class RobotContainer {
 			System.out.println("transform is " + transformToPiece);
 			PathPlannerPath path = Auto.createPathFromTransform(transformToPiece, drivetrain);
 			System.out.println(path.toString());
+			System.out.println(path.toString());
 			Command autoCommand = AutoBuilder.followPath(path);
 			System.out.println("Scheduling the path");
 			autoCommand.schedule();
 			// return autoCommand;
+		} else {
+			System.out.println("no piece transform found");
 		}
+		// return null;
 		// return null;
 	}
 
