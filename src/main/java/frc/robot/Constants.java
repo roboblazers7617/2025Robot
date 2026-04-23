@@ -896,6 +896,62 @@ public final class Constants {
 				ALGAE_SCORING_POSE_RED = PoseUtil.flipPoseAlliance(ALGAE_SCORING_POSE_BLUE);
 			}
 		}
+
+		/**
+		 * Constants relating to the coral station.
+		 */
+		public static class CoralStation {
+			/**
+			 * AprilTag ID for the coral station on the blue alliance.
+			 */
+			public static final int TAG_ID = 12;
+			/**
+			 * AprilTag pose for the coral station on the blue alliance.
+			 */
+			public static final Pose3d TAG_POSE;
+			/**
+			 * Offset from the AprilTag from which scoring should happen on the right side.
+			 */
+			public static final Transform2d SCORING_OFFSET = new Transform2d(Meters.of(0.33 / 2), Meters.of(0.5), Rotation2d.k180deg);
+			/**
+			 * Pose from which the robot can intake coral on the left side on the blue alliance.
+			 */
+			public static final Pose2d CORAL_SCORING_POSE_BLUE_LEFT;
+			/**
+			 * Pose from which the robot can intake coral on the right side on the blue alliance.
+			 */
+			public static final Pose2d CORAL_SCORING_POSE_BLUE_RIGHT;
+			/**
+			 * Pose from which the robot can intake coral on the left side on the red alliance.
+			 */
+			public static final Pose2d CORAL_SCORING_POSE_RED_LEFT;
+			/**
+			 * Pose from which the robot can intake coral on the right side on the red alliance.
+			 */
+			public static final Pose2d CORAL_SCORING_POSE_RED_RIGHT;
+
+			static {
+				// Find the tag pose.
+				Optional<Pose3d> tagPose = FIELD_LAYOUT.getTagPose(TAG_ID);
+
+				if (tagPose.isPresent()) {
+					TAG_POSE = tagPose.get();
+				} else {
+					TAG_POSE = new Pose3d();
+				}
+
+				// Generate scoring poses.
+				Pose2d pose2d = TAG_POSE.toPose2d();
+
+				// Generate scoring poses for the blue alliance.
+				CORAL_SCORING_POSE_BLUE_RIGHT = pose2d.transformBy(SCORING_OFFSET);
+				CORAL_SCORING_POSE_BLUE_LEFT = pose2d.transformBy(PoseUtil.flipTransformY(SCORING_OFFSET));
+
+				// Generate scoring poses for the red alliance.
+				CORAL_SCORING_POSE_RED_LEFT = PoseUtil.flipPoseAlliance(CORAL_SCORING_POSE_BLUE_LEFT);
+				CORAL_SCORING_POSE_RED_RIGHT = PoseUtil.flipPoseAlliance(CORAL_SCORING_POSE_BLUE_RIGHT);
+			}
+		}
 	}
 
 	/**
@@ -931,15 +987,19 @@ public final class Constants {
 		static {
 			// Compile CORAL_SCORING_POSES_BLUE_LEFT poses
 			CORAL_SCORING_POSES_BLUE_LEFT.addAll(FieldConstants.Reef.CORAL_SCORING_POSES_BLUE_LEFT);
+			CORAL_SCORING_POSES_BLUE_LEFT.add(FieldConstants.CoralStation.CORAL_SCORING_POSE_BLUE_LEFT);
 
 			// Compile CORAL_SCORING_POSES_BLUE_RIGHT poses
 			CORAL_SCORING_POSES_BLUE_RIGHT.addAll(FieldConstants.Reef.CORAL_SCORING_POSES_BLUE_RIGHT);
+			CORAL_SCORING_POSES_BLUE_RIGHT.add(FieldConstants.CoralStation.CORAL_SCORING_POSE_BLUE_RIGHT);
 
 			// Compile CORAL_SCORING_POSES_RED_LEFT poses
 			CORAL_SCORING_POSES_RED_LEFT.addAll(FieldConstants.Reef.CORAL_SCORING_POSES_RED_LEFT);
+			CORAL_SCORING_POSES_RED_LEFT.add(FieldConstants.CoralStation.CORAL_SCORING_POSE_RED_LEFT);
 
 			// Compile CORAL_SCORING_POSES_RED_RIGHT poses
 			CORAL_SCORING_POSES_RED_RIGHT.addAll(FieldConstants.Reef.CORAL_SCORING_POSES_RED_RIGHT);
+			CORAL_SCORING_POSES_RED_RIGHT.add(FieldConstants.CoralStation.CORAL_SCORING_POSE_RED_RIGHT);
 
 			// Compile ALGAE_SCORING_POSES_BLUE poses
 			ALGAE_SCORING_POSES_BLUE.addAll(FieldConstants.Reef.ALGAE_SCORING_POSES_BLUE);
