@@ -6,9 +6,13 @@ package frc.robot;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.logging.FileBackend;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.net.WebServer;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -19,6 +23,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.LoggingConstants;
+import frc.robot.subsystems.Auto;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -31,6 +36,7 @@ public class Robot extends TimedRobot {
 	 * Command that contains the autonomous routine. Set and run at the start of {@link #autonomousInit()}.
 	 */
 	private Command autonomousCommand;
+
 	/**
 	 * Class that contains most of the robot initialization and control logic.
 	 */
@@ -123,7 +129,8 @@ public class Robot extends TimedRobot {
 
 	/** This function is called periodically during operator control. */
 	@Override
-	public void teleopPeriodic() {}
+	public void teleopPeriodic() {
+	}
 
 	@Override
 	public void testInit() {

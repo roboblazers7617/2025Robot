@@ -2,10 +2,13 @@
   "robotWidth": 0.88,
   "robotLength": 0.88,
   "holonomicMode": true,
-  "pathFolders": [],
+  "pathFolders": [
+    "New Folder"
+  ],
   "autoFolders": [
     "3 Coral",
-    "Move Off Line"
+    "Move Off Line",
+    "Riley Testing"
   ],
   "defaultMaxVel": 2.75,
   "defaultMaxAccel": 2.75,

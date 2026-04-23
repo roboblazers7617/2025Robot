@@ -19,6 +19,7 @@ import frc.robot.Constants.ClimberConstants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainControls;
 import frc.robot.subsystems.drivetrain.Drivetrain.TranslationOrientation;
+import frc.robot.subsystems.vision.PhotonVision;
 import frc.robot.subsystems.Auto;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Climber;
@@ -27,11 +28,14 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -67,6 +71,11 @@ public class RobotContainer {
 	 */
 	@NotLogged
 	private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
+
+	/**
+	 * class that contains camera for object detection
+	 */
+	private final PhotonVision photonCam = new PhotonVision("Arducam");
 	/**
 	 * The Controller used by the Operator of the robot, primarily controlling the superstructure.
 	 */
@@ -141,6 +150,10 @@ public class RobotContainer {
 		Auto.setupPathPlannerFailsafe(drivetrain);
 
 		elevator.elevatorInit();
+
+		checkAndBuildObjectRecognitionPath();
+
+		checkAndBuildObjectRecognitionPath();
 	}
 
 	/**
@@ -277,6 +290,25 @@ public class RobotContainer {
 		operatorController.start().onTrue(Commands.runOnce(() -> {
 			isManualCoralMode = !isManualCoralMode;
 		}));
+	}
+
+	public void checkAndBuildObjectRecognitionPath() {
+		System.out.println("finding transforms");
+		Transform3d transformToPiece = photonCam.getTransformOfObject(PhotonVision.OBJECTS.ALGAE);
+		if (transformToPiece != null) {
+			System.out.println("transform is " + transformToPiece);
+			PathPlannerPath path = Auto.createPathFromTransform(transformToPiece, drivetrain);
+			System.out.println(path.toString());
+			System.out.println(path.toString());
+			Command autoCommand = AutoBuilder.followPath(path);
+			System.out.println("Scheduling the path");
+			autoCommand.schedule();
+			// return autoCommand;
+		} else {
+			System.out.println("no piece transform found");
+		}
+		// return null;
+		// return null;
 	}
 
 	/**
